@@ -1,0 +1,37 @@
+@server = http://localhost:4004
+@auth = Authorization: Basic alice:
+
+
+### SalesOrders
+# @name SalesOrders_GET
+GET {{server}}/odata/v4/mastering/SalesOrders
+{{auth}}
+
+### SalesOrders
+# @name SalesOrders_POST
+POST {{server}}/odata/v4/mastering/SalesOrders
+{{auth}}
+Content-Type: application/json
+
+{
+    "ID": "1000",
+    "LineItem": "10",
+    "TitleID": "123Aa",
+    "ImageEssence_ID": "A1"
+}
+
+### ImageEssence
+# @name ImageEssence_POST
+POST {{server}}/odata/v4/mastering/ImageEssence
+{{auth}}
+Content-Type: application/json
+
+{
+    "ID": "A13",
+    "Reels": [ {
+        "ID": "A122"
+    },
+    {
+        "ID": "A1223"
+    } ]
+}

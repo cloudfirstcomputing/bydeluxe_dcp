@@ -1,0 +1,36 @@
+{
+    "meta": {
+     "creator": "cds-dk 8.4.2"
+    },
+    "$version": "2.0",
+    "definitions": {
+     "YY1_SHIPPINGCONDITION_CDS": {
+      "kind": "service",
+      "@cds.external": true,
+      "@m.IsDefaultEntityContainer": "true",
+      "@sap.message.scope.supported": "true",
+      "@sap.supported.formats": "atom json xlsx"
+     },
+     "YY1_SHIPPINGCONDITION_CDS.YY1_ShippingCondition": {
+      "kind": "entity",
+      "@cds.external": true,
+      "@cds.persistence.skip": true,
+      "@sap.creatable": "false",
+      "@sap.updatable": "false",
+      "@sap.deletable": "false",
+      "@sap.content.version": "1",
+      "@sap.label": "ShippingCondition",
+      "elements": {
+       "ShippingCondition": {
+        "key": true,
+        "type": "cds.String",
+        "length": 2,
+        "@sap.display.format": "UpperCase",
+        "@sap.required.in.filter": "false",
+        "@sap.label": "Shipping Conditions",
+        "notNull": true
+       }
+      }
+     }
+    }
+   }

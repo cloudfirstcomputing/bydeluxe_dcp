@@ -1,0 +1,207 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.dlx.distribution",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.15.4",
+      "toolsId": "c01ed3fd-2225-413c-87bc-5b156006f7f5"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/distribution/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "distspec-manage": {
+          "semanticObject": "distspec",
+          "action": "manage",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.130.2",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.dlx.distribution.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "DistroSpecList",
+          "target": "DistroSpecList"
+        },
+        {
+          "pattern": "DistroSpec({key}):?query:",
+          "name": "DistroSpecObjectPage",
+          "target": "DistroSpecObjectPage"
+        },
+        {
+          "pattern": "DistroSpec({key})/to_Package({key2}):?query:",
+          "name": "DistroSpec_to_PackageObjectPage",
+          "target": "DistroSpec_to_PackageObjectPage"
+        },
+        {
+          "pattern": "DistroSpec({key})/to_Package({key2})/to_DCPMaterial({key3}):?query:",
+          "name": "DistroSpec_to_DCPMaterialObjectPage",
+          "target": "DistroSpec_to_DCPMaterialObjectPage"
+        }
+      ],
+      "targets": {
+        "DistroSpecList": {
+          "type": "Component",
+          "id": "DistroSpecList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/DistroSpec",
+              "variantManagement": "Page",
+              "navigation": {
+                "DistroSpec": {
+                  "detail": {
+                    "route": "DistroSpecObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DistroSpecObjectPage": {
+          "type": "Component",
+          "id": "DistroSpecObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/DistroSpec",
+              "navigation": {
+                "to_Package": {
+                  "detail": {
+                    "route": "DistroSpec_to_PackageObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DistroSpec_to_PackageObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_PackageObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/DistroSpec/to_Package",
+              "navigation": {
+                "to_DCPMaterial": {
+                  "detail": {
+                    "route": "DistroSpec_to_DCPMaterialObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DistroSpec_to_DCPMaterialObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_DCPMaterialObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/DistroSpec/to_Package/to_DCPMaterial"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "_version": "1.1.0",
+    "registrationIds": [
+      "Z0013"
+    ],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "bydeluxe"
+  }
+}
