@@ -2,10 +2,10 @@ using {managed} from '@sap/cds/common';
 
 namespace deluxe.distribution;
 
-using {API_BUSINESS_PARTNER as bupa} from '../srv/external/API_BUSINESS_PARTNER';
-using {YY1_SHIPPINGCONDITION_CDS as shipcond} from '../srv/external/YY1_SHIPPINGCONDITION_CDS';
+using {API_BUSINESS_PARTNER as bupa} from '../srv/external/API_BUSINESS_PARTNER.csn';
+using {YY1_SHIPPINGCONDITION_CDS as shipcond} from '../srv/external/YY1_SHIPPINGCONDITION_CDS.csn';
 
-entity BusinessPartners  as
+entity BusinessPartners   as
     projection on bupa.A_BusinessPartner {
         key BusinessPartner,
             BusinessPartnerType,
@@ -35,16 +35,16 @@ entity DistroSpec : managed {
 
 entity Package {
     key PackageUUID               : UUID;
-        PackageName               : String(40)                           @mandatory;
-        Priority                  : String(2)                            @mandatory;
+        PackageName               : String(40)                            @mandatory;
+        Priority                  : String(2)                             @mandatory;
         Theater                   : String(10);
         DistributionFilterRegion  : String(3);
         DistributionFilterCountry : String(3);
         DistributionFilterOther   : String(3);
         DeliveryMethod            : Association to one ShippingConditions @mandatory;
         DeliveryKind              : String(2);
-        ValidFrom                 : Date                                 @mandatory;
-        ValidTo                   : Date                                 @mandatory;
+        ValidFrom                 : Date                                  @mandatory;
+        ValidTo                   : Date                                  @mandatory;
         to_DCPMaterial            : Composition of many DCPMaterials
                                         on to_DCPMaterial.to_Package = $self;
         to_DistroSpec             : Association to DistroSpec;

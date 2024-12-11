@@ -1,14 +1,17 @@
-# CAP essencegroups
+# CAP barcodescanner
 _out
 *.db
 *.sqlite
 connection.properties
 default-*.json
 .cdsrc-private.json
+package-lock.json
 gen/
 node_modules/
 target/
-
+resources/
+.vscode
+dist/
 # Web IDE, App Studio
 .che/
 .gen/
@@ -17,7 +20,7 @@ target/
 *_mta_build_tmp
 *.mtar
 mta_archives/
-
+Makefile*
 # Other
 .DS_Store
 *.orig
