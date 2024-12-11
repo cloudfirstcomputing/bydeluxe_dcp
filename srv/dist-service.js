@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, BusinessPartners, ShippingCondition } = this.entities
+        const { DistroSpec, BusinessPartners, ShippingConditions } = this.entities
         const { today } = cds.builtin.types.Date
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
         const sctx = await cds.connect.to('YY1_SHIPPINGCONDITION_CDS')
@@ -19,10 +19,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         this.on('READ', BusinessPartners, async req => {
-            return bptx.get(`/A_BusinessPartner?$select=BusinessPartner,BusinessPartnerType,BusinessPartnerFullName&$filter=BusinessPartnerType eq 'Z001' or BusinessPartnerType eq 'Z002'`)
+            return bptx.get(SELECT.from(BusinessPartners).where`BusinessPartnerType in ('Z001', 'Z002')`)
         })
 
-        this.on('READ', ShippingCondition, async req => {
+        this.on('READ', ShippingConditions, async req => {
             return sctx.run(req.query)
         })
 
