@@ -1,323 +1,198 @@
-using {Country} from '@sap/cds/common';
+using {
+  managed,
+  cuid,
+} from '@sap/cds/common';
 using from '@sap/cds-common-content';
+using api from './common';
 
 namespace deluxe.mastering;
 
-entity SalesOrders {
-  key ID                                  : Integer;
-  key LineItem                            : Integer;
-      TitleID                             : String(40) @assert.format: '^[A-Za-z0-9]+$';
-      StudioID                            : String(10) @assert.format: '^[A-Za-z0-9]+$';
-      StudioName                          : String(40);
-      OrderStatus                         : String(14);
-      TitleName                           : String(40);
-      IntendedPrimaryTerritory            : String(2);
-      IntendedSecondaryTerritory          : String(2);
-      MasteringFacility                   : String(4);
-      Rating                              : String(8);
-      Encrypted                           : String(12);
-      ReelCount                           : Integer    @assert.range : [
-        0,
-        999
+entity CPLSalesOrders : cuid {
+  SalesOrderNumber                    : Integer;
+  LineItem                            : Integer;
+  Material                            : String(40);
+  OrderStatus                         : String(20);
+  TitleID                             : String(40);
+  Studio                              : Association to one api.BusinessPartners;
+  MasteringFacility                   : String(4);
+  RequestedMasteringFacility          : String(4);
+  PackagingStandard                   : String(20);
+  ContentKind                         : String(3);
+  ContentTypeModifiers                : String(100);
+  IntendedPrimaryTerritory            : String(3);
+  IntendedSecondaryTerritory          : String(500);
+  Rating                              : String(400);
+  Encrypted                           : Boolean;
+  VersionNumber                       : String(10);
+  VersionType                         : String(4) enum {
+    OV;
+    VF
+  };
+  VersionDescription                  : String(100);
+  BaseCompositionReelCount            : Integer @assert.range: [
+    1,
+    100
+  ];
+  Branched                            : Boolean;
+  IntendedPackaging                   : String(100);
+  CTTConvention                       : String(800);
+  StudioContentID                     : String(20);
+  HeadTailReels                       : Boolean;
+  PrecedingSODID                      : String(10);
+  BaseCPL                             : String(200);
+  NotbeforeApproved                   : String(40);
+  NotbeforeCompleted                  : String(40);
+  ImageEssence                        : Association to one EssenceGroup;
+  Resolution                          : String(2);
+  AspectRatio                         : String(12);
+  AudioEssence                        : Association to one EssenceGroup;
+  HearingImpairedEnhancedAudio        : Boolean;
+  VisuallyImpairedDescriptiveAudio    : Boolean;
+  AdditionalAudioTracks               : String(100);
+  AUXBackup                           : Boolean;
+  AUXEssence                          : Association to one EssenceGroup;
+  AUXLanguage                         : String(20);
+  SubtitlesEssence                    : Association to one EssenceGroup;
+  Subtitles                           : String(12);
+  SubtitleExcludedReels               : String(100);
+  OpenCaptionsEssence                 : Association to one EssenceGroup;
+  OpenCaptions                        : String(12);
+  OCAPExcludedReels                   : String(100);
+  ClosedCaptionsEssence               : Association to one EssenceGroup;
+  ClosedCaptions                      : String(12);
+  CCAPExcludedReels                   : String(100);
+  EditEssence                         : Association to one InsertEditGroup;
+  Edits                               : Boolean;
+  InsertEssence                       : Association to one InsertEditGroup;
+  Inserts                             : Boolean;
+  GeneralOrderNotes                   : String(2000);
+  LocalApprovalStatus                 : String(12);
+  Translator                          : String(20);
+  AudioDeliveryDate                   : DateTime;
+  SubtitleDeliveryDate                : DateTime;
+  ForcedNarrativeSubtitleDeliveryDate : DateTime;
+  LocalisedGFXDeliveryDate            : DateTime;
+  OCAPDeliveryDate                    : DateTime;
+  CCAPDeliveryDate                    : DateTime;
+  HIDeliveryDate                      : DateTime;
+  VIDeliveryDate                      : DateTime;
+  SLDeliveryDate                      : DateTime;
+  HLTDeliveryDate                     : DateTime;
+  OVSourceAssetDeliveryDeadline       : DateTime;
+  LVSourceAssetDeliveryDeadline       : DateTime;
+  RequestedMasteringStartDate         : DateTime;
+  RequestedMasteringEndDate           : DateTime;
+  RequestedMasteringDeadline          : DateTime;
+  ReleaseDate                         : Date;
+  DKDMDeliveryPartnerInformation      : String(40);
+  DCPDeliveryPartnerInformation       : String(40);
+  AVID_CPL                            : String(20);
+  CTT                                 : String(128);
+  CPL_UUID                            : String(40);
+  ImageIngestRequired                 : Boolean;
+  AudioIngestRequired                 : Boolean;
+  AUXIngestRequired                   : Boolean;
+  SubtitleIngestRequired              : Boolean;
+  OCAPIngestRequired                  : Boolean;
+  CCAPIngestRequired                  : Boolean;
+  Stereography                        : Boolean;
+  ClientQC                            : Boolean;
+  QToutput                            : Integer @assert.range: [
+    0,
+    9999
+  ];
+  ProductionOrderNumber               : Integer;
+}
+
+entity EssenceGroup : managed {
+  key ID                           : String(8) @assert.format: '^[A-Za-z0-9]+$';
+      EssenceType                  : String(20);
+      EssenceSubType               : String(100);
+      ContainerHeight              : Integer;
+      ContainerWidth               : Integer;
+      ActivePictureHeigth          : Integer;
+      ActivePictureWidth           : Integer;
+      ImageDimension               : String(2);
+      ImageStandard                : String(20);
+      LightLevel                   : String(20);
+      FrameRate                    : Decimal;
+      TargetMaxBitRate             : Decimal;
+      TextedTextless               : String(20);
+      ImageLanguage                : String(100);
+      AudioChannelConfiguration    : String(20);
+      AudioChannelCount            : Integer   @assert.range : [
+        1,
+        16
       ];
-      Branched                            : Boolean;
-      IntendedPackaging                   : String enum {
-        Full;
-        Partial
+      AudioLanguage                : String(20);
+      AUXType                      : String(12);
+      ForcedNarrative              : Boolean;
+      ForcedNarrativeDetails       : String(1000);
+      SubtitleDimension            : String(2);
+      SubtitleFormat               : String(10);
+      OCAPLanguage                 : String(20);
+      OCAPDimensions               : String(2);
+      OCAPFormat                   : String(10);
+      CCAPLanguage                 : String(20);
+      CCAPFormat                   : String(10);
+      Component_Essence_Group_ID_1 : String(8);
+      Component_Essence_Group_ID_2 : String(8);
+      Component_Essence_Group_ID_3 : String(8);
+      Component_Essence_Group_ID_4 : String(8);
+      Component_Essence_Group_ID_5 : String(8);
+      Component_Essence_Group_ID_6 : String(8);
+      Source_Create_Receive        : String(2000);
+      IOP_MXF_Create_Receive       : String(2000);
+      SMPTE_MXF_Create_Receive     : String(2000);
+      SupplyingVendor              : Association to one api.BusinessPartners;
+      IOP_CPL                      : String(40);
+      SMTPE_CPL                    : String(40);
+      _Reels                       : Composition of many Reels
+                                       on _Reels.parent = $self;
+}
+
+entity Reels {
+  key parent       : Association to EssenceGroup;
+  key ID           : Integer;
+      AV_Source    : String(20);
+      AV_WAV_Group : String(20);
+      AV_IOP_MXF   : String(20);
+      AV_SMPTE_MXF : String(20);
+}
+
+entity InsertEditGroup : managed {
+  key ID                       : String(8);
+      Type                     : String(1) enum {
+        Insert = 'I';
+        Edit   = 'E'
       };
-      PackagingStandard                   : String(12);
-      ContentKind                         : String(5);
-      ContentTypeModifiers                : String(10);
-      VersionNumber                       : String(10);
-      VersionType                         : String(2) enum {
-        OV;
-        VF
-      };
-      VersionDescription                  : String(40);
-      BaseCPL                             : String(40);
-      NotbeforeApproved                   : String(12);
-      ContainerResolution                 : String(2);
-      ActivePictureResolution             : String(12);
-      ImageDimension                      : String(2);
-      ImageStandard                       : String(18);
-      LightLevel                          : String(10);
-      FrameRate                           : Integer    @assert.range : [
-        0,
-        99
-      ];
-      TargetMaxBitRate                    : Integer    @assert.range : [
-        0,
-        9999
-      ];
-      TextedTextless                      : String(12);
-      AspectRatio                         : String(10);
-      AudioLanguage                       : String(2);
-      AudioChannelConfiguration           : Decimal(4, 1);
-      AudioChannelCount                   : Integer    @assert.range : [
-        0,
-        9999
-      ];
-      AUXBackup                           : Boolean;
-      AUXType                             : String(10);
-      AdditionalAudioTracks               : String(8);
-      Subtitles                           : String(8);
-      SubtitleLanguage                    : String(2);
-      ForcedNarrative                     : String(8);
-      SubtitleDimension                   : String(2);
-      SubtitleFormat                      : String(4);
-      SubtitleExcludedReels               : Integer    @assert.range : [
-        0,
-        9999
-      ];
-      HearingImpairedEnhancedAudio        : Boolean;
-      VisuallyImpairedDescriptiveAudio    : Boolean;
-      OpenCaptions                        : String(12);
-      OCAPDimensions                      : String(2);
-      OCAPFormat                          : String(4);
-      OCAPLanguage                        : String(2);
-      OCAPExcludedReels                   : Integer    @assert.range : [
-        0,
-        9999
-      ];
-      ClosedCaptions                      : String(12);
-      CCAPFormat                          : String(4);
-      CCAPLanguage                        : String(2);
-      CCAPExcludedReels                   : Integer    @assert.range : [
-        0,
-        9999
-      ];
-      CensorEditsCut                      : Boolean;
-      EditID                              : String(12);
-      HTReelID                            : String(12);
-      InsertID                            : String(12);
-      RequestedMasteringFacility          : String(18);
-      ForcedNarrativeSubtitleDeliveryDate : Date;
-      LocalisedGFXDeliveryDate            : Date;
-      HIDeliveryDate                      : Date;
-      VIDeliveryDate                      : Date;
-      SLDeliveryDate                      : Date;
-      HLTDeliveryDate                     : Date;
-      OVSourceAssetDeliveryDeadline       : Date;
-      LVSourceAssetDeliveryDeadline       : Date;
-      MasteringStartDate                  : Date;
-      MasteringEndDate                    : Date;
-      MasteringDeadline                   : Date;
-      ReleaseDate                         : Date;
-      BusinessPartnerDKDM                 : String(40);
-      BusinessPartnerDCP                  : String(40);
-      StudioContentID                     : String(18) @assert.format: '^[A-Za-z0-9]+$';
-      CTT                                 : String(128);
-      UUID                                : String(40);
-      Comments                            : String(64);
-      ImageEssence                        : Association to ImageEssence;
-      AudioEssence                        : Association to AudioEssence;
-      AUXEssence                          : Association to AUXEssence;
-      SubtitlesEssence                    : Association to SubtitleEssence;
-      OpenCaptionsEssence                 : Association to OCAPEssence;
-      ClosedCaptionsEssence               : Association to CCAPEssence;
-      CensorEdits                         : String(8)  @assert.format: '^[A-Za-z0-9]+$';
-      DFXInserts                          : String(8)  @assert.format: '^[A-Za-z0-9]+$';
-      Stereography                        : Boolean;
-      ClientQC                            : Boolean;
-      QToutput                            : Boolean;
-      ProductionOrderNumber               : Integer;
+      SubType                  : String(100);
+      EstimateInsertCount      : Integer;
+      EstimatedEditCount       : Integer;
+      GroupStatus              : String(12);
+      Source_Create_Receive    : String(2000);
+      IOP_MXF_Create_Receive   : String(2000);
+      SMPTE_MXF_Create_Receive : String(2000);
+      BP                       : Association to one api.BusinessPartners;
+      IOP_CPL                  : String(40);
+      SMTPE_CPL                : String(40);
+      _Items                   : Composition of many InsertEditItem
+                                   on _Items.parent = $self
 }
 
-entity ImageEssence {
-  key ID                      : String(8) @assert.format: '^[A-Za-z0-9]+$';
-      TitleID                 : String(40);
-      ContainerResolution     : String(2);
-      ActivePictureResolution : String(12);
-      ImageDimension          : String(2);
-      ImageStandard           : String(18);
-      LightLevel              : String(10);
-      FrameRate               : Integer   @assert.range : [
-        0,
-        99
-      ];
-      TargetMaxBitRate        : Integer   @assert.range : [
-        0,
-        9999
-      ];
-      TextedTextless          : String(12);
-      DCDM_Received           : Date;
-      IOP_MXF_Received        : Date;
-      SMPTE_MXF_Received      : Date;
-      BPNumber                : String(10);
-      IOP_CPL                 : String(50);
-      SMPTE_CPL               : String(50);
-      Reels                   : Composition of many ImageReels
-                                  on Reels.parent = $self;
-}
-
-entity ImageReels {
-  key parent       : Association to ImageEssence;
-  key ID           : String(40);
-      ImageReel    : String(40);
-      AV_Source    : String(40);
-      AV_IOP_MXF   : String(40);
-      AV_SMPTE_MXF : String(40);
-
-}
-
-entity AudioEssence {
-  key ID                        : String(8) @assert.format: '^[A-Za-z0-9]+$';
-      TitleID                   : String(40);
-      AudioEssenceType          : String(12);
-      AudioLanguage             : String(2);
-      AudioChannelConfiguration : Integer   @assert.range : [
-        0,
-        9999
-      ];
-      AudioChannelCount         : Integer   @assert.range : [
-        0,
-        9999
-      ];
-      WAV_Received              : Date;
-      IOP_MXF_Received          : Date;
-      SMPTE_MXF_Received        : Date;
-      BPNumber                  : String(10);
-      IOP_CPL                   : String(50);
-      SMPTE_CPL                 : String(50);
-      Reels                     : Composition of many AudioReels
-                                    on Reels.parent = $self;
-}
-
-entity AudioReels {
-  key parent       : Association to AudioEssence;
-  key ID           : String(40);
-      AudioReel    : String(40);
-      AV_Source    : String(40);
-      AV_WAV_Group : String(40);
-      AV_IOP_MXF   : String(40);
-      AV_SMPTE_MXF : String(40);
-}
-
-entity AUXEssence {
-  key ID                 : String(8) @assert.format: '^[A-Za-z0-9]+$';
-      TitleID            : String(40);
-      AUXType            : String(10);
-      SMPTE_MXF_Received : Date;
-      BPNumber           : String(10);
-      SMPTE_CPL          : String(50);
-      Reels              : Composition of many AUXReels
-                             on Reels.parent = $self;
-}
-
-entity AUXReels {
-  key parent       : Association to AUXEssence;
-  key ID           : String(40);
-      AUXReel      : String(40);
-      AV_Source    : String(40);
-      AV_SMPTE_MXF : String(40);
-}
-
-entity SubtitleEssence {
-  key ID                 : String(8) @assert.format: '^[A-Za-z0-9]+$';
-      TitleID            : String(40);
-      SubtitleLanguage   : String(2);
-      ForcedNarrative    : String(8);
-      SubtitleDimension  : String(2);
-      SubtitleFormat     : String(4);
-      Subtitles_Received : Date;
-      IOP_MXF_Received   : Date;
-      SMPTE_MXF_Received : Date;
-      BPNumber           : String(10);
-      IOP_CPL            : String(50);
-      SMPTE_CPL          : String(50);
-      Reels              : Composition of many SubtitleReels
-                             on Reels.parent = $self;
-}
-
-entity SubtitleReels {
-  key parent       : Association to SubtitleEssence;
-  key ID           : String(40);
-      SubtitleReel : String(40);
-      AV_Source    : String(40);
-      AV_IOP_MXF   : String(40);
-      AV_SMPTE_MXF : String(40);
-}
-
-entity OCAPEssence {
-  key ID                 : String(8) @assert.format: '^[A-Za-z0-9]+$';
-      TitleID            : String(40);
-      OCAPDimensions     : String(2);
-      OCAPFormat         : String(4);
-      OCAPLanguage       : String(2);
-      OCAPExcludedReels  : Integer   @assert.range : [
-        0,
-        9999
-      ];
-      OCAP_Received      : Date;
-      IOP_MXF_Received   : Date;
-      SMPTE_MXF_Received : Date;
-      BPNumber           : String(10);
-      IOP_CPL            : String(50);
-      SMPTE_CPL          : String(50);
-      Reels              : Composition of many OCAPReels
-                             on Reels.parent = $self;
-}
-
-entity OCAPReels {
-  key parent       : Association to OCAPEssence;
-  key ID           : String(40);
-      OCAPReel     : String(40);
-      AV_Source    : String(40);
-      AV_IOP_MXF   : String(40);
-      AV_SMPTE_MXF : String(40);
-}
-
-entity CCAPEssence {
-  key ID                 : String(8) @assert.format: '^[A-Za-z0-9]+$';
-      TitleID            : String(40);
-      OCAPDimensions     : String(2);
-      OCAPFormat         : String(4);
-      OCAPLanguage       : String(2);
-      OCAPExcludedReels  : Integer   @assert.range : [
-        0,
-        9999
-      ];
-      OCAP_Received      : Date;
-      IOP_MXF_Received   : Date;
-      SMPTE_MXF_Received : Date;
-      BPNumber           : String(10);
-      IOP_CPL            : String(50);
-      SMPTE_CPL          : String(50);
-      Reels              : Composition of many CCAPReels
-                             on Reels.parent = $self;
-}
-
-entity CCAPReels {
-  key parent       : Association to CCAPEssence;
-  key ID           : String(40);
-      CCAPReel     : String(40);
-      AV_Source    : String(40);
-      AV_IOP_MXF   : String(40);
-      AV_SMPTE_MXF : String(40);
+entity InsertEditItem {
+  key parent      : Association to InsertEditGroup;
+  key ID          : Integer;
+      Type        : String(20);
+      Timecode    : String(12);
+      MergeMethod : String(20);
+      AV_Source   : String(20);
+      AV_Proof    : String(20);
+      AV_Final    : String(20);
 }
 
 entity HeadTailReels {
-  key HTReelID       : String(40);
-  key SO             : Integer;
-  key LineItem       : Integer;
-      HeadTail_Order : String(18);
-      Type           : String(18);
-}
-
-entity Edits {
-  key EditID   : String(40);
-  key SO       : Integer;
-  key LineItem : Integer;
-      Edit     : String(18);
-      Type     : String(18);
-      TimeCode : String(10);
-}
-
-entity Inserts {
-  key InsertID : String(40);
-  key SO       : Integer;
-  key LineItem : Integer;
-      Insert   : String(18);
-      Type     : String(18);
-      TimeCode : String(10);
+  key Position         : String(10);
+  key PositionSequence : Integer;
+      _SalesOrder      : Association to one CPLSalesOrders
 }

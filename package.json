@@ -53,6 +53,17 @@
           "requestTimeout": 1000000
         }
       },
+      "API_PRODUCT_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_PRODUCT_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_PRODUCT_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
       "[production]": {
         "auth": "xsuaa",
         "db": "hana"

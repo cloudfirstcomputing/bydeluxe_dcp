@@ -6,6 +6,7 @@ annotate service.DistroSpec with {
     Name              @Common: {Label: '{i18n>Name}', };
     Title             @Common: {Label: '{i18n>Title}', };
     Studio            @Common: {Label: '{i18n>Studio}', };
+    DCPMaterial       @Common: {Label: '{i18n>DCPMaterial}', };
     CustomerReference @Common: {Label: '{i18n>CustomerReference}', };
     ValidFrom         @Common: {
         Label       : '{i18n>ValidFrom}',
@@ -28,12 +29,11 @@ annotate service.Package with {
 };
 
 annotate service.DCPMaterials with {
-    CTT             @Common: {Label: '{i18n>CTT}', };
-    CPLName         @Common: {Label: '{i18n>CPLName}', };
-    Picture         @Common: {Label: '{i18n>Picture}', };
-    Audio           @Common: {Label: '{i18n>Audio}', };
-    DCPMaterialText @Common: {Label: '{i18n>DCPMaterialText}', };
-    DCPMaterial     @Common: {Label: '{i18n>DCPMaterial}', };
+    CTT     @Common: {Label: '{i18n>CTT}', };
+    CPLName @Common: {Label: '{i18n>CPLName}', };
+    Picture @Common: {Label: '{i18n>Picture}', };
+    Audio   @Common: {Label: '{i18n>Audio}', };
+// DCPMaterialText @Common: {Label: '{i18n>DCPMaterialText}', };
 };
 
 annotate service.BusinessPartners with {
@@ -135,7 +135,7 @@ annotate service.DistroSpec with @(
 );
 
 annotate service.Package with @(
-    UI.HeaderInfo         : {
+    UI.HeaderInfo          : {
         Title         : {
             $Type: 'UI.DataField',
             Value: Theater,
@@ -223,10 +223,10 @@ annotate service.Package with @(
 );
 
 annotate service.DCPMaterials with @(
-    UI.HeaderInfo         : {
+    UI.HeaderInfo              : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: DCPMaterial,
+            Value: CPLName,
         },
         TypeName      : '{i18n>DCPMaterial}',
         TypeNamePlural: '{i18n>DCPMaterials}',
@@ -250,14 +250,14 @@ annotate service.DCPMaterials with @(
                 $Type: 'UI.DataField',
                 Value: Audio,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: DCPMaterial,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: DCPMaterialText,
-            },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DCPMaterial,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DCPMaterialText,
+        // },
         ]
     },
     UI.Facets                  : [{
@@ -267,14 +267,14 @@ annotate service.DCPMaterials with @(
         Target: '@UI.FieldGroup#_DCPMaterial',
     }, ],
     UI.LineItem                : [
-        {
-            $Type: 'UI.DataField',
-            Value: DCPMaterial,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: DCPMaterialText,
-        },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DCPMaterial,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DCPMaterialText,
+        // },
         {
             $Type: 'UI.DataField',
             Value: CTT,
@@ -287,7 +287,7 @@ annotate service.DCPMaterials with @(
 );
 
 annotate service.DistroSpec with {
-    Studio @(
+    Studio      @(
         Common.ValueList               : {
             $Type         : 'Common.ValueListType',
             // Label         : '{i18n>Studio}',
@@ -305,22 +305,38 @@ annotate service.DistroSpec with {
             ],
         },
         Common.ValueListWithFixedValues: false
+    );
+    DCPMaterial @(
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            // Label         : '{i18n>Studio}',
+            CollectionPath: 'Products',
+            Parameters    : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: DCPMaterial_Product,
+                ValueListProperty: 'Product',
+            },
+            // {
+            //     $Type            : 'Common.ValueListParameterDisplayOnly',
+            //     ValueListProperty: 'Prod',
+            // },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
     )
 };
 
 annotate service.Package with {
-DeliveryMethod @(
+    DeliveryMethod @(
         Common.ValueList               : {
             $Type         : 'Common.ValueListType',
             // Label         : '{i18n>Studio}',
             CollectionPath: 'ShippingConditions',
-            Parameters    : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: DeliveryMethod_ShippingCondition,
-                    ValueListProperty: 'ShippingCondition',
-                },
-            ],
+            Parameters    : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: DeliveryMethod_ShippingCondition,
+                ValueListProperty: 'ShippingCondition',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     )
