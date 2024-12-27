@@ -20,14 +20,16 @@
     "@cap-js/cds-types": "^0.6",
     "@cap-js/sqlite": "^1",
     "@sap/cds-dk": "^8.3.0",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
   },
   "scripts": {
     "start": "cds-serve",
     "undeploy": "cf undeploy bydeluxe --delete-services --delete-service-keys --delete-service-brokers",
     "watch-distribution": "cds watch --open distribution/webapp/index.html?sap-ui-xx-viewCache=false",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
-    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-createdcpmaterials": "cds watch --open createdcpmaterials/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -71,6 +73,7 @@
     }
   },
   "sapux": [
-    "app/distribution"
+    "app/distribution",
+    "app/createdcpmaterials"
   ]
 }

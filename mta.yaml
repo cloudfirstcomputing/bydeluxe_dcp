@@ -21,7 +21,8 @@ modules:
       readiness-health-check-type: http
     build-parameters:
       builder: npm
-      ignore: ["node_modules/"]
+      ignore:
+        - node_modules/
   - name: bydeluxe-db-deployer
     type: hdb
     path: gen/db
@@ -30,7 +31,8 @@ modules:
     parameters:
       buildpack: nodejs_buildpack
     build-parameters:
-      ignore: ["node_modules/"]
+      ignore:
+        - node_modules/
   - name: bydeluxe-dest-content
     type: com.sap.application.content
     requires:
@@ -75,9 +77,23 @@ modules:
             - comdlxdistribution.zip
           name: comdlxdistribution
           target-path: resources/
+        - artifacts:
+            - comdlxcreatedcpmaterials.zip
+          name: comdlxcreatedcpmaterials
+          target-path: resources/
   - name: comdlxdistribution
     type: html5
     path: app/distribution
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+  - name: comdlxcreatedcpmaterials
+    type: html5
+    path: app/createdcpmaterials
     build-parameters:
       build-result: dist
       builder: custom
