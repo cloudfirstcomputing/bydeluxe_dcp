@@ -105,6 +105,16 @@
           "pattern": "DCPMaterialConfig({key}):?query:",
           "name": "DCPMaterialConfigObjectPage",
           "target": "DCPMaterialConfigObjectPage"
+        },
+        {
+          "name": "DCPMaterialConfig_to_PlantObjectPage",
+          "pattern": "DCPMaterialConfig({key})/to_Plant({to_PlantKey}):?query:",
+          "target": "DCPMaterialConfig_to_PlantObjectPage"
+        },
+        {
+          "name": "DCPMaterialConfig_to_SalesDeliveryObjectPage",
+          "pattern": "DCPMaterialConfig({key})/to_SalesDelivery({to_SalesDeliveryKey}):?query:",
+          "target": "DCPMaterialConfig_to_SalesDeliveryObjectPage"
         }
       ],
       "targets": {
@@ -126,7 +136,17 @@
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
-                    "type": "ResponsiveTable"
+                    "type": "ResponsiveTable",
+                    "selectionMode": "Single"
+                  },
+                  "actions": {
+                    "uploadBatch": {
+                      "press": "com.dlx.createdcpmaterials.ext.controller.CreateMaterial.execute",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>createMaterial}"
+                    }
                   }
                 }
               }
@@ -140,7 +160,41 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/DCPMaterialConfig"
+              "contextPath": "/DCPMaterialConfig",
+              "navigation": {
+                "to_Plant": {
+                  "detail": {
+                    "route": "DCPMaterialConfig_to_PlantObjectPage"
+                  }
+                },
+                "to_SalesDelivery": {
+                  "detail": {
+                    "route": "DCPMaterialConfig_to_SalesDeliveryObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DCPMaterialConfig_to_PlantObjectPage": {
+          "type": "Component",
+          "id": "DCPMaterialConfig_to_PlantObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/DCPMaterialConfig/to_Plant"
+            }
+          }
+        },
+        "DCPMaterialConfig_to_SalesDeliveryObjectPage": {
+          "type": "Component",
+          "id": "DCPMaterialConfig_to_SalesDeliveryObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/DCPMaterialConfig/to_SalesDelivery"
             }
           }
         }

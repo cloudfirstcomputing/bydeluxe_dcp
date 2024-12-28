@@ -16,27 +16,44 @@ annotate service.DistroSpec with {
 };
 
 annotate service.Package with {
-    PackageName               @Common: {Label: '{i18n>PackageName}', };
-    Priority                  @Common: {Label: '{i18n>Priority}', };
-    Theater                   @Common: {Label: '{i18n>Theater}', };
-    DistributionFilterRegion  @Common: {Label: '{i18n>DistributionFilterRegion}', };
-    DistributionFilterCountry @Common: {Label: '{i18n>DistributionFilterCountry}', };
-    DistributionFilterOther   @Common: {Label: '{i18n>DistributionFilterOther}', };
-    DeliveryMethod            @Common: {Label: '{i18n>DeliveryMethod}', };
-    DeliveryKind              @Common: {Label: '{i18n>DeliveryKind}', };
-    ValidFrom                 @Common: {Label: '{i18n>ValidFrom}', };
-    ValidTo                   @Common: {Label: '{i18n>ValidTo}', };
+    PackageName                     @Common: {Label: '{i18n>PackageName}', };
+    Priority                        @Common: {Label: '{i18n>Priority}', };
+    Theater                         @Common: {Label: '{i18n>Theater}', };
+    Circuit                         @Common: {Label: '{i18n>Circuit}', };
+    StudioCircuitName               @Common: {Label: '{i18n>StudioCircuitName}', };
+    DistributionFilterRegion        @Common: {Label: '{i18n>DistributionFilterRegion}', };
+    DistributionFilterCountry       @Common: {Label: '{i18n>DistributionFilterCountry}', };
+    DistributionFilterCity          @Common: {Label: '{i18n>DistributionFilterCity}', };
+    DistributionFilterPostal        @Common: {Label: '{i18n>DistributionFilterPostal}', };
+    PrimaryTerritory                @Common: {Label: '{i18n>PrimaryTerritory}', };
+    SecondaryTerritory              @Common: {Label: '{i18n>SecondaryTerritory}', };
+    ContentIndicator                @Common: {Label: '{i18n>ContentIndicator}', };
+    PrimaryTerritoryDeliveryMethod  @Common: {Label: '{i18n>PrimaryTerritoryDeliveryMethod}', };
+    SecondaryTerritoryDeliveryethod @Common: {Label: '{i18n>SecondaryTerritoryDeliveryethod}', };
+    Language                        @Common: {Label: '{i18n>Language}', };
+    DeliveryKind                    @Common: {Label: '{i18n>DeliveryKind}', };
+    ValidFrom                       @Common: {Label: '{i18n>ValidFrom}', };
+    ValidTo                         @Common: {Label: '{i18n>ValidTo}', };
 };
 
 annotate service.DCPMaterials with {
-    CTT     @Common: {Label: '{i18n>CTT}', };
-    CPLName @Common: {Label: '{i18n>CPLName}', };
-    Picture @Common: {Label: '{i18n>Picture}', };
-    Audio   @Common: {Label: '{i18n>Audio}', };
-// DCPMaterialText @Common: {Label: '{i18n>DCPMaterialText}', };
+    CTT         @Common: {Label: '{i18n>CTT}', };
+    CPLName     @Common: {Label: '{i18n>CPLName}', };
+    Picture     @Common: {Label: '{i18n>Picture}', };
+    Audio       @Common: {Label: '{i18n>Audio}', };
+    Attribute1  @Common: {Label: '{i18n>Attribute1}', };
+    Attribute2  @Common: {Label: '{i18n>Attribute2}', };
+    Attribute3  @Common: {Label: '{i18n>Attribute3}', };
+    Attribute4  @Common: {Label: '{i18n>Attribute4}', };
+    Attribute5  @Common: {Label: '{i18n>Attribute5}', };
+    Attribute6  @Common: {Label: '{i18n>Attribute6}', };
+    Attribute7  @Common: {Label: '{i18n>Attribute7}', };
+    Attribute8  @Common: {Label: '{i18n>Attribute8}', };
+    Attribute9  @Common: {Label: '{i18n>Attribute9}', };
+    Attribute10 @Common: {Label: '{i18n>Attribute10}', };
 };
 
-annotate service.BusinessPartners with {
+annotate service.Studios with {
     BusinessPartner         @Common: {Label: '{i18n>Studio}', };
     BusinessPartnerFullName @Common: {Label: '{i18n>StudioName}', };
 };
@@ -45,12 +62,20 @@ annotate service.ShippingConditions with {
     ShippingCondition @Common: {Label: '{i18n>ShippingCondition}', };
 };
 
+annotate service.DCPProducts with {
+    Product @Common: {Label: '{i18n>Product}', };
+};
 
 annotate service.DistroSpec with @(
+    UI.SelectionFields    : [
+        DCPMaterial_Product,
+        Studio_BusinessPartner,
+        Title_Product
+    ],
     UI.HeaderInfo         : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: Title,
+            Value: Title_Product,
         },
         TypeName      : '{i18n>DistroSpec}',
         TypeNamePlural: '{i18n>DistroSpecs}',
@@ -68,11 +93,15 @@ annotate service.DistroSpec with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: Title,
+                Value: Title_Product,
             },
             {
                 $Type: 'UI.DataField',
                 Value: Studio_BusinessPartner,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DCPMaterial_Product,
             },
             {
                 $Type: 'UI.DataField',
@@ -113,11 +142,15 @@ annotate service.DistroSpec with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: Title,
+            Value: Title_Product,
         },
         {
             $Type: 'UI.DataField',
             Value: Studio_BusinessPartner,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: DCPMaterial_Product,
         },
         {
             $Type: 'UI.DataField',
@@ -138,7 +171,7 @@ annotate service.Package with @(
     UI.HeaderInfo          : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: Theater,
+            Value: Theater_BusinessPartner,
         },
         TypeName      : '{i18n>Package}',
         TypeNamePlural: '{i18n>Packages}',
@@ -156,7 +189,15 @@ annotate service.Package with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: Theater,
+                Value: Theater_BusinessPartner,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Circuit,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: StudioCircuitName,
             },
             {
                 $Type: 'UI.DataField',
@@ -168,11 +209,35 @@ annotate service.Package with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: DistributionFilterOther,
+                Value: DistributionFilterCity,
             },
             {
                 $Type: 'UI.DataField',
-                Value: DeliveryMethod_ShippingCondition,
+                Value: DistributionFilterPostal,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PrimaryTerritory,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SecondaryTerritory,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ContentIndicator,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PrimaryTerritoryDeliveryMethod_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SecondaryTerritoryDeliveryethod_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Language,
             },
             {
                 $Type: 'UI.DataField',
@@ -213,11 +278,15 @@ annotate service.Package with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: DeliveryMethod_ShippingCondition,
+            Value: PrimaryTerritoryDeliveryMethod_ShippingCondition,
         },
         {
             $Type: 'UI.DataField',
             Value: DeliveryKind,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Theater_BusinessPartner,
         },
     ]
 );
@@ -250,14 +319,46 @@ annotate service.DCPMaterials with @(
                 $Type: 'UI.DataField',
                 Value: Audio,
             },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: DCPMaterial,
-        // },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: DCPMaterialText,
-        // },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute1,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute2,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute3,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute4,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute5,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute6,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute7,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute8,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute9,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Attribute10,
+            },
         ]
     },
     UI.Facets                  : [{
@@ -267,14 +368,6 @@ annotate service.DCPMaterials with @(
         Target: '@UI.FieldGroup#_DCPMaterial',
     }, ],
     UI.LineItem                : [
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: DCPMaterial,
-        // },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: DCPMaterialText,
-        // },
         {
             $Type: 'UI.DataField',
             Value: CTT,
@@ -290,8 +383,7 @@ annotate service.DistroSpec with {
     Studio      @(
         Common.ValueList               : {
             $Type         : 'Common.ValueListType',
-            // Label         : '{i18n>Studio}',
-            CollectionPath: 'BusinessPartners',
+            CollectionPath: 'Studios',
             Parameters    : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
@@ -308,36 +400,76 @@ annotate service.DistroSpec with {
     );
     DCPMaterial @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            // Label         : '{i18n>Studio}',
-            CollectionPath: 'Products',
-            Parameters    : [{
+            $Type                    : 'Common.ValueListType',
+            CollectionPath           : 'DCPProducts',
+            SelectionVariantQualifier: '',
+            Parameters               : [{
                 $Type            : 'Common.ValueListParameterInOut',
                 LocalDataProperty: DCPMaterial_Product,
                 ValueListProperty: 'Product',
-            },
-            // {
-            //     $Type            : 'Common.ValueListParameterDisplayOnly',
-            //     ValueListProperty: 'Prod',
-            // },
-            ],
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    Title       @(
+        Common.ValueList               : {
+            $Type                    : 'Common.ValueListType',
+            CollectionPath           : 'Titles',
+            SelectionVariantQualifier: '',
+            Parameters               : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: Title_Product,
+                ValueListProperty: 'Product',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     )
+
 };
 
 annotate service.Package with {
-    DeliveryMethod @(
+    PrimaryTerritoryDeliveryMethod  @(
         Common.ValueList               : {
             $Type         : 'Common.ValueListType',
             // Label         : '{i18n>Studio}',
             CollectionPath: 'ShippingConditions',
             Parameters    : [{
                 $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: DeliveryMethod_ShippingCondition,
+                LocalDataProperty: PrimaryTerritoryDeliveryMethod_ShippingCondition,
                 ValueListProperty: 'ShippingCondition',
             }, ],
         },
         Common.ValueListWithFixedValues: false
-    )
+    );
+    SecondaryTerritoryDeliveryethod @(
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            // Label         : '{i18n>Studio}',
+            CollectionPath: 'ShippingConditions',
+            Parameters    : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: SecondaryTerritoryDeliveryethod_ShippingCondition,
+                ValueListProperty: 'ShippingCondition',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    Theater                         @(
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'Theaters',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Theater_BusinessPartner,
+                    ValueListProperty: 'BusinessPartner',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'BusinessPartnerFullName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
 }
