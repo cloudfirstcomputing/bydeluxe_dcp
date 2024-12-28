@@ -202,7 +202,10 @@
     }
   },
   "sap.fiori": {
-    "registrationIds": [],
+    "_version": "1.1.0",
+    "registrationIds": [
+      "Z0016"
+    ],
     "archeType": "transactional"
   },
   "sap.cloud": {
