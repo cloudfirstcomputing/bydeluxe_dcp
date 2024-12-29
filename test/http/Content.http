@@ -1,0 +1,75 @@
+@server = http://localhost:4004
+@auth = Authorization: Basic fahad.hamsa@cybertech.com:
+
+### POST_ACTION
+# @name Replify_POST_ACTION
+POST {{server}}/odata/v4/booking-order/createContent
+# POST {{server}}/odata/v4/booking-order/dcpcontent
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS00ZTBjYTBmZWUyIiwidHlwIjoiSldUIiwiamlkIjogIlkxelhoQnFiV2duOGgvUWJUVk44bmd3bUx6ZVBiRzdXSzQrODkxeitKbDA9In0.eyJqdGkiOiI3YjY5NDkzMWIxNjc0YjE3YjRiNTNhMWIxN2IyMTI4MiIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJ6ZG4iOiJkZXYtZGhpcG5lNXQifSwic3ViIjoic2ItYm9va2luZ29yZGVyLURldiF0MzM3Mzk1IiwiYXV0aG9yaXRpZXMiOlsidWFhLnJlc291cmNlIl0sInNjb3BlIjpbInVhYS5yZXNvdXJjZSJdLCJjbGllbnRfaWQiOiJzYi1ib29raW5nb3JkZXItRGV2IXQzMzczOTUiLCJjaWQiOiJzYi1ib29raW5nb3JkZXItRGV2IXQzMzczOTUiLCJhenAiOiJzYi1ib29raW5nb3JkZXItRGV2IXQzMzczOTUiLCJncmFudF90eXBlIjoiY2xpZW50X2NyZWRlbnRpYWxzIiwicmV2X3NpZyI6ImU0MDAzNGE3IiwiaWF0IjoxNzM0Njc0MTY4LCJleHAiOjE3MzQ3MTczNjgsImlzcyI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vb2F1dGgvdG9rZW4iLCJ6aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJhdWQiOlsidWFhIiwic2ItYm9va2luZ29yZGVyLURldiF0MzM3Mzk1Il19.goyxYin60ttIN_5PbumRc2-bUHsi5d4IXcahyl9wHeNNfPSDk50E8zSVccKOBr7x9zQnWjZQxMgXxl2tFijqQZoAg9u_68ZlBkfoAWYV5iahVHQgvWYU-q_UYQZAitNfwKTPvecSSo8K9_0tFzUtZg1F6SgvaczlyZXWpRH-uQS80213OltTjZkkDAmegMcHUwoL1p5mpT4YvU7byH199RmfMHF8MevLY5SVA0abB5CseXecimgHDwvC_2iRGRv2xvxykpFsKtxUs3AIZyL965FzgKnOEf56oQDuyBNf5vL5jPdoFWbxVMLS_-_9TjWslPynzh718NYbaD-UKGc4JQ
+Content-Type: application/json
+
+{
+    "Records":
+    [
+        {
+        "ApplicationID": "12345",
+        "BookingID":"000005",
+        "ReleaseID":"RID1",
+        "TheaterID":"TH-1",     
+        "Circuit":"",
+        "ShipmentIndicator":"S",
+        "ScreeningIndicator":"I",
+        "PlayStartDate":"2024-12-19",
+        "PlayEndDate":"2025-04-10",
+        "BranchID":"B1",
+        "DepotID":"1",
+        "SoundID":"SID1",
+        "Language":"EN",
+        "SubtitleType":"E",
+        "PrintFormat":"AVI",
+        "ReleaseHold":"N",
+        "ShipDate":"2024-12-25",
+        "ShipPriority":"HI",
+        "AuditoriumType":"U",
+        "PrintQuality":"MED",
+        "FilmStock":"IS",
+        "Key_Content":"F",
+        "TimeofEntry":"191889",
+        "BookingType":"ABC",
+        "PackageName":"PKG",
+        "UUID":"",
+        "Territory":"US",
+        "Status":"C"
+        },
+        {
+        "ApplicationID": "12345",
+        "BookingID":"000006",
+        "ReleaseID":"RID1",
+        "TheaterID":"TH-1",     
+        "Circuit":"",
+        "ShipmentIndicator":"S",
+        "ScreeningIndicator":"I",
+        "PlayStartDate":"2024-12-19",
+        "PlayEndDate":"2025-04-10",
+        "BranchID":"B1",
+        "DepotID":"1",
+        "SoundID":"SID1",
+        "Language":"EN",
+        "SubtitleType":"E",
+        "PrintFormat":"AVI",
+        "ReleaseHold":"N",
+        "ShipDate":"2024-12-25",
+        "ShipPriority":"HI",
+        "AuditoriumType":"U",
+        "PrintQuality":"MED",
+        "FilmStock":"IS",
+        "Key_Content":"F",
+        "TimeofEntry":"191889",
+        "BookingType":"ABC",
+        "PackageName":"PKG",
+        "UUID":"",
+        "Territory":"US",
+        "Status":"C"
+        }
+    ]
+}

@@ -69,6 +69,17 @@
       "[production]": {
         "auth": "xsuaa",
         "db": "hana"
+      },
+      "CE_SALESORDER_0001": {
+        "kind": "odata",
+        "model": "srv/external/CE_SALESORDER_0001",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/CE_SALESORDER_0001",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
