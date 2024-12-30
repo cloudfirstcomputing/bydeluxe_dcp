@@ -70,13 +70,13 @@
         "auth": "xsuaa",
         "db": "hana"
       },
-      "CE_SALESORDER_0001": {
+      "API_SALES_ORDER_SRV": {
         "kind": "odata",
-        "model": "srv/external/CE_SALESORDER_0001",
+        "model": "srv/external/API_SALES_ORDER_SRV",
         "csrf": true,
         "csrfInBatch": true,
         "credentials": {
-          "path": "/sap/opu/odata/sap/CE_SALESORDER_0001",
+          "path": "/sap/opu/odata4/sap/api_salesorder/srvd_a2x/sap/salesorder/0001/",
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }

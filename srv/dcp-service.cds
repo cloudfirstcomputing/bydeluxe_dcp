@@ -1,5 +1,5 @@
 using dcp.db as db from '../db/dcp';
-using {CE_SALESORDER_0001 as S4_SalesOrder} from './external/CE_SALESORDER_0001';
+using {API_SALES_ORDER_SRV as S4_SalesOrder} from './external/API_SALES_ORDER_SRV';
 
 service BookingOrderService{
     entity dcpcontent as projection on db.dcpcontent;

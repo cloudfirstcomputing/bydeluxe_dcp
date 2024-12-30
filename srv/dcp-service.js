@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService{
     async init(){
         const {dcpcontent, dcpkey, S4H_SOHeader} = this.entities;
-        var s4h_so_Txn = await cds.connect.to("CE_SALESORDER_0001");
+        var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         this.on("createContent", async (req, res) => {
             let data = req?.data?.Records;
             let recordsToBePosted = [], finalResult = [], successEntries = [], failedEntries = [];
