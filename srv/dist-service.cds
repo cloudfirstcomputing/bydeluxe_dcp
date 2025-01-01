@@ -19,6 +19,9 @@ service DistributionService @(requires: 'authenticated-user') {
     @readonly
     entity Titles             as projection on db.TitleVH;
 
+    @readonly
+    entity DeliveryPriority   as projection on api.DeliveryPriority;
+
     entity DistroSpec         as projection on db.DistroSpec;
 
     entity DCPMaterialConfig  as projection on db.DCPMaterialConfig

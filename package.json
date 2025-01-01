@@ -80,6 +80,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_DELIVERYPRIORITY_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_DELIVERYPRIORITY_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_DELIVERYPRIORITY_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

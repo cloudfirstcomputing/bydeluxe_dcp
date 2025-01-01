@@ -185,7 +185,7 @@ annotate service.Package with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: Priority,
+                Value: Priority_DeliveryPriority,
             },
             {
                 $Type: 'UI.DataField',
@@ -274,7 +274,7 @@ annotate service.Package with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: Priority,
+            Value: Priority_DeliveryPriority,
         },
         {
             $Type: 'UI.DataField',
@@ -467,6 +467,24 @@ annotate service.Package with {
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty: 'BusinessPartnerFullName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    Priority                        @(
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'DeliveryPriority',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Priority_DeliveryPriority,
+                    ValueListProperty: 'DeliveryPriority',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'DeliveryPriorityDesc',
                 },
             ],
         },

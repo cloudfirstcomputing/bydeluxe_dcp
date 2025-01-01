@@ -2,11 +2,13 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters } = this.entities
+        const { DistroSpec, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
         const sctx = await cds.connect.to('YY1_SHIPPINGCONDITION_CDS')
         const pdtx = await cds.connect.to('API_PRODUCT_SRV')
+        const dlvprtx = await cds.connect.to('YY1_DELIVERYPRIORITY_CDS')
+
         this.before('CREATE', DistroSpec, async req => {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
             req.data.DistroSpecID = ++maxID
@@ -48,6 +50,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on('READ', ShippingConditions, async req => {
             return sctx.run(req.query)
+        })
+
+        this.on('READ', DeliveryPriority, async req => {
+            return dlvprtx.run(req.query)
         })
 
         this.on('createDCPMaterial', async req => {

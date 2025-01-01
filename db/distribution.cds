@@ -34,7 +34,7 @@ entity DistroSpec : managed {
 entity Package {
     key PackageUUID                     : UUID;
         PackageName                     : String(40)                                @mandatory;
-        Priority                        : String(2)                                 @mandatory;
+        Priority                        : Association to one api.DeliveryPriority   @mandatory;
         Theater                         : Association to one TheaterVH;
         Circuit                         : String(10);
         StudioCircuitName               : String(10)                                @mandatory;
