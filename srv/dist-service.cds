@@ -3,6 +3,12 @@ using api from '../db/common';
 
 service DistributionService @(requires: 'authenticated-user') {
     @readonly
+    entity CustomerGroup      as projection on api.CustomerGroup;
+
+    @readonly
+    entity Country            as projection on api.Country;
+
+    @readonly
     entity Studios            as projection on db.StudioVH;
 
     @readonly
@@ -33,4 +39,12 @@ service DistributionService @(requires: 'authenticated-user') {
 
     annotate DistroSpec with @odata.draft.enabled;
     annotate DCPMaterialConfig with @odata.draft.enabled;
+
+    extend projection CustomerGroup with {
+        virtual null as Name : String
+    };
+
+    extend projection Country with {
+        virtual null as Name : String
+    };
 }

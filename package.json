@@ -91,6 +91,28 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "API_COUNTRY_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_COUNTRY_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_COUNTRY_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "API_CUSTOMERGROUP_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_CUSTOMERGROUP_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_CUSTOMERGROUP_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

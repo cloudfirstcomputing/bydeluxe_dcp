@@ -1,0 +1,80 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.4.2"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "API_CUSTOMERGROUP_SRV": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "API_CUSTOMERGROUP_SRV.A_CustomerGroup": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Customer Group",
+   "elements": {
+    "CustomerGroup": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Customer Group",
+     "notNull": true
+    },
+    "to_Text": {
+     "type": "cds.Association",
+     "target": "API_CUSTOMERGROUP_SRV.A_CustomerGroupText",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    }
+   }
+  },
+  "API_CUSTOMERGROUP_SRV.A_CustomerGroupText": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Customer Group Text",
+   "elements": {
+    "CustomerGroup": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Customer Group",
+     "notNull": true
+    },
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.label": "Language Key",
+     "notNull": true
+    },
+    "CustomerGroupName": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.label": "Description"
+    },
+    "to_CustomerGroup": {
+     "type": "cds.Association",
+     "target": "API_CUSTOMERGROUP_SRV.A_CustomerGroup",
+     "keys": []
+    }
+   }
+  }
+ }
+}

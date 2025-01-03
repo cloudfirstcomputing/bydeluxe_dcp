@@ -2,12 +2,15 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+        const { DistroSpec, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
+        const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
         const sctx = await cds.connect.to('YY1_SHIPPINGCONDITION_CDS')
         const pdtx = await cds.connect.to('API_PRODUCT_SRV')
         const dlvprtx = await cds.connect.to('YY1_DELIVERYPRIORITY_CDS')
+        const cstgrptx = await cds.connect.to('API_CUSTOMERGROUP_SRV')
+        const ctrytx = await cds.connect.to('API_COUNTRY_SRV')
 
         this.before('CREATE', DistroSpec, async req => {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
@@ -54,6 +57,20 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on('READ', DeliveryPriority, async req => {
             return dlvprtx.run(req.query)
+        })
+
+        this.on('READ', Country, async req => {
+            const data = _asArray(await ctrytx.run(SELECT.from(Country).columns(["*", { "ref": ["to_Text"], "expand": ["*"] }])))
+            return data.map(item => {
+                return { Country: item.Country, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).CountryName }
+            })
+        })
+
+        this.on('READ', CustomerGroup, async req => {
+            const data = _asArray(await cstgrptx.run(SELECT.from(CustomerGroup).columns(["*", { "ref": ["to_Text"], "expand": ["*"] }])))
+            return data.map(item => {
+                return { CustomerGroup: item.CustomerGroup, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).CustomerGroupName }
+            })
         })
 
         this.on('createDCPMaterial', async req => {
