@@ -6,7 +6,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
-        const sctx = await cds.connect.to('YY1_SHIPPINGCONDITION_CDS')
+        const sctx = await cds.connect.to('ZAPI_SHIPPINGCONDITION')
         const pdtx = await cds.connect.to('API_PRODUCT_SRV')
         const dlvprtx = await cds.connect.to('YY1_DELIVERYPRIORITY_CDS')
         const cstgrptx = await cds.connect.to('API_CUSTOMERGROUP_SRV')
@@ -35,12 +35,22 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return pdtx.run(req.query)
         })
 
-        this.on(['READ'], DCPProducts, req => {
-            return pdtx.run(SELECT.from(Products).where({ ProductGroup: 'Z003' }))
+        this.on(['READ'], Products, req => {
+            return pdtx.run(req.query)
         })
 
-        this.on(['READ'], Titles, req => {
-            return pdtx.run(SELECT.from(Products).where({ ProductGroup: 'Z007' }))
+        this.on(['READ'], DCPProducts, async req => {
+            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z003' })))
+            return data.map(item => {
+                return { Product: item.Product, Name: item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription }
+            })
+        })
+
+        this.on(['READ'], Titles, async req => {
+            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z007' })))
+            return data.map(item => {
+                return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
+            })
         })
 
         this.on('READ', Studios, async req => {

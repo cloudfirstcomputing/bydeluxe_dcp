@@ -42,8 +42,8 @@ entity Package {
         StudioCircuitName                : String(10)                                @mandatory;
         DistributionFilterRegion         : Country                                   @mandatory;
         DistributionFilterCountry        : Country                                   @mandatory;
-        DistributionFilterCity           : String(3)                                 @mandatory;
-        DistributionFilterPostal         : String(3)                                 @mandatory;
+        DistributionFilterCity           : String                                    @mandatory;
+        DistributionFilterPostal         : String                                    @mandatory;
         PrimaryTerritory                 : String(5)                                 @mandatory enum {
             NORAM;
             APAC;
@@ -84,29 +84,29 @@ entity Package {
 
 entity DCPMaterials {
     key DCPMaterialUUID   : UUID;
-        DCPMaterialNumber : Association to one DCPMaterialVH;
-        CTT               : String(40) @readonly;
-        CPLUUID           : String(40) @readonly;
+        DCPMaterialNumber : Association to one DCPMaterialVH @mandatory;
+        CTT               : String(40)                       @readonly;
+        CPLUUID           : String(40)                       @readonly;
         PrintFormat       : String(2);
         FilmStock         : String(3);
         Audio             : String(2);
-        Language          : Language;
-        SubtitleType      : String(2)  @assert.format: '^[A-Z]+$';
+        Language          : Language                         @mandatory;
+        SubtitleType      : String(2)                        @assert.format: '^[A-Z]+$';
         SoundID           : String(8);
         MediaType         : String(8);
         ReelLength        : String(8);
         DTSQuantity       : String(8);
-        AuditoriumType    : String(1)  @assert.format: '^[A-Z]+$';
-        ScreenID          : Integer    @assert.range : [
+        AuditoriumType    : String(1)                        @assert.format: '^[A-Z]+$';
+        ScreenID          : Integer                          @assert.range : [
             1,
             9
         ];
-        SingleScreen      : Integer    @assert.range : [
+        SingleScreen      : Integer                          @assert.range : [
             1,
             9
         ];
         HoldforRelease    : Boolean;
-        ApprovedScreens   : Integer    @assert.range : [
+        ApprovedScreens   : Integer                          @assert.range : [
             1,
             99
         ];

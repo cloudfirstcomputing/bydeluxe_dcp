@@ -47,4 +47,12 @@ service DistributionService @(requires: 'authenticated-user') {
     extend projection Country with {
         virtual null as Name : String
     };
+
+    extend projection Titles with {
+        virtual null as Name : String
+    };
+
+    extend projection DCPProducts with {
+        virtual null as Name : String
+    };
 }

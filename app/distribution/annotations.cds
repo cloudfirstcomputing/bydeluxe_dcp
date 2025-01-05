@@ -1,6 +1,24 @@
 using DistributionService as service from '../../srv/dist-service';
 
-@Common: {SemanticKey: [DistroSpecID], }
+@(
+    Common                                : {SemanticKey: [DistroSpecID], },
+    UI.SelectionPresentationVariant #table: {
+        $Type              : 'UI.SelectionPresentationVariantType',
+        PresentationVariant: {
+            $Type         : 'UI.PresentationVariantType',
+            Visualizations: ['@UI.LineItem', ],
+            SortOrder     : [{
+                $Type     : 'Common.SortOrderType',
+                Property  : DistroSpecID,
+                Descending: false,
+            }, ],
+        },
+        SelectionVariant   : {
+            $Type        : 'UI.SelectionVariantType',
+            SelectOptions: [],
+        },
+    },
+)
 annotate service.DistroSpec with {
     DistroSpecID      @Common: {Label: '{i18n>DistroSpecID}', };
     Name              @Common: {Label: '{i18n>Name}', };
@@ -72,24 +90,42 @@ annotate service.Studios with {
     BusinessPartnerFullName @Common: {Label: '{i18n>StudioName}', };
 };
 
+annotate service.Theaters with {
+    BusinessPartner         @Common: {Label: '{i18n>Theater}', };
+    BusinessPartnerFullName @Common: {Label: '{i18n>TheaterName}', };
+};
+
 annotate service.ShippingConditions with {
-    ShippingCondition @Common: {Label: '{i18n>ShippingCondition}', };
+    ShippingCondition     @Common: {Label: '{i18n>ShippingCondition}', };
+    ShippingConditionName @Common: {Label: '{i18n>Description}', };
 };
 
 annotate service.DCPProducts with {
     Product @Common: {Label: '{i18n>Product}', };
+    Name    @common: {Label: '{i18n>ProductDesc}'}
+};
+
+annotate service.Titles with {
+    Product @Common: {Label: '{i18n>Title}', };
+    Name    @Common: {Label: '{i18n>Description}'}
+};
+
+annotate service.DeliveryPriority with {
+    DeliveryPriority     @Common: {Label: '{i18n>DeliveryPriority}', };
+    DeliveryPriorityDesc @common: {Label: '{i18n>Description}'}
 };
 
 annotate service.CustomerGroup with {
-    CustomerGroup @Common: {Label: '{i18n>CustomerGroup}', };
+    CustomerGroup @Common      : {Label: '{i18n>CustomerGroup}', };
+    Name          @Common.Label: '{i18n>Description}';
 };
 
 annotate service.DistroSpec with @(
-    UI.SelectionFields    : [
+    UI.SelectionFields         : [
         Studio_BusinessPartner,
         Title_Product
     ],
-    UI.HeaderInfo         : {
+    UI.HeaderInfo              : {
         Title         : {
             $Type: 'UI.DataField',
             Value: Title_Product,
@@ -97,7 +133,21 @@ annotate service.DistroSpec with @(
         TypeName      : '{i18n>DistroSpec}',
         TypeNamePlural: '{i18n>DistroSpecs}',
     },
-    UI.FieldGroup #General: {
+
+    UI.FieldGroup #ValidityDate: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: ValidFrom,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ValidTo,
+            },
+        ],
+    },
+    UI.FieldGroup #General     : {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -120,22 +170,27 @@ annotate service.DistroSpec with @(
                 $Type: 'UI.DataField',
                 Value: CustomerReference,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: ValidFrom,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: ValidTo,
-            },
         ],
     },
-    UI.Facets             : [
+    UI.Facets                  : [
         {
-            $Type : 'UI.ReferenceFacet',
-            ID    : 'General',
-            Label : '{i18n>GeneralInfo}',
-            Target: '@UI.FieldGroup#General',
+            $Type : 'UI.CollectionFacet',
+            ID    : 'PackageCollection',
+            Label : '{i18n>PackageInfo}',
+            Facets: [
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    ID    : 'General',
+                    Label : '{i18n>GeneralInfo}',
+                    Target: '@UI.FieldGroup#General',
+                },
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    ID    : 'ValidDate',
+                    Label : '{i18n>ValidityDate}',
+                    Target: '@UI.FieldGroup#ValidityDate',
+                },
+            ],
         },
         {
             $Type : 'UI.ReferenceFacet',
@@ -144,7 +199,7 @@ annotate service.DistroSpec with @(
             Target: 'to_Package/@UI.LineItem',
         },
     ],
-    UI.LineItem           : [
+    UI.LineItem                : [
         {
             $Type: 'UI.DataField',
             Value: DistroSpecID,
@@ -259,7 +314,7 @@ annotate service.Package with @(
             },
         ],
     },
-    UI.FieldGroup #_PackageValidityDate: {
+    UI.FieldGroup #_PackageValidityDate : {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -513,9 +568,10 @@ annotate service.DCPMaterials with @(
 annotate service.DistroSpec with {
     Studio @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            CollectionPath: 'Studios',
-            Parameters    : [
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Studios',
+            SearchSupported: false,
+            Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Studio_BusinessPartner,
@@ -531,14 +587,20 @@ annotate service.DistroSpec with {
     );
     Title  @(
         Common.ValueList               : {
-            $Type                    : 'Common.ValueListType',
-            CollectionPath           : 'Titles',
-            SelectionVariantQualifier: '',
-            Parameters               : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: Title_Product,
-                ValueListProperty: 'Product',
-            }, ],
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Titles',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Title_Product,
+                    ValueListProperty: 'Product',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     )
@@ -548,35 +610,48 @@ annotate service.DistroSpec with {
 annotate service.Package with {
     PrimaryTerritoryDeliveryMethod   @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            // Label         : '{i18n>Studio}',
-            CollectionPath: 'ShippingConditions',
-            Parameters    : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PrimaryTerritoryDeliveryMethod_ShippingCondition,
-                ValueListProperty: 'ShippingCondition',
-            }, ],
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PrimaryTerritoryDeliveryMethod_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
     SecondaryTerritoryDeliveryMethod @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            // Label         : '{i18n>Studio}',
-            CollectionPath: 'ShippingConditions',
-            Parameters    : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: SecondaryTerritoryDeliveryMethod_ShippingCondition,
-                ValueListProperty: 'ShippingCondition',
-            }, ],
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: SecondaryTerritoryDeliveryMethod_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
     Theater                          @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            CollectionPath: 'Theaters',
-            Parameters    : [
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Theaters',
+            SearchSupported: false,
+            Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Theater_BusinessPartner,
@@ -592,9 +667,10 @@ annotate service.Package with {
     );
     Priority                         @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            CollectionPath: 'DeliveryPriority',
-            Parameters    : [
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'DeliveryPriority',
+            SearchSupported: false,
+            Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Priority_DeliveryPriority,
@@ -608,47 +684,12 @@ annotate service.Package with {
         },
         Common.ValueListWithFixedValues: false
     );
-    // DistributionFilterCountry        @(
-    //     Common.ValueList               : {
-    //         $Type         : 'Common.ValueListType',
-    //         CollectionPath: 'Country',
-    //         Parameters    : [
-    //             {
-    //                 $Type            : 'Common.ValueListParameterInOut',
-    //                 LocalDataProperty: DistributionFilterCountry_Country,
-    //                 ValueListProperty: 'Country',
-    //             },
-    //             {
-    //                 $Type            : 'Common.ValueListParameterDisplayOnly',
-    //                 ValueListProperty: 'Name',
-    //             },
-    //         ],
-    //     },
-    //     Common.ValueListWithFixedValues: false
-    // );
-    // DistributionFilterRegion         @(
-    //     Common.ValueList               : {
-    //         $Type         : 'Common.ValueListType',
-    //         CollectionPath: 'Country',
-    //         Parameters    : [
-    //             {
-    //                 $Type            : 'Common.ValueListParameterInOut',
-    //                 LocalDataProperty: DistributionFilterRegion_Country,
-    //                 ValueListProperty: 'Country',
-    //             },
-    //             {
-    //                 $Type            : 'Common.ValueListParameterDisplayOnly',
-    //                 ValueListProperty: 'Name',
-    //             },
-    //         ],
-    //     },
-    //     Common.ValueListWithFixedValues: false
-    // );
     Circuit                          @(
         Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            CollectionPath: 'CustomerGroup',
-            Parameters    : [
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'CustomerGroup',
+            SearchSupported: false,
+            Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Circuit_CustomerGroup,
@@ -667,14 +708,20 @@ annotate service.Package with {
 annotate service.DCPMaterials with {
     DCPMaterialNumber @(
         Common.ValueList               : {
-            $Type                    : 'Common.ValueListType',
-            CollectionPath           : 'DCPProducts',
-            SelectionVariantQualifier: '',
-            Parameters               : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: DCPMaterialNumber_Product,
-                ValueListProperty: 'Product',
-            }, ],
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'DCPProducts',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DCPMaterialNumber_Product,
+                    ValueListProperty: 'Product',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
