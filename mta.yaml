@@ -28,6 +28,8 @@ modules:
     path: gen/db
     requires:
       - name: bydeluxe-db
+        properties:
+          TARGET_CONTAINER: ~{hdi-service-name}
     parameters:
       buildpack: nodejs_buildpack
     build-parameters:
@@ -151,6 +153,8 @@ resources:
         schema: bydeluxe
       service: hana
       service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}    
   - name: bydeluxe-auth
     type: org.cloudfoundry.managed-service
     parameters:
