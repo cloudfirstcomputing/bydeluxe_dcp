@@ -18,6 +18,34 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.FieldControl = 1
         })
 
+        // this.on('UPDATE', `DCPMaterials.drafts`, async req => {
+        //     if (req.data.DCPMaterialNumber_Product) {
+        //         const assetvault = await SELECT.one.from(AssetVault)
+        //             .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+        //             .where({
+        //                 DCP: req.data.DCPMaterialNumber_Product
+        //             })
+        //         if (assetvault?._Items?.length > 0) {
+        //             req.data.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+        //             req.data.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
+        //         }
+        //     }
+        // })
+
+        this.after('each', `DCPMaterials`, async req => {
+            if (req.DCPMaterialNumber_Product) {
+                const assetvault = await SELECT.one.from(AssetVault)
+                    .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+                    .where({
+                        DCP: req.DCPMaterialNumber_Product
+                    })
+                if (assetvault?._Items?.length > 0) {
+                    req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+                    req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
+                }
+            }
+        })
+
         this.before('SAVE', DistroSpec, req => {
             const { ValidFrom, ValidTo } = req.data
             if (ValidFrom > ValidTo) req.error(400, `Valid To must be after Valid From.`, 'in/ValidTo')

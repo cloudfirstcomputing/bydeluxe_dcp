@@ -183,7 +183,7 @@ annotate service.DCPMaterialConfig with {
     AssetVaultID @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'AssetVault',
+            CollectionPath : 'AssetVaultVH',
             SearchSupported: false,
             Parameters     : [
                 {

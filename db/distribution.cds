@@ -86,9 +86,9 @@ entity Package {
 entity DCPMaterials {
     key DCPMaterialUUID   : UUID;
         DCPMaterialNumber : Association to one DCPMaterialVH @mandatory;
-        CTT               : String(40)                       @readonly;
-        CPLUUID           : String(40)                       @readonly;
-        PrintFormat       : String(2);
+        virtual CTT       : String;
+        virtual CPLUUID   : String;
+        PrintFormat       : String(3);
         FilmStock         : String(3);
         Audio             : String(2);
         Language          : Language                         @mandatory;

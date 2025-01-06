@@ -55,10 +55,16 @@ annotate service.Package with {
     ValidTo                          @Common: {Label: '{i18n>ValidTo}', };
 };
 
-annotate service.DCPMaterials with {
+annotate service.DCPMaterials with @(Common: {SideEffects: {
+    SourceProperties: [DCPMaterialNumber_Product],
+    TargetProperties: [
+        'CPLUUID',
+        'CTT'
+    ]
+}}) {
     DCPMaterialNumber @Common: {Label: '{i18n>DCPMaterial}', };
-    CTT               @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
-    CPLUUID           @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
+    CTT               @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText; // @Core.Computed: false;
+    CPLUUID           @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText; // @Core.Computed: false;
     PrintFormat       @Common: {Label: '{i18n>PrintFormat}', };
     FilmStock         @Common: {Label: '{i18n>FilmStock}', };
     Audio             @Common: {Label: '{i18n>Audio}', };
@@ -561,6 +567,10 @@ annotate service.DCPMaterials with @(
         {
             $Type: 'UI.DataField',
             Value: Audio,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Language_code,
         },
     ]
 );

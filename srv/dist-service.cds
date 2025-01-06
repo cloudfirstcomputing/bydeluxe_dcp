@@ -7,7 +7,10 @@ service DistributionService @(requires: 'authenticated-user') {
         Deletable : false,
         Insertable: false
     }
-    entity AssetVault         as projection on av.AssetVault
+    @cds.redirection.target
+    entity AssetVault         as projection on av.AssetVault;
+
+    entity AssetVaultVH       as projection on av.AssetVault
                                  where
                                      CreatedinSAP = false;
 
