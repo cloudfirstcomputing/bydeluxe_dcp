@@ -15,7 +15,10 @@ service BookingOrderService{
 
     entity S4H_SOHeader as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner as projection on S4_BuisnessPartner.A_BusinessPartner;
+    entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
 
     entity DistroSpec_Local as projection on DistroSpec;
 
+    annotate dcpcontent with @odata.draft.enabled;
+    annotate dcpkey with @odata.draft.enabled;
 }
