@@ -21,7 +21,7 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with {
     ProductDistributionChnl @Common: {Label: '{i18n>ProductDistributionChnl}', };
 };
 
-annotate service.AssetVault with {
+annotate service.AssetVaultVH with {
     AssetVaultID          @Common: {
         Label: '{i18n>AssetVaultID}',
         Text : AssetMapIDDescription
