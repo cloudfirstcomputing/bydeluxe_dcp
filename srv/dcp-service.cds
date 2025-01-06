@@ -5,8 +5,8 @@ using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
 service BookingOrderService{
     entity dcpcontent as projection on db.dcpcontent;
     action createContent(Records: array of  dcpcontent) returns String;
-    action processContent(dcpcontent: array of  dcpcontent) returns String;
-    action reconcileContent(dcpcontent: array of  dcpcontent) returns String;
+    action processContent(bookingIDs: array of String) returns String;
+    action reconcileContent(bookingIDs: array of  String) returns String;
 
     entity dcpkey as projection on db.dcpkey;
     action createKey(Records: array of  dcpkey) returns String;

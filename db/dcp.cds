@@ -30,7 +30,7 @@ entity dcpcontent : managed {
         TimeofEntry        : String(16) not null @mandatory;
         BookingType        : String(4) not null @mandatory;
         PackageName        : String not null @mandatory;
-        UUID               : UUID;
+        UUID               : String(40) not null;
         Territory          : String(2) not null @mandatory;
         Status             : String(1) not null;
         SalesOrder         : String;
@@ -67,7 +67,7 @@ entity dcpkey : managed {
         EndDate             : Date not null;
         EndTime             : Timestamp not null;
         Key_Content         : String(1) not null;
-        UUID                : UUID;
+        UUID                : String(40) not null;
         TimeofEntry         : String(16) not null;
         BookingType         : String(4) not null;
         PackageName         : String not null;

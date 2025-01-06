@@ -228,6 +228,12 @@ annotate service.dcpcontent with @(
             Label : '{i18n>Status}',
             ![@UI.Importance] : #High,
         },
+        {
+            $Type : 'UI.DataField',
+            Value : UUID,
+            Label : '{i18n>Uuid}',
+            ![@UI.Importance] : #High,
+        },
     ],
 );
 

@@ -64,16 +64,34 @@ module.exports = class BookingOrderService extends cds.ApplicationService{
             return finalResult;
         }); 
         this.on("processContent", async (req, res)=>{
-            var aEntriesInput = req.data?.dcpcontent;
+            var aBookingIDs = req.data?.bookingIDs;
+            var aEntriesInput = await SELECT.from(dcpcontent).where({BookingID: {"IN": aBookingIDs}});
             var aCustomerRef = aEntriesInput.map((item)=>{
                 return item.UUID;
             });
-            let distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist)=>{
+            var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist)=>{
+                dist.DistroSpecUUID,
+                dist.DistroSpecID,
+                dist.Studio,
+                dist.ValidFrom,
+                dist.ValidTo,
                 dist.to_Package((pkg)=>{
                     pkg.PackageName,
-                    pkg.DistributionFilterCountry
-                }).where({CustomerReference: {"IN": aCustomerRef}});
-            });            
+                    pkg.DistributionFilterCountry,
+                    pkg.Theater,
+                    pkg.PrimaryTerritory,
+                    pkg.SecondaryTerritory,
+                    pkg.DepotID,
+                    pkg.Priority,
+                    pkg.to_DCPMaterial((dcpmat)=>{
+                        dcpmat.DCPMaterialUUID,
+                        dcpmat.DCPMaterialNumber,
+                        dcpmat.PrintFormat
+                    })
+                })
+            }).where({CustomerReference: {"IN": aCustomerRef}});   
+            
+                    
         });
         this.on("reconcileContent", async (req, res)=>{
 
