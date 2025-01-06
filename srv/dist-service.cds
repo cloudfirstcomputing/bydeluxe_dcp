@@ -1,7 +1,16 @@
 using deluxe.distribution as db from '../db/distribution';
 using api from '../db/common';
+using deluxe.assetvault as av from '../db/asset-vault';
 
 service DistributionService @(requires: 'authenticated-user') {
+    @Capabilities: {
+        Deletable : false,
+        Insertable: false
+    }
+    entity AssetVault         as projection on av.AssetVault
+                                 where
+                                     CreatedinSAP = false;
+
     @readonly
     entity CustomerGroup      as projection on api.CustomerGroup;
 

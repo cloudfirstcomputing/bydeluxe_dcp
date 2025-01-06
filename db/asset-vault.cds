@@ -3,7 +3,7 @@ namespace deluxe.assetvault;
 entity AssetVault {
     key AssetVaultID          : String(40);
         AssetMapID            : String(40);
-        AssetMapIDDescription : String(40);
+        AssetMapIDDescription : String;
         CreatedinSAP          : Boolean;
         DCP                   : String(40);
         Title                 : String(40);

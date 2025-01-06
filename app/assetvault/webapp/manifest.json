@@ -1,0 +1,184 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.dlx.assetvault",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.16.1",
+      "toolsId": "1b99a092-e172-4338-a43c-56a0693dab75"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/asset-vault/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "assetvault-display": {
+          "semanticObject": "assetvault",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.131.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.dlx.assetvault.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "AssetVaultList",
+          "target": "AssetVaultList"
+        },
+        {
+          "pattern": "AssetVault({key}):?query:",
+          "name": "AssetVaultObjectPage",
+          "target": "AssetVaultObjectPage"
+        },
+        {
+          "name": "AssetVault__ItemsObjectPage",
+          "pattern": "AssetVault({key})/_Items({_ItemsKey}):?query:",
+          "target": "AssetVault__ItemsObjectPage"
+        }
+      ],
+      "targets": {
+        "AssetVaultList": {
+          "type": "Component",
+          "id": "AssetVaultList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/AssetVault",
+              "variantManagement": "Page",
+              "navigation": {
+                "AssetVault": {
+                  "detail": {
+                    "route": "AssetVaultObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "AssetVaultObjectPage": {
+          "type": "Component",
+          "id": "AssetVaultObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/AssetVault",
+              "navigation": {
+                "_Items": {
+                  "detail": {
+                    "route": "AssetVault__ItemsObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "AssetVault__ItemsObjectPage": {
+          "type": "Component",
+          "id": "AssetVault__ItemsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/AssetVault/_Items"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "_version": "1.1.0",
+    "registrationIds": [
+      "Z0019"
+    ],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "bydeluxe"
+  }
+}

@@ -6,6 +6,7 @@ using {
 } from '@sap/cds/common';
 using from '@sap/cds-common-content';
 using api from './common';
+using deluxe.assetvault as av from './asset-vault';
 
 namespace deluxe.distribution;
 
@@ -125,7 +126,7 @@ entity DCPMaterials {
 }
 
 entity DCPMaterialConfig : cuid, managed {
-    Description      : String(40);
+    AssetVaultID     : Association to one av.AssetVault;
     to_SalesDelivery : Composition of many {
                            key ProductSalesOrg         : String(4);
                            key ProductDistributionChnl : String(2);

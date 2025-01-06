@@ -2,7 +2,11 @@ using DistributionService as service from '../../srv/dist-service';
 
 annotate service.DCPMaterialConfig with {
     ID               @UI.Hidden;
-    Description      @Common: {Label: '{i18n>Description}', };
+    AssetVaultID     @Common: {
+        Label          : '{i18n>AssetVaultID}',
+        Text           : AssetVaultID.AssetMapIDDescription,
+        TextArrangement: #TextOnly,
+    };
     to_Plant         @Common: {Label: '{i18n>Plant}', };
     to_SalesDelivery @Common: {Label: '{i18n>ProductSalesOrg}', };
 };
@@ -17,11 +21,20 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with {
     ProductDistributionChnl @Common: {Label: '{i18n>ProductDistributionChnl}', };
 };
 
+annotate service.AssetVault with {
+    AssetVaultID          @Common: {
+        Label: '{i18n>AssetVaultID}',
+        Text : AssetMapIDDescription
+    };
+    AssetMapIDDescription @Common: {Label: '{i18n>Description}'};
+};
+
+
 annotate service.DCPMaterialConfig with @(
     UI.HeaderInfo                : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: Description,
+            Value: AssetVaultID_AssetVaultID,
         },
         TypeName      : '{i18n>DCPMaterial}',
         TypeNamePlural: '{i18n>DCPMaterials}',
@@ -31,7 +44,7 @@ annotate service.DCPMaterialConfig with @(
         $Type: 'UI.FieldGroupType',
         Data : [{
             $Type: 'UI.DataField',
-            Value: Description,
+            Value: AssetVaultID_AssetVaultID,
 
         }, ],
     },
@@ -55,7 +68,7 @@ annotate service.DCPMaterialConfig with @(
     ],
     UI.LineItem                  : [{
         $Type                : 'UI.DataField',
-        Value                : Description,
+        Value                : AssetVaultID_AssetVaultID,
         ![@HTML5.CssDefaults]: {
             $Type: 'HTML5.CssDefaultsType',
             width: 'auto'
@@ -165,3 +178,25 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with @(
         Target: '@UI.FieldGroup#SalesDeliveryMain',
     }, ]
 );
+
+annotate service.DCPMaterialConfig with {
+    AssetVaultID @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'AssetVault',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: AssetVaultID_AssetVaultID,
+                    ValueListProperty: 'AssetVaultID',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'AssetMapIDDescription',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    )
+};

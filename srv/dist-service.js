@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+        const { DistroSpec, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -89,6 +89,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             const to_Plant = []
             const to_SalesDelivery = []
             const to_Valuation = []
+            const assetvault = await SELECT.one.from(AssetVault, material.AssetVaultID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
 
             try {
                 for (let j = 0; j < material.to_Plant.length; j++) {
@@ -139,6 +140,14 @@ module.exports = class DistributionService extends cds.ApplicationService {
                                 "TaxCategory": "UTXJ",
                                 "TaxClassification": "0"
                             }
+                        ],
+                        "to_SalesText": [
+                            {
+                                "ProductSalesOrg": salesorg.ProductSalesOrg,
+                                "ProductDistributionChnl": salesorg.ProductDistributionChnl,
+                                "Language": "EN",
+                                "LongText": assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+                            }
                         ]
                     })
                 }
@@ -152,7 +161,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     "to_Description": [
                         {
                             "Language": "EN",
-                            "ProductDescription": material.Description
+                            "ProductDescription": assetvault.AssetMapIDDescription
                         }
                     ],
                     "to_Plant": to_Plant,
@@ -162,6 +171,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         "StorageConditions": "10"
                     },
                 }))
+                await UPDATE(AssetVault, assetvault.AssetVaultID).with({
+                    DCP: ins.Product,
+                    CreatedinSAP: true
+                })
                 await DELETE.from(DCPMaterialConfig, id)
                 req.info({
                     message: `DCP Material ${ins.Product} created`,

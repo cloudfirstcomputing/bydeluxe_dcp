@@ -82,13 +82,17 @@ modules:
           name: comdlxcreatedcpmaterials
           target-path: resources/
         - artifacts:
-          - dcpcontentweb.zip
+            - dcpcontentweb.zip
           name: dcpcontentweb
           target-path: resources/
         - artifacts:
-          - dcpkeyweb.zip
+            - dcpkeyweb.zip
           name: dcpkeyweb
-          target-path: resources/          
+          target-path: resources/
+        - artifacts:
+            - comdlxassetvault.zip
+          name: comdlxassetvault
+          target-path: resources/
   - name: comdlxdistribution
     type: html5
     path: app/distribution
@@ -116,8 +120,8 @@ modules:
       build-result: dist
       builder: custom
       commands:
-      - npm install
-      - npm run build:cf
+        - npm install
+        - npm run build:cf
       supported-platforms: []
   - name: dcpkeyweb
     type: html5
@@ -126,10 +130,19 @@ modules:
       build-result: dist
       builder: custom
       commands:
-      - npm install
-      - npm run build:cf
+        - npm install
+        - npm run build:cf
       supported-platforms: []
-
+  - name: comdlxassetvault
+    type: html5
+    path: app/assetvault
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
 resources:
   - name: bydeluxe-db
     type: com.sap.xs.hdi-container
