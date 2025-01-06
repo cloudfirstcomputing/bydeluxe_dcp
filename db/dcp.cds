@@ -7,32 +7,33 @@ using {
 entity dcpcontent : managed {
         ApplicationID      : String(20) not null;
     key BookingID          : String(10) not null;
-        ReleaseID          : String(10) not null;
-        TheaterID          : String(12) not null;
+        ReleaseID          : String(10) not null @mandatory;
+        TheaterID          : String(12) not null @mandatory;
         Circuit            : String(12);
-        ShipmentIndicator  : String(1) not null;
-        ScreeningIndicator : String(1) not null;
-        PlayStartDate      : Date not null;
-        PlayEndDate        : Date not null;
-        BranchID           : String(2) not null;
+        ShipmentIndicator  : String(1) not null @mandatory;
+        ScreeningIndicator : String(1) not null @mandatory;
+        PlayStartDate      : Date not null @mandatory;
+        PlayEndDate        : Date not null @mandatory;
+        BranchID           : String(2) not null @mandatory;
         DepotID            : String(1);
-        SoundID            : String(8) not null;
-        Language           : String(3) not null;
-        SubtitleType       : String(1) not null;
-        PrintFormat        : String(3) not null;
-        ReleaseHold        : String(1) not null;
-        ShipDate           : Date not null;
-        ShipPriority       : String(2) not null;
-        AuditoriumType     : String(1) not null;
-        PrintQuality       : String(4) not null;
-        FilmStock          : String(4) not null;
-        Key_Content        : String(1) not null;
-        TimeofEntry        : String(16) not null;
-        BookingType        : String(4) not null;
-        PackageName        : String not null;
+        SoundID            : String(8) not null @mandatory;
+        Language           : String(3) not null @mandatory;
+        SubtitleType       : String(1) not null @mandatory;
+        PrintFormat        : String(3) not null @mandatory;
+        ReleaseHold        : String(1) not null @mandatory;
+        ShipDate           : Date not null @mandatory;
+        ShipPriority       : String(2) not null @mandatory;
+        AuditoriumType     : String(1) not null @mandatory;
+        PrintQuality       : String(4) not null @mandatory;
+        FilmStock          : String(4) not null @mandatory;
+        Key_Content        : String(1) not null @mandatory;
+        TimeofEntry        : String(16) not null @mandatory;
+        BookingType        : String(4) not null @mandatory;
+        PackageName        : String not null @mandatory;
         UUID               : UUID;
-        Territory          : String(2) not null;
+        Territory          : String(2) not null @mandatory;
         Status             : String(1) not null;
+        SalesOrder         : String;
 }
 
 entity dcpkey : managed {
@@ -79,4 +80,5 @@ entity dcpkey : managed {
         ReleaseNameHO       : String(40) not null;
         ReleaseTtileHO      : String(40) not null;
         Status             : String(1) not null;
+        SalesOrder         : String;
 }

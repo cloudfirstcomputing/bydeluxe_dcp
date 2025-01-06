@@ -1,6 +1,7 @@
 using dcp.db as db from '../db/dcp';
 using {API_SALES_ORDER_SRV as S4_SalesOrder} from './external/API_SALES_ORDER_SRV';
-
+using {API_BUSINESS_PARTNER as S4_BuisnessPartner} from './external/API_BUSINESS_PARTNER';
+using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
 service BookingOrderService{
     entity dcpcontent as projection on db.dcpcontent;
     action createContent(Records: array of  dcpcontent) returns String;
@@ -13,5 +14,8 @@ service BookingOrderService{
     action reconcileKey(dcpkey: array of  dcpkey) returns String;
 
     entity S4H_SOHeader as projection on S4_SalesOrder.SalesOrder;
+    entity S4H_BuisnessPartner as projection on S4_BuisnessPartner.A_BusinessPartner;
+
+    entity DistroSpec_Local as projection on DistroSpec;
 
 }
