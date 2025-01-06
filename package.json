@@ -129,6 +129,8 @@
   },
   "sapux": [
     "app/distribution",
-    "app/createdcpmaterials"
+    "app/createdcpmaterials",
+    "app/dcpcontentweb",
+    "app/dcpkeyweb"
   ]
 }

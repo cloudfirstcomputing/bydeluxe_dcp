@@ -1,8 +1,9 @@
 const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService{
     async init(){
-        const {dcpcontent, dcpkey, S4H_SOHeader} = this.entities;
+        const {dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
+        var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         this.on("createContent", async (req, res) => {
             let data = req?.data?.Records;
             let recordsToBePosted = [], finalResult = [], successEntries = [], failedEntries = [];
@@ -64,19 +65,35 @@ module.exports = class BookingOrderService extends cds.ApplicationService{
         }); 
         this.on("processContent", async (req, res)=>{
             var aEntriesInput = req.data?.dcpcontent;
+            var aCustomerRef = aEntriesInput.map((item)=>{
+                return item.UUID;
+            });
+            let distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist)=>{
+                dist.to_Package((pkg)=>{
+                    pkg.PackageName,
+                    pkg.DistributionFilterCountry
+                }).where({CustomerReference: {"IN": aCustomerRef}});
+            });            
         });
         this.on("reconcileContent", async (req, res)=>{
 
         });
         this.on("processKey", async (req, res)=>{
-
+            await SELECT.one.from()
         });
         this.on("reconcileKey", async (req, res)=>{
 
         });      
         this.on("READ", S4H_SOHeader, async (req, res)=>{
+            // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
+
+            // let distroSpecData = await SELECT.one.from(DistroSpec_Local);
             return s4h_so_Txn.get(`/SalesOrder`);
-        })   
+        });      
+        this.on("READ", S4H_BuisnessPartner, async (req, res)=>{
+            // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
+            return s4h_bp_Txn.get(`/A_BusinessPartner`);
+        });    
         // this.before('SAVE', dcpcontent, async (req, next) => {
         //     // var { materialCode, serialNumber, plant, storageBin, comments } = req.data;
         //     req.data.Status = "A";
