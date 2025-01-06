@@ -1,7 +1,7 @@
 const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService{
     async init(){
-        const {dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local} = this.entities;
+        const {dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, S4H_CustomerSalesArea} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         this.on("createContent", async (req, res) => {
@@ -81,6 +81,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService{
                     pkg.Theater,
                     pkg.PrimaryTerritory,
                     pkg.SecondaryTerritory,
+                    pkg.PrimaryTerritoryDeliveryMethod,
+                    pkg.SecondaryTerritoryDeliveryMethod,
                     pkg.DepotID,
                     pkg.Priority,
                     pkg.to_DCPMaterial((dcpmat)=>{
@@ -89,8 +91,44 @@ module.exports = class BookingOrderService extends cds.ApplicationService{
                         dcpmat.PrintFormat
                     })
                 })
-            }).where({CustomerReference: {"IN": aCustomerRef}});   
+            }).where({CustomerReference: {"IN": aCustomerRef}});  
+            var oContentData = aEntriesInput && aEntriesInput.length > 0? aEntriesInput[0]: {};
+            if(Object.keys(oContentData).length === 0){
+                req.reject(400, "DistroSpec not found");
+                return;
+            }
+            if(distroSpecData?.to_Package?.length > 1){
+                req.reject(400, `Multiple packages found for DistroSpec ${distroSpecData.DistroSpecID}`);
+                return;
+            }
+            oPayLoad.SoldToParty = "1000011";
+            var sShipDate = oContentData.ShipDate; 
+            if(sShipDate){
+                var dShipDate = new Date(sShipDate.replace(/-/g,'/'));
+                var validFrom = distroSpecData.ValidFrom, validTo = distroSpecData.ValidTo;
+                validFrom = new Date(validFrom.replace(/-/g,'/'));
+                validTo = new Date(validTo.replace(/-/g,'/'));
+
+                if(dShipDate < validFrom || dShipDate > validTo){
+                    req.reject(400, "DistroSpec not in validity");
+                }
+                else{
+                    oPayLoad.RequestedDeliveryDate = sShipDate;
+                }
+            }
+            else{
+                req.reject(400, "Ship Date is not maintained");
+            }
+
+            // oPayLoad.ShippingCondition
+            oPayLoad.DeliveryPriority = distroSpecData
             
+            let postResult = await s4h_so_Txn.send({
+                method: 'POST',
+                path: '/SalesOrder',
+                data: oPayLoad
+            });
+            req.notify(JSON.stringify(postResult));
                     
         });
         this.on("reconcileContent", async (req, res)=>{
@@ -106,12 +144,33 @@ module.exports = class BookingOrderService extends cds.ApplicationService{
             // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
 
             // let distroSpecData = await SELECT.one.from(DistroSpec_Local);
-            return s4h_so_Txn.get(`/SalesOrder`);
+            return s4h_so_Txn.get(req.query);
         });      
         this.on("READ", S4H_BuisnessPartner, async (req, res)=>{
-            // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
-            return s4h_bp_Txn.get(`/A_BusinessPartner`);
-        });    
+            await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
+        }); 
+        this.on("READ", S4H_CustomerSalesArea , async (req, res)=>{
+            return s4h_bp_Txn.get("/A_CustomerSalesArea?$filter=Customer eq '1000011' and SalesOrganization eq  '1170' and DistributionChannel eq '20' and Division eq '20'&$expand=to_PartnerFunction");
+            // var aSalesArea = await s4h_bp_Txn.run(
+            //     SELECT.from(S4H_CustomerSalesArea, async (custSalesArea)=>{
+            //         custSalesArea.Customer,
+            //         custSalesArea.SalesOrganization,
+            //         custSalesArea.DistributionChannel,
+            //         custSalesArea.Division,
+            //         custSalesArea.to_PartnerFunction
+            //         // , async (partnerFunc)=>{
+            //         //     // partnerFunc.BPCustomerNumber,
+            //         //     // partnerFunc.CustomerPartnerDescription,
+            //         //     // partnerFunc.PartnerFunction
+            //         //     partnerFunc('*')
+            //         // }
+            //     }).where({"Customer": "1000011", 
+            //     "SalesOrganization": "1170",
+            //     "DistributionChannel": "20",
+            //     "Division": "20"}));
+            //     // console.log("Test");
+            //     return aSalesArea;
+        })   
         // this.before('SAVE', dcpcontent, async (req, next) => {
         //     // var { materialCode, serialNumber, plant, storageBin, comments } = req.data;
         //     req.data.Status = "A";
