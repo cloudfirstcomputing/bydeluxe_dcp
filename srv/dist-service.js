@@ -12,70 +12,135 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const cstgrptx = await cds.connect.to('API_CUSTOMERGROUP_SRV')
         const ctrytx = await cds.connect.to('API_COUNTRY_SRV')
 
+        const expand = (req, fields = []) => {
+            const processedField = [], lreq = req
+            for (let index = 0; index < fields.length; index++) {
+                const element = fields[index].split('_');
+
+                const expandIndex = lreq.query.SELECT.columns.findIndex(
+                    ({ expand, ref }) => expand && ref[0] === element[0]
+                );
+                if (expandIndex < 0) continue
+                processedField.push(fields[index])
+                // Remove expand from query
+                lreq.query.SELECT.columns.splice(expandIndex, 1);
+
+                // Make sure Field will be returned
+                if (!lreq.query.SELECT.columns.indexOf('*') >= 0 &&
+                    !lreq.query.SELECT.columns.find(
+                        column => column.ref && column.ref.find((ref) => ref == fields[index]))
+                ) {
+                    lreq.query.SELECT.columns.push({ ref: [fields[index]] });
+                }
+            }
+
+            return { processedField, lreq }
+
+        }
+
         this.before('CREATE', DistroSpec, async req => {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
             req.data.DistroSpecID = ++maxID
             req.data.FieldControl = 1
         })
 
-        // DistroSpec?$expand=Title
+        // DistroSpec?$expand
         this.on("READ", DistroSpec, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const expandIndex = req.query.SELECT.columns.findIndex(
-                ({ expand, ref }) => expand && ref[0] === "Title"
-            );
-            if (expandIndex < 0) return next();
+            const fields = ["Title_Product", "Studio_BusinessPartner"]
+            const { processedField, lreq } = expand(req, fields)
+            if (processedField.length === 0) return next();
 
-            // Remove expand from query
-            req.query.SELECT.columns.splice(expandIndex, 1);
-
-            // Make sure Title_Product will be returned
-            if (!req.query.SELECT.columns.indexOf('*') >= 0 &&
-                !req.query.SELECT.columns.find(
-                    column => column.ref && column.ref.find((ref) => ref == "Title_Product"))
-            ) {
-                req.query.SELECT.columns.push({ ref: ["Title_Product"] });
-            }
-
-            const specs = await next();
+            const response = await cds.run(lreq.query);
 
             const asArray = x => Array.isArray(x) ? x : [x];
-            // Request all associated titles
-            const titleIds = asArray(specs).map(spec => spec.Title_Product);
 
-            const data = asArray(await pdtx.run(SELECT.from(Products)
-                .columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }])
-                .where({ Product: titleIds })))
-            const titles = data.map(item => {
-                return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
-            })
+            for (let index = 0; index < processedField.length; index++) {
+                const element = processedField[index].split('_');
+                const ids = asArray(response).map(resp => resp[processedField[index]]);
+                const maps = {};
+                let records = []
 
-            // Convert in a map for easier lookup
-            const titlesMap = {};
-            for (const title of titles)
-                titlesMap[title.Product] = title;
+                switch (processedField[index]) {
+                    case "Title_Product":
+                        const data = asArray(await pdtx.run(SELECT.from(Products)
+                            .columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }])
+                            .where({ Product: ids })))
+                        records = data.map(item => {
+                            return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
+                        })
 
-            // Add titles to result
-            for (const note of asArray(specs)) {
-                note.Title = titlesMap[note.Title_Product];
+                        break;
+
+                    case "Studio_BusinessPartner":
+                        records = await bptx.run(SELECT.from(Studios).where({ BusinessPartner: ids }))
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                for (const record of records)
+                    maps[record[element[1]]] = record;
+
+                // Add titles to result
+                for (const note of asArray(response)) {
+                    note[element[0]] = maps[note[processedField[index]]];
+                }
             }
-
-            return specs;
+            return response;
         })
 
-        // this.on('UPDATE', `DCPMaterials.drafts`, async req => {
-        //     if (req.data.DCPMaterialNumber_Product) {
-        //         const assetvault = await SELECT.one.from(AssetVault)
-        //             .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
-        //             .where({
-        //                 DCP: req.data.DCPMaterialNumber_Product
-        //             })
-        //         if (assetvault?._Items?.length > 0) {
-        //             req.data.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
-        //             req.data.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
-        //         }
-        //     }
-        // })
+        // Package?$expand
+        this.on("READ", `Package`, async (req, next) => {
+            if (!req.query.SELECT.columns) return next();
+            const fields = ["Circuit_CustomerGroup", "PrimaryTerritoryDeliveryMethod_ShippingCondition", "SecondaryTerritoryDeliveryMethod_ShippingCondition"]
+            const { processedField, lreq } = expand(req, fields)
+            if (processedField.length === 0) return next();
+
+            const response = await cds.run(lreq.query);
+
+            const asArray = x => Array.isArray(x) ? x : [x];
+            for (let index = 0; index < processedField.length; index++) {
+                const element = processedField[index].split('_');
+                const ids = asArray(response).map(resp => resp[processedField[index]]);
+                const maps = {};
+                let records = []
+
+                switch (processedField[index]) {
+                    case "Circuit_CustomerGroup":
+                        const data = asArray(await cstgrptx.run(SELECT.from(CustomerGroup)
+                            .columns(["CustomerGroup", { "ref": ["to_Text"], "expand": ["*"] }])
+                            .where({ CustomerGroup: ids })))
+                        records = data.map(item => {
+                            return { CustomerGroup: item.CustomerGroup, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).CustomerGroupName }
+                        })
+                        break;
+
+                    case "PrimaryTerritoryDeliveryMethod_ShippingCondition":
+                        records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
+
+                        break;
+                    case "SecondaryTerritoryDeliveryMethod_ShippingCondition":
+                        records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
+
+                        break;
+                    default:
+                        break;
+                }
+
+                for (const record of records)
+                    maps[record[element[1]]] = record;
+
+                // Add titles to result
+                for (const note of asArray(response)) {
+                    note[element[0]] = maps[note[processedField[index]]];
+                }
+            }
+
+            return response;
+        })
 
         this.after('each', `DCPMaterials`, async req => {
             if (req.DCPMaterialNumber_Product) {

@@ -27,7 +27,11 @@ annotate service.DistroSpec with {
         Text           : Title.Name,
         TextArrangement: #TextOnly,
     };
-    Studio            @Common: {Label: '{i18n>Studio}', };
+    Studio            @Common: {
+        Label          : '{i18n>Studio}',
+        Text           : Studio.BusinessPartnerFullName,
+        TextArrangement: #TextOnly,
+    };
     CustomerReference @Common: {Label: '{i18n>CustomerReference}', };
     ValidFrom         @Common: {
         Label       : '{i18n>ValidFrom}',
@@ -40,7 +44,11 @@ annotate service.Package with {
     PackageName                      @Common: {Label: '{i18n>PackageName}', };
     Priority                         @Common: {Label: '{i18n>Priority}', };
     Theater                          @Common: {Label: '{i18n>Theater}', };
-    Circuit                          @Common: {Label: '{i18n>Circuit}', };
+    Circuit                          @Common: {
+        Label          : '{i18n>Circuit}',
+        Text           : Circuit.Name,
+        TextArrangement: #TextOnly,
+    };
     StudioCircuitName                @Common: {Label: '{i18n>StudioCircuitName}', };
     DistributionFilterRegion         @Common: {Label: '{i18n>DistributionFilterRegion}', };
     DistributionFilterCountry        @Common: {Label: '{i18n>DistributionFilterCountry}', };
@@ -50,10 +58,15 @@ annotate service.Package with {
     SecondaryTerritory               @Common: {Label: '{i18n>SecondaryTerritory}', };
     ContentIndicator                 @Common: {Label: '{i18n>ContentIndicator}', };
     PrimaryTerritoryDeliveryMethod   @Common: {
-        Label: '{i18n>PrimaryTerritoryDeliveryMethod}',
-        Text : PrimaryTerritoryDeliveryMethod.ShippingConditionName,
+        Label          : '{i18n>PrimaryTerritoryDeliveryMethod}',
+        Text           : PrimaryTerritoryDeliveryMethod.ShippingConditionName,
+        TextArrangement: #TextOnly,
     };
-    SecondaryTerritoryDeliveryMethod @Common: {Label: '{i18n>SecondaryTerritoryDeliveryMethod}', };
+    SecondaryTerritoryDeliveryMethod @Common: {
+        Label          : '{i18n>SecondaryTerritoryDeliveryMethod}',
+        Text           : SecondaryTerritoryDeliveryMethod.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
     BookingType                      @Common: {Label: '{i18n>BookingType}', };
     DepotID                          @Common: {Label: '{i18n>DepotID}', };
     BranchID                         @Common: {Label: '{i18n>BranchID}', };
