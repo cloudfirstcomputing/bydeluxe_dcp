@@ -18,6 +18,51 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.FieldControl = 1
         })
 
+        // DistroSpec?$expand=Title
+        this.on("READ", DistroSpec, async (req, next) => {
+            if (!req.query.SELECT.columns) return next();
+            const expandIndex = req.query.SELECT.columns.findIndex(
+                ({ expand, ref }) => expand && ref[0] === "Title"
+            );
+            if (expandIndex < 0) return next();
+
+            // Remove expand from query
+            req.query.SELECT.columns.splice(expandIndex, 1);
+
+            // Make sure Title_Product will be returned
+            if (!req.query.SELECT.columns.indexOf('*') >= 0 &&
+                !req.query.SELECT.columns.find(
+                    column => column.ref && column.ref.find((ref) => ref == "Title_Product"))
+            ) {
+                req.query.SELECT.columns.push({ ref: ["Title_Product"] });
+            }
+
+            const specs = await next();
+
+            const asArray = x => Array.isArray(x) ? x : [x];
+            // Request all associated titles
+            const titleIds = asArray(specs).map(spec => spec.Title_Product);
+
+            const data = asArray(await pdtx.run(SELECT.from(Products)
+                .columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }])
+                .where({ Product: titleIds })))
+            const titles = data.map(item => {
+                return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
+            })
+
+            // Convert in a map for easier lookup
+            const titlesMap = {};
+            for (const title of titles)
+                titlesMap[title.Product] = title;
+
+            // Add titles to result
+            for (const note of asArray(specs)) {
+                note.Title = titlesMap[note.Title_Product];
+            }
+
+            return specs;
+        })
+
         // this.on('UPDATE', `DCPMaterials.drafts`, async req => {
         //     if (req.data.DCPMaterialNumber_Product) {
         //         const assetvault = await SELECT.one.from(AssetVault)

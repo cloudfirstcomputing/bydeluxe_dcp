@@ -22,7 +22,11 @@ using DistributionService as service from '../../srv/dist-service';
 annotate service.DistroSpec with {
     DistroSpecID      @Common: {Label: '{i18n>DistroSpecID}', };
     Name              @Common: {Label: '{i18n>Name}', };
-    Title             @Common: {Label: '{i18n>Title}', };
+    Title             @Common: {
+        Label          : '{i18n>Title}',
+        Text           : Title.Name,
+        TextArrangement: #TextOnly,
+    };
     Studio            @Common: {Label: '{i18n>Studio}', };
     CustomerReference @Common: {Label: '{i18n>CustomerReference}', };
     ValidFrom         @Common: {
@@ -45,7 +49,10 @@ annotate service.Package with {
     PrimaryTerritory                 @Common: {Label: '{i18n>PrimaryTerritory}', };
     SecondaryTerritory               @Common: {Label: '{i18n>SecondaryTerritory}', };
     ContentIndicator                 @Common: {Label: '{i18n>ContentIndicator}', };
-    PrimaryTerritoryDeliveryMethod   @Common: {Label: '{i18n>PrimaryTerritoryDeliveryMethod}', };
+    PrimaryTerritoryDeliveryMethod   @Common: {
+        Label: '{i18n>PrimaryTerritoryDeliveryMethod}',
+        Text : PrimaryTerritoryDeliveryMethod.ShippingConditionName,
+    };
     SecondaryTerritoryDeliveryMethod @Common: {Label: '{i18n>SecondaryTerritoryDeliveryMethod}', };
     BookingType                      @Common: {Label: '{i18n>BookingType}', };
     DepotID                          @Common: {Label: '{i18n>DepotID}', };
