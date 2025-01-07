@@ -65,113 +65,148 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return finalResult;
         });
         this.on("processContent", async (req, res) => {
-            var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [];
+            var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {};
             var aContentData = await SELECT.from(dcpcontent).where({ BookingID: { "IN": aBookingIDs } });
             if (!aContentData?.length) {
                 sErrorMessage = "No data available to process";
                 req.reject(400, "No data available to process");
                 return;
             }
-            var aCustomerRef = aContentData.map((item) => {
-                return item.UUID;
-            });//GETTING UUIDs TO SEARCH IN DISTROSPEC
-            var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
-                dist.DistroSpecUUID,
-                    dist.DistroSpecID,
-                    dist.Studio,
-                    dist.ValidFrom,
-                    dist.ValidTo,
-                    dist.to_Package((pkg) => {
-                        pkg.PackageName,
-                            pkg.DistributionFilterCountry,
-                            pkg.Theater,
-                            pkg.PrimaryTerritory,
-                            pkg.SecondaryTerritory,
-                            pkg.PrimaryTerritoryDeliveryMethod,
-                            pkg.SecondaryTerritoryDeliveryMethod,
-                            pkg.DepotID,
-                            pkg.Priority,
-                            pkg.to_DCPMaterial((dcpmat) => {
-                                dcpmat.DCPMaterialUUID,
-                                    dcpmat.DCPMaterialNumber,
-                                    dcpmat.PrintFormat
-                            })
-                    })
-            }).where({ CustomerReference: { "IN": aCustomerRef } });
-            if (distroSpecData && Object.keys(distroSpecData).length) {
-                for (var i in aContentData) {
-                    var oContentData = aContentData[i];
-                    var sShipDate = oContentData.ShipDate;
-                    if (sShipDate) {
-                        var dShipDate = new Date(sShipDate.replace(/-/g, '/'));
-                        var validFrom = distroSpecData.ValidFrom, validTo = distroSpecData.ValidTo;
-                        validFrom = new Date(validFrom.replace(/-/g, '/'));
-                        validTo = new Date(validTo.replace(/-/g, '/'));
+            // var aCustomerRef = aContentData.map((item) => {
+            //     return item.UUID;
+            // });//GETTING UUIDs TO SEARCH IN DISTROSPEC
+            // var aCustomerRef = aContentData.map((item) => {
+            //     return {"UUID":item.UUID, "BookingID":item.BookingID};
+            // });            
 
-                        if (dShipDate < validFrom || dShipDate > validTo) {
-                            sErrorMessage = "DistroSpec not in validity";
-                            // req.reject(400, "DistroSpec not in validity");
-                        }
-                        else {
-                            oPayLoad.RequestedDeliveryDate = sShipDate;
-                        }
+            for (var i in aContentData) {
+                var oContentData = aContentData[i];
+
+                oPayLoad.SoldToParty = Customer;
+                oPayLoad.SalesOrganization = SalesOrganization;
+                oPayLoad.DistributionChannel = DistributionChannel;
+                oPayLoad.OrganizationDivision = Division;
+                oPayLoad.PurchaseOrderByCustomer = oContentData.BookingID;
+
+                var sCustomerRef = oContentData.UUID;
+                var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
+                    dist.DistroSpecUUID,
+                        dist.DistroSpecID,
+                        dist.Studio,
+                        dist.ValidFrom,
+                        dist.ValidTo,
+                        dist.to_Package((pkg) => {
+                            pkg.PackageUUID,
+                                pkg.PackageName,
+                                pkg.DistributionFilterCountry,
+                                pkg.Theater_BusinessPartner,
+                                pkg.PrimaryTerritory,
+                                pkg.SecondaryTerritory,
+                                pkg.PrimaryTerritoryDeliveryMethod,
+                                pkg.SecondaryTerritoryDeliveryMethod,
+                                pkg.DepotID,
+                                pkg.Priority_DeliveryPriority,
+                                pkg.to_DCPMaterial((dcpmat) => {
+                                    dcpmat.DCPMaterialUUID,
+                                        dcpmat.DCPMaterialNumber_Product,
+                                        dcpmat.PrintFormat
+                                })
+                        })
+                }).where({ CustomerReference: sCustomerRef });
+
+                if (!distroSpecData || !Object.keys(distroSpecData).length) {
+                    sErrorMessage = "DistroSpec not found";
+                    updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
+                    var updateResult = await Promise.all(updateQuery);
+                    continue;
+                }
+                var sShipDate = oContentData.ShipDate;
+                if (sShipDate) {
+                    var dShipDate = new Date(sShipDate.replace(/-/g, '/'));
+                    var validFrom = distroSpecData.ValidFrom, validTo = distroSpecData.ValidTo;
+                    validFrom = new Date(validFrom.replace(/-/g, '/'));
+                    validTo = new Date(validTo.replace(/-/g, '/'));
+
+                    if (dShipDate < validFrom || dShipDate > validTo) {
+                        sErrorMessage = `DistroSpec not in validity. Validity period is from ${distroSpecData.ValidFrom} to ${distroSpecData.ValidTo}`;
+                        // req.reject(400, "DistroSpec not in validity");
                     }
                     else {
-                        sErrorMessage = "Ship Date is not maintained";
-                        // req.reject(400, "Ship Date is not maintained");
+                        oPayLoad.RequestedDeliveryDate = sShipDate;
                     }
-                    var sTheaterID = oContentData.TheaterID;
-                    let oSalesData = await SELECT.from(S4H_CustomerSalesArea);
-                    if (distroSpecData?.to_Package?.length) {
-                        if (oSalesData?.to_PartnerFunction?.length > 0) {
-                            var oPartnerFunction = oSalesData?.to_PartnerFunction.find((item) => { return item.PartnerFunction === "SH" && item.CustomerPartnerDescription === sTheaterID });
-                            if (oPartnerFunction) {
-                                var sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
-                                if (sBPCustomerNumber) {
-                                    var oPackage = distroSpecData.to_Package.find((item) => { return item.Theater === sBPCustomerNumber });
+                }
+                else {
+                    sErrorMessage = "Ship Date is not maintained";
+                    // req.reject(400, "Ship Date is not maintained");
+                }
+                var sTheaterID = oContentData.TheaterID;
+                // let oSalesData = await s4h_bp_Txn.run(SELECT.from(S4H_CustomerSalesArea));
+                var aSalesData = await s4h_bp_Txn.get(`/A_CustomerSalesArea?$filter=Customer eq '${Customer}' and SalesOrganization eq  '${SalesOrganization}' and DistributionChannel eq '${DistributionChannel}' and Division eq '${Division}'&$expand=to_PartnerFunction`);
+                if (distroSpecData?.to_Package?.length) {
+                    if (aSalesData.length) {
+                        var oSalesData = aSalesData[0];
+                    }
+                    if (oSalesData?.to_PartnerFunction?.length > 0) {
+                        var oPartnerFunction = oSalesData?.to_PartnerFunction.find((item) => { return item.PartnerFunction === "SH" && item.CustomerPartnerDescription === sTheaterID });
+                        if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
+                            var sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
+                            if (sBPCustomerNumber) {
+                                oPayLoad._Partner = { "PartnerFunction": "SH", "Customer": sBPCustomerNumber };
+                                var oPackage = distroSpecData.to_Package.find((item) => { return item.Theater_BusinessPartner === sBPCustomerNumber });
+                                if (oPackage && Object.keys(oPackage).length) {
+                                    oPayLoad.DeliveryPriority = oPackage?.Priority_DeliveryPriority;
+                                    if (oPackage?.to_DCPMaterial && oPackage?.to_DCPMaterial) {
+                                        oPayLoad._item = [];
+                                        for (var j in oPackage.to_DCPMaterial) {
+                                            var oMatRecord = oPackage.to_DCPMaterial[j];
+                                            var oEntry = { "Product": oMatRecord.DCPMaterialNumber_Product, "RequestedQuantity": 1 };
+                                            oPayLoad._item.push(oEntry);
+                                        }
+                                    }
+                                    else {
+                                        sErrorMessage = "DCP Material not available";
+                                    }
                                 }
                                 else {
-                                    // req.reject(400, `Bill-To not found`);
-                                    sErrorMessage = "Bill-To not found";
+                                    sErrorMessage = `Package not available for BP Customer: ${sBPCustomerNumber}`;
                                 }
                             }
                             else {
-                                // req.reject(400, `Ship-To not found`);
-                                sErrorMessage = "Ship-To not found";
+                                // req.reject(400, `Bill-To not found`);
+                                sErrorMessage = "Bill-To not found";
                             }
                         }
                         else {
-                            // req.reject(400, "Partner function not available");
-                            sErrorMessage = "Partner function not available";
+                            // req.reject(400, `Ship-To not found`);
+                            sErrorMessage = "Ship-To not found";
                         }
                     }
-                    // oPayLoad.ShippingCondition
-                    // oPayLoad.DeliveryPriority = distroSpecData
-                    if (sErrorMessage) {
-                        // aContentData[i].ErrorMessage = sErrorMessage;
-                        updateQuery.push(UPDATE(dcpcontent).set({ErrorMessage: sErrorMessage}).where({BookingID: oContentData.BookingID}));
-                    }
                     else {
-                        oPayLoad.SoldToParty = Customer;
-                        oPayLoad.SalesOrganization = SalesOrganization;
-                        oPayLoad.DistributionChannel = DistributionChannel;
-                        oPayLoad.OrganizationDivision = Division;
-                        let postResult = await s4h_so_Txn.send({
-                            method: 'POST',
-                            path: '/SalesOrder',
-                            data: oPayLoad
-                        });
-                        // aContentData[i].SalesOrder = postResult?.SalesOrder;
-                        // req.notify(JSON.stringify(postResult));
-                        updateQuery.push(UPDATE(dcpcontent).set({SalesOrder: postResult?.SalesOrder}).where({BookingID: oContentData.BookingID}));
+                        // req.reject(400, "Partner function not available");
+                        sErrorMessage = "Partner function not available";
                     }
-                    
                 }
+                // oPayLoad.ShippingCondition
+                if (sErrorMessage) {
+                    // aContentData[i].ErrorMessage = sErrorMessage;
+                    updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
+                }
+                else {
+                    let postResult = await s4h_so_Txn.send({
+                        method: 'POST',
+                        path: '/SalesOrder',
+                        data: oPayLoad
+                    });
+                    // aContentData[i].SalesOrder = postResult?.SalesOrder;
+                    // req.notify(JSON.stringify(postResult));
+                    updateQuery.push(UPDATE(dcpcontent).set({ SalesOrder: postResult?.SalesOrder, ErrorMessage: "" }).where({ BookingID: oContentData.BookingID }));
+                }
+                if (updateQuery.length) {
+                    var updateResult = await Promise.all(updateQuery);
+                }
+            }
 
-            }
-            else {
-                req.reject(400, "No matching DistroSpec found");
-            }
+
 
 
         });
@@ -179,7 +214,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         });
         this.on("processKey", async (req, res) => {
-            await SELECT.one.from()
+            // await SELECT.one.from()
         });
         this.on("reconcileKey", async (req, res) => {
 
@@ -194,7 +229,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
         });
         this.on("READ", S4H_CustomerSalesArea, async (req, res) => {
-            var query = `/A_CustomerSalesArea?$filter=Customer eq ${Customer} and SalesOrganization eq  ${SalesOrganization} and DistributionChannel eq ${DistributionChannel} and Division eq ${Division}&$expand=to_PartnerFunction`;
+            var query = `/A_CustomerSalesArea?$filter=Customer eq '${Customer}' and SalesOrganization eq  '${SalesOrganization}' and DistributionChannel eq '${DistributionChannel}' and Division eq '${Division}'&$expand=to_PartnerFunction`;
             return s4h_bp_Txn.get(query);
             // var aSalesArea = await s4h_bp_Txn.run(
             //     SELECT.from(S4H_CustomerSalesArea, async (custSalesArea)=>{
