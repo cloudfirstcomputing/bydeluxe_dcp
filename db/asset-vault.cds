@@ -23,7 +23,7 @@ entity AssetVault {
                                     key ID            : UUID;
                                         LinkedDCP     : String(40);
                                         LinkedCPLUUID : String(40);
-                                        LinkedCTT     : String(40);
+                                        LinkedCTT     : String(50);
                                         PrintFormat   : String(40);
                                         FilmStock     : String(40);
                                         Audio         : String(40);

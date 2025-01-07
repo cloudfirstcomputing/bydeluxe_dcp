@@ -1,0 +1,31 @@
+@server = http://localhost:4004
+@auth = Authorization: Basic alice:
+
+
+### SalesOrders
+# @name AssetVault_GET
+GET {{server}}/odata/v4/asset-vault/AssetVault
+{{auth}}
+
+### SalesOrders
+# @name AssetVault_POST
+POST {{server}}/odata/v4/asset-vault/AssetVault
+{{auth}}
+Content-Type: application/json
+
+{
+    "AssetVaultID": "a81bc81b-dead-4e5d-abff-90865d1e13d2",
+    "AssetMapID": "DCP5283",
+    "AssetMapIDDescription": "US Release HDD Package ROBINHOOD 3D 7.1",
+    "Title":"ROBINHOOD",
+    "CreatedinSAP": false,
+    "_Items":[{
+        "LinkedDCP":"",
+        "LinkedCPLUUID":"acde070d-8c4c-4f0d-9d8a-162843c12333",
+        "LinkedCTT":"CPL1 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024"
+    },{
+        "LinkedDCP":"",
+        "LinkedCPLUUID":"acde070d-8c4c-4f0d-9d8a-162843c11334",
+        "LinkedCTT":"CPL2 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024"
+    }]
+}
