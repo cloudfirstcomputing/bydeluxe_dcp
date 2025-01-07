@@ -31,8 +31,8 @@ entity dcpcontent : managed {
         UUID               : String(40) not null;
         Territory          : String(2) not null  @mandatory;
         Status             : String(1) not null;
-        SalesOrder         : String;
-        ErrorMessage       : String;
+        SalesOrder         : String @readonly;
+        ErrorMessage       : String @readonly;
 }
 
 entity dcpkey : managed {
@@ -79,6 +79,6 @@ entity dcpkey : managed {
         ReleaseNameHO       : String(40) not null;
         ReleaseTtileHO      : String(40) not null;
         Status              : String(1) not null;
-        SalesOrder          : String;
-        ErrorMessage        : String;
+        SalesOrder          : String @readonly;
+        ErrorMessage        : String @readonly;
 }

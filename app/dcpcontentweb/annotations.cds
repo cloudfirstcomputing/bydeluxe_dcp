@@ -50,6 +50,16 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : SalesOrder,
+                Label : '{i18n>Salesorder}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ErrorMessage,
+                Label : '{i18n>Errormessage}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Depotid}',
                 Value : DepotID,
             },
@@ -212,6 +222,18 @@ annotate service.dcpcontent with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : SalesOrder,
+            Label : '{i18n>Salesorder}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ErrorMessage,
+            Label : '{i18n>Errormessage}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : SoundID,
             Label : '{i18n>Soundid}',
             ![@UI.Importance] : #High,
@@ -226,7 +248,6 @@ annotate service.dcpcontent with @(
             $Type : 'UI.DataField',
             Value : Status,
             Label : '{i18n>Status}',
-            ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',

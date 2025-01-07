@@ -50,12 +50,11 @@ sap.ui.define([
                 oActionODataContextBinding.execute().then(
                     function (param) {
                         var oActionContext = oActionODataContextBinding.getBoundContext();
-                        console.table(oActionContext.getObject().value);
                         //    dialog.show(oActionContext.getObject().value);
 
-                        MessageBox.success("SAP posting has been successful", {
+                        MessageBox.success("Action has been completed successfully", {
                             title: "Success",
-                            details: this.getModel().getMessagesByPath("")?.[0].getMessage(),
+                            details: "Please check Sales Order and Reconciliation info for details",
                             contentWidth: "auto",
                             styleClass: sResponsivePaddingClasses
                         });
