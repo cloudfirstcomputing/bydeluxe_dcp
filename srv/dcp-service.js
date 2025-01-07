@@ -87,6 +87,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oPayLoad.DistributionChannel = DistributionChannel;
                 oPayLoad.OrganizationDivision = Division;
                 oPayLoad.PurchaseOrderByCustomer = oContentData.BookingID;
+                oPayLoad.SalesOrderType = "TA";
 
                 var sCustomerRef = oContentData.UUID;
                 var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
@@ -102,8 +103,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 pkg.Theater_BusinessPartner,
                                 pkg.PrimaryTerritory,
                                 pkg.SecondaryTerritory,
-                                pkg.PrimaryTerritoryDeliveryMethod,
-                                pkg.SecondaryTerritoryDeliveryMethod,
+                                pkg.PrimaryTerritoryDeliveryMethod_ShippingCondition,
+                                pkg.SecondaryTerritoryDeliveryMethod_ShippingCondition,
                                 pkg.DepotID,
                                 pkg.Priority_DeliveryPriority,
                                 pkg.to_DCPMaterial((dcpmat) => {
@@ -151,16 +152,31 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
                             var sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
                             if (sBPCustomerNumber) {
-                                oPayLoad._Partner = { "PartnerFunction": "SH", "Customer": sBPCustomerNumber };
+                                oPayLoad._Partner = [{ "PartnerFunction": "WE", "Customer": sBPCustomerNumber }];
                                 var oPackage = distroSpecData.to_Package.find((item) => { return item.Theater_BusinessPartner === sBPCustomerNumber });
                                 if (oPackage && Object.keys(oPackage).length) {
-                                    oPayLoad.DeliveryPriority = oPackage?.Priority_DeliveryPriority;
+                                    if (oContentData.Territory) {
+                                        if (oContentData.Territory === oPackage.PrimaryTerritory) {
+                                            var sDeliveryMethod = oPackage.PrimaryTerritoryDeliveryMethod_ShippingCondition;
+                                        }
+                                        else if (oContentData.Territory === oPackage.SecondaryTerritory) {
+                                            sDeliveryMethod = oPackage.SecondaryTerritoryDeliveryMethod_ShippingCondition;
+                                        }
+                                        if (sDeliveryMethod) {
+                                            oPayLoad.ShippingCondition = sDeliveryMethod;
+                                        }
+                                    }
                                     if (oPackage?.to_DCPMaterial && oPackage?.to_DCPMaterial) {
-                                        oPayLoad._item = [];
+                                        oPayLoad._Item = [];
                                         for (var j in oPackage.to_DCPMaterial) {
                                             var oMatRecord = oPackage.to_DCPMaterial[j];
-                                            var oEntry = { "Product": oMatRecord.DCPMaterialNumber_Product, "RequestedQuantity": 1 };
-                                            oPayLoad._item.push(oEntry);
+                                            var oEntry = {
+                                                "Product": oMatRecord.DCPMaterialNumber_Product,
+                                                "RequestedQuantity": 1,
+                                                "RequestedQuantityISOUnit": "EA",
+                                                "DeliveryPriority": oPackage?.Priority_DeliveryPriority
+                                            };
+                                            oPayLoad._Item.push(oEntry);
                                         }
                                     }
                                     else {
@@ -172,12 +188,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 }
                             }
                             else {
-                                // req.reject(400, `Bill-To not found`);
                                 sErrorMessage = "Bill-To not found";
                             }
                         }
                         else {
-                            // req.reject(400, `Ship-To not found`);
                             sErrorMessage = "Ship-To not found";
                         }
                     }
@@ -192,14 +206,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
                 }
                 else {
-                    let postResult = await s4h_so_Txn.send({
+                    var postResult = await s4h_so_Txn.send({
                         method: 'POST',
                         path: '/SalesOrder',
                         data: oPayLoad
-                    });
-                    // aContentData[i].SalesOrder = postResult?.SalesOrder;
-                    // req.notify(JSON.stringify(postResult));
-                    updateQuery.push(UPDATE(dcpcontent).set({ SalesOrder: postResult?.SalesOrder, ErrorMessage: "" }).where({ BookingID: oContentData.BookingID }));
+                    })
+                        .catch((err) => {
+                            updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID }));
+                        }).then((result) => {
+                            if (result)
+                                updateQuery.push(UPDATE(dcpcontent).set({ SalesOrder: result?.SalesOrder, ErrorMessage: "" }).where({ BookingID: oContentData.BookingID }));
+                        });
+
                 }
                 if (updateQuery.length) {
                     var updateResult = await Promise.all(updateQuery);
