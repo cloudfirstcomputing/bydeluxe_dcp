@@ -6,19 +6,20 @@ annotate service.AssetVault with {
     AssetMapIDDescription @Common: {Label: '{i18n>AssetMapIDDescription}', };
     CreatedinSAP          @Common: {Label: '{i18n>CreatedinSAP}', };
     DCP                   @Common: {Label: '{i18n>DCP}', };
-    Title                 @Common: {Label: '{i18n>Title}', };
+    // Title                 @Common: {Label: '{i18n>Title}', };
     GoFilexTitleID_NORAM  @Common: {Label: '{i18n>GoFilexTitleID_NORAM}', };
-    GoFilexTitleID_EMEA   @Common: {Label: '{i18n>GoFilexTitleID_EMEA}', };
-    GoFilexTitleID_APAC   @Common: {Label: '{i18n>GoFilexTitleID_APAC}', };
-    GoFilexTitleID_LATAM  @Common: {Label: '{i18n>GoFilexTitleID_LATAM}', };
-    KENCASTID_NORAM       @Common: {Label: '{i18n>KENCASTID_NORAM}', };
-    KENCASTID_EMEA        @Common: {Label: '{i18n>KENCASTID_EMEA}', };
-    KENCASTID_APAC        @Common: {Label: '{i18n>KENCASTID_APAC}', };
-    KENCASTID_LATAM       @Common: {Label: '{i18n>KENCASTID_LATAM}', };
-    NBPTitleID_NORAM      @Common: {Label: '{i18n>NBPTitleID_NORAM}', };
-    NBPTitleID_EMEA       @Common: {Label: '{i18n>NBPTitleID_EMEA}', };
-    NBPTitleID_APAC       @Common: {Label: '{i18n>NBPTitleID_APAC}', };
-    NBPTitleID_LATAM      @Common: {Label: '{i18n>NBPTitleID_LATAM}', };
+    // GoFilexTitleID_EMEA   @Common: {Label: '{i18n>GoFilexTitleID_EMEA}', };
+    // GoFilexTitleID_APAC   @Common: {Label: '{i18n>GoFilexTitleID_APAC}', };
+    // GoFilexTitleID_LATAM  @Common: {Label: '{i18n>GoFilexTitleID_LATAM}', };
+    // KENCASTID_NORAM       @Common: {Label: '{i18n>KENCASTID_NORAM}', };
+    // KENCASTID_EMEA        @Common: {Label: '{i18n>KENCASTID_EMEA}', };
+    // KENCASTID_APAC        @Common: {Label: '{i18n>KENCASTID_APAC}', };
+    // KENCASTID_LATAM       @Common: {Label: '{i18n>KENCASTID_LATAM}', };
+    // NBPTitleID_NORAM      @Common: {Label: '{i18n>NBPTitleID_NORAM}', };
+    // NBPTitleID_EMEA       @Common: {Label: '{i18n>NBPTitleID_EMEA}', };
+    // NBPTitleID_APAC       @Common: {Label: '{i18n>NBPTitleID_APAC}', };
+    // NBPTitleID_LATAM      @Common: {Label: '{i18n>NBPTitleID_LATAM}', };
+    KENCASTID;
 };
 
 annotate service.AssetVault._Items with {
@@ -27,9 +28,9 @@ annotate service.AssetVault._Items with {
     LinkedDCP     @Common: {Label: '{i18n>LinkedDCP}', };
     LinkedCPLUUID @Common: {Label: '{i18n>LinkedCPLUUID}', };
     LinkedCTT     @Common: {Label: '{i18n>LinkedCTT}', };
-    PrintFormat   @Common: {Label: '{i18n>PrintFormat}', };
-    FilmStock     @Common: {Label: '{i18n>FilmStock}', };
-    Audio         @Common: {Label: '{i18n>Audio}', };
+    // PrintFormat   @Common: {Label: '{i18n>PrintFormat}', };
+    // FilmStock     @Common: {Label: '{i18n>FilmStock}', };
+    // Audio         @Common: {Label: '{i18n>Audio}', };
     Attribute1    @Common: {Label: '{i18n>Attribute1}', };
     Attribute2    @Common: {Label: '{i18n>Attribute2}', };
     Attribute3    @Common: {Label: '{i18n>Attribute3}', };
@@ -81,57 +82,18 @@ annotate service.AssetVault with @(
                 $Type: 'UI.DataField',
                 Value: DCP,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: Title,
-            },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: Title,
+            // },
             {
                 $Type: 'UI.DataField',
                 Value: GoFilexTitleID_NORAM,
             },
+            // {
             {
                 $Type: 'UI.DataField',
-                Value: GoFilexTitleID_EMEA,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: GoFilexTitleID_APAC,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: GoFilexTitleID_LATAM,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: KENCASTID_NORAM,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: KENCASTID_EMEA,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: KENCASTID_APAC,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: KENCASTID_LATAM,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: NBPTitleID_NORAM,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: NBPTitleID_EMEA,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: NBPTitleID_APAC,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: NBPTitleID_LATAM,
+                Value: KENCASTID,
             },
         ],
     },
@@ -233,14 +195,14 @@ annotate service.AssetVault._Items with @(
                 $Type: 'UI.DataField',
                 Value: LinkedCPLUUID,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: FilmStock,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Audio,
-            },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: FilmStock,
+            // },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: Audio,
+            // },
             {
                 $Type: 'UI.DataField',
                 Value: Attribute1,

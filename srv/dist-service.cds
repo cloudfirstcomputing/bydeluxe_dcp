@@ -21,6 +21,9 @@ service DistributionService @(requires: 'authenticated-user') {
     entity Country            as projection on api.Country;
 
     @readonly
+    entity Regions            as projection on api.Regions;
+
+    @readonly
     entity Studios            as projection on db.StudioVH;
 
     @readonly

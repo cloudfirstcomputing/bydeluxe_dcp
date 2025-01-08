@@ -4,9 +4,11 @@ using {API_PRODUCT_SRV as product} from '../srv/external/API_PRODUCT_SRV.csn';
 using {YY1_DELIVERYPRIORITY_CDS as delvprior} from '../srv/external/YY1_DELIVERYPRIORITY_CDS';
 using {API_CUSTOMERGROUP_SRV as custgrp} from '../srv/external/API_CUSTOMERGROUP_SRV';
 using {API_COUNTRY_SRV as country} from '../srv/external/API_COUNTRY_SRV';
+using {ZAPI_REGION as region} from '../srv/external/ZAPI_REGION';
 
 context api {
 
+    entity Regions            as projection on region.ZI_Region;
     entity ShippingConditions as projection on shipcond.ZI_ShippingCondition;
 
     entity BusinessPartners   as

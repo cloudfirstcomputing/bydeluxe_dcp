@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+        const { DistroSpec, Regions, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -11,6 +11,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const dlvprtx = await cds.connect.to('YY1_DELIVERYPRIORITY_CDS')
         const cstgrptx = await cds.connect.to('API_CUSTOMERGROUP_SRV')
         const ctrytx = await cds.connect.to('API_COUNTRY_SRV')
+        const rgtx = await cds.connect.to('ZAPI_REGION')
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -92,10 +93,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return response;
         })
 
-        // Package?$expand
-        this.on("READ", `Package`, async (req, next) => {
+        // DistRestrictions?$expand
+        this.on("READ", `DistRestrictions`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Circuit_CustomerGroup", "PrimaryTerritoryDeliveryMethod_ShippingCondition", "SecondaryTerritoryDeliveryMethod_ShippingCondition"]
+            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_Region"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -118,11 +119,52 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         })
                         break;
 
-                    case "PrimaryTerritoryDeliveryMethod_ShippingCondition":
+                    case "DistributionFilterRegion_Region":
+                        records = await rgtx.run(SELECT.from(Regions).where({ Region: ids }))
+
+                        break;
+                    default:
+                        break;
+                }
+
+                for (const record of records)
+                    maps[record[element[1]]] = record;
+
+                // Add titles to result
+                for (const note of asArray(response)) {
+                    if (processedField[index] === "DistributionFilterRegion_Region") {
+                        note[element[0]] = records.find(item => item.Country === note.DistributionFilterCountry_code)
+                    } else {
+                        note[element[0]] = maps[note[processedField[index]]];
+                    }
+                }
+            }
+
+            return response;
+        })
+
+        // Package?$expand
+        this.on("READ", `Package`, async (req, next) => {
+            if (!req.query.SELECT.columns) return next();
+            const fields = ["PrimaryDeliveryMethod_ShippingCondition", "SecondaryDeliveryMethod_ShippingCondition"]
+            const { processedField, lreq } = expand(req, fields)
+            if (processedField.length === 0) return next();
+
+            const response = await cds.run(lreq.query);
+
+            const asArray = x => Array.isArray(x) ? x : [x];
+            for (let index = 0; index < processedField.length; index++) {
+                const element = processedField[index].split('_');
+                const ids = asArray(response).map(resp => resp[processedField[index]]);
+                const maps = {};
+                let records = []
+
+                switch (processedField[index]) {
+                    case "PrimaryDeliveryMethod_ShippingCondition":
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
 
                         break;
-                    case "SecondaryTerritoryDeliveryMethod_ShippingCondition":
+                    case "SecondaryDeliveryMethod_ShippingCondition":
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
 
                         break;
@@ -201,6 +243,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on('READ', ShippingConditions, async req => {
             return sctx.run(req.query)
+        })
+
+        this.on('READ', Regions, async req => {
+            return rgtx.run(req.query)
         })
 
         this.on('READ', DeliveryPriority, async req => {

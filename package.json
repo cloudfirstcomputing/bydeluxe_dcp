@@ -124,6 +124,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "ZAPI_REGION": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZAPI_REGION",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/ZAPI_REGION",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
