@@ -138,7 +138,7 @@
                       "text": "{i18n>process}"
                     },
                     "reconcile": {
-                      "press": "dcpcontentweb.ext.controller.Actions.handleREconcile",
+                      "press": "dcpcontentweb.ext.controller.Actions.handleReconcile",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": true,

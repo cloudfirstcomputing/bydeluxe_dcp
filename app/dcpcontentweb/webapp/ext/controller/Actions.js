@@ -74,7 +74,7 @@ sap.ui.define([
                 );
             }            
         },
-        handleREconcile: function() {
+        handleReconcile: function() {
             MessageToast.show("Custom handler invoked.");
         }
     };

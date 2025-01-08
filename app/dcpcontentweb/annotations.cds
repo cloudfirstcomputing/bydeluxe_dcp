@@ -20,21 +20,6 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
-                Label : '{i18n>Circuit}',
-                Value : Circuit,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Shipmentindicator}',
-                Value : ShipmentIndicator,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Screeningindicator}',
-                Value : ScreeningIndicator,
-            },
-            {
-                $Type : 'UI.DataField',
                 Label : '{i18n>Playstartdate}',
                 Value : PlayStartDate,
             },
@@ -45,48 +30,13 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
-                Label : '{i18n>Branchid}',
-                Value : BranchID,
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : SalesOrder,
                 Label : '{i18n>Salesorder}',
             },
             {
                 $Type : 'UI.DataField',
-                Value : ErrorMessage,
-                Label : '{i18n>Errormessage}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Depotid}',
-                Value : DepotID,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Soundid}',
-                Value : SoundID,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Language}',
-                Value : Language,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Subtitletype}',
-                Value : SubtitleType,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Printformat}',
-                Value : PrintFormat,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Releasehold}',
-                Value : ReleaseHold,
+                Value : UUID,
+                Label : '{i18n>Uuid}',
             },
             {
                 $Type : 'UI.DataField',
@@ -100,38 +50,13 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
-                Label : '{i18n>Auditoriumtype}',
-                Value : AuditoriumType,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Printquality}',
-                Value : PrintQuality,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Filmstock}',
-                Value : FilmStock,
-            },
-            {
-                $Type : 'UI.DataField',
                 Label : '{i18n>Keycontent}',
                 Value : Key_Content,
             },
             {
                 $Type : 'UI.DataField',
-                Label : '{i18n>Timeofentry}',
-                Value : TimeofEntry,
-            },
-            {
-                $Type : 'UI.DataField',
                 Label : '{i18n>Bookingtype}',
                 Value : BookingType,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Packagename}',
-                Value : PackageName,
             },
             {
                 $Type : 'UI.DataField',
@@ -151,6 +76,12 @@ annotate service.dcpcontent with @(
             ID : 'GeneratedFacet1',
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneratedGroup',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>AdditionalDetails}',
+            ID : 'i18nAdditionalDetails',
+            Target : '@UI.FieldGroup#i18nAdditionalDetails',
         },
     ],
     UI.LineItem : [
@@ -188,6 +119,12 @@ annotate service.dcpcontent with @(
             $Type : 'UI.DataField',
             Value : ShipmentIndicator,
             Label : '{i18n>Shipmentindicator}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ShipDate,
+            Label : '{i18n>Shipdate}',
             ![@UI.Importance] : #High,
         },
         {
@@ -256,5 +193,90 @@ annotate service.dcpcontent with @(
             ![@UI.Importance] : #High,
         },
     ],
+    UI.FieldGroup #i18nAdditionalDetails : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Circuit}',
+                Value : Circuit,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Shipmentindicator}',
+                Value : ShipmentIndicator,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Screeningindicator}',
+                Value : ScreeningIndicator,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Branchid}',
+                Value : BranchID,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Depotid}',
+                Value : DepotID,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Soundid}',
+                Value : SoundID,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Language}',
+                Value : Language,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Subtitletype}',
+                Value : SubtitleType,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Printformat}',
+                Value : PrintFormat,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Releasehold}',
+                Value : ReleaseHold,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Auditoriumtype}',
+                Value : AuditoriumType,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Printquality}',
+                Value : PrintQuality,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Filmstock}',
+                Value : FilmStock,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Timeofentry}',
+                Value : TimeofEntry,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : '{i18n>Packagename}',
+                Value : PackageName,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ErrorMessage,
+                Label : '{i18n>Errormessage}',
+            },
+        ],
+    },
 );
 
