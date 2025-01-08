@@ -42,7 +42,10 @@ annotate service.DistroSpec with {
 
 annotate service.Package with {
     PackageName             @Common: {Label: '{i18n>PackageName}', };
-    Priority                @Common: {Label: '{i18n>Priority}', };
+    Priority                @Common: {
+        Label: '{i18n>Priority}',
+        Text : Priority.DeliveryPriorityDesc,
+    };
     ContentIndicator        @Common: {Label: '{i18n>ContentIndicator}', };
     PrimaryDeliveryMethod   @Common: {
         Label          : '{i18n>PrimaryDeliveryMethod}',
@@ -87,7 +90,10 @@ annotate service.DCPMaterials with @(Common: {SideEffects: {
         'CTT'
     ]
 }}) {
-    DCPMaterialNumber @Common: {Label: '{i18n>DCPMaterial}', };
+    DCPMaterialNumber @Common: {
+        Label: '{i18n>DCPMaterial}',
+        Text : DCPMaterialNumber.Name,
+    };
     CTT               @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
     CPLUUID           @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
 };

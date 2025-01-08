@@ -146,7 +146,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // Package?$expand
         this.on("READ", `Package`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["PrimaryDeliveryMethod_ShippingCondition", "SecondaryDeliveryMethod_ShippingCondition"]
+            const fields = ["PrimaryDeliveryMethod_ShippingCondition", "SecondaryDeliveryMethod_ShippingCondition", "Priority_DeliveryPriority"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -168,6 +168,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
 
                         break;
+                    case "Priority_DeliveryPriority":
+                        records = await dlvprtx.run(SELECT.from(DeliveryPriority).where({ DeliveryPriority: ids }))
+
+                        break;
                     default:
                         break;
                 }
@@ -182,6 +186,49 @@ module.exports = class DistributionService extends cds.ApplicationService {
             }
 
             return response;
+        })
+
+        // DCPMaterials?$expand
+        this.on("READ", `DCPMaterials`, async (req, next) => {
+            if (!req.query.SELECT.columns) return next();
+            const fields = ["DCPMaterialNumber_Product"]
+            const { processedField, lreq } = expand(req, fields)
+            if (processedField.length === 0) return next();
+
+            const response = await cds.run(lreq.query);
+
+            const asArray = x => Array.isArray(x) ? x : [x];
+
+            for (let index = 0; index < processedField.length; index++) {
+                const element = processedField[index].split('_');
+                const ids = asArray(response).map(resp => resp[processedField[index]]);
+                const maps = {};
+                let records = []
+
+                switch (processedField[index]) {
+                    case "DCPMaterialNumber_Product":
+                        const data = asArray(await pdtx.run(SELECT.from(Products)
+                            .columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }])
+                            .where({ Product: ids })))
+                        records = data.map(item => {
+                            return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
+                        })
+
+                        break;
+                    default:
+                        break;
+                }
+
+                for (const record of records)
+                    maps[record[element[1]]] = record;
+
+                // Add titles to result
+                for (const note of asArray(response)) {
+                    note[element[0]] = maps[note[processedField[index]]];
+                }
+            }
+            return response;
+
         })
 
         this.after('each', `DCPMaterials`, async req => {
