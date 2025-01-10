@@ -66,7 +66,7 @@ entity dcpkey : managed {
         EndTime             : Timestamp not null @mandatory;
         Key_Content         : String(1) not null @mandatory;
         UUID                : String(40) not null @mandatory;
-        TimeofEntry         : String(16) not null @mandatory;
+        TimeofEntry         : Timestamp not null @mandatory;
         BookingType         : String(4) not null @mandatory;
         PackageName         : String not null @mandatory;
         Releasempm          : String(12) not null @mandatory;
