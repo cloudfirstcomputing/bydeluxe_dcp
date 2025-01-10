@@ -66,6 +66,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
         this.on("processContent", async (req, res) => {
             var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {};
+            if(!aBookingIDs?.length){
+                req.reject(400, "Booking ID was not sent for processing");
+                return;
+            }
             var aContentData = await SELECT.from(dcpcontent).where({ BookingID: { "IN": aBookingIDs } });
             if (!aContentData?.length) {
                 sErrorMessage = "No data available to process";
@@ -268,11 +272,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
             }
         });
-        this.on("reconcileContent", async (req, res) => {
+        // this.on("reconcileContent", async (req, res) => {
 
-        });
-        this.on("processKey", async (req, res) => {
+        // });
+        this.on("postKeyToSAP", async (req, res) => {          
             var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {};
+            if(!aBookingIDs?.length){
+                req.reject(400, "Booking ID was not sent for processing");
+                return;
+            }
             var aContentData = await SELECT.from(dcpkey).where({ BookingID: { "IN": aBookingIDs } });
             if (!aContentData?.length) {
                 sErrorMessage = "No data available to process";
@@ -426,9 +434,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
             }
         });
-        this.on("reconcileKey", async (req, res) => {
+        // this.on("reconcileKey", async (req, res) => {
 
-        });
+        // });
         this.on("READ", S4H_SOHeader, async (req, res) => {
             // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
 

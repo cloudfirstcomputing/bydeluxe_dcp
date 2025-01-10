@@ -6,12 +6,12 @@ service BookingOrderService{
     entity dcpcontent as projection on db.dcpcontent;
     action createContent(Records: array of  dcpcontent) returns String;
     action processContent(bookingIDs: array of String) returns String;
-    action reconcileContent(bookingIDs: array of  String) returns String;
+    // action reconcileContent(bookingIDs: array of  String) returns String;
 
     entity dcpkey as projection on db.dcpkey;
     action createKey(Records: array of  dcpkey) returns String;
-    action processKey(dcpkey: array of  dcpkey) returns String;
-    action reconcileKey(dcpkey: array of  dcpkey) returns String;
+    action postKeyToSAP(bookingIDs: array of String) returns String;
+    // action reconcileKey(bookingIDs: array of  String) returns String;
 
     entity S4H_SOHeader as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner as projection on S4_BuisnessPartner.A_BusinessPartner;
