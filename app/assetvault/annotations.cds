@@ -6,41 +6,25 @@ annotate service.AssetVault with {
     AssetMapIDDescription @Common: {Label: '{i18n>AssetMapIDDescription}', };
     CreatedinSAP          @Common: {Label: '{i18n>CreatedinSAP}', };
     DCP                   @Common: {Label: '{i18n>DCP}', };
-    // Title                 @Common: {Label: '{i18n>Title}', };
+    Title                 @Common: {Label: '{i18n>Title}', };
     GoFilexTitleID_NORAM  @Common: {Label: '{i18n>GoFilexTitleID_NORAM}', };
-    // GoFilexTitleID_EMEA   @Common: {Label: '{i18n>GoFilexTitleID_EMEA}', };
-    // GoFilexTitleID_APAC   @Common: {Label: '{i18n>GoFilexTitleID_APAC}', };
-    // GoFilexTitleID_LATAM  @Common: {Label: '{i18n>GoFilexTitleID_LATAM}', };
-    // KENCASTID_NORAM       @Common: {Label: '{i18n>KENCASTID_NORAM}', };
-    // KENCASTID_EMEA        @Common: {Label: '{i18n>KENCASTID_EMEA}', };
-    // KENCASTID_APAC        @Common: {Label: '{i18n>KENCASTID_APAC}', };
-    // KENCASTID_LATAM       @Common: {Label: '{i18n>KENCASTID_LATAM}', };
-    // NBPTitleID_NORAM      @Common: {Label: '{i18n>NBPTitleID_NORAM}', };
-    // NBPTitleID_EMEA       @Common: {Label: '{i18n>NBPTitleID_EMEA}', };
-    // NBPTitleID_APAC       @Common: {Label: '{i18n>NBPTitleID_APAC}', };
-    // NBPTitleID_LATAM      @Common: {Label: '{i18n>NBPTitleID_LATAM}', };
     KENCASTID;
+    ProjectType;
+    VersionDescription;
 };
 
 annotate service.AssetVault._Items with {
-    up_;
-    ID;
     LinkedDCP     @Common: {Label: '{i18n>LinkedDCP}', };
     LinkedCPLUUID @Common: {Label: '{i18n>LinkedCPLUUID}', };
     LinkedCTT     @Common: {Label: '{i18n>LinkedCTT}', };
-    // PrintFormat   @Common: {Label: '{i18n>PrintFormat}', };
-    // FilmStock     @Common: {Label: '{i18n>FilmStock}', };
-    // Audio         @Common: {Label: '{i18n>Audio}', };
-    Attribute1    @Common: {Label: '{i18n>Attribute1}', };
-    Attribute2    @Common: {Label: '{i18n>Attribute2}', };
-    Attribute3    @Common: {Label: '{i18n>Attribute3}', };
-    Attribute4    @Common: {Label: '{i18n>Attribute4}', };
-    Attribute5    @Common: {Label: '{i18n>Attribute5}', };
-    Attribute6    @Common: {Label: '{i18n>Attribute6}', };
-    Attribute7    @Common: {Label: '{i18n>Attribute7}', };
-    Attribute8    @Common: {Label: '{i18n>Attribute8}', };
-    Attribute9    @Common: {Label: '{i18n>Attribute9}', };
-    Attribute10   @Common: {Label: '{i18n>Attribute10}', };
+    ProjectID;
+    ProjectType;
+    ProjectAssetMapUUID;
+    DCDMFlag;
+    VersionDescription;
+    RunTime;
+    StartOfCredits;
+    StartOfCrawl;
 };
 
 annotate service.AssetVault with @(
@@ -82,10 +66,18 @@ annotate service.AssetVault with @(
                 $Type: 'UI.DataField',
                 Value: DCP,
             },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: Title,
-            // },
+            {
+                $Type: 'UI.DataField',
+                Value: Title,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ProjectType,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: VersionDescription,
+            },
             {
                 $Type: 'UI.DataField',
                 Value: GoFilexTitleID_NORAM,
@@ -195,53 +187,37 @@ annotate service.AssetVault._Items with @(
                 $Type: 'UI.DataField',
                 Value: LinkedCPLUUID,
             },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: FilmStock,
-            // },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: Audio,
-            // },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute1,
+                Value: ProjectID,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute2,
+                Value: ProjectAssetMapUUID,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute3,
+                Value: ProjectType,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute4,
+                Value: RunTime,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute5,
+                Value: StartOfCrawl,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute6,
+                Value: StartOfCredits,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute7,
+                Value: DCDMFlag,
             },
             {
                 $Type: 'UI.DataField',
-                Value: Attribute8,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Attribute9,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Attribute10,
+                Value: VersionDescription,
             },
         ],
     }
