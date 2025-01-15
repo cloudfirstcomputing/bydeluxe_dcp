@@ -8,23 +8,23 @@ annotate service.AssetVault with {
     DCP                   @Common: {Label: '{i18n>DCP}', };
     Title                 @Common: {Label: '{i18n>Title}', };
     GoFilexTitleID_NORAM  @Common: {Label: '{i18n>GoFilexTitleID_NORAM}', };
-    KENCASTID;
-    ProjectType;
-    VersionDescription;
+    KENCASTID             @Common: {Label: '{i18n>KENCASTID}', };
+    ProjectType           @Common: {Label: '{i18n>ProjectType}', };
+    VersionDescription    @Common: {Label: '{i18n>VersionDescription}', };
 };
 
 annotate service.AssetVault._Items with {
-    LinkedDCP     @Common: {Label: '{i18n>LinkedDCP}', };
-    LinkedCPLUUID @Common: {Label: '{i18n>LinkedCPLUUID}', };
-    LinkedCTT     @Common: {Label: '{i18n>LinkedCTT}', };
-    ProjectID;
-    ProjectType;
-    ProjectAssetMapUUID;
-    DCDMFlag;
-    VersionDescription;
-    RunTime;
-    StartOfCredits;
-    StartOfCrawl;
+    LinkedDCP           @Common: {Label: '{i18n>LinkedDCP}', };
+    LinkedCPLUUID       @Common: {Label: '{i18n>LinkedCPLUUID}', };
+    LinkedCTT           @Common: {Label: '{i18n>LinkedCTT}', };
+    ProjectID           @Common: {Label: '{i18n>ProjectID}', };
+    ProjectType         @Common: {Label: '{i18n>ProjectType}', };
+    ProjectAssetMapUUID @Common: {Label: '{i18n>ProjectAssetMapUUID}', };
+    DCDMFlag            @Common: {Label: '{i18n>DCDMFlag}', };
+    VersionDescription  @Common: {Label: '{i18n>VersionDescription}', };
+    RunTime             @Common: {Label: '{i18n>RunTime}', };
+    StartOfCredits      @Common: {Label: '{i18n>StartOfCredits}', };
+    StartOfCrawl        @Common: {Label: '{i18n>StartOfCrawl}', };
 };
 
 annotate service.AssetVault with @(
