@@ -1,7 +1,7 @@
 using AssetVaultService as service from '../../srv/asset-vault';
 
 annotate service.AssetVault with {
-    AssetVaultID          @Common: {Label: '{i18n>AssetVaultID}', };
+    AssetVaultID          @Common: {Label: '{i18n>DistPrjID}', };
     AssetMapID            @Common: {Label: '{i18n>AssetMapID}', };
     AssetMapIDDescription @Common: {Label: '{i18n>AssetMapIDDescription}', };
     CreatedinSAP          @Common: {Label: '{i18n>CreatedinSAP}', };
