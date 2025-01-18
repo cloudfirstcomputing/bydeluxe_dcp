@@ -19,6 +19,8 @@ service BookingOrderService{
 
     entity DistroSpec_Local as projection on DistroSpec;
 
+    entity BookingSalesOrder as projection on db.BookingSalesOrder;
+    action test() returns String;
     annotate dcpcontent with @odata.draft.enabled;
     annotate dcpkey with @odata.draft.enabled;
 }
