@@ -1,7 +1,7 @@
 const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
-        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, S4H_CustomerSalesArea } = this.entities;
+        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, S4H_CustomerSalesArea, BookingSalesOrder } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var Customer = '1000011', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
@@ -66,7 +66,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
         this.on("processContent", async (req, res) => {
             var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {};
-            if(!aBookingIDs?.length){
+            if (!aBookingIDs?.length) {
                 req.reject(400, "Booking ID was not sent for processing");
                 return;
             }
@@ -250,7 +250,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sErrorMessage = "Partner function not available";
                     }
                 }
-                // oPayLoad.ShippingCondition
+                var bPostingSuccess = false, sSalesOrder = "";
                 if (sErrorMessage) {
                     // aContentData[i].ErrorMessage = sErrorMessage;
                     updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
@@ -263,21 +263,60 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }).catch((err) => {
                         updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID }));
                     }).then((result) => {
-                        if (result)
+                        if (result) {
+                            bPostingSuccess = true;
+                            sSalesOrder = result?.SalesOrder;
                             updateQuery.push(UPDATE(dcpcontent).set({ SalesOrder: result?.SalesOrder, ErrorMessage: "" }).where({ BookingID: oContentData.BookingID }));
+                        }
                     });
                 }
                 if (updateQuery.length) {
                     var updateResult = await Promise.all(updateQuery);
-                }
-            }
-        });
-        // this.on("reconcileContent", async (req, res) => {
+                    if (bPostingSuccess) {
+                        var aSalesOrderData = await s4h_so_Txn.run(SELECT.from(S4H_SOHeader, (header) => {
+                            header`.*`,
+                                header._Item((item) => {}),
+                                header._Partner((partner) => {})
+                        }).where({ SalesOrder: sSalesOrder }));
+                        if(aSalesOrderData?.length){
+                            var oSalesOrder = aSalesOrderData[0];
+                            // var aBSOElements = Object.keys(BookingSalesOrder.elements);
+                            // var aItemElements = Object.keys(BookingSalesOrder.elements._Item._target.elements);
+                            // var aPartnerElements = Object.keys(BookingSalesOrder.elements._Partner._target.elements);
 
-        // });
-        this.on("postKeyToSAP", async (req, res) => {          
+                            // var oRecordsToBePosted = {};
+                            // var aSalesOrderProperties = Object.keys(oSalesOrder);
+                            // var aContentDataProperties = Object.keys(oContentData);
+                            // for(var i in aContentDataProperties){
+                            //     if(aContentDataProperties[i] === "_Item" || aContentDataProperties[i] === "_Partner"){ //SKIP ccopying _Item and _Partner from dcpcontent
+                            //         continue;
+                            //     }
+                            //     if(BookingSalesOrder.elements.hasOwnProperty(aContentDataProperties[i])){
+                            //         oRecordsToBePosted[aContentDataProperties[i]] = oContentData[aContentDataProperties[i]];
+                            //     }
+                            // }
+                            // for(var i in aSalesOrderProperties){
+                            //     if(aSalesOrderProperties[i] === "_Item"){
+                            //         continue;
+                            //     }
+                            //     else if(aSalesOrderProperties[i] === "_Partner"){
+                            //         continue;
+                            //     }
+                            //     if(BookingSalesOrder.elements.hasOwnProperty(aSalesOrderProperties[i])){
+                            //         oRecordsToBePosted[aSalesOrderProperties[i]] = oSalesOrder[aSalesOrderProperties[i]];
+                            //     }
+                            // }
+                            var oRecordsToBePosted = oContentData;
+                            Object.assign(oRecordsToBePosted, oSalesOrder);
+                            let postResult = await INSERT.into(BookingSalesOrder).entries(oRecordsToBePosted);
+                        }
+                    }
+                }
+            }// End of for loop
+        });
+        this.on("postKeyToSAP", async (req, res) => {
             var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {};
-            if(!aBookingIDs?.length){
+            if (!aBookingIDs?.length) {
                 req.reject(400, "Booking ID was not sent for processing");
                 return;
             }
@@ -286,7 +325,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 sErrorMessage = "No data available to process";
                 req.reject(400, "No data available to process");
                 return;
-            }           
+            }
 
             for (var i in aContentData) {
                 var oContentData = aContentData[i];
@@ -434,9 +473,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
             }
         });
-        // this.on("reconcileKey", async (req, res) => {
-
-        // });
+        this.on("test", async (req, res) => {
+            var aSalesOrderData = await s4h_so_Txn.get(`/SalesOrder?$filter=SalesOrder eq '${150}'&$expand=_Item,_Partner`);
+        });
         this.on("READ", S4H_SOHeader, async (req, res) => {
             // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
 
@@ -468,16 +507,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     "Division": "20"}));
             //     // console.log("Test");
             //     return aSalesArea;
-        })
-        // this.before('SAVE', dcpcontent, async (req, next) => {
-        //     // var { materialCode, serialNumber, plant, storageBin, comments } = req.data;
-        //     req.data.Status = "A";
-        // });        
-        // this.on('SAVE', dcpcontent, async (req, next) => {
-        //     // var { materialCode, serialNumber, plant, storageBin, comments } = req.data;
-        //     // req.data.Status = "A";
-        //     await next();
-        // });
+        });
         return super.init();
     }
 
