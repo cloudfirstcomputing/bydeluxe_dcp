@@ -80,6 +80,16 @@ annotate service.DistRestrictions with {
     };
     DistributionFilterCity    @Common: {Label: '{i18n>DistributionFilterCity}', };
     DistributionFilterPostal  @Common: {Label: '{i18n>DistributionFilterPostal}', };
+    PrimaryPlant              @Common: {
+        Label          : '{i18n>PrimaryPlant}',
+        Text           : PrimaryPlant.PlantName,
+        TextArrangement: #TextOnly,
+    };
+    SecondaryPlant            @Common: {
+        Label          : '{i18n>SecondaryPlant}',
+        Text           : SecondaryPlant.PlantName,
+        TextArrangement: #TextOnly,
+    };
 };
 
 
@@ -386,6 +396,14 @@ annotate service.DistRestrictions with @(
             $Type: 'UI.DataField',
             Value: Theater_BusinessPartner,
         },
+        {
+            $Type: 'UI.DataField',
+            Value: PrimaryPlant_Plant,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: SecondaryPlant_Plant,
+        },
     ],
     UI.HeaderInfo                  : {
         Title         : {
@@ -421,6 +439,14 @@ annotate service.DistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: Theater_BusinessPartner,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PrimaryPlant_Plant,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SecondaryPlant_Plant,
             },
         ]
     },
@@ -574,6 +600,44 @@ annotate service.Package with {
 }
 
 annotate service.DistRestrictions with {
+    PrimaryPlant             @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Plants',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PrimaryPlant_Plant,
+                    ValueListProperty: 'Plant',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'PlantName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    SecondaryPlant           @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Plants',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: SecondaryPlant_Plant,
+                    ValueListProperty: 'Plant',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'PlantName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
     DistributionFilterRegion @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',

@@ -5,6 +5,7 @@ using {YY1_DELIVERYPRIORITY_CDS as delvprior} from '../srv/external/YY1_DELIVERY
 using {API_CUSTOMERGROUP_SRV as custgrp} from '../srv/external/API_CUSTOMERGROUP_SRV';
 using {API_COUNTRY_SRV as country} from '../srv/external/API_COUNTRY_SRV';
 using {ZAPI_REGION as region} from '../srv/external/ZAPI_REGION';
+using {API_PLANT_SRV as plant} from '../srv/external/API_PLANT_SRV';
 
 context api {
 
@@ -22,4 +23,5 @@ context api {
     entity DeliveryPriority   as projection on delvprior.YY1_DeliveryPriority;
     entity CustomerGroup      as projection on custgrp.A_CustomerGroup;
     entity Country            as projection on country.A_Country;
+    entity Plants             as projection on plant.A_Plant;
 }

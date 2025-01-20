@@ -18,6 +18,9 @@ service DistributionService @(requires: 'authenticated-user') {
     entity CustomerGroup      as projection on api.CustomerGroup;
 
     @readonly
+    entity Plants             as projection on api.Plants;
+
+    @readonly
     entity Country            as projection on api.Country;
 
     @readonly

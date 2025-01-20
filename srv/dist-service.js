@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, Regions, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+        const { DistroSpec, Regions, Plants, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -12,6 +12,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const cstgrptx = await cds.connect.to('API_CUSTOMERGROUP_SRV')
         const ctrytx = await cds.connect.to('API_COUNTRY_SRV')
         const rgtx = await cds.connect.to('ZAPI_REGION')
+        const planttx = await cds.connect.to('API_PLANT_SRV')
+
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -96,7 +98,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // DistRestrictions?$expand
         this.on("READ", `DistRestrictions`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_Region"]
+            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_Region", "PrimaryPlant_Plant", "SecondaryPlant_Plant"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -121,6 +123,14 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
                     case "DistributionFilterRegion_Region":
                         records = await rgtx.run(SELECT.from(Regions).where({ Region: ids }))
+
+                        break;
+                    case "PrimaryPlant_Plant":
+                        records = await planttx.run(SELECT.from(Plants).where({ Plant: ids }))
+
+                        break;
+                    case "SecondaryPlant_Plant":
+                        records = await planttx.run(SELECT.from(Plants).where({ Plant: ids }))
 
                         break;
                     default:
@@ -264,6 +274,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on(['READ'], Products, req => {
             return pdtx.run(req.query)
+        })
+
+        this.on(['READ'], Plants, req => {
+            return planttx.run(req.query)
         })
 
         this.on(['READ'], DCPProducts, async req => {
