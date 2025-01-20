@@ -3,213 +3,238 @@ ID: bydeluxe
 description: A simple CAP project.
 version: 1.0.0
 modules:
-  - name: bydeluxe-srv
-    type: nodejs
-    path: gen/srv
-    requires:
-      - name: bydeluxe-db
-      - name: bydeluxe-auth
-      - name: cpapp-logs
-      - name: bydeluxe-destination
-    provides:
-      - name: srv-api
-        properties:
-          srv-url: ${default-url}
+- name: bydeluxe-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: bydeluxe-db
+  - name: bydeluxe-auth
+  - name: cpapp-logs
+  - name: bydeluxe-destination
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+    ignore:
+    - node_modules/
+- name: bydeluxe-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: bydeluxe-db
+    properties:
+      TARGET_CONTAINER: ~{hdi-service-name}
+  parameters:
+    buildpack: nodejs_buildpack
+  build-parameters:
+    ignore:
+    - node_modules/
+- name: bydeluxe-dest-content
+  type: com.sap.application.content
+  requires:
+  - name: bydeluxe-destination-service
     parameters:
-      buildpack: nodejs_buildpack
-      readiness-health-check-http-endpoint: /health
-      readiness-health-check-type: http
-    build-parameters:
-      builder: npm
-      ignore:
-        - node_modules/
-  - name: bydeluxe-db-deployer
-    type: hdb
-    path: gen/db
-    requires:
-      - name: bydeluxe-db
-        properties:
-          TARGET_CONTAINER: ~{hdi-service-name}
+      content-target: true
+  - name: bydeluxe-repo-host
     parameters:
-      buildpack: nodejs_buildpack
-    build-parameters:
-      ignore:
-        - node_modules/
-  - name: bydeluxe-dest-content
-    type: com.sap.application.content
-    requires:
-      - name: bydeluxe-destination-service
-        parameters:
-          content-target: true
-      - name: bydeluxe-repo-host
-        parameters:
-          service-key:
-            name: bydeluxe-repo-host-key
-      - name: bydeluxe-auth
-        parameters:
-          service-key:
-            name: bydeluxe-auth-key
+      service-key:
+        name: bydeluxe-repo-host-key
+  - name: bydeluxe-auth
     parameters:
-      content:
+      service-key:
+        name: bydeluxe-auth-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: bydeluxe_repo_host
+          ServiceInstanceName: bydeluxe-html5-srv
+          ServiceKeyName: bydeluxe-repo-host-key
+          sap.cloud.service: bydeluxe
+        - Authentication: OAuth2UserTokenExchange
+          Name: bydeluxe_uaa
+          ServiceInstanceName: bydeluxe-auth
+          ServiceKeyName: bydeluxe-auth-key
+          sap.cloud.service: bydeluxe
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+- name: bydeluxe-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: bydeluxe-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - comdlxdistribution.zip
+      name: comdlxdistribution
+      target-path: resources/
+    - artifacts:
+      - comdlxcreatedcpmaterials.zip
+      name: comdlxcreatedcpmaterials
+      target-path: resources/
+    - artifacts:
+      - dcpcontentweb.zip
+      name: dcpcontentweb
+      target-path: resources/
+    - artifacts:
+      - dcpkeyweb.zip
+      name: dcpkeyweb
+      target-path: resources/
+    - artifacts:
+      - comdlxassetvault.zip
+      name: comdlxassetvault
+      target-path: resources/
+    - artifacts:
+      - booksalesorderweb.zip
+      name: booksalesorderweb
+      target-path: resources/
+- name: comdlxdistribution
+  type: html5
+  path: app/distribution
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: comdlxcreatedcpmaterials
+  type: html5
+  path: app/createdcpmaterials
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: dcpcontentweb
+  type: html5
+  path: app/dcpcontentweb
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: dcpkeyweb
+  type: html5
+  path: app/dcpkeyweb
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: comdlxassetvault
+  type: html5
+  path: app/assetvault
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: booksalesorderweb
+  type: html5
+  path: app/booksalesorderweb
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: bydeluxe-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    config:
+      schema: bydeluxe
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-service-name: ${service-name}
+- name: bydeluxe-auth
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: bydeluxe-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+- name: bydeluxe-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
         instance:
           destinations:
-            - Name: bydeluxe_repo_host
-              ServiceInstanceName: bydeluxe-html5-srv
-              ServiceKeyName: bydeluxe-repo-host-key
-              sap.cloud.service: bydeluxe
-            - Authentication: OAuth2UserTokenExchange
-              Name: bydeluxe_uaa
-              ServiceInstanceName: bydeluxe-auth
-              ServiceKeyName: bydeluxe-auth-key
-              sap.cloud.service: bydeluxe
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: bydeluxe-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
           existing_destinations_policy: update
-    build-parameters:
-      no-source: true
-  - name: bydeluxe-app-content
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: bydeluxe-repo-host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - comdlxdistribution.zip
-          name: comdlxdistribution
-          target-path: resources/
-        - artifacts:
-            - comdlxcreatedcpmaterials.zip
-          name: comdlxcreatedcpmaterials
-          target-path: resources/
-        - artifacts:
-            - dcpcontentweb.zip
-          name: dcpcontentweb
-          target-path: resources/
-        - artifacts:
-            - dcpkeyweb.zip
-          name: dcpkeyweb
-          target-path: resources/
-        - artifacts:
-            - comdlxassetvault.zip
-          name: comdlxassetvault
-          target-path: resources/
-  - name: comdlxdistribution
-    type: html5
-    path: app/distribution
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-  - name: comdlxcreatedcpmaterials
-    type: html5
-    path: app/createdcpmaterials
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-  - name: dcpcontentweb
-    type: html5
-    path: app/dcpcontentweb
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-  - name: dcpkeyweb
-    type: html5
-    path: app/dcpkeyweb
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-  - name: comdlxassetvault
-    type: html5
-    path: app/assetvault
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-resources:
-  - name: bydeluxe-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      config:
-        schema: bydeluxe
-      service: hana
-      service-plan: hdi-shared
-    properties:
-      hdi-service-name: ${service-name}    
-  - name: bydeluxe-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        tenant-mode: dedicated
-        xsappname: bydeluxe-${space}
-      path: ./xs-security.json
-      service: xsuaa
-      service-plan: application
-  - name: bydeluxe-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-        init_data:
-          instance:
-            destinations:
-              - Authentication: NoAuthentication
-                Name: ui5
-                ProxyType: Internet
-                Type: HTTP
-                URL: https://ui5.sap.com
-              - Authentication: NoAuthentication
-                HTML5.DynamicDestination: true
-                HTML5.ForwardAuthToken: true
-                Name: bydeluxe-srv-api
-                ProxyType: Internet
-                Type: HTTP
-                URL: ~{srv-api/srv-url}
-            existing_destinations_policy: update
-        version: 1.0.0
-      service: destination
-      service-name: bydeluxe-destination-service
-      service-plan: lite
-    requires:
-      - name: srv-api
-  - name: bydeluxe-repo-host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-name: bydeluxe-html5-srv
-      service-plan: app-host
-  - name: bydeluxe-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-  - name: cpapp-logs
-    type: org.cloudfoundry.existing-service
+      version: 1.0.0
+    service: destination
+    service-name: bydeluxe-destination-service
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: bydeluxe-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: bydeluxe-html5-srv
+    service-plan: app-host
+- name: bydeluxe-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+    service: destination
+    service-plan: lite
+- name: cpapp-logs
+  type: org.cloudfoundry.existing-service
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npm install
-        - npx -p @sap/cds-dk cds build --production
+  - builder: custom
+    commands:
+    - npm install
+    - npx -p @sap/cds-dk cds build --production

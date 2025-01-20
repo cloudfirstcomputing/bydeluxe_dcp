@@ -1,0 +1,212 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "booksalesorderweb",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.16.2",
+      "toolsId": "6d47e0df-acd9-435a-aa1a-6d9e59a39a94"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/booking-order/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "booking-display": {
+          "semanticObject": "booking",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.131.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {},
+        "sap.f": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "booksalesorderweb.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {
+        "flexibleColumnLayout": {
+          "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+          "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
+        },
+        "routerClass": "sap.f.routing.Router"
+      },
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "BookingSalesOrderList",
+          "target": [
+            "BookingSalesOrderList"
+          ]
+        },
+        {
+          "pattern": "BookingSalesOrder({key}):?query:",
+          "name": "BookingSalesOrderObjectPage",
+          "target": [
+            "BookingSalesOrderList",
+            "BookingSalesOrderObjectPage"
+          ]
+        },
+        {
+          "pattern": "BookingSalesOrder({key})/_Item({key2}):?query:",
+          "name": "BookingSalesorderItemObjectPage",
+          "target": [
+            "BookingSalesOrderList",
+            "BookingSalesOrderObjectPage",
+            "BookingSalesorderItemObjectPage"
+          ]
+        }
+      ],
+      "targets": {
+        "BookingSalesOrderList": {
+          "type": "Component",
+          "id": "BookingSalesOrderList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/BookingSalesOrder",
+              "variantManagement": "Page",
+              "navigation": {
+                "BookingSalesOrder": {
+                  "detail": {
+                    "route": "BookingSalesOrderObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "selectAll": false,
+                    "selectionMode": "None"
+                  }
+                }
+              },
+              "initialLoad": "Enabled"
+            }
+          },
+          "controlAggregation": "beginColumnPages",
+          "contextPattern": ""
+        },
+        "BookingSalesOrderObjectPage": {
+          "type": "Component",
+          "id": "BookingSalesOrderObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/BookingSalesOrder",
+              "navigation": {
+                "_Item": {
+                  "detail": {
+                    "route": "BookingSalesorderItemObjectPage"
+                  }
+                }
+              }
+            }
+          },
+          "controlAggregation": "midColumnPages",
+          "contextPattern": "/BookingSalesOrder({key})"
+        },
+        "BookingSalesorderItemObjectPage": {
+          "type": "Component",
+          "id": "BookingSalesorderItemObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/BookingSalesOrder/_Item"
+            }
+          },
+          "controlAggregation": "endColumnPages",
+          "contextPattern": "/BookingSalesOrder({key})/_Item({key2})"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+      "type": "XML",
+      "async": true,
+      "id": "appRootView"
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "bydeluxe"
+  }
+}

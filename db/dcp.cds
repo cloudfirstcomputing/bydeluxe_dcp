@@ -34,7 +34,6 @@ entity dcpcontent : managed {
         SalesOrder         : String              @readonly;
         ErrorMessage       : String              @readonly;
 }
-
 entity dcpkey : managed {
         ApplicationID       : String(20) not null @mandatory;
     key BookingID           : String(10) not null @mandatory;
@@ -84,7 +83,6 @@ entity dcpkey : managed {
 }
 
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
-
 entity BookingSalesOrder : managed {
     key SalesOrder              : String(10) not null                           @mandatory;
     key BookingID               : String(10) not null                           @mandatory;
