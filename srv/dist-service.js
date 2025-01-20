@@ -2,7 +2,8 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, Regions, Plants, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+        const { DistroSpec, Regions, Plants, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig,
+            StorageLocations, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -13,7 +14,9 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const ctrytx = await cds.connect.to('API_COUNTRY_SRV')
         const rgtx = await cds.connect.to('ZAPI_REGION')
         const planttx = await cds.connect.to('API_PLANT_SRV')
-
+        const sloctx = await cds.connect.to('YY1_STORAGELOCATION_CDS')
+        const salesorgtx = await cds.connect.to('API_SALESORGANIZATION_SRV')
+        const distchtx = await cds.connect.to('API_DISTRIBUTIONCHANNEL_SRV')
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -278,6 +281,24 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on(['READ'], Plants, req => {
             return planttx.run(req.query)
+        })
+
+        this.on(['READ'], SalesOrganizations, async req => {
+            const data = _asArray(await salesorgtx.run(SELECT.from(SalesOrganizations).columns(["SalesOrganization", { "ref": ["to_Text"], "expand": ["*"] }])))
+            return data.map(item => {
+                return { SalesOrganization: item.SalesOrganization, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesOrganizationName }
+            })
+        })
+
+        this.on(['READ'], StorageLocations, req => {
+            return sloctx.run(req.query)
+        })
+
+        this.on(['READ'], DistributionChannels, async req => {
+            const data = _asArray(await distchtx.run(SELECT.from(DistributionChannels).columns(["DistributionChannel", { "ref": ["to_Text"], "expand": ["*"] }])))
+            return data.map(item => {
+                return { DistributionChannel: item.DistributionChannel, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).DistributionChannelName }
+            })
         })
 
         this.on(['READ'], DCPProducts, async req => {

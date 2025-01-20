@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.5.1"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_STORAGELOCATION_CDS": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_STORAGELOCATION_CDS.YY1_StorageLocation": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "StorageLocation",
+   "elements": {
+    "Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Plant",
+     "notNull": true
+    },
+    "StorageLocation": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.text": "StorageLocationName",
+     "@sap.label": "Storage Location",
+     "notNull": true
+    },
+    "StorageLocationName": {
+     "type": "cds.String",
+     "length": 16,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Storage Loc. Name",
+     "@sap.quickinfo": "Storage Location Name"
+    }
+   }
+  }
+ }
+}

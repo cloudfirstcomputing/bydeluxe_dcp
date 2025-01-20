@@ -78,11 +78,11 @@ entity DCPMaterials {
 entity DCPMaterialConfig : cuid, managed {
     AssetVaultID     : Association to one av.AssetVault @mandatory;
     to_SalesDelivery : Composition of many {
-                           key ProductSalesOrg         : String(4) @mandatory;
-                           key ProductDistributionChnl : String(2) @mandatory;
+                           key ProductSalesOrg         : Association to one api.SalesOrganizations   @mandatory;
+                           key ProductDistributionChnl : Association to one api.DistributionChannels @mandatory;
                        };
     to_Plant         : Composition of many {
-                           key Plant           : String(4) @mandatory;
-                               StorageLocation : String(4) @mandatory;
+                           key Plant           : Association to one api.Plants           @mandatory;
+                               StorageLocation : Association to one api.StorageLocations @mandatory;
                        }
 };

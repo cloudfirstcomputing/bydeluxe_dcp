@@ -80,7 +80,7 @@ annotate service.DCPMaterialConfig.to_Plant with @(
     UI.HeaderInfo           : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: Plant,
+            Value: Plant_Plant,
         },
         TypeName      : '{i18n>Plant}',
         TypeNamePlural: '{i18n>Plants}',
@@ -92,11 +92,11 @@ annotate service.DCPMaterialConfig.to_Plant with @(
                 $Type: 'HTML5.CssDefaultsType',
                 width: 'auto',
             },
-            Value                : Plant,
+            Value                : Plant_Plant,
         },
         {
             $Type                : 'UI.DataField',
-            Value                : StorageLocation,
+            Value                : StorageLocation_StorageLocation,
             ![@HTML5.CssDefaults]: {
                 $Type: 'HTML5.CssDefaultsType',
                 width: 'auto'
@@ -109,11 +109,11 @@ annotate service.DCPMaterialConfig.to_Plant with @(
         Data : [
             {
                 $Type: 'UI.DataField',
-                Value: Plant,
+                Value: Plant_Plant,
             },
             {
                 $Type: 'UI.DataField',
-                Value: StorageLocation,
+                Value: StorageLocation_StorageLocation,
             },
         ],
     },
@@ -129,11 +129,11 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with @(
     UI.HeaderInfo                   : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: ProductSalesOrg,
+            Value: ProductSalesOrg_SalesOrganization,
         },
         Description   : {
             $Type: 'UI.DataField',
-            Value: ProductDistributionChnl,
+            Value: ProductDistributionChnl_DistributionChannel,
         },
         TypeName      : '{i18n>SalesOrg}',
         TypeNamePlural: '{i18n>SalesOrg}',
@@ -142,7 +142,7 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with @(
 
         {
             $Type                : 'UI.DataField',
-            Value                : ProductSalesOrg,
+            Value                : ProductSalesOrg_SalesOrganization,
             ![@HTML5.CssDefaults]: {
                 $Type: 'HTML5.CssDefaultsType',
                 width: 'auto'
@@ -150,7 +150,7 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with @(
         },
         {
             $Type                : 'UI.DataField',
-            Value                : ProductDistributionChnl,
+            Value                : ProductDistributionChnl_DistributionChannel,
             ![@HTML5.CssDefaults]: {
                 $Type: 'HTML5.CssDefaultsType',
                 width: 'auto'
@@ -163,11 +163,11 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with @(
         Data : [
             {
                 $Type: 'UI.DataField',
-                Value: ProductSalesOrg,
+                Value: ProductSalesOrg_SalesOrganization,
             },
             {
                 $Type: 'UI.DataField',
-                Value: ProductDistributionChnl,
+                Value: ProductDistributionChnl_DistributionChannel,
             },
         ],
     },
@@ -200,3 +200,90 @@ annotate service.DCPMaterialConfig with {
         Common.ValueListWithFixedValues: false
     )
 };
+
+annotate service.DCPMaterialConfig.to_Plant with {
+    Plant           @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Plants',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Plant_Plant,
+                    ValueListProperty: 'Plant',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'PlantName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    StorageLocation @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'StorageLocations',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterIn',
+                    LocalDataProperty: Plant_Plant,
+                    ValueListProperty: 'Plant',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: StorageLocation_StorageLocation,
+                    ValueListProperty: 'StorageLocation',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'StorageLocationName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+};
+
+annotate service.DCPMaterialConfig.to_SalesDelivery with {
+    ProductSalesOrg         @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'SalesOrganizations',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: ProductSalesOrg_SalesOrganization,
+                    ValueListProperty: 'SalesOrganization',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    ProductDistributionChnl @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'DistributionChannels',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: ProductDistributionChnl_DistributionChannel,
+                    ValueListProperty: 'DistributionChannel',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+}

@@ -8,49 +8,58 @@ service DistributionService @(requires: 'authenticated-user') {
         Insertable: false
     }
     @cds.redirection.target
-    entity AssetVault         as projection on av.AssetVault;
+    entity AssetVault           as projection on av.AssetVault;
 
-    entity AssetVaultVH       as projection on av.AssetVault
-                                 where
-                                     CreatedinSAP = false;
-
-    @readonly
-    entity CustomerGroup      as projection on api.CustomerGroup;
+    entity AssetVaultVH         as projection on av.AssetVault
+                                   where
+                                       CreatedinSAP = false;
 
     @readonly
-    entity Plants             as projection on api.Plants;
+    entity CustomerGroup        as projection on api.CustomerGroup;
 
     @readonly
-    entity Country            as projection on api.Country;
+    entity Plants               as projection on api.Plants;
 
     @readonly
-    entity Regions            as projection on api.Regions;
+    entity StorageLocations     as projection on api.StorageLocations;
 
     @readonly
-    entity Studios            as projection on db.StudioVH;
+    entity SalesOrganizations   as projection on api.SalesOrganizations;
 
     @readonly
-    entity Theaters           as projection on db.TheaterVH;
+    entity DistributionChannels as projection on api.DistributionChannels;
 
     @readonly
-    entity ShippingConditions as projection on api.ShippingConditions;
-
-    entity Products           as projection on api.Products;
+    entity Country              as projection on api.Country;
 
     @readonly
-    entity DCPProducts        as projection on db.DCPMaterialVH;
+    entity Regions              as projection on api.Regions;
 
     @readonly
-    entity Titles             as projection on db.TitleVH;
+    entity Studios              as projection on db.StudioVH;
 
     @readonly
-    entity DeliveryPriority   as projection on api.DeliveryPriority;
+    entity Theaters             as projection on db.TheaterVH;
 
-    entity DistroSpec         as projection on db.DistroSpec;
+    @readonly
+    entity ShippingConditions   as projection on api.ShippingConditions;
 
-    entity DCPMaterialConfig  as projection on db.DCPMaterialConfig
-                                 where
-                                     createdBy = $user.id
+    entity Products             as projection on api.Products;
+
+    @readonly
+    entity DCPProducts          as projection on db.DCPMaterialVH;
+
+    @readonly
+    entity Titles               as projection on db.TitleVH;
+
+    @readonly
+    entity DeliveryPriority     as projection on api.DeliveryPriority;
+
+    entity DistroSpec           as projection on db.DistroSpec;
+
+    entity DCPMaterialConfig    as projection on db.DCPMaterialConfig
+                                   where
+                                       createdBy = $user.id
         actions {
             action createDCPMaterial() returns Products;
         };
@@ -71,6 +80,14 @@ service DistributionService @(requires: 'authenticated-user') {
     };
 
     extend projection DCPProducts with {
+        virtual null as Name : String
+    };
+
+    extend projection SalesOrganizations with {
+        virtual null as Name : String
+    };
+
+    extend projection DistributionChannels with {
         virtual null as Name : String
     };
 }

@@ -147,6 +147,39 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "API_DISTRIBUTIONCHANNEL_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_DISTRIBUTIONCHANNEL_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_DISTRIBUTIONCHANNEL_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "API_SALESORGANIZATION_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_SALESORGANIZATION_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_SALESORGANIZATION_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_STORAGELOCATION_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_STORAGELOCATION_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_STORAGELOCATION_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
