@@ -1,27 +1,27 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Nov 27 2024 19:00:00 GMT+0530 (India Standard Time)|
+|**Generation Date and Time**<br>Tue Jan 21 2025 08:42:19 GMT+0000 (Coordinated Universal Time)|
 |**App Generator**<br>@sap/generator-fiori-elements|
-|**App Generator Version**<br>1.15.4|
-|**Generation Platform**<br>Visual Studio Code|
+|**App Generator Version**<br>1.16.2|
+|**Generation Platform**<br>SAP Business Application Studio|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local Cap|
 |**Service URL**<br>http://localhost:4004/odata/v4/distribution/|
 |**Module Name**<br>distribution|
-|**Application Title**<br>Distribution|
-|**Namespace**<br>com.dlx|
+|**Application Title**<br>Manage Distribution Spec|
+|**Namespace**<br>|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.130.2|
+|**UI5 Version**<br>1.131.1|
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 |**Main Entity**<br>DistroSpec|
-|**Navigation Entity**<br>_Package|
+|**Navigation Entity**<br>to_Package|
 
 ## distribution
 
-Distribution Application
+Manage Distribution Spec application.
 
 ### Starting the generated app
 
