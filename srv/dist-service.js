@@ -101,7 +101,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // DistRestrictions?$expand
         this.on("READ", `DistRestrictions`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_Region", "PrimaryPlant_Plant", "SecondaryPlant_Plant"]
+            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_Region"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -128,14 +128,14 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         records = await rgtx.run(SELECT.from(Regions).where({ Region: ids }))
 
                         break;
-                    case "PrimaryPlant_Plant":
-                        records = await planttx.run(SELECT.from(Plants).where({ Plant: ids }))
+                    // case "PrimaryPlant_Plant":
+                    //     records = await planttx.run(SELECT.from(Plants).where({ Plant: ids }))
 
-                        break;
-                    case "SecondaryPlant_Plant":
-                        records = await planttx.run(SELECT.from(Plants).where({ Plant: ids }))
+                    //     break;
+                    // case "SecondaryPlant_Plant":
+                    //     records = await planttx.run(SELECT.from(Plants).where({ Plant: ids }))
 
-                        break;
+                    //     break;
                     default:
                         break;
                 }

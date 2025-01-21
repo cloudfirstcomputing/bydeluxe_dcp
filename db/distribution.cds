@@ -60,8 +60,8 @@ entity DistRestrictions : cuid {
     DistributionFilterCountry : Country;
     DistributionFilterCity    : String;
     DistributionFilterPostal  : String;
-    PrimaryPlant              : Association to one api.Plants;
-    SecondaryPlant            : Association to one api.Plants;
+    // PrimaryPlant              : Association to one api.Plants;
+    // SecondaryPlant            : Association to one api.Plants;
     to_Package                : Association to Package;
     to_DistroSpec             : Association to DistroSpec;
 };
