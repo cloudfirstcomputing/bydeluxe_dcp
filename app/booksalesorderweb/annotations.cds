@@ -221,6 +221,12 @@ annotate service.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : LongText,
+            Label : '{i18n>Longtext}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : ProductGroup,
             Label : '{i18n>Productgroup}',
             ![@UI.Importance] : #High,
@@ -319,6 +325,11 @@ annotate service.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : Product,
                 Label : '{i18n>Product}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : LongText,
+                Label : '{i18n>Longtext}',
             },
             {
                 $Type : 'UI.DataField',

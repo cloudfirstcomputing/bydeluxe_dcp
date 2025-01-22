@@ -84,7 +84,7 @@ sap.ui.define([
             for (var i in aSelectedItems) {
                 var oEntry = aSelectedItems[i].getBindingContext().getObject();
                 if(!oEntry){
-                    MessageBox.error(`No entries selected for posting. Please make a selection and proceed`, {
+                    MessageBox.error(`No entries selected for reconciliation. Please make a selection and proceed`, {
                         title: "Error",
                         contentWidth: "auto",
                         styleClass: sResponsivePaddingClasses
@@ -93,7 +93,7 @@ sap.ui.define([
                     break;
                 }
                 else if (oEntry?.SalesOrder || !oEntry.ErrorMessage) {
-                    MessageBox.error(`Reconciliation can be done only for entries with Reconciliation Info`, {
+                    MessageBox.error(`Reconciliation can be done only for failed entries`, {
                         title: "Error",
                         contentWidth: "auto",
                         styleClass: sResponsivePaddingClasses
