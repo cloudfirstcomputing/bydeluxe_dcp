@@ -5,6 +5,7 @@ using {managed} from '@sap/cds/common';
 entity dcpcontent : managed {
         ApplicationID      : String(20) not null @mandatory;
     key BookingID          : String(10) not null @mandatory;
+        EntityID           : String;
         ReleaseID          : String(10) not null @mandatory;
         TheaterID          : String(12) not null @mandatory;
         Circuit            : String(12);
@@ -34,9 +35,11 @@ entity dcpcontent : managed {
         SalesOrder         : String              @readonly;
         ErrorMessage       : String              @readonly;
 }
+
 entity dcpkey : managed {
         ApplicationID       : String(20) not null @mandatory;
     key BookingID           : String(10) not null @mandatory;
+        EntityID            : String;
         ReleaseID           : String(10) not null @mandatory;
         TheaterID           : String(12) not null @mandatory;
         Circuit             : String(12);
@@ -86,6 +89,7 @@ entity dcpkey : managed {
 entity BookingSalesOrder : managed {
     key SalesOrder              : String(10) not null                           @mandatory;
     key BookingID               : String(10) not null                           @mandatory;
+        EntityID                : String;
         SoldToParty             : String(10);
         SalesOrganization       : String(4);
         DistributionChannel     : String(2);
@@ -136,6 +140,7 @@ entity BookingSalesorderItem : managed {
         PrintQuality             : String(4);
         FilmStock                : String(4);
         Key_Content              : String(1);
+        LongText                 : LargeString;
 
 }
 

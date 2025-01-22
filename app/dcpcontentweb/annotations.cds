@@ -10,6 +10,11 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : EntityID,
+                Label : '{i18n>Entityid}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Releaseid}',
                 Value : ReleaseID,
             },
@@ -95,6 +100,12 @@ annotate service.dcpcontent with @(
             $Type : 'UI.DataField',
             Label : '{i18n>Applicationid}',
             Value : ApplicationID,
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : EntityID,
+            Label : '{i18n>Entityid}',
             ![@UI.Importance] : #High,
         },
         {

@@ -2,6 +2,7 @@ using dcp.db as db from '../db/dcp';
 using {API_SALES_ORDER_SRV as S4_SalesOrder} from './external/API_SALES_ORDER_SRV';
 using {API_BUSINESS_PARTNER as S4_BuisnessPartner} from './external/API_BUSINESS_PARTNER';
 using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
+using {AssetVaultService.AssetVault as AssetVault} from './asset-vault';
 service BookingOrderService{
     entity dcpcontent as projection on db.dcpcontent;
     action createContent(Records: array of  dcpcontent) returns String;
@@ -18,9 +19,10 @@ service BookingOrderService{
     entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
 
     entity DistroSpec_Local as projection on DistroSpec;
+    entity AssetVault_Local as projection on AssetVault;
 
     entity BookingSalesOrder as projection on db.BookingSalesOrder;
-    action test() returns String;
+    action test(bookingIDs: array of String) returns String;
     annotate dcpcontent with @odata.draft.enabled;
     annotate dcpkey with @odata.draft.enabled;
 }

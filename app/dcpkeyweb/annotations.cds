@@ -15,6 +15,11 @@ annotate service.dcpkey with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : EntityID,
+                Label : '{i18n>Entityid}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Theaterid}',
                 Value : TheaterID,
             },
@@ -136,7 +141,7 @@ annotate service.dcpkey with @(
             {
                 $Type : 'UI.DataField',
                 Value : Status,
-                Label : '{i18n>Status}',
+                Label : '{i18n>Entityid1}',
             },
         ],
     },
@@ -165,6 +170,12 @@ annotate service.dcpkey with @(
             $Type : 'UI.DataField',
             Label : '{i18n>Applicationid}',
             Value : ApplicationID,
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : EntityID,
+            Label : '{i18n>Entityid}',
             ![@UI.Importance] : #High,
         },
         {
@@ -258,7 +269,7 @@ annotate service.dcpkey with @(
         {
             $Type : 'UI.DataField',
             Value : UUID,
-            Label : '{i18n>Uuid}',
+            Label : '{i18n>Entityid1}',
             ![@UI.Importance] : #High,
         },
     ],
