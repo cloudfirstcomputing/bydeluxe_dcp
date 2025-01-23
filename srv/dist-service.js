@@ -363,7 +363,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     to_Plant.push({
                         "Plant": plant.Plant,
                         "ProfitCenter": "100402",
-                        "SerialNumberProfile": "ZBP1",
+                        // "SerialNumberProfile": "ZBP1",
                         "MRPType": "PD",
                         "MRPResponsible": "001",
                         "ProcurementType": "X",

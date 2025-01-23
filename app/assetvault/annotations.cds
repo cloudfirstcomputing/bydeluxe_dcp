@@ -25,6 +25,8 @@ annotate service.AssetVault._Items with {
     RunTime             @Common: {Label: '{i18n>RunTime}', };
     StartOfCredits      @Common: {Label: '{i18n>StartOfCredits}', };
     StartOfCrawl        @Common: {Label: '{i18n>StartOfCrawl}', };
+    DKDMS3location      @Common: {Label: '{i18n>DKDMS3location}', };
+    CPLS3location       @Common: {Label: '{i18n>CPLS3location}', };
 };
 
 annotate service.AssetVault with @(

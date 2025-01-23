@@ -24,5 +24,7 @@ entity AssetVault {
                                         RunTime             : String(10);
                                         StartOfCredits      : String(10);
                                         StartOfCrawl        : String(10);
+                                        DKDMS3location      : String;
+                                        CPLS3location       : String;
                                 }
 };
