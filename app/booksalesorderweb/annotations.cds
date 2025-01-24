@@ -120,6 +120,146 @@ annotate service.BookingSalesOrder with @(
                 Label : '{i18n>Uuid}',
                 Value : UUID,
             },
+            {
+                $Type : 'UI.DataField',
+                Value : ApprovedScreensList,
+                Label : 'ApprovedScreensList',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : AuditoriumType,
+                Label : 'AuditoriumType',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : BranchID,
+                Label : 'BranchID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : CountryCode,
+                Label : 'CountryCode',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DeliveryOnDate,
+                Label : 'DeliveryOnDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DepotID,
+                Label : 'DepotID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : EntityID,
+                Label : 'EntityID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : FilmStock,
+                Label : 'FilmStock',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Key_Content,
+                Label : 'Key_Content',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Language,
+                Label : 'Language',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayEndDate,
+                Label : 'PlayEndDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayStartDate,
+                Label : 'PlayStartDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PrintFormat,
+                Label : 'PrintFormat',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PrintQuality,
+                Label : 'PrintQuality',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReleaseHold,
+                Label : 'ReleaseHold',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Releasempm,
+                Label : 'Releasempm',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReleaseNameHO,
+                Label : 'ReleaseNameHO',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReleaseShortName,
+                Label : 'ReleaseShortName',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReleaseTitleHO,
+                Label : 'ReleaseTitleHO',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ScreenID,
+                Label : 'ScreenID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ScreeningIndicator,
+                Label : 'ScreeningIndicator',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ShipPriority,
+                Label : 'ShipPriority',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SingleScreen,
+                Label : 'SingleScreen',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SoundID,
+                Label : 'SoundID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : StartDate,
+                Label : 'StartDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : StartTime,
+                Label : 'StartTime',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SubtitleType,
+                Label : 'SubtitleType',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Territory,
+                Label : 'Territory',
+            },
         ],
     },
     UI.Facets : [
@@ -275,6 +415,16 @@ annotate service.BookingSalesorderItem with @(
             Value : ShippingPoint,
             Label : '{i18n>Shippingpoint}',
             ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : CPLUUID,
+            Label : 'CPLUUID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : CTT,
+            Label : 'CTT',
         },
     ],
     UI.Facets : [

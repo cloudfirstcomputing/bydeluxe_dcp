@@ -86,6 +86,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             for (var i in aContentData) {
                 var oContentData = aContentData[i];
+                var aCTTCPL = [];
                 oPayLoad.SoldToParty = sSoldToCustomer;
                 oPayLoad.SalesOrganization = SalesOrganization;
                 oPayLoad.DistributionChannel = DistributionChannel;
@@ -238,7 +239,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     }
                                     if (oFilteredPackage?.to_DCPMaterial) {
                                         oPayLoad._Item = [];
-                                        var sLinkedCTT = "", sCPLUUID = "";
                                         for (var j in oFilteredPackage.to_DCPMaterial) {
                                             var oMatRecord = oFilteredPackage.to_DCPMaterial[j];
                                             var oEntry = {
@@ -253,8 +253,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     DCP: oMatRecord.DCPMaterialNumber_Product
                                                 })
                                             if (assetvault?._Items?.length > 0) {
-                                                sLinkedCTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
-                                                sCPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
+                                                var sLinkedCTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`);
+                                                var sCPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`);
+                                                aCTTCPL.push({ "Product": oMatRecord.DCPMaterialNumber_Product, "LinkedCTT": sLinkedCTT, "CPLUUID": sCPLUUID })
                                             }
                                             oPayLoad._Item.push(oEntry);
                                         }
@@ -277,6 +278,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         //     PartnerAddress(Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
                                         // }
                                     }
+                                    if (i == "0") { //Picking up only the 1st package
+                                        break;
+                                    }
                                 }
                             }
                             else {
@@ -287,7 +291,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             sErrorMessage = "Package not maintained in DistroSpec";
                         }
                     }
-
                 }
                 var bPostingSuccess = false, sSalesOrder = "";
                 if (sErrorMessage) {
@@ -332,23 +335,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }).where({ SalesOrder: sSalesOrder }));
 
                         if (aSalesOrderData?.length) {
-                            var oSalesOrder = aSalesOrderData[0];
+                            var oSalesOrder = aSalesOrderData[0]; //IT IS ALWAYS 1 RECORD
                             var oRecordsToBePosted = oContentData;
-                            var oSalesOrderItem = oSalesOrder._Item[0];
-                            var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oMatRecord.DCPMaterialNumber_Product });
-                            var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
-                            oSalesOrder._Item[0].LongText = sGoFilexTitleID;
-                            Object.assign(oRecordsToBePosted, oSalesOrder);
+                            // var oSalesOrderItem = oSalesOrder._Item[0];
                             oRecordsToBePosted.DistroSpecID = distroSpecData.DistroSpecID;
                             oRecordsToBePosted.DistroSpecPackageID = aPackageFiltered[0].PackageUUID;
                             oRecordsToBePosted.DistroSpecPackageName = aPackageFiltered[0].PackageName;
-                            await INSERT.into(BookingSalesOrder).entries(oRecordsToBePosted);
-                            aResponseStatus.push({
-                                "message": `| For Booking ID: ${oContentData.BookingID} - Sales Order: ${oSalesOrder?.SalesOrder}, Booking entry created |`,
-                                "status": "S"
-                            });
-                            if (oPayLoad?.ShippingCondition && oPayLoad?.ShippingCondition === '02') {
-                                if (sGoFilexTitleID) {
+                            var aSalesOrderItems = oSalesOrder._Item;
+                            for (var item in aSalesOrderItems) {
+                                var oSalesOrderItem = aSalesOrderItems[item];
+                                var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oSalesOrderItem.Product });
+                                var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
+                                oSalesOrder._Item[item].LongText = sGoFilexTitleID;
+                                if (oPayLoad?.ShippingCondition && oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) {
                                     var aItemText =
                                     {
                                         "SalesOrder": oSalesOrderItem.SalesOrder,
@@ -375,7 +374,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         }
                                     });
                                 }
+                                var oCTTCPL = aCTTCPL?.find((entry) => { return entry.Product === oSalesOrderItem.Product });
+                                if (oCTTCPL) {
+                                    oSalesOrder._Item[item].CTT = oCTTCPL.LinkedCTT;
+                                    oSalesOrder._Item[item].CPLUUID = oCTTCPL.CPLUUID;
+                                }
                             }
+                            Object.assign(oRecordsToBePosted, oContentData);
+                            Object.assign(oRecordsToBePosted, oSalesOrder);
+                            await INSERT.into(BookingSalesOrder).entries(oRecordsToBePosted);
+                            aResponseStatus.push({
+                                "message": `| For Booking ID: ${oContentData.BookingID} - Sales Order: ${oSalesOrder?.SalesOrder}, Booking entry created |`,
+                                "status": "S"
+                            });
                         }
                     }
                 }

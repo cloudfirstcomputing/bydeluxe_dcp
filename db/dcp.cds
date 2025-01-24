@@ -10,7 +10,7 @@ entity dcpcontent : managed {
         TheaterID          : String(12) not null          @mandatory;
         Circuit            : String(12);
         ShipmentIndicator  : String(1) not null           @mandatory;
-        ScreeningIndicator : String(1) not null           @mandatory;
+        ScreeningIndicator : String(1)                    @mandatory;
         PlayStartDate      : Date not null                @mandatory;
         PlayEndDate        : Date not null                @mandatory;
         BranchID           : String(2) not null           @mandatory;
@@ -44,7 +44,7 @@ entity dcpkey : managed {
         TheaterID           : String(12) not null          @mandatory;
         Circuit             : String(12);
         ShipmentIndicator   : String(1) not null           @mandatory;
-        ScreeningIndicator  : String(1) not null           @mandatory;
+        ScreeningIndicator  : String(1)                    @mandatory;
         PlayStartDate       : Date not null                @mandatory;
         PlayEndDate         : Date not null                @mandatory;
         BranchID            : String(2) not null           @mandatory;
@@ -79,7 +79,7 @@ entity dcpkey : managed {
         ReleaseName         : String(40) not null          @mandatory;
         ReleaseShortName    : String(2) not null           @mandatory;
         ReleaseNameHO       : String(40) not null          @mandatory;
-        ReleaseTtileHO      : String(40) not null          @mandatory;
+        ReleaseTitleHO      : String(40);
         Status              : Association to BookingStatus @mandatory;
         SalesOrder          : String                       @readonly;
         ErrorMessage        : String                       @readonly;
@@ -92,6 +92,7 @@ entity BookingStatus {
 };
 
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
+@readonly
 entity BookingSalesOrder : managed {
     key SalesOrder              : String(10) not null                           @mandatory;
     key BookingID               : String(10) not null                           @mandatory;
@@ -106,15 +107,45 @@ entity BookingSalesOrder : managed {
         TotalNetAmount          : Decimal(15);
         TransactionCurrency     : String(3);
         ShippingCondition       : String(2);
-        ShipDate                : Date not null;
-        ApplicationID           : String(20) not null                           @mandatory;
-        ReleaseID               : String(10) not null                           @mandatory;
-        TheaterID               : String(12) not null                           @mandatory;
+        ShipDate                : Date;
+        ApplicationID           : String(20) not null;
+        ReleaseID               : String(10);
+        TheaterID               : String(12);
         Circuit                 : String(12);
-        TimeofEntry             : String(16) not null                           @mandatory;
-        BookingType             : String(4) not null                            @mandatory;
-        PackageName             : String not null                               @mandatory;
-        UUID                    : String(40) not null;
+        TimeofEntry             : String(16);
+        BookingType             : String(4);
+        PackageName             : String;
+        ScreeningIndicator      : String(1);
+        PlayStartDate           : Date;
+        PlayEndDate             : Date;
+        BranchID                : String(2);
+        DepotID                 : String(1);
+        SoundID                 : String(8);
+        Language                : String(3);
+        SubtitleType            : String(1);
+        PrintFormat             : String(3);
+        ReleaseHold             : String(1);
+        ShipPriority            : String(2);
+        AuditoriumType          : String(1);
+        PrintQuality            : String(4);
+        FilmStock               : String(4);
+        Key_Content             : String(1);
+        UUID                    : String(40);
+        CountryCode             : String(2);
+        ScreenID                : String(1);
+        SingleScreen            : String;
+        StartDate               : Date;
+        StartTime               : Timestamp;
+        EndDate                 : Date;
+        EndTime                 : Timestamp;
+        Releasempm              : String(12);
+        Territory               : String(2);
+        DeliveryOnDate          : Date;
+        ApprovedScreensList     : String;
+        ReleaseName             : String(40);
+        ReleaseShortName        : String(2);
+        ReleaseNameHO           : String(40);
+        ReleaseTitleHO          : String(40);
         _Item                   : Composition of many BookingSalesorderItem
                                       on $self.SalesOrder = _Item.SalesOrder    @readonly;
         _Partner                : Composition of many BookingSalesorderPartner
@@ -122,10 +153,9 @@ entity BookingSalesOrder : managed {
         DistroSpecID            : Integer default 0                             @readonly;
         DistroSpecPackageID     : UUID;
         DistroSpecPackageName   : String(40);
-        CTT                     : String;
-        CPLUUID                 : String;
 }
 
+@readonly
 entity BookingSalesorderItem : managed {
     key SalesOrder               : String(10) not null @mandatory;
     key SalesOrderItem           : String(6) not null;
@@ -152,7 +182,8 @@ entity BookingSalesorderItem : managed {
         FilmStock                : String(4);
         Key_Content              : String(1);
         LongText                 : LargeString;
-
+        CTT                      : String;
+        CPLUUID                  : String;
 }
 
 entity BookingSalesorderPartner : managed {
