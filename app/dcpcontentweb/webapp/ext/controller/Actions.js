@@ -2,16 +2,17 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/core/library",
     "sap/m/MessageBox"
-], function(MessageToast, coreLibrary, MessageBox) {
+], function (MessageToast, coreLibrary, MessageBox) {
     'use strict';
     var sResponsivePaddingClasses = "sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer";
+    var that = this;
     return {
-        handleProcess: function(oEvent) {
+        handleProcess: function (oEvent) {
             let aData = [];
             let aSelectedItems = this.editFlow.getView().byId("dcpcontentweb::dcpcontentList--fe::table::dcpcontent::LineItem-innerTable").getSelectedItems();
             for (var i in aSelectedItems) {
                 var oEntry = aSelectedItems[i].getBindingContext().getObject();
-                if(!oEntry){
+                if (!oEntry) {
                     MessageBox.error(`No entries selected for posting. Please make a selection and proceed`, {
                         title: "Error",
                         contentWidth: "auto",
@@ -29,7 +30,7 @@ sap.ui.define([
                     aData = [];
                     break;
                 }
-                else if(!oEntry?.BookingID){
+                else if (!oEntry?.BookingID) {
                     MessageBox.error(`Retry after selecting Booking ID from table settings`, {
                         title: "Error",
                         contentWidth: "auto",
@@ -38,16 +39,16 @@ sap.ui.define([
                     aData = [];
                     break;
                 }
-                else if(oEntry.ErrorMessage){
+                else if (oEntry.ErrorMessage) {
                     MessageBox.error(`Selection contains entries to be reconciled`, {
                         title: "Error",
                         contentWidth: "auto",
                         styleClass: sResponsivePaddingClasses
                     });
                     aData = [];
-                    break;                    
+                    break;
                 }
-                else{
+                else {
                     aData.push(oEntry.BookingID);
                 }
             }
@@ -58,12 +59,48 @@ sap.ui.define([
                 oActionODataContextBinding.execute().then(
                     function (param) {
                         var oActionContext = oActionODataContextBinding.getBoundContext();
-                        MessageBox.success("Action has been completed successfully", {
-                            title: "Success",
-                            details: "Please check Sales Order and Reconciliation info for details",
-                            contentWidth: "auto",
-                            styleClass: sResponsivePaddingClasses
-                        });
+
+                        if (oActionContext.getObject()?.value?.message) {
+                            let aMessages = JSON.parse(oActionContext.getObject()?.value?.message);
+                            if (aMessages?.length) {
+                                let aErrors = aMessages.filter((entry) => { return entry.status === "E" });
+                                let aWarnings = aMessages.filter((entry) => { return entry.status === "W" });
+                                let aSuccess = aMessages.filter((entry) => { return entry.status === "S" });
+
+                                if (aErrors?.length) {
+                                    MessageBox.error("Action failed", {
+                                        title: "Error",
+                                        details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                                else if (aWarnings?.length) {
+                                    MessageBox.warning("Action has been completed with warning", {
+                                        title: "Warning",
+                                        details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                                else if (aSuccess?.length) {
+                                    MessageBox.success("Action has been completed successfully", {
+                                        title: "Success",
+                                        details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                                else {
+                                    MessageBox.alert("No response received", {
+                                        title: "Alert",
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                            }
+                        }
+
                         oModel.refresh();
                     }.bind(this)
                 ).catch(
@@ -76,14 +113,56 @@ sap.ui.define([
                         });
                     }
                 );
-            }            
+            }
         },
-        handleReconcile: function() {
+        _showMessages: function (oActionContext) {
+            if (oActionContext.getObject()?.value?.message) {
+                let aMessages = JSON.parse(oActionContext.getObject()?.value?.message);
+                if (aMessages?.length) {
+                    let aErrors = aMessages.filter((entry) => { return entry.status === "E" });
+                    let aWarnings = aMessages.filter((entry) => { return entry.status === "W" });
+                    let aSuccess = aMessages.filter((entry) => { return entry.status === "S" });
+
+                    if (aErrors?.length) {
+                        MessageBox.error("Action failed", {
+                            title: "Error",
+                            details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                            contentWidth: "auto",
+                            styleClass: sResponsivePaddingClasses
+                        });
+                    }
+                    else if (aWarnings?.length) {
+                        MessageBox.warning("Action has been completed with warning", {
+                            title: "Warning",
+                            details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                            contentWidth: "auto",
+                            styleClass: sResponsivePaddingClasses
+                        });
+                    }
+                    else if (aSuccess?.length) {
+                        MessageBox.success("Action has been completed successfully", {
+                            title: "Success",
+                            details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                            contentWidth: "auto",
+                            styleClass: sResponsivePaddingClasses
+                        });
+                    }
+                    else {
+                        MessageBox.alert("No response received", {
+                            title: "Alert",
+                            contentWidth: "auto",
+                            styleClass: sResponsivePaddingClasses
+                        });
+                    }
+                }
+            }
+        },
+        handleReconcile: function () {
             let aData = [];
             let aSelectedItems = this.editFlow.getView().byId("dcpcontentweb::dcpcontentList--fe::table::dcpcontent::LineItem-innerTable").getSelectedItems();
             for (var i in aSelectedItems) {
                 var oEntry = aSelectedItems[i].getBindingContext().getObject();
-                if(!oEntry){
+                if (!oEntry) {
                     MessageBox.error(`No entries selected for reconciliation. Please make a selection and proceed`, {
                         title: "Error",
                         contentWidth: "auto",
@@ -101,7 +180,7 @@ sap.ui.define([
                     aData = [];
                     break;
                 }
-                else if(!oEntry?.BookingID){
+                else if (!oEntry?.BookingID) {
                     MessageBox.error(`Retry after selecting Booking ID from table settings`, {
                         title: "Error",
                         contentWidth: "auto",
@@ -110,7 +189,7 @@ sap.ui.define([
                     aData = [];
                     break;
                 }
-                else{
+                else {
                     aData.push(oEntry.BookingID);
                 }
             }
@@ -121,12 +200,47 @@ sap.ui.define([
                 oActionODataContextBinding.execute().then(
                     function (param) {
                         var oActionContext = oActionODataContextBinding.getBoundContext();
-                        MessageBox.success("Action has been completed successfully", {
-                            title: "Success",
-                            details: "Please check Sales Order and Reconciliation info for details",
-                            contentWidth: "auto",
-                            styleClass: sResponsivePaddingClasses
-                        });
+
+                        if (oActionContext.getObject()?.value?.message) {
+                            let aMessages = JSON.parse(oActionContext.getObject()?.value?.message);
+                            if (aMessages?.length) {
+                                let aErrors = aMessages.filter((entry) => { return entry.status === "E" });
+                                let aWarnings = aMessages.filter((entry) => { return entry.status === "W" });
+                                let aSuccess = aMessages.filter((entry) => { return entry.status === "S" });
+
+                                if (aErrors?.length) {
+                                    MessageBox.error("Action failed", {
+                                        title: "Error",
+                                        details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                                else if (aWarnings?.length) {
+                                    MessageBox.warning("Action has been completed with warning", {
+                                        title: "Warning",
+                                        details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                                else if (aSuccess?.length) {
+                                    MessageBox.success("Action has been completed successfully", {
+                                        title: "Success",
+                                        details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                                else {
+                                    MessageBox.alert("No response received", {
+                                        title: "Alert",
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                }
+                            }
+                        }
                         oModel.refresh();
                     }.bind(this)
                 ).catch(
@@ -139,7 +253,7 @@ sap.ui.define([
                         });
                     }
                 );
-            }            
+            }
         }
     };
 });

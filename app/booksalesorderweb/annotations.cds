@@ -17,6 +17,21 @@ annotate service.BookingSalesOrder with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : DistroSpecID,
+                Label : '{i18n>Distrospecid}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DistroSpecPackageID,
+                Label : '{i18n>Distrospecpackageid}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DistroSpecPackageName,
+                Label : '{i18n>Distrospecpackagename}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Soldtoparty}',
                 Value : SoldToParty,
             },
@@ -92,7 +107,7 @@ annotate service.BookingSalesOrder with @(
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'BookingType',
+                Label : '{i18n>Bookingtype}',
                 Value : BookingType,
             },
             {
@@ -148,6 +163,24 @@ annotate service.BookingSalesOrder with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : DistroSpecID,
+            Label : '{i18n>Distrospecid}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : DistroSpecPackageID,
+            Label : '{i18n>Distrospecpackageid}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : DistroSpecPackageName,
+            Label : '{i18n>Distrospecpackagename}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Label : '{i18n>Soldtoparty}',
             Value : SoldToParty,
             ![@UI.Importance] : #High,
@@ -168,12 +201,6 @@ annotate service.BookingSalesOrder with @(
             $Type : 'UI.DataField',
             Value : ShipDate,
             Label : '{i18n>Shipdate}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : TheaterID,
-            Label : '{i18n>Theaterid}',
             ![@UI.Importance] : #High,
         },
         {
