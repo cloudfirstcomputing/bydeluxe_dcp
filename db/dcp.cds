@@ -86,9 +86,12 @@ entity dcpkey : managed {
 }
 
 entity BookingStatus {
-    key ID         : String(1);
+    key ID         : String(1) enum {
+            A;
+            C;
+            D
+        };
         Status     : String;
-        StatusDesc : String;
 };
 
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
