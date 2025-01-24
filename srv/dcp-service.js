@@ -71,7 +71,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("postKeyToSAP", async (req, res) => {
             await createSalesOrder(req, "K");
         });
-        const createSalesOrder = async (req, sContentIndicator)=>{
+        const createSalesOrder = async (req, sContentIndicator) => {
             var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {}, sContentIndicator = "C",
                 aResponseStatus = [];
             if (!aBookingIDs?.length) {
@@ -133,7 +133,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sErrorMessage = "DistroSpec not found";
                     updateQuery.push(UPDATE(dcpcontent).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
                 }
-                else{
+                else {
                     var sShipDate = oContentData.ShipDate;
                     if (sShipDate) {
                         oPayLoad.RequestedDeliveryDate = sShipDate;
@@ -148,7 +148,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var sDistValidTo = distroSpecData.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-    
+
                     if (dPlayStartDate < sDistValidFrom || dPlayEndDate > sDistValidTo) {
                         sErrorMessage = `DistroSpec not in validity. Validity period is from ${distroSpecData.ValidFrom} to ${distroSpecData.ValidTo}`;
                     }
@@ -238,6 +238,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     }
                                     if (oFilteredPackage?.to_DCPMaterial) {
                                         oPayLoad._Item = [];
+                                        var sLinkedCTT = "", sCPLUUID = "";
                                         for (var j in oFilteredPackage.to_DCPMaterial) {
                                             var oMatRecord = oFilteredPackage.to_DCPMaterial[j];
                                             var oEntry = {
@@ -246,6 +247,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "RequestedQuantityISOUnit": "EA",
                                                 "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority
                                             };
+                                            var assetvault = await SELECT.one.from(AssetVault_Local)
+                                                .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+                                                .where({
+                                                    DCP: oMatRecord.DCPMaterialNumber_Product
+                                                })
+                                            if (assetvault?._Items?.length > 0) {
+                                                sLinkedCTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+                                                sCPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
+                                            }
                                             oPayLoad._Item.push(oEntry);
                                         }
                                     }
@@ -277,7 +287,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             sErrorMessage = "Package not maintained in DistroSpec";
                         }
                     }
-                    
+
                 }
                 var bPostingSuccess = false, sSalesOrder = "";
                 if (sErrorMessage) {
@@ -326,7 +336,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             var oRecordsToBePosted = oContentData;
                             var oSalesOrderItem = oSalesOrder._Item[0];
                             var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oMatRecord.DCPMaterialNumber_Product });
-                            var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;                            
+                            var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                             oSalesOrder._Item[0].LongText = sGoFilexTitleID;
                             Object.assign(oRecordsToBePosted, oSalesOrder);
                             oRecordsToBePosted.DistroSpecID = distroSpecData.DistroSpecID;
@@ -381,7 +391,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             { "ID": "D", "Status": "Failed", "StatusDesc": "Failed (D)" }];
         });
         this.on("test", async (req, res) => {
-            
+
         });
         this.on("READ", S4H_SOHeader, async (req, res) => {
             // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
