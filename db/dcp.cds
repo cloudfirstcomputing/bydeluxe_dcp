@@ -122,6 +122,8 @@ entity BookingSalesOrder : managed {
         DistroSpecID            : Integer default 0                             @readonly;
         DistroSpecPackageID     : UUID;
         DistroSpecPackageName   : String(40);
+        CTT                     : String;
+        CPLUUID                 : String;
 }
 
 entity BookingSalesorderItem : managed {
