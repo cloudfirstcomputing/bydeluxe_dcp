@@ -194,13 +194,14 @@ annotate service.dcpcontent with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : Status,
-            Label : '{i18n>Status}',
+            Value : UUID,
+            Label : '{i18n>Uuid}',
+            ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
-            Value : UUID,
-            Label : '{i18n>Uuid}',
+            Value : Status_ID,
+            Label : '{i18n>Statusid}',
             ![@UI.Importance] : #High,
         },
     ],
@@ -288,6 +289,37 @@ annotate service.dcpcontent with @(
                 Label : '{i18n>Errormessage}',
             },
         ],
-    },
+    },    
 );
+annotate service.dcpcontent with {
+    Status  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'BookingStatus',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Status_ID,
+                    ValueListProperty: 'Status',
+                },
+                // {
+                //     $Type            : 'Common.ValueListParameterOut',
+                //     LocalDataProperty: Status,
+                //     ValueListProperty: 'StatusDesc',
+                // },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Status',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false,
+        Common.Text : {
+            $value : Status.StatusDesc,
+            ![@UI.TextArrangement] : #TextOnly
+        },
+    );    
+};
+
 

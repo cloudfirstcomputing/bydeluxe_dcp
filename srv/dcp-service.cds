@@ -23,6 +23,9 @@ service BookingOrderService{
 
     entity BookingSalesOrder as projection on db.BookingSalesOrder;
     action test(bookingIDs: array of String) returns String;
+    
+    entity BookingStatus as projection on db.BookingStatus;
+    
     annotate dcpcontent with @odata.draft.enabled;
     annotate dcpkey with @odata.draft.enabled;
 }
