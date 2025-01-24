@@ -10,6 +10,11 @@ annotate service.dcpkey with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : EntityID,
+                Label : '{i18n>Entityid}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Releaseid}',
                 Value : ReleaseID,
             },
@@ -136,12 +141,7 @@ annotate service.dcpkey with @(
             {
                 $Type : 'UI.DataField',
                 Label : '{i18n>Releasettileho}',
-                Value : ReleaseTtileHO,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Status,
-                Label : '{i18n>Entityid1}',
+                Value : ReleaseTitleHO,
             },
         ],
     },
@@ -236,34 +236,12 @@ annotate service.dcpkey with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : BranchID,
-            Label : '{i18n>Branchid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : DepotID,
-            Label : '{i18n>Depotid}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SoundID,
-            Label : '{i18n>Soundid}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : Language,
             Label : '{i18n>Language}',
         },
         {
             $Type : 'UI.DataField',
-            Value : SubtitleType,
-            Label : '{i18n>Subtitletype}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Status,
+            Value : Status_ID,
             Label : '{i18n>Status}',
         },
         {

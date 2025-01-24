@@ -70,8 +70,88 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Status,
+                Value : Status_ID,
                 Label : '{i18n>Status}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : AuditoriumType,
+                Label : 'AuditoriumType',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : BranchID,
+                Label : 'BranchID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Circuit,
+                Label : 'Circuit',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ErrorMessage,
+                Label : 'ErrorMessage',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : FilmStock,
+                Label : 'FilmStock',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Language,
+                Label : 'Language',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PackageName,
+                Label : 'PackageName',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PrintFormat,
+                Label : 'PrintFormat',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PrintQuality,
+                Label : 'PrintQuality',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReleaseHold,
+                Label : 'ReleaseHold',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ScreeningIndicator,
+                Label : 'ScreeningIndicator',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ShipmentIndicator,
+                Label : 'ShipmentIndicator',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SoundID,
+                Label : 'SoundID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SubtitleType,
+                Label : 'SubtitleType',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : TimeofEntry,
+                Label : 'TimeofEntry',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Status.StatusDesc,
+                Label : 'StatusDesc',
             },
         ],
     },
@@ -122,12 +202,6 @@ annotate service.dcpcontent with @(
         },
         {
             $Type : 'UI.DataField',
-            Label : '{i18n>Circuit}',
-            Value : Circuit,
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : ShipmentIndicator,
             Label : '{i18n>Shipmentindicator}',
             ![@UI.Importance] : #High,
@@ -140,36 +214,6 @@ annotate service.dcpcontent with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : ScreeningIndicator,
-            Label : '{i18n>Screeningindicator}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayStartDate,
-            Label : '{i18n>Playstartdate}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayEndDate,
-            Label : '{i18n>Playenddate}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : BranchID,
-            Label : '{i18n>Branchid}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : DepotID,
-            Label : '{i18n>Depotid}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : SalesOrder,
             Label : '{i18n>Salesorder}',
             ![@UI.Importance] : #High,
@@ -178,12 +222,6 @@ annotate service.dcpcontent with @(
             $Type : 'UI.DataField',
             Value : ErrorMessage,
             Label : '{i18n>Errormessage}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SoundID,
-            Label : '{i18n>Soundid}',
             ![@UI.Importance] : #High,
         },
         {
