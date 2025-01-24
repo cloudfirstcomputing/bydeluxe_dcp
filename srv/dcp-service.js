@@ -396,14 +396,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: JSON.stringify(aResponseStatus)
             });
         };
-        this.on("READ", BookingStatus, async (req, res) => {
-            return [{ "ID": "A", "Status": "Not Processed", "StatusDesc": "Not Processed (A)" },
-            { "ID": "C", "Status": "Completely Processed", "StatusDesc": "Completely Processed (C)" },
-            { "ID": "D", "Status": "Failed", "StatusDesc": "Failed (D)" }];
-        });
         this.on("test", async (req, res) => {
 
         });
+        
         this.on("READ", S4H_SOHeader, async (req, res) => {
             // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
 

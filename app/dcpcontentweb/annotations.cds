@@ -147,12 +147,7 @@ annotate service.dcpcontent with @(
                 $Type : 'UI.DataField',
                 Value : TimeofEntry,
                 Label : 'TimeofEntry',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Status.StatusDesc,
-                Label : 'StatusDesc',
-            },
+            }
         ],
     },
     UI.Facets : [
@@ -346,16 +341,16 @@ annotate service.dcpcontent with {
                 //     LocalDataProperty: Status,
                 //     ValueListProperty: 'StatusDesc',
                 // },
-                {
-                    $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'Status',
-                },
+                // {
+                //     $Type            : 'Common.ValueListParameterDisplayOnly',
+                //     ValueListProperty: 'Status',
+                // },
             ],
         },
         Common.ValueListWithFixedValues: false,
         Common.Text : {
-            $value : Status.StatusDesc,
-            ![@UI.TextArrangement] : #TextOnly
+            $value : Status.Status,
+            ![@UI.TextArrangement] : #TextFirst
         },
     );    
 };
