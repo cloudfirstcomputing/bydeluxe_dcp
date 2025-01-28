@@ -364,6 +364,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         "Plant": plant.Plant,
                         "ProfitCenter": "100402",
                         // "SerialNumberProfile": "ZBP1",
+                        "AvailabilityCheckType": "SR",
                         "MRPType": "PD",
                         "MRPResponsible": "001",
                         "ProcurementType": "X",
@@ -373,7 +374,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                             "MRPResponsible": "001",
                             "SafetyStockQuantity": "5",
                             "LotSizingProcedure": "MB",
-                            "PlanningStrategyGroup": "40"
+                            "PlanningStrategyGroup": "10"
                         },
                         "to_StorageLocation": [
                             {

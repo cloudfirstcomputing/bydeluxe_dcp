@@ -60,6 +60,10 @@ entity DistRestrictions : cuid {
     DistributionFilterCountry : Country;
     DistributionFilterCity    : String;
     DistributionFilterPostal  : String;
+    OffsetRule                : Integer @assert.range: [
+        0,
+        999
+    ];
     // PrimaryPlant              : Association to one api.Plants;
     // SecondaryPlant            : Association to one api.Plants;
     to_Package                : Association to Package;

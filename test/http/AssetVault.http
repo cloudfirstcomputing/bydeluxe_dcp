@@ -14,18 +14,23 @@ POST {{server}}/odata/v4/asset-vault/AssetVault
 Content-Type: application/json
 
 {
-    "AssetVaultID": "a81bc81b-dead-4e5d-abff-90865d1e13d2",
-    "AssetMapID": "DCP5283",
-    "AssetMapIDDescription": "US Release HDD Package ROBINHOOD 3D 7.1",
+    "AssetVaultID": "a81bc81b-dead-4e5d-abff-90865d1e13f6",
+    "AssetMapID": "g80bc81b-dtui-4e5d-abff-90865d1e1U04",
+    "AssetMapIDDescription": "DCP Package ROBINHOOD 3D 7.1",
     "Title":"ROBINHOOD",
+    "AnnotationText":"ROBINHOOD 3D 7.1_EN DCP",
+    "AssetMapFileSize":"1240 MB",
     "CreatedinSAP": false,
     "_Items":[{
         "LinkedDCP":"",
-        "LinkedCPLUUID":"acde070d-8c4c-4f0d-9d8a-162843c12333",
-        "LinkedCTT":"CPL1 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024"
+        "LinkedCPLUUID":"3d914ee9-4f25-447f-8337-c5e380b0e5cd",
+        "LinkedCTT":"CPL1 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024",
+        "RunTime":"01:38:46.1",
+        "StartOfCredits":"01:30:24.7",
+        "StartOfCrawl":"01:32:39.3"
     },{
         "LinkedDCP":"",
-        "LinkedCPLUUID":"acde070d-8c4c-4f0d-9d8a-162843c11334",
+        "LinkedCPLUUID":"c4cee08f-7849-4001-b5f1-33bb6d8a3636",
         "LinkedCTT":"CPL2 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024"
     }]
 }

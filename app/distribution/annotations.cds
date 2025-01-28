@@ -80,16 +80,7 @@ annotate service.DistRestrictions with {
     };
     DistributionFilterCity    @Common: {Label: '{i18n>DistributionFilterCity}', };
     DistributionFilterPostal  @Common: {Label: '{i18n>DistributionFilterPostal}', };
-    // PrimaryPlant              @Common: {
-    //     Label          : '{i18n>PrimaryPlant}',
-    //     Text           : PrimaryPlant.PlantName,
-    //     TextArrangement: #TextOnly,
-    // };
-    // SecondaryPlant            @Common: {
-    //     Label          : '{i18n>SecondaryPlant}',
-    //     Text           : SecondaryPlant.PlantName,
-    //     TextArrangement: #TextOnly,
-    // };
+    OffsetRule                @Common: {Label: '{i18n>OffsetRule}', };
 };
 
 
@@ -396,14 +387,10 @@ annotate service.DistRestrictions with @(
             $Type: 'UI.DataField',
             Value: Theater_BusinessPartner,
         },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: PrimaryPlant_Plant,
-        // },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: SecondaryPlant_Plant,
-        // },
+        {
+            $Type: 'UI.DataField',
+            Value: OffsetRule,
+        },
     ],
     UI.HeaderInfo                  : {
         Title         : {
@@ -440,14 +427,10 @@ annotate service.DistRestrictions with @(
                 $Type: 'UI.DataField',
                 Value: Theater_BusinessPartner,
             },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: PrimaryPlant_Plant,
-            // },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: SecondaryPlant_Plant,
-            // },
+            {
+                $Type: 'UI.DataField',
+                Value: OffsetRule,
+            },
         ]
     },
     UI.Facets                      : [{

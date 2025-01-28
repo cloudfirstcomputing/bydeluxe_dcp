@@ -4,6 +4,8 @@ annotate service.AssetVault with {
     AssetVaultID          @Common: {Label: '{i18n>DistPrjID}', };
     AssetMapID            @Common: {Label: '{i18n>AssetMapID}', };
     AssetMapIDDescription @Common: {Label: '{i18n>AssetMapIDDescription}', };
+    AnnotationText        @Common: {Label: '{i18n>AnnotationText}', };
+    AssetMapFileSize      @Common: {Label: '{i18n>AssetMapFileSize}', };
     CreatedinSAP          @Common: {Label: '{i18n>CreatedinSAP}', };
     DCP                   @Common: {Label: '{i18n>DCP}', };
     Title                 @Common: {Label: '{i18n>Title}', };
@@ -59,6 +61,14 @@ annotate service.AssetVault with @(
             {
                 $Type: 'UI.DataField',
                 Value: AssetMapIDDescription,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: AnnotationText,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: AssetMapFileSize,
             },
             {
                 $Type: 'UI.DataField',

@@ -5,6 +5,8 @@ entity AssetVault {
         ProjectType           : String(2);
         AssetMapID            : String(40);
         AssetMapIDDescription : String(80);
+        AnnotationText        : String;
+        AssetMapFileSize      : String(80);
         Title                 : String(40);
         VersionDescription    : String(40);
         CreatedinSAP          : Boolean    @mandatory;
