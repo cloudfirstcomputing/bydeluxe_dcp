@@ -102,6 +102,16 @@ annotate service.DCPMaterialConfig.to_Plant with @(
                 width: 'auto'
             },
         },
+        {
+            $Type: 'UI.DataField',
+            Value: up__ID,
+            ![@UI.Hidden],
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: StorageLocation_Plant,
+            ![@UI.Hidden],
+        },
     ],
     UI.FieldGroup #PlantMain: {
         $Type: 'UI.FieldGroupType',
@@ -155,6 +165,11 @@ annotate service.DCPMaterialConfig.to_SalesDelivery with @(
                 $Type: 'HTML5.CssDefaultsType',
                 width: 'auto'
             },
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: up__ID,
+            ![@UI.Hidden],
         },
     ],
     UI.FieldGroup #SalesDeliveryMain: {

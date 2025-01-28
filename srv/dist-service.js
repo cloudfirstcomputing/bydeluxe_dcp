@@ -349,6 +349,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
             })
         })
 
+        this.before('NEW', 'DCPMaterialConfig.to_Plant.drafts', req => {
+            req.data.StorageLocation_Plant = req.data.Plant_Plant
+        })
+
         this.on('createDCPMaterial', async req => {
             const id = req.params[0]
             const material = await SELECT.one.from(DCPMaterialConfig, id).columns(["*", { "ref": ["to_Plant"], "expand": ["*"] }, { "ref": ["to_SalesDelivery"], "expand": ["*"] }])
