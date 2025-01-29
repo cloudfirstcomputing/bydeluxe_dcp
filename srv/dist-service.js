@@ -360,12 +360,12 @@ module.exports = class DistributionService extends cds.ApplicationService {
             const to_SalesDelivery = []
             const to_Valuation = []
             const assetvault = await SELECT.one.from(AssetVault, material.AssetVaultID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
-
+            if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
             try {
                 for (let j = 0; j < material.to_Plant.length; j++) {
                     const plant = material.to_Plant[j];
                     to_Plant.push({
-                        "Plant": plant.Plant,
+                        "Plant": plant.Plant_Plant,
                         "ProfitCenter": "100402",
                         // "SerialNumberProfile": "ZBP1",
                         "AvailabilityCheckType": "SR",
@@ -373,7 +373,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         "MRPResponsible": "001",
                         "ProcurementType": "X",
                         "to_ProductSupplyPlanning": {
-                            "Plant": plant.Plant,
+                            "Plant": plant.Plant_Plant,
                             "MRPType": "PD",
                             "MRPResponsible": "001",
                             "SafetyStockQuantity": "5",
@@ -382,14 +382,14 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         },
                         "to_StorageLocation": [
                             {
-                                "Plant": plant.Plant,
-                                "StorageLocation": plant.StorageLocation
+                                "Plant": plant.Plant_Plant,
+                                "StorageLocation": plant.StorageLocation_StorageLocation
                             }
                         ]
                     })
                     to_Valuation.push({
                         "ValuationClass": "7920",
-                        "ValuationArea": plant.Plant,
+                        "ValuationArea": plant.Plant_Plant,
                         "ValuationType": "",
                         "Currency": "USD",
                         "PriceDeterminationControl": "2",
@@ -400,8 +400,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 for (let k = 0; k < material.to_SalesDelivery.length; k++) {
                     const salesorg = material.to_SalesDelivery[k];
                     to_SalesDelivery.push({
-                        "ProductSalesOrg": salesorg.ProductSalesOrg,
-                        "ProductDistributionChnl": salesorg.ProductDistributionChnl,
+                        "ProductSalesOrg": salesorg.ProductSalesOrg_SalesOrganization,
+                        "ProductDistributionChnl": salesorg.ProductDistributionChnl_DistributionChannel,
                         "AccountDetnProductGroup": "03",
                         "ItemCategoryGroup": "NORM",
                         "SupplyingPlant": "1172",
@@ -414,8 +414,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         ],
                         "to_SalesText": [
                             {
-                                "ProductSalesOrg": salesorg.ProductSalesOrg,
-                                "ProductDistributionChnl": salesorg.ProductDistributionChnl,
+                                "ProductSalesOrg": salesorg.ProductSalesOrg_SalesOrganization,
+                                "ProductDistributionChnl": salesorg.ProductDistributionChnl_DistributionChannel,
                                 "Language": "EN",
                                 "LongText": assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
                             }
