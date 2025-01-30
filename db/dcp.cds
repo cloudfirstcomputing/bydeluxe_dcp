@@ -1,39 +1,43 @@
 namespace dcp.db;
 
 using {managed} from '@sap/cds/common';
+using api from './common';
+
+entity TitleVH as projection on api.Products;
 
 entity dcpcontent : managed {
-        ApplicationID      : String(20) not null          @mandatory;
-    key BookingID          : String(10) not null          @mandatory;
-        EntityID           : String;
-        ReleaseID          : String(10) not null          @mandatory;
-        TheaterID          : String(12) not null          @mandatory;
-        Circuit            : String(12);
-        ShipmentIndicator  : String(1) not null           @mandatory;
-        ScreeningIndicator : String(1)                    @mandatory;
-        PlayStartDate      : Date not null                @mandatory;
-        PlayEndDate        : Date not null                @mandatory;
-        BranchID           : String(2) not null           @mandatory;
-        DepotID            : String(1);
-        SoundID            : String(8) not null           @mandatory;
-        Language           : String(3) not null           @mandatory;
-        SubtitleType       : String(1) not null           @mandatory;
-        PrintFormat        : String(3) not null           @mandatory;
-        ReleaseHold        : String(1) not null           @mandatory;
-        ShipDate           : Date not null                @mandatory;
-        ShipPriority       : String(2) not null           @mandatory;
-        AuditoriumType     : String(1) not null           @mandatory;
-        PrintQuality       : String(4) not null           @mandatory;
-        FilmStock          : String(4) not null           @mandatory;
-        Key_Content        : String(1) not null           @mandatory;
-        TimeofEntry        : String(16) not null          @mandatory;
-        BookingType        : String(4) not null           @mandatory;
-        PackageName        : String not null              @mandatory;
-        UUID               : String(40) not null;
-        Territory          : String(2) not null           @mandatory;
-        Status             : Association to BookingStatus @mandatory;
-        SalesOrder         : String                       @readonly;
-        ErrorMessage       : String                       @readonly;
+        ApplicationID       : String(20) not null          @mandatory;
+    key BookingID           : String(10) not null          @mandatory;
+        EntityID            : String;
+        ReleaseID           : String(10) not null          @mandatory;
+        TheaterID           : String(12) not null          @mandatory;
+        Circuit             : String(12);
+        ShipmentIndicator   : String(1) not null           @mandatory;
+        ScreeningIndicator  : String(1)                    @mandatory;
+        PlayStartDate       : Date not null                @mandatory;
+        PlayEndDate         : Date not null                @mandatory;
+        BranchID            : String(2) not null           @mandatory;
+        DepotID             : String(1);
+        SoundID             : String(8) not null           @mandatory;
+        Language            : String(3) not null           @mandatory;
+        SubtitleType        : String(1) not null           @mandatory;
+        PrintFormat         : String(3) not null           @mandatory;
+        ReleaseHold         : String(1) not null           @mandatory;
+        ShipDate            : Date not null                @mandatory;
+        ShipPriority        : String(2) not null           @mandatory;
+        AuditoriumType      : String(1) not null           @mandatory;
+        PrintQuality        : String(4) not null           @mandatory;
+        FilmStock           : String(4) not null           @mandatory;
+        Key_Content         : String(1) not null           @mandatory;
+        TimeofEntry         : String(16) not null          @mandatory;
+        BookingType         : String(4) not null           @mandatory;
+        PackageName         : String not null              @mandatory;
+        UUID                : String(40) not null;
+        Territory           : String(2) not null           @mandatory;
+        Status              : Association to BookingStatus @mandatory;
+        SalesOrder          : String                       @readonly;
+        ErrorMessage        : String                       @readonly;
+        ReferenceSDDocument : String                       @readonly;
 }
 
 entity dcpkey : managed {
@@ -83,15 +87,16 @@ entity dcpkey : managed {
         Status              : Association to BookingStatus @mandatory;
         SalesOrder          : String                       @readonly;
         ErrorMessage        : String                       @readonly;
+        ReferenceSDDocument : String                       @readonly;
 }
 
 entity BookingStatus {
-    key ID         : String(1) enum {
+    key ID     : String(1) enum {
             A;
             C;
             D
         };
-        Status     : String;
+        Status : String;
 };
 
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
@@ -187,6 +192,7 @@ entity BookingSalesorderItem : managed {
         LongText                 : LargeString;
         CTT                      : String;
         CPLUUID                  : String;
+        PriceRefernceMaterial    : Association to one TitleVH;
 }
 
 entity BookingSalesorderPartner : managed {

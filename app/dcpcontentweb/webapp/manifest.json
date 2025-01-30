@@ -147,11 +147,23 @@
                         "placement": "After",
                         "anchor": "process"
                       }
+                    },
+                    "createReferenceSalesOrder": {
+                      "press": "dcpcontentweb.ext.controller.Actions.createReferenceSalesOrder",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>createRefSalesorder}",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "process"
+                      }
                     }
                   }
                 }
               },
-              "initialLoad": "Enabled"
+              "initialLoad": "Enabled",
+              "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
             }
           }
         },
