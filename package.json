@@ -180,6 +180,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "API_SALES_ORDER_V2_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_SALES_ORDER_V2_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_SALES_ORDER_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }        
       }
     }
   },

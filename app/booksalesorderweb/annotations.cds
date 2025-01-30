@@ -370,6 +370,27 @@ annotate service.BookingSalesOrder with @(
     UI.SelectionFields : [
         SalesOrder,
     ],
+    UI.SelectionPresentationVariant #table : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem',
+            ],
+            SortOrder : [
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : SalesOrder,
+                    Descending : true,
+                },
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+    },
 );
 
 annotate service.BookingSalesorderItem with @(
@@ -419,12 +440,17 @@ annotate service.BookingSalesorderItem with @(
         {
             $Type : 'UI.DataField',
             Value : CPLUUID,
-            Label : 'CPLUUID',
+            Label : '{i18n>Cpluuid}',
         },
         {
             $Type : 'UI.DataField',
             Value : CTT,
-            Label : 'CTT',
+            Label : '{i18n>CTT}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PriceRefernceMaterial_Product,
+            Label : '{i18n>Pricereferncematerialproduct}',
         },
     ],
     UI.Facets : [
@@ -557,6 +583,21 @@ annotate service.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : SubtitleType,
                 Label : '{i18n>Subtitletype}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : CPLUUID,
+                Label : '{i18n>Cpluuid}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : CTT,
+                Label : '{i18n>CTT}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PriceRefernceMaterial_Product,
+                Label : '{i18n>Pricereferncematerialproduct}',
             },
         ],
     },

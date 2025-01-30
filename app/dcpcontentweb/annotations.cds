@@ -40,6 +40,11 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : ReferenceSDDocument,
+                Label : '{i18n>Referencesddocument}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : UUID,
                 Label : '{i18n>Uuid}',
             },
@@ -147,7 +152,7 @@ annotate service.dcpcontent with @(
                 $Type : 'UI.DataField',
                 Value : TimeofEntry,
                 Label : 'TimeofEntry',
-            }
+            },
         ],
     },
     UI.Facets : [
@@ -221,6 +226,12 @@ annotate service.dcpcontent with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : ReferenceSDDocument,
+            Label : '{i18n>Referencesddocument}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : Language,
             Label : '{i18n>Language}',
             ![@UI.Importance] : #High,
@@ -234,7 +245,7 @@ annotate service.dcpcontent with @(
         {
             $Type : 'UI.DataField',
             Value : Status_ID,
-            Label : '{i18n>Statusid}',
+            Label : '{i18n>Status}',
             ![@UI.Importance] : #High,
         },
     ],
@@ -322,6 +333,27 @@ annotate service.dcpcontent with @(
                 Label : '{i18n>Errormessage}',
             },
         ],
+    },
+    UI.SelectionPresentationVariant #table : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem',
+            ],
+            SortOrder : [
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : BookingID,
+                    Descending : true,
+                },
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
     },    
 );
 annotate service.dcpcontent with {

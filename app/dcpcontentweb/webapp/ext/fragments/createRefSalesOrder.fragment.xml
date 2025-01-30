@@ -1,0 +1,105 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        id="refSalesOrderDialog"
+        title="{i18n>dialogTitle}"
+        contentWidth="760px"
+        xmlns:form="sap.ui.comp.smartform"
+        xmlns:sf="sap.ui.comp.smartfield"
+    >
+        <content>
+            <Panel
+                id="panel"
+                backgroundDesign="Transparent"
+            >
+                <f:SimpleForm
+                    id="sf"
+                    layout="ResponsiveGridLayout"
+                    backgroundDesign="Transparent"
+                >
+                    <Label textAlign="Begin"
+                        id="idLabelPlant"
+                        text="{i18n>labelPlant}"
+                        class="sapUiTinyMarginTop"
+                    />
+                    <!-- <sf:SmartField id="idDeliveryTransport" value="{DeliveryTransport}" textInEditModeSource="ValueListNoValidation">
+						<sf:configuration>
+							<sf:Configuration id = 'sfConfigID' displayBehaviour="idAndDescription" />
+						</sf:configuration>
+					</sf:SmartField> -->
+                    <ComboBox
+                        id="idComboplant" width = "50%"
+                        selectedKey="{dialogModel>/plantSelected}"
+                        change="onPlantChange"
+                        items="{
+                                    path: '/S4_Plants'
+                                    }"
+                    >
+                        <core:Item
+                            key="{Plant}"
+                            text="{Plant} - {PlantName}"
+                        />
+                    </ComboBox>
+                    <Label  textAlign="Begin"
+                        id="idLabelShipCondn"
+                        text="{i18n>labelShippingCondition}"
+                        class="sapUiTinyMarginTop"
+                    />
+                    <ComboBox
+                        id="idComboShipCondn"  width = "50%"
+                        selectedKey="{dialogModel>/shipConditionSelected}"
+                        change="onPlantChange"
+                        items="{
+                                    path: '/S4_ShippingConditions'
+                                    }"
+                    >
+                        <core:Item
+                            key="{ShippingCondition}"
+                            text="{ShippingCondition} - {ShippingConditionName}"
+                        />
+                    </ComboBox>
+                    <Label textAlign="Begin"
+                        id="idLabelDeliveryDate"
+                        text="{i18n>labelDeliveryDate}"
+                        class="sapUiTinyMarginTop"
+                    />
+                    <DatePicker 
+                        id="idDeliveryDate"  width = "50%" 
+                        valueFormat="yyyy-MM-dd"
+                        displayFormat="MM/dd/yyyy"
+                        dateValue="{dialogModel>/deliveryDateSelected}"
+                    />
+                </f:SimpleForm>
+                <!-- <form:SmartForm id="SF1" class="editableForm" editTogglable="true" editable="true" title="{Name}" binding="{/Products('1239102')}">
+			<form:layout>
+				<form:ColumnLayout id = "colLayout" columnsM="2" columnsL="3" columnsXL="4"/>
+			</form:layout>
+
+            </form:SmartForm>                 -->
+            </Panel>
+        </content>
+        <buttons>
+            <Button
+                id="submitBtn"
+                text="{i18n>submitBtn}"
+                class="sapUiTinyMarginEnd"
+                iconFirst="false"
+                type="Emphasized"
+                icon="sap-icon://create"
+                press="handleRefSalesorderCreation"
+            />
+            <Button
+                id="closeBtn"
+                text="{i18n>closeBtn}"
+                press="onCloseBtnPress"
+                icon="sap-icon://cancel"
+                tooltip="{i18n>tooltipCloseBtn}"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
