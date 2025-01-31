@@ -359,7 +359,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             const to_Plant = []
             const to_SalesDelivery = []
             const to_Valuation = []
-            const assetvault = await SELECT.one.from(AssetVault, material.AssetVaultID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+            const assetvault = await SELECT.one.from(AssetVault, material.AssetVaultID_AssetVaultID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
             if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
             try {
                 for (let j = 0; j < material.to_Plant.length; j++) {
