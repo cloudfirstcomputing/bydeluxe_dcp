@@ -57,16 +57,6 @@ annotate service.BookingSalesOrder with @(
             },
             {
                 $Type : 'UI.DataField',
-                Label : '{i18n>Creationdate}',
-                Value : CreationDate,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Creationtime}',
-                Value : CreationTime,
-            },
-            {
-                $Type : 'UI.DataField',
                 Label : '{i18n>Totalnetamount}',
                 Value : TotalNetAmount,
             },
@@ -449,8 +439,9 @@ annotate service.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : PriceRefernceMaterial_Product,
+            Value : PricingReferenceMaterial,
             Label : '{i18n>Pricereferncematerialproduct}',
+            ![@UI.Importance] : #High,
         },
     ],
     UI.Facets : [
@@ -596,7 +587,7 @@ annotate service.BookingSalesorderItem with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : PriceRefernceMaterial_Product,
+                Value : PricingReferenceMaterial,
                 Label : '{i18n>Pricereferncematerialproduct}',
             },
         ],
