@@ -1,0 +1,102 @@
+"API_SALES_ORDER_V2_SRV.A_SalesOrderHeaderPartner": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.content.version": "1",
+   "@sap.label": "Header Partner",
+   "elements": {
+    "SalesOrder": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Sales Order",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false",
+     "notNull": true
+    },
+    "PartnerFunction": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Partner Function",
+     "notNull": true
+    },
+    "PartnerFunctionInternalCode": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Partner Function",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "Customer": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Customer",
+     "@sap.quickinfo": "Customer Number"
+    },
+    "Supplier": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Supplier",
+     "@sap.quickinfo": "Account Number of Supplier"
+    },
+    "Personnel": {
+     "type": "cds.String",
+     "length": 8,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Personnel Number"
+    },
+    "ContactPerson": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Contact Person",
+     "@sap.quickinfo": "Number of Contact Person"
+    },
+    "WorkAssignmentExternalID": {
+     "type": "cds.String",
+     "length": 100,
+     "@sap.label": "Work Agreement ID"
+    },
+    "ReferenceBusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "AddressID": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Address Number"
+    },
+    "VATRegistration": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "VAT Registration No.",
+     "@sap.quickinfo": "VAT Registration Number"
+    },
+    "to_Address": {
+     "type": "cds.Association",
+     "target": "API_SALES_ORDER_V2_SRV.A_SalesOrderPartnerAddress",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_SalesOrder": {
+     "type": "cds.Association",
+     "target": "API_SALES_ORDER_V2_SRV.A_SalesOrder",
+     "keys": []
+    }
+   }
+  },

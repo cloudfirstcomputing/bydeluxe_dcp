@@ -110,8 +110,6 @@ entity BookingSalesOrder : managed {
         DistributionChannel     : String(2);
         OrganizationDivision    : String(2);
         PurchaseOrderByCustomer : String(35);
-        CreationDate            : Date;
-        CreationTime            : Time;
         TotalNetAmount          : Decimal(15);
         TransactionCurrency     : String(3);
         ShippingCondition       : String(2);
@@ -192,7 +190,7 @@ entity BookingSalesorderItem : managed {
         LongText                 : LargeString;
         CTT                      : String;
         CPLUUID                  : String;
-        PriceRefernceMaterial    : Association to one TitleVH;
+        PricingReferenceMaterial : String(40);
 }
 
 entity BookingSalesorderPartner : managed {
