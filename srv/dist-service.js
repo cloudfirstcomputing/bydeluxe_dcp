@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, Regions, Plants, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig,
+        const { DistroSpec, Regions, Plants, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
             StorageLocations, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
@@ -17,6 +17,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const sloctx = await cds.connect.to('YY1_STORAGELOCATION_CDS')
         const salesorgtx = await cds.connect.to('API_SALESORGANIZATION_SRV')
         const distchtx = await cds.connect.to('API_DISTRIBUTIONCHANNEL_SRV')
+        const salesdisttx = await cds.connect.to('API_SALESDISTRICT_SRV')
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -53,7 +54,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // DistroSpec?$expand
         this.on("READ", DistroSpec, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Title_Product", "Studio_BusinessPartner"]
+            const fields = ["Title_Product", "Studio_BusinessPartner", "SalesTerritory_SalesDistrict"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -81,6 +82,15 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     case "Studio_BusinessPartner":
                         records = await bptx.run(SELECT.from(Studios).where({ BusinessPartner: ids }))
 
+                        break;
+
+                    case "SalesTerritory_SalesDistrict":
+                        const rec = asArray(await salesdisttx.run(SELECT.from(SalesDistricts)
+                            .columns(["SalesDistrict", { "ref": ["to_Text"], "expand": ["*"] }])
+                            .where({ SalesDistrict: ids })))
+                        records = rec.map(item => {
+                            return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
+                        })
                         break;
 
                     default:
@@ -346,6 +356,13 @@ module.exports = class DistributionService extends cds.ApplicationService {
             const data = _asArray(await cstgrptx.run(SELECT.from(CustomerGroup).columns(["*", { "ref": ["to_Text"], "expand": ["*"] }])))
             return data.map(item => {
                 return { CustomerGroup: item.CustomerGroup, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).CustomerGroupName }
+            })
+        })
+
+        this.on('READ', SalesDistricts, async req => {
+            const data = _asArray(await salesdisttx.run(SELECT.from(SalesDistricts).columns(["*", { "ref": ["to_Text"], "expand": ["*"] }])))
+            return data.map(item => {
+                return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
             })
         })
 

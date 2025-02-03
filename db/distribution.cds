@@ -16,22 +16,35 @@ entity StudioVH      as projection on api.BusinessPartners;
 entity TheaterVH     as projection on api.BusinessPartners;
 
 entity DistroSpec : managed {
-    key DistroSpecUUID    : UUID;
-        DistroSpecID      : Integer default 0          @readonly;
-        Name              : String(40)                 @mandatory;
-        Title             : Association to one TitleVH @mandatory;
-        Studio            : Association to one StudioVH;
-        CustomerReference : String(40);
-        ValidFrom         : Date                       @mandatory;
-        ValidTo           : Date                       @mandatory;
-        FieldControl      : Int16                      @odata.Type: 'Edm.Byte' enum {
+    key DistroSpecUUID       : UUID;
+        DistroSpecID         : Integer default 0          @readonly;
+        Name                 : String(40)                 @mandatory;
+        Title                : Association to one TitleVH @mandatory;
+        Studio               : Association to one StudioVH;
+        CustomerReference    : String(40);
+        ValidFrom            : Date                       @mandatory;
+        ValidTo              : Date                       @mandatory;
+        KeyStartTime         : Time;
+        KeyEndTime           : Time;
+        InitialKeyDuration   : Integer;
+        NextKeyDuration      : Integer;
+        OffsetBPD            : Integer;
+        OffsetEPD            : Integer;
+        InferKeyContentOrder : Boolean;
+        AggregateKey         : Boolean;
+        ProcessKDMS          : Integer;
+        ProcessScreeningKDMS : Integer;
+        MaxKDMSDuration      : Integer;
+        StudioHoldOverRule   : String(10);
+        SalesTerritory       : Association to one api.SalesDistricts;
+        FieldControl         : Int16                      @odata.Type: 'Edm.Byte' enum {
             Inapplicable = 0;
             ReadOnly     = 1;
             Optional     = 3;
             Mandatory    = 7;
         };
-        to_Package        : Composition of many Package
-                                on to_Package.to_DistroSpec = $self;
+        to_Package           : Composition of many Package
+                                   on to_Package.to_DistroSpec = $self;
 };
 
 entity Package {

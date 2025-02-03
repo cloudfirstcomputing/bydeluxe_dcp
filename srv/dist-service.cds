@@ -53,6 +53,9 @@ service DistributionService @(requires: 'authenticated-user') {
     entity Titles               as projection on db.TitleVH;
 
     @readonly
+    entity SalesDistricts       as projection on api.SalesDistricts;
+
+    @readonly
     entity DeliveryPriority     as projection on api.DeliveryPriority;
 
     entity DistroSpec           as projection on db.DistroSpec;
@@ -88,6 +91,10 @@ service DistributionService @(requires: 'authenticated-user') {
     };
 
     extend projection DistributionChannels with {
+        virtual null as Name : String
+    };
+
+    extend projection SalesDistricts with {
         virtual null as Name : String
     };
 }

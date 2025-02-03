@@ -10,6 +10,7 @@ using {YY1_STORAGELOCATION_CDS as sloc} from '../srv/external/YY1_STORAGELOCATIO
 using {API_SALESORGANIZATION_SRV as salesorg} from '../srv/external/API_SALESORGANIZATION_SRV';
 using {API_DISTRIBUTIONCHANNEL_SRV as distch} from '../srv/external/API_DISTRIBUTIONCHANNEL_SRV';
 using {API_SALES_ORDER_V2_SRV as salesorderv2} from '../srv/external/API_SALES_ORDER_V2_SRV';
+using {API_SALESDISTRICT_SRV as salesdist} from '../srv/external/API_SALESDISTRICT_SRV';
 
 context api {
 
@@ -32,4 +33,5 @@ context api {
     entity SalesOrganizations   as projection on salesorg.A_SalesOrganization;
     entity DistributionChannels as projection on distch.A_DistributionChannel;
     entity SalesOrderHeader     as projection on salesorderv2.A_SalesOrder;
+    entity SalesDistricts        as projection on salesdist.A_SalesDistrict;
 }

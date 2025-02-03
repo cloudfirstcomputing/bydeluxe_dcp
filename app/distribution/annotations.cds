@@ -20,24 +20,41 @@ using DistributionService as service from '../../srv/dist-service';
     },
 )
 annotate service.DistroSpec with {
-    DistroSpecID      @Common: {Label: '{i18n>DistroSpecID}', };
-    Name              @Common: {Label: '{i18n>Name}', };
-    Title             @Common: {
+    DistroSpecID         @Common: {Label: '{i18n>DistroSpecID}', };
+    Name                 @Common: {Label: '{i18n>Name}', };
+    Title                @Common: {
         Label          : '{i18n>Title}',
         Text           : Title.Name,
         TextArrangement: #TextOnly,
     };
-    Studio            @Common: {
+    Studio               @Common: {
         Label          : '{i18n>Studio}',
         Text           : Studio.BusinessPartnerFullName,
         TextArrangement: #TextOnly,
     };
-    CustomerReference @Common: {Label: '{i18n>CustomerReference}', };
-    ValidFrom         @Common: {
+    CustomerReference    @Common: {Label: '{i18n>CustomerReference}', };
+    ValidFrom            @Common: {
         Label       : '{i18n>ValidFrom}',
         FieldControl: FieldControl,
     };
-    ValidTo           @Common: {Label: '{i18n>ValidTo}', };
+    ValidTo              @Common: {Label: '{i18n>ValidTo}', };
+    KeyStartTime         @Common: {Label: '{i18n>KeyStartTime}', };
+    KeyEndTime           @Common: {Label: '{i18n>KeyEndTime}', };
+    InitialKeyDuration   @Common: {Label: '{i18n>InitialKeyDuration}', };
+    NextKeyDuration      @Common: {Label: '{i18n>NextKeyDuration}', };
+    OffsetBPD            @Common: {Label: '{i18n>OffsetBPD}', };
+    OffsetEPD            @Common: {Label: '{i18n>OffsetEPD}', };
+    InferKeyContentOrder @Common: {Label: '{i18n>InferKeyContentOrder}', };
+    AggregateKey         @Common: {Label: '{i18n>AggregateKey}', };
+    ProcessKDMS          @Common: {Label: '{i18n>ProcessKDMS}', };
+    ProcessScreeningKDMS @Common: {Label: '{i18n>ProcessScreeningKDMS}', };
+    MaxKDMSDuration      @Common: {Label: '{i18n>MaxKDMSDuration}', };
+    StudioHoldOverRule   @Common: {Label: '{i18n>StudioHoldOverRule}', };
+    SalesTerritory       @Common: {
+        Label          : '{i18n>SalesTerritory}',
+        Text           : SalesTerritory.Name,
+        TextArrangement: #TextOnly,
+    };
 };
 
 annotate service.Package with {
@@ -134,6 +151,11 @@ annotate service.CustomerGroup with {
     Name          @Common.Label: '{i18n>Description}';
 };
 
+annotate service.SalesDistricts with {
+    SalesDistrict @Common      : {Label: '{i18n>SalesDistrict}', };
+    Name          @Common.Label: '{i18n>Description}';
+};
+
 annotate service.DistroSpec with @(
     UI.SelectionFields         : [
         Studio_BusinessPartner,
@@ -147,7 +169,63 @@ annotate service.DistroSpec with @(
         TypeName      : '{i18n>DistroSpec}',
         TypeNamePlural: '{i18n>DistroSpecs}',
     },
-
+    UI.FieldGroup #StudioKey   : {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: KeyStartTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: KeyEndTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: InitialKeyDuration,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: NextKeyDuration,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: OffsetBPD,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: OffsetEPD,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: InferKeyContentOrder,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: AggregateKey,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ProcessKDMS,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ProcessScreeningKDMS,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: MaxKDMSDuration,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: StudioHoldOverRule,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SalesTerritory_SalesDistrict,
+            },
+        ],
+    },
     UI.FieldGroup #ValidityDate: {
         $Type: 'UI.FieldGroupType',
         Data : [
@@ -205,6 +283,12 @@ annotate service.DistroSpec with @(
                     Target: '@UI.FieldGroup#ValidityDate',
                 },
             ],
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'StudioKey',
+            Label : '{i18n>StudioKey}',
+            Target: '@UI.FieldGroup#StudioKey',
         },
         {
             $Type : 'UI.ReferenceFacet',
@@ -481,7 +565,7 @@ annotate service.DCPMaterials with @(
 );
 
 annotate service.DistroSpec with {
-    Studio @(
+    Studio         @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'Studios',
@@ -500,7 +584,7 @@ annotate service.DistroSpec with {
         },
         Common.ValueListWithFixedValues: false
     );
-    Title  @(
+    Title          @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'Titles',
@@ -510,6 +594,25 @@ annotate service.DistroSpec with {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Title_Product,
                     ValueListProperty: 'Product',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    SalesTerritory @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'SalesDistricts',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: SalesTerritory_SalesDistrict,
+                    ValueListProperty: 'SalesDistrict',
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
