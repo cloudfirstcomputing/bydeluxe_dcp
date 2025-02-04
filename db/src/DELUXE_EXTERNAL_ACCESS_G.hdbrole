@@ -1,6 +1,6 @@
 {
     "role": {
-        "name": "DELUXE_CONFIG_EXTERNAL_ACCESS_G#",
+        "name": "DELUXE_EXTERNAL_ACCESS_G#",
         "object_privileges": [
             { 
                 "name":"DELUXE_ASSETVAULT_ASSETVAULT", 
