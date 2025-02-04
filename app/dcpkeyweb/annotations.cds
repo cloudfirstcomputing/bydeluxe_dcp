@@ -143,6 +143,11 @@ annotate service.dcpkey with @(
                 Label : '{i18n>Releasettileho}',
                 Value : ReleaseTitleHO,
             },
+            {
+                $Type : 'UI.DataField',
+                Value : UUID,
+                Label : '{i18n>Uuid}',
+            },
         ],
     },
     UI.Facets : [
@@ -247,7 +252,7 @@ annotate service.dcpkey with @(
         {
             $Type : 'UI.DataField',
             Value : UUID,
-            Label : '{i18n>Entityid1}',
+            Label : '{i18n>Uuid}',
             ![@UI.Importance] : #High,
         },
     ],

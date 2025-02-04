@@ -191,6 +191,18 @@ entity BookingSalesorderItem : managed {
         CTT                      : String;
         CPLUUID                  : String;
         PricingReferenceMaterial : String(40);
+        KeyStartTime         : Time;
+        KeyEndTime           : Time;
+        InitialKeyDuration   : Integer;
+        NextKeyDuration      : Integer;
+        OffsetEPD            : Integer;
+        InferKeyContentOrder : Boolean;
+        AggregateKey         : Boolean;
+        ProcessKDMS          : Integer;
+        ProcessScreeningKDMS : Integer;
+        MaxKDMSDuration      : Integer;
+        StudioHoldOverRule   : String(10);
+        SalesTerritory       : Association to one api.SalesDistricts;
 }
 
 entity BookingSalesorderPartner : managed {
