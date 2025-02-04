@@ -1,0 +1,31 @@
+{
+    "role": {
+        "name": "DELUXE_EXTERNAL_ACCESS",
+        "object_privileges": [
+            { 
+                "name":"DELUXE_ASSETVAULT_ASSETVAULT", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DCP_DB_BOOKINGSALESORDER", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DCP_DB_BOOKINGSALESORDERITEM", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DCP_DB_BOOKINGSALESORDERPARTNER", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            }                          
+        ]
+    }
+}
