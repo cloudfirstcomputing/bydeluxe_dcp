@@ -29,7 +29,7 @@ entity dcpcontent : managed {
         PrintQuality        : String(4) not null           @mandatory;
         FilmStock           : String(4) not null           @mandatory;
         Key_Content         : String(1) not null           @mandatory;
-        TimeofEntry         : String(16) not null          @mandatory;
+        TimeofEntry         : Timestamp;
         BookingType         : String(4) not null           @mandatory;
         PackageName         : String not null              @mandatory;
         UUID                : String(40) not null;
@@ -38,6 +38,7 @@ entity dcpcontent : managed {
         SalesOrder          : String                       @readonly;
         ErrorMessage        : String                       @readonly;
         ReferenceSDDocument : String                       @readonly;
+        Warnings            : String
 }
 
 entity dcpkey : managed {
@@ -73,7 +74,7 @@ entity dcpkey : managed {
         EndTime             : Timestamp not null           @mandatory;
         Key_Content         : String(1) not null           @mandatory;
         UUID                : String(40) not null          @mandatory;
-        TimeofEntry         : Timestamp not null           @mandatory;
+        TimeofEntry         : Timestamp;
         BookingType         : String(4) not null           @mandatory;
         PackageName         : String not null              @mandatory;
         Releasempm          : String(12) not null          @mandatory;
@@ -88,6 +89,7 @@ entity dcpkey : managed {
         SalesOrder          : String                       @readonly;
         ErrorMessage        : String                       @readonly;
         ReferenceSDDocument : String                       @readonly;
+        Warnings            : String
 }
 
 entity BookingStatus {
@@ -118,7 +120,7 @@ entity BookingSalesOrder : managed {
         ReleaseID               : String(10);
         TheaterID               : String(12);
         Circuit                 : String(12);
-        TimeofEntry             : String(16);
+        TimeofEntry             : Timestamp;
         BookingType             : String(4);
         PackageName             : String;
         ScreeningIndicator      : String(1);
@@ -191,18 +193,18 @@ entity BookingSalesorderItem : managed {
         CTT                      : String;
         CPLUUID                  : String;
         PricingReferenceMaterial : String(40);
-        KeyStartTime         : Time;
-        KeyEndTime           : Time;
-        InitialKeyDuration   : Integer;
-        NextKeyDuration      : Integer;
-        OffsetEPD            : Integer;
-        InferKeyContentOrder : Boolean;
-        AggregateKey         : Boolean;
-        ProcessKDMS          : Integer;
-        ProcessScreeningKDMS : Integer;
-        MaxKDMSDuration      : Integer;
-        StudioHoldOverRule   : String(10);
-        SalesTerritory       : Association to one api.SalesDistricts;
+        KeyStartTime             : Time;
+        KeyEndTime               : Time;
+        InitialKeyDuration       : Integer;
+        NextKeyDuration          : Integer;
+        OffsetEPD                : Integer;
+        InferKeyContentOrder     : Boolean;
+        AggregateKey             : Boolean;
+        ProcessKDMS              : Integer;
+        ProcessScreeningKDMS     : Integer;
+        MaxKDMSDuration          : Integer;
+        StudioHoldOverRule       : String(10);
+        SalesTerritory           : Association to one api.SalesDistricts;
 }
 
 entity BookingSalesorderPartner : managed {

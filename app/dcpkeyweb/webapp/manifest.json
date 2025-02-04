@@ -149,11 +149,11 @@
                         "anchor": "process"
                       }
                     },
-                    "createRefSalesorder": {
-                      "press": "dcpkeyweb.ext.controller.Actions.createReferenceSalesorder",
+                    "createReferenceSalesorder": {
+                      "press": "dcpkeyweb.ext.controller.Actions.createReferenceSalesOrder",
                       "visible": true,
                       "enabled": true,
-                      "requiresSelection": true,
+                      "requiresSelection": false,
                       "text": "{i18n>createrefsalesorder}",
                       "position": {
                         "placement": "After",
@@ -163,7 +163,8 @@
                   }
                 }
               },
-              "initialLoad": "Enabled"
+              "initialLoad": "Enabled",
+              "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
             }
           }
         },
