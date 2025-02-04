@@ -13,7 +13,8 @@ service BookingOrderService{
     entity dcpkey as projection on db.dcpkey;
     action createKey(Records: array of  dcpkey) returns String;
     action postKeyToSAP(bookingIDs: array of String) returns String;
-    action createSalesOrderFromReference(bookingID: String, salesOrder: String, plant: String, shippingCondition: String, deliveryDate: String) returns String;
+    action remediateContentSalesOrder(bookingID: String, salesOrder: String, plant: String, shippingCondition: String, deliveryDate: String) returns String;
+    action remediateKeySalesOrder(bookingID: String, salesOrder: String, plant: String, shippingCondition: String, deliveryDate: String) returns String;
     // action reconcileKey(bookingIDs: array of  String) returns String;
 
     entity S4H_SOHeader as projection on S4_SalesOrder.SalesOrder;

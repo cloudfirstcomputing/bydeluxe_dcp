@@ -286,7 +286,7 @@ sap.ui.define([
                                             var oModel = that.obj.getModel();
                                             var oViewModel = that.obj.getModel("dialogModel");
                                             var sDeliveryDate = oViewModel?.getProperty("/deliveryDateSelected")?.toISOString()?.split("T")[0];
-                                            var oActionODataContextBinding = oModel.bindContext("/createSalesOrderFromReference(...)");
+                                            var oActionODataContextBinding = oModel.bindContext("/remediateContentSalesOrder(...)");
                                             oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/bookingID"));
                                             oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/salesOrder"));
                                             oActionODataContextBinding.setParameter("plant", oViewModel?.getProperty("/plantSelected"));
