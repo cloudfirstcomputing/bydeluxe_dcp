@@ -9,6 +9,12 @@
                 "privileges_with_grant_option":[] 
             },
             { 
+                "name":"DELUXE_ASSETVAULT_ASSETVAULT__ITEMS", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
                 "name":"DCP_DB_BOOKINGSALESORDER", 
                 "type":"TABLE", 
                 "privileges":[ "SELECT" ], 
