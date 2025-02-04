@@ -235,6 +235,12 @@ annotate service.dcpkey with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : ReferenceSDDocument,
+            Label : '{i18n>Referencesddocument}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : ErrorMessage,
             Label : '{i18n>Errormessage}',
             ![@UI.Importance] : #High,
@@ -348,6 +354,27 @@ annotate service.dcpkey with @(
         },
         TypeName : '',
         TypeNamePlural : '',
+    },
+    UI.SelectionPresentationVariant #table : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem',
+            ],
+            SortOrder : [
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : createdAt,
+                    Descending : true,
+                },
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
     },
 );
 

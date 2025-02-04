@@ -104,7 +104,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oPayLoad.OrganizationDivision = Division;
                 oPayLoad.PurchaseOrderByCustomer = oContentData.BookingID;
                 oPayLoad.SalesOrderType = "TA";
-
                 var sCustomerRef = oContentData.UUID;
                 var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
                     dist.DistroSpecUUID,
