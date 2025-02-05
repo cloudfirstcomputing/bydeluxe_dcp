@@ -29,7 +29,7 @@ entity dcpcontent : managed {
         PrintQuality        : String(4) not null           @mandatory;
         FilmStock           : String(4) not null           @mandatory;
         Key_Content         : String(1) not null           @mandatory;
-        TimeofEntry         : Timestamp;
+        TimeofEntry         : Time;
         BookingType         : String(4) not null           @mandatory;
         PackageName         : String not null              @mandatory;
         UUID                : String(40) not null;
@@ -69,12 +69,12 @@ entity dcpkey : managed {
         ScreenID            : String(1) not null           @mandatory;
         SingleScreen        : String not null              @mandatory;
         StartDate           : Date not null                @mandatory;
-        StartTime           : Timestamp not null           @mandatory;
+        StartTime           : Time not null           @mandatory;
         EndDate             : Date not null                @mandatory;
-        EndTime             : Timestamp not null           @mandatory;
+        EndTime             : Time not null           @mandatory;
         Key_Content         : String(1) not null           @mandatory;
         UUID                : String(40) not null          @mandatory;
-        TimeofEntry         : Timestamp;
+        TimeofEntry         : Time;
         BookingType         : String(4) not null           @mandatory;
         PackageName         : String not null              @mandatory;
         Releasempm          : String(12) not null          @mandatory;
@@ -120,7 +120,7 @@ entity BookingSalesOrder : managed {
         ReleaseID               : String(10);
         TheaterID               : String(12);
         Circuit                 : String(12);
-        TimeofEntry             : Timestamp;
+        TimeofEntry             : Time;
         BookingType             : String(4);
         PackageName             : String;
         ScreeningIndicator      : String(1);
@@ -143,9 +143,9 @@ entity BookingSalesOrder : managed {
         ScreenID                : String(1);
         SingleScreen            : String;
         StartDate               : Date;
-        StartTime               : Timestamp;
+        StartTime               : Time;
         EndDate                 : Date;
-        EndTime                 : Timestamp;
+        EndTime                 : Time;
         Releasempm              : String(12);
         Territory               : String(2);
         DeliveryOnDate          : Date;

@@ -15,6 +15,30 @@
                 "privileges_with_grant_option":[] 
             },
             { 
+                "name":"DELUXE_DISTRIBUTION_DISTROSPEC", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DELUXE_DISTRIBUTION_PACKAGE", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DELUXE_DISTRIBUTION_DISTRESTRICTIONS", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DELUXE_DISTRIBUTION_DCPMATERIALS", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
                 "name":"DCP_DB_BOOKINGSALESORDER", 
                 "type":"TABLE", 
                 "privileges":[ "SELECT" ], 
