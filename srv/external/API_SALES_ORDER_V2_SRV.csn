@@ -1678,14 +1678,6 @@
      "@sap.label": "ISO Unit Item Volume",
      "@sap.quickinfo": "ISO Unit Code for Item Volume"
     },
-    "OriginallyRequestedMaterial": {
-     "type": "cds.String",
-     "length": 40,
-     "@sap.display.format": "UpperCase",
-     "@sap.label": "Material Entered",
-     "@sap.creatable": "false",
-     "@sap.updatable": "false"
-    },
     "TransactionCurrency": {
      "type": "cds.String",
      "length": 5,

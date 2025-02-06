@@ -429,6 +429,12 @@ annotate service.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : ShippingType,
+            Label : '{i18n>Shippingtype}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : CPLUUID,
             Label : '{i18n>Cpluuid}',
         },
@@ -442,6 +448,146 @@ annotate service.BookingSalesorderItem with @(
             Value : PricingReferenceMaterial,
             Label : '{i18n>Pricereferncematerialproduct}',
             ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : AggregateKey,
+            Label : '{i18n>Aggregatekey}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : AuditoriumType,
+            Label : '{i18n>Auditoriumtype}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : BranchID,
+            Label : '{i18n>Branchid}'
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : DepotID,
+            Label : '{i18n>Depotid}'
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : FilmStock,
+            Label : '{i18n>Filmstock}'
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : InferKeyContentOrder,
+            Label : '{i18n>Inferkeycontentorder}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : InitialKeyDuration,
+            Label : '{i18n>Initialkeyduration}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Key_Content,
+            Label : '{i18n>Keycontent}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : KeyEndTime,
+            Label : '{i18n>Keyendtime}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : KeyStartTime,
+            Label : '{i18n>Keystarttime}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Language,
+            Label : '{i18n>Language}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : MaxKDMSDuration,
+            Label : '{i18n>Maxkdmsduration}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : NextKeyDuration,
+            Label : '{i18n>Nextkeyduration}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : OffsetEPD,
+            Label : '{i18n>Offsetepd}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PlayEndDate,
+            Label : '{i18n>Playenddate}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PlayStartDate,
+            Label : '{i18n>Playstartdate}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PrintFormat,
+            Label : '{i18n>Printformat}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PrintQuality,
+            Label : '{i18n>Printquality}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ProcessKDMS,
+            Label : '{i18n>Processkdms}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ProcessScreeningKDMS,
+            Label : '{i18n>Processscreeningkdms}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ReleaseHold,
+            Label : '{i18n>Releasehold}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RequestedQuantityISOUnit,
+            Label : '{i18n>Requestedquantityisounit}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ScreeningIndicator,
+            Label : '{i18n>Screeningindicator}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ShipmentIndicator,
+            Label : '{i18n>Shipmentindicator}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ShipPriority,
+            Label : '{i18n>Shippriority}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : SoundID,
+            Label : '{i18n>Soundid}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : StudioHoldOverRule,
+            Label : '{i18n>Studioholdoverrule}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : SubtitleType,
+            Label : '{i18n>Shippingtype}',
         },
     ],
     UI.Facets : [
@@ -562,6 +708,11 @@ annotate service.BookingSalesorderItem with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : ShippingType,
+                Label : 'ShippingType',
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : ShipPriority,
                 Label : '{i18n>Shippriority}',
             },
@@ -589,6 +740,61 @@ annotate service.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : PricingReferenceMaterial,
                 Label : '{i18n>Pricereferncematerialproduct}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : AggregateKey,
+                Label : '{i18n>Aggregatekey}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : InferKeyContentOrder,
+                Label : '{i18n>Inferkeycontentorder}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : InitialKeyDuration,
+                Label : '{i18n>Initialkeyduration}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : KeyEndTime,
+                Label : '{i18n>Keyendtime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : KeyStartTime,
+                Label : '{i18n>Keystarttime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : MaxKDMSDuration,
+                Label : '{i18n>Maxkdmsduration}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : NextKeyDuration,
+                Label : '{i18n>Nextkeyduration}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : OffsetEPD,
+                Label : '{i18n>Offsetepd}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ProcessKDMS,
+                Label : '{i18n>Processkdms}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ProcessScreeningKDMS,
+                Label : '{i18n>Processscreeningkdms}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : StudioHoldOverRule,
+                Label : '{i18n>Shippingtype1}',
             },
         ],
     },

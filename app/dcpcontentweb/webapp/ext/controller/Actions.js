@@ -244,7 +244,7 @@ sap.ui.define([
             if (!oEntry?.SalesOrder) {
                 MessageBox.error("Invalid Selection", {
                     title: "Error",
-                    details: "Please Select an entry where Sales Order for remediation is available",
+                    details: "Remediation is already done for the selection",
                     contentWidth: "auto",
                     styleClass: sResponsivePaddingClasses
                 });

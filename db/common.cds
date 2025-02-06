@@ -33,5 +33,6 @@ context api {
     entity SalesOrganizations   as projection on salesorg.A_SalesOrganization;
     entity DistributionChannels as projection on distch.A_DistributionChannel;
     entity SalesOrderHeader     as projection on salesorderv2.A_SalesOrder;
-    entity SalesDistricts        as projection on salesdist.A_SalesDistrict;
+    entity SalesDistricts       as projection on salesdist.A_SalesDistrict;
+    entity SalesOrderItem       as projection on salesorderv2.A_SalesOrderItem;
 }
