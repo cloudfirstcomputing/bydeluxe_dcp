@@ -69,9 +69,9 @@ entity dcpkey : managed {
         ScreenID            : String(1) not null           @mandatory;
         SingleScreen        : String not null              @mandatory;
         StartDate           : Date not null                @mandatory;
-        StartTime           : Time not null           @mandatory;
+        StartTime           : Time not null                @mandatory;
         EndDate             : Date not null                @mandatory;
-        EndTime             : Time not null           @mandatory;
+        EndTime             : Time not null                @mandatory;
         Key_Content         : String(1) not null           @mandatory;
         UUID                : String(40) not null          @mandatory;
         TimeofEntry         : Time;
@@ -204,6 +204,7 @@ entity BookingSalesorderItem : managed {
         ProcessScreeningKDMS     : Integer;
         MaxKDMSDuration          : Integer;
         StudioHoldOverRule       : String(10);
+        ShippingType             : String(2);
         SalesTerritory           : Association to one api.SalesDistricts;
 }
 
@@ -212,4 +213,9 @@ entity BookingSalesorderPartner : managed {
     key PartnerFunction : String(2) not null;
         Customer        : String(10);
 
+}
+
+entity ShippingConditionTypeMapping {
+    key ShippingCondition: String(2);
+    ShippingType: String(2);
 }

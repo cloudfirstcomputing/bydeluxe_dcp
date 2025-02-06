@@ -21,6 +21,7 @@ service BookingOrderService{
     entity S4H_BuisnessPartner as projection on S4_BuisnessPartner.A_BusinessPartner;
     entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;   
     entity S4H_SOHeader_V2 as projection on api.SalesOrderHeader;
+    entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
     @readonly 
     entity S4_Plants as projection on api.Plants;
     entity S4_ShippingConditions as projection on api.ShippingConditions;
@@ -31,7 +32,7 @@ service BookingOrderService{
     action test(bookingIDs: array of String) returns String;
     
     entity BookingStatus as projection on db.BookingStatus;
-
+    entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
     annotate dcpcontent with @odata.draft.enabled;
     annotate dcpkey with @odata.draft.enabled;
 }
