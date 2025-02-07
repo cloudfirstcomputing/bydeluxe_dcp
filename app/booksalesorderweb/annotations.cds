@@ -429,7 +429,7 @@ annotate service.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : ShippingType,
+            Value : ShippingType_ID,
             Label : '{i18n>Shippingtype}',
             ![@UI.Importance] : #High,
         },
@@ -708,8 +708,8 @@ annotate service.BookingSalesorderItem with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : ShippingType,
-                Label : 'ShippingType',
+                Value : ShippingType_ID,
+                Label : '{i18n>Shippingtype}',
             },
             {
                 $Type : 'UI.DataField',
@@ -794,7 +794,7 @@ annotate service.BookingSalesorderItem with @(
             {
                 $Type : 'UI.DataField',
                 Value : StudioHoldOverRule,
-                Label : '{i18n>Shippingtype1}',
+                Label : '{i18n>Studioholdoverrule}',
             },
         ],
     },
@@ -824,18 +824,32 @@ annotate service.BookingSalesorderPartner with @(
 );
 
 annotate service.BookingSalesOrder with {
-    ApplicationID @Common.Label : '{i18n>Applicationid}'
-};
-
-annotate service.BookingSalesOrder with {
-    BookingID @Common.Label : '{i18n>Bookingid}'
-};
-
-annotate service.BookingSalesOrder with {
-    SalesOrder @Common.Label : '{i18n>Salesorder}'
-};
-
-annotate service.BookingSalesOrder with {
+    ApplicationID @Common.Label : '{i18n>Applicationid}';
+    BookingID @Common.Label : '{i18n>Bookingid}';
+    SalesOrder @Common.Label : '{i18n>Salesorder}';
     PurchaseOrderByCustomer @Common.Label : '{i18n>Purchaseorderbycustomer}'
 };
+annotate service.BookingSalesorderItem with {
+        ShippingType  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingTypeMaster',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: ShippingType_ID,
+                    ValueListProperty: 'ID',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false,
+        Common.Text : {
+            $value : ShippingType.ShippingTypeDescription,
+            ![@UI.TextArrangement] : #TextLast
+        },
+    ); 
+};
+
+
 

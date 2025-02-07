@@ -204,7 +204,7 @@ entity BookingSalesorderItem : managed {
         ProcessScreeningKDMS     : Integer;
         MaxKDMSDuration          : Integer;
         StudioHoldOverRule       : String(10);
-        ShippingType             : String(2);
+        ShippingType             : Association to one ShippingTypeMaster;
         SalesTerritory           : Association to one api.SalesDistricts;
 }
 
@@ -218,4 +218,9 @@ entity BookingSalesorderPartner : managed {
 entity ShippingConditionTypeMapping {
     key ShippingCondition: String(2);
     ShippingType: String(2);
+    ShippingTypeDescription: String;
+}
+entity ShippingTypeMaster{   
+    key ID: String(2);
+    ShippingTypeDescription: String; 
 }
