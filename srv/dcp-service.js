@@ -317,8 +317,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         sShippingType = oShippingTypeMapping.ShippingType;
                                     }
                                     oPayLoad.to_Item = [];
-                                    if ((sContentIndicator === "C" && distroSpecData.InferKeyContentOrder) ||
-                                        (sContentIndicator === "K")) {
+                                    if (
+                                        // (sContentIndicator === "C" && distroSpecData.InferKeyContentOrder) ||
+                                        (sContentIndicator === "K")
+                                    ) {
                                         var sStartDate = oContentData.StartDate;
                                         var sStartTime = oContentData.StartTime;
                                         var sEndDate = oContentData.EndDate;
@@ -440,8 +442,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         //         header.to_Item((item) => { }),
                         //         header.to_Partner((partner) => { })
                         // }).where({ SalesOrder: sSalesOrder }));  
-                        // var aSalesOrderData = await s4h_sohv2_Txn.run(SELECT.from(S4H_SOHeader_V2).columns(['*', {"ref":["to_Items"], "expand": ['*']}]));
-                        var aSalesOrderData = await s4h_sohv2_Txn.get(`/A_SalesOrder?$filter=SalesOrder eq '${sSalesOrder}'&$expand=to_Item,to_Partner`);
+                        var aSalesOrderData = await s4h_sohv2_Txn.run(SELECT.from(S4H_SOHeader_V2).columns(['*', {"ref":["to_Item"], "expand": ["*"]}]).where({SalesOrder: sSalesOrder}));
+                        // var aSalesOrderData = await s4h_sohv2_Txn.get(`/A_SalesOrder?$filter=SalesOrder eq '${sSalesOrder}'&$expand=to_Item,to_Partner`);
 
 
                         if (aSalesOrderData?.length) {
@@ -475,6 +477,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 }
                                 Object.assign(oSalesOrder._Item[item], oSalesOrderItem); //Assigining updated field name values back
 
+                                oSalesOrder._Item[item].ShippingType_ID = oSalesOrderItem.ShippingType;
 
                                 oSalesOrder._Item[item]["KeyStartTime"] = distroSpecData.KeyStartTime;
                                 oSalesOrder._Item[item]["KeyEndTime"] = distroSpecData.KeyEndTime;
@@ -488,6 +491,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oSalesOrder._Item[item]["MaxKDMSDuration"] = distroSpecData.MaxKDMSDuration;
                                 oSalesOrder._Item[item]["StudioHoldOverRule"] = distroSpecData.StudioHoldOverRule;
                                 oSalesOrder._Item[item]["SalesTerritory"] = distroSpecData.SalesTerritory_SalesDistrict;
+
+                                delete oSalesOrder._Item[item].ShippingType;
                             } //ITERATING ITEM END
                             oRecordsToBePosted._Partner = [];
                             for (var part in oSalesOrder.to_Partner) {

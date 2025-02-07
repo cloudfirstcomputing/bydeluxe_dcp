@@ -33,6 +33,7 @@ service BookingOrderService{
     
     entity BookingStatus as projection on db.BookingStatus;
     entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
+    entity ShippingTypeMaster as projection on db.ShippingTypeMaster;
     annotate dcpcontent with @odata.draft.enabled;
     annotate dcpkey with @odata.draft.enabled;
 }
