@@ -1,7 +1,7 @@
 const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
-        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping } = this.entities;
+        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping,Maccs_Dchub } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -69,6 +69,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return finalResult;
         });
         this.on("createMaccs", async (req, res) => {
+            var aRequests = req.data.Request;
+           var aRequestUpdated =  await INSERT.into(Maccs_Dchub).entries(aRequests);
+            return aRequestUpdated;
         });
         this.on("createComscoreHollywood", async (req, res) => {
         });

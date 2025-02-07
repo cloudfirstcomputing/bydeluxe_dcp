@@ -312,6 +312,7 @@ entity DigitalKeyOrder : cuid, managed {
 
   /// Disney OFE
 entity OrderRequest : cuid, managed {
+    key ID : UUID;
     ShowTimeType : String(50);
     OrderID : Integer;
     ContentOrderID : Integer;
@@ -333,30 +334,30 @@ entity OrderRequest : cuid, managed {
 }
 
 entity AddressType : cuid {
-    SiteID : String(50);
-    SiteName : String(200);
-    CircuitName : String(200);
-    ShortName : String(50);
-    Address1 : String(200);
-    Address2 : String(200);
-    City : String(100);
-    State : String(50);
-    Territory : String(100);
-    ISO : String(10);
-    PostalCode : String(20);
-    Region : String(50);
+    key ID: UUID;
+        SiteID : String(50);
+        SiteName : String(200);
+        CircuitName : String(200);
+        ShortName : String(50);
+        Address1 : String(200);
+        Address2 : String(200);
+        City : String(100);
+        State : String(50);
+        Territory : String(100);
+        ISO : String(10);
+        PostalCode : String(20);
+        Region : String(50);
 }
 
 entity PackageType : cuid {
-    ID : Integer;
+   key  ID : Integer;
     Description : String(200);
     TitleName : String(500);
     Compositions : Composition of many CompositionType on Compositions.Package = $self;
 }
 
 entity CompositionType : cuid {
-    ID : Integer;
-    UUID : String(100);
+   key ID : UUID;
     ContentUniqueID : String(100);
     Description : String(500);
     TrackLanguage : String(100);
@@ -370,7 +371,7 @@ entity CompositionType : cuid {
 }
 
 entity VendorType : cuid {
-    ID : Integer;
+key ID : Integer;
     Name : String(200);
     Email : String(500);
     Phone : String(50);
