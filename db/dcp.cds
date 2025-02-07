@@ -1,6 +1,6 @@
 namespace dcp.db;
 
-using {managed} from '@sap/cds/common';
+using {managed,cuid} from '@sap/cds/common';
 using api from './common';
 
 entity TitleVH as projection on api.Products;
@@ -223,4 +223,156 @@ entity ShippingConditionTypeMapping {
 entity ShippingTypeMaster{   
     key ID: String(2);
     ShippingTypeDescription: String; 
+}
+// Maccs_Dchub
+entity Maccs_Dchub : managed {
+    key requestId                     : String(18) not null @mandatory;
+        product                       : String(16);
+        titleId                       : Integer not null    @mandatory;
+        titleExternalRef              : Integer not null    @mandatory;
+        titleDescription              : String(40);
+    key cinemaId                      : String(10) not null @mandatory;
+        screenId                      : Integer;
+        screenNumber                  : Integer not null    @mandatory;
+        cinemaDescription             : String(40);
+        cinemaTerritory               : String(2) not null  @mandatory;
+        recipientExternalRef          : String(10);
+        versionId                     : Integer;
+        versionDescription            : String(20);
+        versionExternalRefVendor      : String(20);
+        versionExternalRefDistributor : String(10);
+        versionAdditionalInfo         : String(20);
+        startDate                     : Date not null       @mandatory;
+        endDate                       : Date not null       @mandatory;
+        deliveryDate                  : Date not null       @mandatory;
+    key customerRef                   : Integer not null    @mandatory;
+        distributorId                 : Integer;
+        distributorDescription        : String(15);
+        distributorKDMArchive         : String(20);
+        hasDcp                        : Boolean;
+        doNotShip                     : Boolean;
+        circuitingFrom                : String(10);
+        screeningTime                 : Time;
+        showcode                      : String(10);
+        techCheckKey                  : Boolean;
+    key quantity                      : Integer             @mandatory;
+        requestType                   : String(10);
+        requestStatusCode             : Integer;
+        requestStatusDescription      : String(20);
+        remark                        : String(40);
+        bookerName                    : String(20)          @mandatory;
+}
+
+
+/// Comscore Hollywood
+
+entity TheatreOrderRequest : cuid, managed {
+    key ID : UUID;
+    StudioID : String(50);
+    GenerateDate : DateTime;
+    
+    // Compositions
+    Theatre_Ass : Composition of many Theatre
+        on Theatre_Ass.Request = $self;
+    Content_Ass : Composition of many DigitalComposition
+        on Content_Ass.Request = $self;
+    DigitalKeyOrders_Ass : Composition of many DigitalKeyOrder
+        on DigitalKeyOrders_Ass.Request = $self;
+}
+
+entity Theatre : cuid, managed {
+    key ID : UUID;
+    TheatreID : String(50);
+    Name : String(200);
+    City : String(200);
+    State : String(100);
+    PostalCode : String(50);
+    CountryCode : String(50);
+    Request : Association to TheatreOrderRequest;
+}
+
+entity DigitalComposition : cuid, managed {
+    key ID : UUID;
+    ContentID : String(50);
+    Title : String(500);
+    CPL_UUID : String(100);
+    Request : Association to TheatreOrderRequest;
+}
+
+entity DigitalKeyOrder : cuid, managed {
+    key ID : UUID;
+    DigitalKeyOrderID : String(50);
+    ContentID : String(50);
+    Screens : String(200);
+    CancelFlag : Boolean;
+    LicenseBeginDate : DateTime;
+    LicenseEndDate : DateTime;
+    Request : Association to TheatreOrderRequest;
+}
+
+  /// Disney OFE
+entity OrderRequest : cuid, managed {
+    ShowTimeType : String(50);
+    OrderID : Integer;
+    ContentOrderID : Integer;
+    TransactionType : String(50);
+    BookingID : String(50);
+    BookingSystem : String(50);
+    DeliveryDate : DateTime;
+    StartDate : DateTime;
+    EndDate : DateTime;
+    NumberOfCompositions : Integer;
+    IsCancellation : Boolean;
+    DeliveryType : String(50);
+    IsRemediation : Boolean;
+
+    DeliveryAddress : Composition of one AddressType;
+    PhysicalAddress : Composition of one AddressType;
+    Package : Composition of one PackageType;
+    Vendor : Composition of one VendorType;
+}
+
+entity AddressType : cuid {
+    SiteID : String(50);
+    SiteName : String(200);
+    CircuitName : String(200);
+    ShortName : String(50);
+    Address1 : String(200);
+    Address2 : String(200);
+    City : String(100);
+    State : String(50);
+    Territory : String(100);
+    ISO : String(10);
+    PostalCode : String(20);
+    Region : String(50);
+}
+
+entity PackageType : cuid {
+    ID : Integer;
+    Description : String(200);
+    TitleName : String(500);
+    Compositions : Composition of many CompositionType on Compositions.Package = $self;
+}
+
+entity CompositionType : cuid {
+    ID : Integer;
+    UUID : String(100);
+    ContentUniqueID : String(100);
+    Description : String(500);
+    TrackLanguage : String(100);
+    Sub1 : String(100);
+    Sub2 : String(100);
+    ContentType : String(50);
+    ContentSize : Integer;
+    IsUpdated : Boolean;
+    CompositionStatus : String(50);
+    Package : Association to PackageType;
+}
+
+entity VendorType : cuid {
+    ID : Integer;
+    Name : String(200);
+    Email : String(500);
+    Phone : String(50);
+    Fax : String(50);
 }

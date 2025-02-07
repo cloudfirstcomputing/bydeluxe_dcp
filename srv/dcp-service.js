@@ -68,6 +68,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "Error": failedEntries });
             return finalResult;
         });
+        this.on("createMaccs", async (req, res) => {
+        });
+        this.on("createComscoreHollywood", async (req, res) => {
+        });
+        this.on("CreateDisneyOFE", async (req, res) => {
+        });
         this.on("processContent", async (req, res) => {
             await createSalesOrder(req, "C");
         });
