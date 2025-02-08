@@ -245,7 +245,7 @@ entity Maccs_Dchub : managed {
         startDate                     : Date not null       @mandatory;
         endDate                       : Date not null       @mandatory;
         deliveryDate                  : Date not null       @mandatory;
-    key customerRef                   : Integer not null    @mandatory;
+    key customerRef                   : String(20) not null    @mandatory;
         distributorId                 : Integer;
         distributorDescription        : String(15);
         distributorKDMArchive         : String(20);
