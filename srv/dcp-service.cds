@@ -59,7 +59,7 @@ service BookingOrderService {
     }
 
     type TheatreType {
-        TheatreID   : String(50);
+        ID   : String(50);
         Name        : String(200);
         City        : String(200);
         State       : String(100);
@@ -68,13 +68,13 @@ service BookingOrderService {
     }
 
     type DigitalCompositionType {
-        ContentID : String(50);
+        ID : String(50);
         Title     : String(500);
         CPL_UUID  : String(100);
     }
 
     type DigitalKeyOrderType {
-        DigitalKeyOrderID : String(50);
+        ID : String(50);
         ContentID         : String(50);
         Screens           : String(200);
         CancelFlag        : Boolean;
@@ -164,5 +164,5 @@ service BookingOrderService {
         Fax   : String(50);
     }
 
-    action CreateDisneyOFE(input : OrderRequestType) returns UUID;
+    action createDisneyOFE(Request : array of OrderRequestType) returns String;
 }

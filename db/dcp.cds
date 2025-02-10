@@ -347,6 +347,7 @@ entity AddressType : cuid {
         ISO : String(10);
         PostalCode : String(20);
         Region : String(50);
+        OrderRequest : Association to OrderRequest;
 }
 
 entity PackageType : cuid {
@@ -376,4 +377,5 @@ key ID : Integer;
     Email : String(500);
     Phone : String(50);
     Fax : String(50);
+    OrderRequest : Association to OrderRequest;
 }

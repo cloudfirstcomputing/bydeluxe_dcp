@@ -1,7 +1,7 @@
 const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
-        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping,Maccs_Dchub,TheatreOrderRequestType} = this.entities;
+        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping,Maccs_Dchub,TheatreOrderRequest} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -77,7 +77,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aRequests = req.data.Request;
             try{
            
-                var aRequestUpdated =  await INSERT.into(TheatreOrderRequestType).entries(aRequests);
+                var aRequestUpdated =  await INSERT.into(TheatreOrderRequest).entries(aRequests);
                 return aRequestUpdated;
             }
             catch(e){
@@ -85,7 +85,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
          
         });
-        this.on("CreateDisneyOFE", async (req, res) => {
+        this.on("createDisneyOFE", async (req, res) => {
+            var aRequests = req.data.Request;
+            try{
+           
+                var aRequestUpdated =  await INSERT.into(TheatreOrderRequest).entries(aRequests);
+                return aRequestUpdated;
+            }
+            catch(e){
+                req.error(405,"error")
+            }
         });
         this.on("processContent", async (req, res) => {
             await createSalesOrder(req, "C");
