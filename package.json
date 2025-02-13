@@ -202,6 +202,28 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_I_SHIPPINGPOINT_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_I_SHIPPINGPOINT_CDS_0001",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_I_SHIPPINGPOINT_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_I_SHIPPINGTYPE_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_I_SHIPPINGTYPE_CDS_0001",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_I_SHIPPINGTYPE_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

@@ -1,0 +1,43 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.6.1"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_I_SHIPPINGPOINT_CDS_0001": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_I_SHIPPINGPOINT_CDS_0001.YY1_I_ShippingPoint": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "I_ShippingPoint",
+   "elements": {
+    "ShippingPoint": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Shipping Point",
+     "@sap.quickinfo": "Shipping Point / Receiving Point",
+     "notNull": true
+    },
+    "ShippingPointName": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Description"
+    }
+   }
+  }
+ }
+}

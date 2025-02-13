@@ -26,6 +26,8 @@
                         id="idLabelPlant"
                         text="{i18n>labelPlant}"
                         class="sapUiTinyMarginTop"
+                        labelFor="idComboplant"
+                        required="true"
                     />
                     <!-- <sf:SmartField id="idDeliveryTransport" value="{DeliveryTransport}" textInEditModeSource="ValueListNoValidation">
 						<sf:configuration>
@@ -35,7 +37,6 @@
                     <ComboBox
                         id="idComboplant" width = "50%"
                         selectedKey="{dialogModel>/plantSelected}"
-                        change="onPlantChange"
                         items="{
                                     path: '/S4_Plants'
                                     }"
@@ -46,27 +47,49 @@
                         />
                     </ComboBox>
                     <Label  textAlign="Begin"
-                        id="idLabelShipCondn"
-                        text="{i18n>labelShippingCondition}"
+                        id="idLabelShipType"
+                        text="{i18n>labelShippingType}"
                         class="sapUiTinyMarginTop"
+                        labelFor="idComboShipType"
+                        required="true"
                     />
                     <ComboBox
-                        id="idComboShipCondn"  width = "50%"
-                        selectedKey="{dialogModel>/shipConditionSelected}"
-                        change="onPlantChange"
+                        id="idComboShipType"  width = "50%"
+                        selectedKey="{dialogModel>/shipTypeSelected}"
                         items="{
-                                    path: '/S4_ShippingConditions'
+                                    path: '/S4_ShippingType_VH'
                                     }"
                     >
                         <core:Item
-                            key="{ShippingCondition}"
-                            text="{ShippingCondition} - {ShippingConditionName}"
+                            key="{ShippingType}"
+                            text="{ShippingType} - {ShippingTypeName}"
+                        />
+                    </ComboBox>
+                    <Label  textAlign="Begin"
+                        id="idLabelShipPoint"
+                        text="{i18n>labelShippingPoint}"
+                        class="sapUiTinyMarginTop"
+                        labelFor="idComboShipType"
+                        required="false"
+                    />
+                    <ComboBox
+                        id="idComboShipPoint"  width = "50%"
+                        selectedKey="{dialogModel>/shipPointSelected}"
+                        items="{
+                                    path: '/S4_ShippingPoint_VH'
+                                    }"
+                    >
+                        <core:Item
+                            key="{ShippingPoint}"
+                            text="{ShippingPoint} - {ShippingPointName}"
                         />
                     </ComboBox>
                     <Label textAlign="Begin"
                         id="idLabelDeliveryDate"
                         text="{i18n>labelDeliveryDate}"
                         class="sapUiTinyMarginTop"
+                        labelFor="idDeliveryDate"
+                        required="true"
                     />
                     <DatePicker 
                         id="idDeliveryDate"  width = "50%" 

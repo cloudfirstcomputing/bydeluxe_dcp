@@ -1,12 +1,17 @@
 const cds = require("@sap/cds");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
-        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping,Maccs_Dchub,TheatreOrderRequest} = this.entities;
+        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub,
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
         var s4h_shipConditions_Txn = await cds.connect.to("ZAPI_SHIPPINGCONDITION");
         var s4h_sohv2_Txn = await cds.connect.to("API_SALES_ORDER_V2_SRV");
+        var s4h_shtypev2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
+        var s4h_shpointv2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGPOINT_CDS_0001");
+
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         // var sSoldToCustomer = '1000011', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         this.on("createContent", async (req, res) => {
@@ -70,30 +75,30 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
         this.on("createMaccs", async (req, res) => {
             var aRequests = req.data.Request;
-           var aRequestUpdated =  await INSERT.into(Maccs_Dchub).entries(aRequests);
+            var aRequestUpdated = await INSERT.into(Maccs_Dchub).entries(aRequests);
             return aRequestUpdated;
         });
         this.on("createComscoreHollywood", async (req, res) => {
             var aRequests = req.data.Request;
-            try{
-           
-                var aRequestUpdated =  await INSERT.into(TheatreOrderRequest).entries(aRequests);
+            try {
+
+                var aRequestUpdated = await INSERT.into(TheatreOrderRequest).entries(aRequests);
                 return aRequestUpdated;
             }
-            catch(e){
-                req.error(405,"error")
+            catch (e) {
+                req.error(405, "error")
             }
-         
+
         });
         this.on("createDisneyOFE", async (req, res) => {
             var aRequests = req.data.Request;
-            try{
-           
-                var aRequestUpdated =  await INSERT.into(TheatreOrderRequest).entries(aRequests);
+            try {
+
+                var aRequestUpdated = await INSERT.into(TheatreOrderRequest).entries(aRequests);
                 return aRequestUpdated;
             }
-            catch(e){
-                req.error(405,"error")
+            catch (e) {
+                req.error(405, "error")
             }
         });
         this.on("processContent", async (req, res) => {
@@ -201,52 +206,66 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     else {
                         var sTheaterID = oContentData.TheaterID, sShipTo = "";
-                        // var aSalesData = await s4h_bp_Txn.get(`/A_CustomerSalesArea?$filter=Customer eq '${sSoldToCustomer}' and SalesOrganization eq  '${SalesOrganization}' and DistributionChannel eq '${DistributionChannel}' and Division eq '${Division}'&$expand=to_PartnerFunction`);
+                        // var aSoldToSalesData = await s4h_bp_Txn.get(`/A_CustomerSalesArea?$filter=Customer eq '${sSoldToCustomer}' and SalesOrganization eq  '${SalesOrganization}' and DistributionChannel eq '${DistributionChannel}' and Division eq '${Division}'&$expand=to_PartnerFunction`);
                         var sEntityID = oContentData.EntityID;
-                        var sBPCustomerNumber = "";
+                        var sBPCustomerNumber = "", sPYCustomer = "";
                         oPayLoad.to_Partner = [];
-                        var aSalesData = await s4h_bp_Txn.run(SELECT.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                        if (aSalesData?.length) { //IDENTIFYING SHIP-TO
-                            var oSalesData = aSalesData[0];
-                        }
-                        else {
-                            sErrorMessage = `Sales Data not maintained for Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
-                        }
                         if (sEntityID) {
-                            if (sEntityID.toUpperCase() === "SPR")
+                            if (sEntityID.toUpperCase() === "SPR") {
                                 sBPCustomerNumber = "1000055";
-                            else if (sEntityID.toUpperCase() === "SPRI")
+                                sPYCustomer = "1000055";
+                            }
+                            else if (sEntityID.toUpperCase() === "SPRI") {
                                 sBPCustomerNumber = "1000050";
-                            else if (sEntityID.toUpperCase() === "SPC")
+                                sPYCustomer = "1000050";
+                            }
+                            else if (sEntityID.toUpperCase() === "SPC") {
                                 sBPCustomerNumber = "1000011";
+                                sPYCustomer = "1000011";
+                            }
 
                             sShipTo = sBPCustomerNumber;
-                            oPayLoad.to_Partner.push({ "PartnerFunction": "WE", "Customer": sBPCustomerNumber });
+                            // oPayLoad.to_Partner.push({ "PartnerFunction": "WE", "Customer": sBPCustomerNumber });
+                        }
+
+                        var aSoldToSalesData = await s4h_bp_Txn.run(SELECT.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                        if (aSoldToSalesData?.length) { //IDENTIFYING SHIP-TO
+                            var oSoldToSalesData = aSoldToSalesData[0];
                         }
                         else {
-                            if (oSalesData?.to_PartnerFunction?.length > 0) {
-                                var oPartnerFunction = oSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
-                                if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
-                                    sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
-                                    if (sBPCustomerNumber) {
-                                        sShipTo = sBPCustomerNumber;
-                                        oPayLoad.to_Partner.push({ "PartnerFunction": "WE", "Customer": sBPCustomerNumber });
-                                    }
-                                    else {
-                                        sShipTo = "";
-                                        sErrorMessage = "Ship-To not found";
-                                    }
+                            sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
+                        }
+                        if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
+                            var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
+                            if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
+                                sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
+                                if (sBPCustomerNumber) {
+                                    sShipTo = sBPCustomerNumber;
+                                    oPayLoad.to_Partner.push({ "PartnerFunction": "WE", "Customer": sBPCustomerNumber });
                                 }
                                 else {
-                                    sErrorMessage = "Partner function details not found";
+                                    sShipTo = "";
+                                    sErrorMessage = "Ship-To not found";
                                 }
                             }
                             else {
-                                sErrorMessage = "Partner function not available";
+                                sErrorMessage = "Partner function details not found";
+                            }
+                        }
+                        else {
+                            sErrorMessage = "Partner function not available";
+                        }
+                        if (sShipTo) {
+                            var aShipToSalesData = await s4h_bp_Txn.run(SELECT.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                            if (aShipToSalesData?.length) { //IDENTIFYING SHIP-TO
+                                var oShipToSalesData = aShipToSalesData[0];
+                            }
+                            else {
+                                sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
                             }
                         }
                         if (distroSpecData?.to_Package?.length) {
-                            var sCustomerGroupFromS4 = oSalesData?.CustomerGroup;
+                            var sCustomerGroupFromS4 = oSoldToSalesData?.CustomerGroup;
                             var aPackages = distroSpecData.to_Package;
                             aPackages.sort(function (a, b) {
                                 return a.Priority_DeliveryPriority.localeCompare(b.Priority_DeliveryPriority);
@@ -292,26 +311,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 //     }
                                 // }
                                 var oBPPackage = aPackageFiltered.find((oPkg) => {
-                                    return oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod1_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod2_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod3_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod4_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod5_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod6_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod7_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod8_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod9_csa ||
-                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod10_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod1_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod2_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod3_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod4_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod5_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod6_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod7_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod8_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod9_csa ||
-                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oSalesData?.YY1_DeliveryMethod10_csa
+                                    return oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod3_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod4_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod5_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod6_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod7_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
+                                        oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod3_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod4_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod5_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod6_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod7_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
+                                        oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa
 
                                 });
                                 if (oBPPackage) {
@@ -323,7 +342,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "06" ||
                                         oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "10"
                                     ) {
-                                        if (!oSalesData?.YY1_DCDCFlag_csa) {
+                                        if (!oShipToSalesData?.YY1_DCDCFlag_csa) {
                                             // sErrorMessage = `DCDC Capability not found. Primary Del.Method from Distrospec Package: ${PrimaryDeliveryMethod_ShippingCondition}, Secondary Del.Method from Distrospec Package: ${SecondaryDeliveryMethod_ShippingCondition}`;
                                             sErrorMessage = `DCDC Capability not found.`;
                                         }
@@ -331,7 +350,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 }
                                 else {
                                     // sErrorMessage = `Theater Capability not found. Primary Del.Method from Distrospec Package: ${PrimaryDeliveryMethod_ShippingCondition}, Secondary Del.Method from Distrospec Package: ${SecondaryDeliveryMethod_ShippingCondition}`;
-                                    sErrorMessage = `Theater Capability not found.`;
+                                    sErrorMessage = `Theater Capability not found. Ship-To:${sShipTo}`;
                                 }
                                 for (var i in aPackageFiltered) {
                                     var oFilteredPackage = aPackageFiltered[i];
@@ -341,18 +360,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     var sShippingType = "";
                                     if (sDeliveryMethod) {
                                         oPayLoad.ShippingCondition = sDeliveryMethod;
-                                        var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ShippingCondition: sDeliveryMethod});
+                                        var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
                                         sShippingType = oShippingTypeMapping.ShippingType;
                                     }
                                     oPayLoad.to_Item = [];
                                     if (
-                                        // (sContentIndicator === "C" && distroSpecData.InferKeyContentOrder) ||
+                                        (sContentIndicator === "C" && distroSpecData.InferKeyContentOrder) ||
                                         (sContentIndicator === "K")
                                     ) {
-                                        var sStartDate = oContentData.StartDate;
-                                        var sStartTime = oContentData.StartTime;
-                                        var sEndDate = oContentData.EndDate;
-                                        var sEndTime = oContentData.EndTime;
+                                        var sStartDate = sContentIndicator === "K" ? oContentData.StartDate : oContentData.PlayStartDate;
+                                        var sStartTime = sContentIndicator === "K" ? oContentData.StartTime : distroSpecData.KeyStartTime;
+                                        var sEndDate = sContentIndicator === "K" ? oContentData.EndDate : oContentData.PlayEndDate;
+                                        var sEndTime = sContentIndicator === "K" ? oContentData.EndTime : distroSpecData.KeyEndTime;
                                         var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(sStartDate);
                                         var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(sEndDate);
                                         var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
@@ -361,7 +380,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "Material": "2292",
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
-                                                "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority
+                                                "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority,
+                                                "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                                "ShippingType": sShippingType
                                             };
                                         }
                                         else {
@@ -369,7 +390,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "Material": "2570",
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
-                                                "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority
+                                                "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority,
+                                                "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                                "ShippingType": sShippingType
                                             };
                                         }
                                         oPayLoad.to_Item.push(oEntry);
@@ -383,7 +406,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "RequestedQuantityISOUnit": "EA",
                                                 "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                                "ShippingType":sShippingType
+                                                "ShippingType": sShippingType
                                             };
                                             var assetvault = await SELECT.one.from(AssetVault_Local)
                                                 .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
@@ -470,7 +493,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         //         header.to_Item((item) => { }),
                         //         header.to_Partner((partner) => { })
                         // }).where({ SalesOrder: sSalesOrder }));  
-                        var aSalesOrderData = await s4h_sohv2_Txn.run(SELECT.from(S4H_SOHeader_V2).columns(['*', {"ref":["to_Item"], "expand": ["*"]}]).where({SalesOrder: sSalesOrder}));
+                        var aSalesOrderData = await s4h_sohv2_Txn.run(SELECT.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
                         // var aSalesOrderData = await s4h_sohv2_Txn.get(`/A_SalesOrder?$filter=SalesOrder eq '${sSalesOrder}'&$expand=to_Item,to_Partner`);
 
 
@@ -555,9 +578,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             await remediateSalesOrder(req, "K");
         });
         const remediateSalesOrder = async (req, sContentIndicator) => {
-            var sBookingID = req.data?.bookingID, sSalesOrder = req.data?.salesOrder, sPlant = req.data?.plant, oContentData,
-                sShippingCondition = req.data?.shippingCondition, sDeliveryDate = req.data?.deliveryDate, aResponseStatus = [], hanaDBTable;
+            var oInput = req.data?.oInput;
+            // var sBookingID = req.data?.bookingID, sSalesOrder = req.data?.salesOrder, sPlant = req.data?.plant,
+            //     sShipType = req.data?.shipTypeSelected, sShipPoint = req.data?.shipPointSelected, oContentData, sMaterialGroup,
+            //     sShippingCondition = req.data?.shippingCondition, sDeliveryDate = req.data?.deliveryDate, aResponseStatus = [], hanaDBTable;
+            var sBookingID = oInput?.bookingID, sSalesOrder = oInput?.salesOrder, sPlant = oInput?.plant,
+            sShipType = oInput?.shipTypeSelected, sShipPoint = oInput?.shipPointSelected, oContentData, sMaterialGroup,
+            sShippingCondition = oInput?.shippingCondition, sDeliveryDate = oInput?.deliveryDate, aResponseStatus = [], hanaDBTable;
+            
             hanaDBTable = sContentIndicator === "C" ? dcpcontent : dcpkey;
+            sMaterialGroup = sContentIndicator === "C" ? "Z003" : "Z004";
             if (sBookingID) {
                 oContentData = await SELECT.one.from(hanaDBTable).where({ BookingID: sBookingID });
             }
@@ -576,35 +606,49 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             else if (oContentData.ReferenceSDDocument) {
                 req.reject(501, "Remediation is already done for the selection");
             }
-
             var oSalesorderItem_PayLoad = {};
-            var oSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder }));
-            if (oSalesOrderItem) {
-                oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
-                oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
-                oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
-                oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
-                oSalesorderItem_PayLoad["ShippingPoint"] = oSalesOrderItem.ShippingPoint;
-                oSalesorderItem_PayLoad["ItemBillingBlockReason"] = oSalesOrderItem.ItemBillingBlockReason;
-            }
-            await s4h_sohv2_Txn.send({
-                method: 'POST',
-                path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
-                data: oSalesorderItem_PayLoad
-            }).catch((err) => {
+            var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder, MaterialGroup: sMaterialGroup }));
+            if(!aSalesOrderItem?.length){
                 aResponseStatus.push({
-                    "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
+                    "message": `| No items available for remediation in Sales Order: ${sSalesOrder} |`,
                     "status": "E"
                 });
-            }).then(async (result) => {
-                if (result) {
-                    await UPDATE(hanaDBTable).set({ ReferenceSDDocument: `${result?.SalesOrderItem}` }).where({ BookingID: oContentData.BookingID })
-                    aResponseStatus.push({
-                        "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
-                        "status": "S"
+            }
+            else{
+                for (var i in aSalesOrderItem) {
+                    var oSalesOrderItem = aSalesOrderItem[i];
+                    oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
+                    oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
+                    oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
+                    oSalesorderItem_PayLoad["ProductionPlant"] = sPlant;
+                    // oSalesorderItem_PayLoad["ShippingPoint"] = oSalesOrderItem.ShippingPoint;
+                    // oSalesorderItem_PayLoad["ShippingType"] = oSalesOrderItem.ShippingType;
+                    oSalesorderItem_PayLoad["ShippingType"] = sShipType ? sShipType : oSalesOrderItem.ShippingType;
+                    oSalesorderItem_PayLoad["ShippingPoint"] = sShipPoint ? sShipPoint : oSalesOrderItem.ShippingType;
+                    oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
+                    oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
+                    await s4h_sohv2_Txn.send({
+                        method: 'POST',
+                        path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
+                        data: oSalesorderItem_PayLoad
+                    }).catch((err) => {
+                        aResponseStatus.push({
+                            "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
+                            "status": "E"
+                        });
+                    }).then(async (result) => {
+                        if (result) {
+                            await UPDATE(hanaDBTable).set({ ReferenceSDDocument: `${result?.SalesOrderItem}` }).where({ BookingID: oContentData.BookingID })
+                            aResponseStatus.push({
+                                "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
+                                "status": "S"
+                            });
+                        }
                     });
                 }
-            });
+
+            }
+
             req.reply({
                 code: 201,
                 message: JSON.stringify(aResponseStatus)
@@ -716,6 +760,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
         this.on(['READ'], S4_ShippingConditions, req => {
             return s4h_shipConditions_Txn.run(req.query);
+        });
+        this.on(['READ'], S4_ShippingType_VH, req => {
+            return s4h_shtypev2_vh_Txn.run(req.query);
+        });
+        this.on(['READ'], S4_ShippingPoint_VH, req => {
+            return s4h_shpointv2_vh_Txn.run(req.query);
         });
 
         const updateItemTextForSalesOrder = async (req, sType, sText, aResponseStatus, oSalesOrderItem, oContentData) => {
