@@ -232,7 +232,7 @@ entity Maccs_Dchub : managed {
         titleExternalRef              : Integer not null    @mandatory;
         titleDescription              : String(40);
     key cinemaId                      : String(10) not null @mandatory;
-        screenId                      : Integer;
+        screenId                      : String(40);
         screenNumber                  : Integer not null    @mandatory;
         cinemaDescription             : String(40);
         cinemaTerritory               : String(2) not null  @mandatory;
@@ -249,12 +249,12 @@ entity Maccs_Dchub : managed {
         distributorId                 : Integer;
         distributorDescription        : String(15);
         distributorKDMArchive         : String(20);
-        hasDcp                        : Boolean;
-        doNotShip                     : Boolean;
+        hasDcp                        : String;
+        doNotShip                     : String;
         circuitingFrom                : String(10);
         screeningTime                 : Time;
         showcode                      : String(10);
-        techCheckKey                  : Boolean;
+        techCheckKey                  : String;
     key quantity                      : Integer             @mandatory;
         requestType                   : String(10);
         requestStatusCode             : Integer;
