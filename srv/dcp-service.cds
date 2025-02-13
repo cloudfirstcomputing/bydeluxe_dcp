@@ -14,8 +14,10 @@ service BookingOrderService {
     entity dcpkey                as projection on db.dcpkey;
     action createKey(Records : array of dcpkey)                                                                                                   returns String;
     action postKeyToSAP(bookingIDs : array of String)                                                                                             returns String;
-    action remediateContentSalesOrder(bookingID : String, salesOrder : String, plant : String, shippingCondition : String, deliveryDate : String) returns String;
-    action remediateKeySalesOrder(bookingID : String, salesOrder : String, plant : String, shippingCondition : String, deliveryDate : String)     returns String;
+    action remediateContentSalesOrder(oInput: RemediateType) returns String;
+    action remediateKeySalesOrder(oInput: RemediateType) returns String;
+    // action remediateContentSalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String) returns String;
+    // action remediateKeySalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String)     returns String;
     // action reconcileKey(bookingIDs: array of  String) returns String;
 
     entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;
@@ -28,6 +30,8 @@ service BookingOrderService {
     entity S4_Plants             as projection on api.Plants;
 
     entity S4_ShippingConditions as projection on api.ShippingConditions;
+    entity S4_ShippingType_VH as projection on api.ShippingType_VH;
+    entity S4_ShippingPoint_VH as projection on api.ShippingPoint_VH;
     entity DistroSpec_Local as projection on DistroSpec;
     entity AssetVault_Local as projection on AssetVault;
 
@@ -37,8 +41,17 @@ service BookingOrderService {
     entity BookingStatus as projection on db.BookingStatus;
     entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
     entity ShippingTypeMaster as projection on db.ShippingTypeMaster;
+    type RemediateType{
+       bookingID : String; 
+       salesOrder : String;
+       plant : String;
+       shipTypeSelected : String;
+       shipPointSelected : String;
+       deliveryDate : Date 
+    }
     annotate dcpcontent with @odata.draft.enabled;
     annotate dcpkey with @odata.draft.enabled;
+
     entity Maccs_Dchub           as projection on db.Maccs_Dchub;
     action createMaccs(Request : array of Maccs_Dchub)                                                                                            returns String;
 
@@ -49,7 +62,7 @@ service BookingOrderService {
     entity TheatreOrderRequest   as projection on db.TheatreOrderRequest;
 
     entity DigitalComposition as projection on db.DigitalComposition;
-
+    
     type TheatreOrderRequestType {
         StudioID             : String(50);
         GenerateDate         : DateTime;

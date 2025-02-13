@@ -110,7 +110,7 @@ sap.ui.define([
                     }.bind(this)
                 ).catch(
                     (err, param2) => {
-                        
+
                         BusyIndicator.hide();
                         MessageBox.error("Error occured", {
                             title: "Error",
@@ -161,7 +161,7 @@ sap.ui.define([
             if (aData?.length) {
                 var oModel = this.getModel();
                 var oActionODataContextBinding = oModel.bindContext("/processContent(...)");
-                oActionODataContextBinding.setParameter("bookingIDs", aData);                
+                oActionODataContextBinding.setParameter("bookingIDs", aData);
                 BusyIndicator.show();
                 oActionODataContextBinding.execute().then(
                     function (param) {
@@ -207,7 +207,7 @@ sap.ui.define([
                                 }
                             }
                         }
-                        
+
                         BusyIndicator.hide();
                         oModel.refresh();
                     }.bind(this)
@@ -227,7 +227,7 @@ sap.ui.define([
         createReferenceSalesOrder: function () {
             var that = this;
             var oView = this.getEditFlow().getView();
-            oView.setModel(new JSONModel({ "plantSelected": "", "shipConditionSelected": "", "salesOrder": "", "bookingID": "" }), "dialogModel");
+            oView.setModel(new JSONModel({ "plantSelected": "", "shipTypeSelected": "", "salesOrder": "", "bookingID": "" }), "dialogModel");
             var oResourceBundle = oView.getModel("i18n").getResourceBundle();
             var ref = this;
             let aSelectedItems = this.editFlow.getView().byId("dcpcontentweb::dcpcontentList--fe::table::dcpcontent::LineItem-innerTable").getSelectedItems();
@@ -287,11 +287,20 @@ sap.ui.define([
                                             var oViewModel = that.obj.getModel("dialogModel");
                                             var sDeliveryDate = oViewModel?.getProperty("/deliveryDateSelected")?.toISOString()?.split("T")[0];
                                             var oActionODataContextBinding = oModel.bindContext("/remediateContentSalesOrder(...)");
-                                            oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/bookingID"));
-                                            oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/salesOrder"));
-                                            oActionODataContextBinding.setParameter("plant", oViewModel?.getProperty("/plantSelected"));
-                                            oActionODataContextBinding.setParameter("shippingCondition", oViewModel?.getProperty("/shipConditionSelected"));
-                                            oActionODataContextBinding.setParameter("deliveryDate", sDeliveryDate);
+                                            // oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/bookingID"));
+                                            // oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/salesOrder"));
+                                            // oActionODataContextBinding.setParameter("plant", oViewModel?.getProperty("/plantSelected"));
+                                            // oActionODataContextBinding.setParameter("shippingType", oViewModel?.getProperty("/shipTypeSelected"));
+                                            // oActionODataContextBinding.setParameter("shippingPoint", oViewModel?.getProperty("/shipPointSelected"));
+                                            // oActionODataContextBinding.setParameter("deliveryDate", sDeliveryDate);
+                                            oActionODataContextBinding.setParameter("oInput", {
+                                                "bookingID": oViewModel?.getProperty("/bookingID"),
+                                                "salesOrder": oViewModel?.getProperty("/salesOrder"),
+                                                "plant": oViewModel?.getProperty("/plantSelected"),
+                                                "shipTypeSelected": oViewModel?.getProperty("/shipTypeSelected"),
+                                                "shipPointSelected": oViewModel?.getProperty("/shipPointSelected"),
+                                                "deliveryDate": sDeliveryDate
+                                            });
                                             sap.ui.getCore().byId('refSalesOrderDialog').setBusy(true);
                                             oActionODataContextBinding.execute().then(
                                                 function (param) {
@@ -349,6 +358,7 @@ sap.ui.define([
                                                         contentWidth: "auto",
                                                         styleClass: sResponsivePaddingClasses
                                                     });
+                                                    sap.ui.getCore().byId('refSalesOrderDialog').setBusy(false);
                                                 }
                                             );
 
