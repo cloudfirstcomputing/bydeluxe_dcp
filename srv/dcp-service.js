@@ -51,8 +51,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 try {
                     let entry_Active = await SELECT.one.from(dcpkey).where({ BookingID: data[i].BookingID });
                     if (entry_Active) {
-                        data[i].Message = `Booking ID ${data[i].BookingID} already exists`;
-                        failedEntries.push(data[i]);
+                        //commented by Sahas as per request for Anand as Client needs Update as well
+                        // data[i].Message = `Booking ID ${data[i].BookingID} already exists`;
+                        // failedEntries.push(data[i]);
+
+                        //update code by Sahas as per request for Anand as Client needs Update as well
+                        await UPDATE(dcpkey).set(data[i]).where({  BookingID: data[i].BookingID  })
                     }
                     else {
                         data[i].Status_ID = "A";
@@ -74,9 +78,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return finalResult;
         });
         this.on("createMaccs", async (req, res) => {
+            try{
             var aRequests = req.data.Request;
             var aRequestUpdated = await INSERT.into(Maccs_Dchub).entries(aRequests);
             return aRequestUpdated;
+            }
+            catch (e) {
+                req.error(405, e)
+            }
         });
         this.on("createComscoreHollywood", async (req, res) => {
             var aRequests = req.data.Request;
@@ -86,7 +95,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(405, "error")
+                req.error(405, e)
             }
 
         });
@@ -98,7 +107,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(405, "error")
+                req.error(405, e)
             }
         });
         this.on("processContent", async (req, res) => {
