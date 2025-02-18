@@ -66,11 +66,14 @@ service BookingOrderService {
     entity MediaOrder as projection on db.MediaOrder;
     
     type TheatreOrderRequestType {
-        StudioID             : String(50);
-        GenerateDate         : DateTime;
+         StudioID : String(50);
+        GenerateDate : DateTime;
+        Version:String(50);
+        ServerName:String(50);
+        DataBaseName:String(50);
         Theatre_Ass          : array of TheatreType;
         Content_Ass          : array of DigitalCompositionType;
-        DigitalKeyOrders_Ass : array of DigitalKeyOrderType;
+        // DigitalKeyOrders_Ass : array of DigitalKeyOrderType;
         MediaOrder_Ass   : array of MediaOrderType;
     }
 
@@ -87,6 +90,7 @@ service BookingOrderService {
         ID : String(50);
         Title     : String(500);
         CPL_UUID  : String(100);
+        FilmID: String(100);
     }
 
     type DigitalKeyOrderType {
@@ -99,11 +103,11 @@ service BookingOrderService {
     }
 
     type MediaOrderType{
-        mediaType          : String;
-        mediaOrderId       : String(40);
+       mediaType          : String;
+    mediaOrderId       : Integer;
         TheatreID          : String(50);
         contentId          : Integer;
-        cancelFlag         : Boolean;
+        cancelFlag         : String;
         operation          : String;
         playdateBegin      : Date;
         playdateEnd        : Date;
