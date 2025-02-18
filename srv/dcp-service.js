@@ -1,4 +1,5 @@
 const cds = require("@sap/cds");
+const { v4: uuidv4 } = require('uuid'); // Import UUID package
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
@@ -78,13 +79,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return finalResult;
         });
         this.on("createMaccs", async (req, res) => {
+            var uuid = uuidv4(); // Generate a unique ID
             try{
             var aRequests = req.data.Request;
             var aRequestUpdated = await INSERT.into(Maccs_Dchub).entries(aRequests);
             return aRequestUpdated;
             }
             catch (e) {
-                req.error(405, e)
+                req.error(405, uuid+e)
             }
         });
         this.on("createComscoreHollywood", async (req, res) => {

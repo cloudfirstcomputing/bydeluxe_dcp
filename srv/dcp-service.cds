@@ -62,6 +62,8 @@ service BookingOrderService {
     entity TheatreOrderRequest   as projection on db.TheatreOrderRequest;
 
     entity DigitalComposition as projection on db.DigitalComposition;
+
+    entity MediaOrder as projection on db.MediaOrder;
     
     type TheatreOrderRequestType {
         StudioID             : String(50);
@@ -69,6 +71,7 @@ service BookingOrderService {
         Theatre_Ass          : array of TheatreType;
         Content_Ass          : array of DigitalCompositionType;
         DigitalKeyOrders_Ass : array of DigitalKeyOrderType;
+        MediaOrder_Ass   : array of MediaOrderType;
     }
 
     type TheatreType {
@@ -93,6 +96,31 @@ service BookingOrderService {
         CancelFlag        : Boolean;
         LicenseBeginDate  : DateTime;
         LicenseEndDate    : DateTime;
+    }
+
+    type MediaOrderType{
+        mediaType          : String;
+        mediaOrderId       : String(40);
+        TheatreID          : String(50);
+        contentId          : Integer;
+        cancelFlag         : Boolean;
+        operation          : String;
+        playdateBegin      : Date;
+        playdateEnd        : Date;
+        holdKeyFlag        : String;
+        tmcMediaOrderId    : String;
+        tmcTheaterId       : String;
+        note               : String;
+        screeningScreenNo  : String;
+        screeningTime      : String;
+        doNotShip          : String;
+        shipHoldType       : String;
+        deliveryMethod     : String;
+        returnMethod       : String;
+        isNoKey            : String;
+        bookerName         : String;
+        bookerPhone        : String;
+        bookerEmail        : String;
     }
 
     action createComscoreHollywood(Request : array of TheatreOrderRequestType)                                                                    returns String;

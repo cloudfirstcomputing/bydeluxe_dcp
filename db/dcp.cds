@@ -271,7 +271,6 @@ entity TheatreOrderRequest : cuid, managed {
     StudioID : String(50);
     GenerateDate : DateTime;
     Version:String(50);
-    StudioId : String(50);
     ServerName:String(50);
     DataBaseName:String(50);
     // Compositions

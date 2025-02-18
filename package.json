@@ -14,14 +14,15 @@
     "@sap/xsenv": "^5.3.0",
     "@sap/xssec": "^4",
     "express": "^4",
-    "passport": "^0.7.0"
+    "passport": "^0.7.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@cap-js/cds-types": "^0.6",
     "@cap-js/sqlite": "^1",
     "@sap/cds-dk": "^8.3.0",
-    "rimraf": "^5.0.5",
-    "mbt": "^1.2.29"
+    "mbt": "^1.2.29",
+    "rimraf": "^5.0.5"
   },
   "scripts": {
     "start": "cds-serve",
