@@ -273,6 +273,7 @@ entity TheatreOrderRequest : cuid, managed {
     Version:String(50);
     ServerName:String(50);
     DataBaseName:String(50);
+    notes :String(500);
     // Compositions
     Theatre_Ass : Composition of many Theatre
         on Theatre_Ass.Request = $self;
@@ -292,6 +293,7 @@ entity Theatre : cuid, managed {
     State : String(100);
     PostalCode : String(50);
     CountryCode : String(50);
+    Address: String(500);
     Request : Association to TheatreOrderRequest;
 
 }

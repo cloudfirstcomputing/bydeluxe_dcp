@@ -93,7 +93,20 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-                var aRequestUpdated = await INSERT.into(TheatreOrderRequest).entries(aRequests);
+                var aSelected = await SELECT.ONE.from(TheatreOrderRequest).where ({StudioID : aRequests.StudioID,
+                    GenerateDate : aRequests.GenerateDate,
+                    Version:aRequests.Version,
+                    ServerName:aRequests.ServerName,
+                    DataBaseName:aRequests.DataBaseName})
+                 if(aSelected){
+                    var aRequestUpdated = await UPDATE(TheatreOrderRequest).set(aRequests).where ({StudioID : aRequests.StudioID,
+                        GenerateDate : aRequests.GenerateDate,
+                        Version:aRequests.Version,
+                        ServerName:aRequests.ServerName,
+                        DataBaseName:aRequests.DataBaseName});
+                 }  else{
+                    var aRequestUpdated = await INSERT.into(TheatreOrderRequest).entries(aRequests);
+                 }
                 return aRequestUpdated;
             }
             catch (e) {

@@ -71,6 +71,7 @@ service BookingOrderService {
         Version:String(50);
         ServerName:String(50);
         DataBaseName:String(50);
+         notes :String(500);
         Theatre_Ass          : array of TheatreType;
         Content_Ass          : array of DigitalCompositionType;
         // DigitalKeyOrders_Ass : array of DigitalKeyOrderType;
@@ -83,6 +84,7 @@ service BookingOrderService {
         City        : String(200);
         State       : String(100);
         PostalCode  : String(50);
+        Address: String(500);
         CountryCode : String(50);
     }
 
@@ -127,7 +129,7 @@ service BookingOrderService {
         bookerEmail        : String;
     }
 
-    action createComscoreHollywood(Request : array of TheatreOrderRequestType)                                                                    returns String;
+    action createComscoreHollywood(Request : TheatreOrderRequestType)                                                                    returns String;
 
         /// Disney OFE
 
