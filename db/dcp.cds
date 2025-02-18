@@ -298,10 +298,10 @@ entity Theatre : cuid, managed {
 
   entity MediaOrder :cuid,managed{
     mediaType          : String;
-key mediaOrderId       : String(40);
+key mediaOrderId       : Integer;
     TheatreID          : String(50);
     contentId          : Integer;
-    cancelFlag         : Boolean;
+    cancelFlag         : String;
     operation          : String;
     playdateBegin      : Date;
     playdateEnd        : Date;

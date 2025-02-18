@@ -86,22 +86,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return aRequestUpdated;
             }
             catch (e) {
-                req.error(405, uuid+e)
+                req.error(502, uuid+"  "+e)
             }
         });
         this.on("createComscoreHollywood", async (req, res) => {
+            var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-
                 var aRequestUpdated = await INSERT.into(TheatreOrderRequest).entries(aRequests);
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(405, e)
+                req.error(502, uuid+"  "+e)
             }
 
         });
         this.on("createDisneyOFE", async (req, res) => {
+            var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
 
@@ -109,7 +110,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(405, e)
+                req.error(502, uuid+"  "+e)
             }
         });
         this.on("processContent", async (req, res) => {
