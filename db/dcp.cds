@@ -270,7 +270,10 @@ entity TheatreOrderRequest : cuid, managed {
     key ID : UUID;
     StudioID : String(50);
     GenerateDate : DateTime;
-    
+    Version:String(50);
+    StudioId : String(50);
+    ServerName:String(50);
+    DataBaseName:String(50);
     // Compositions
     Theatre_Ass : Composition of many Theatre
         on Theatre_Ass.Request = $self;
@@ -278,6 +281,8 @@ entity TheatreOrderRequest : cuid, managed {
         on Content_Ass.Request = $self;
     DigitalKeyOrders_Ass : Composition of many DigitalKeyOrder
         on DigitalKeyOrders_Ass.Request = $self;
+    MediaOrder_Ass : Composition of many MediaOrder
+        on MediaOrder_Ass.Request = $self;
 }
 
 entity Theatre : cuid, managed {
@@ -289,13 +294,41 @@ entity Theatre : cuid, managed {
     PostalCode : String(50);
     CountryCode : String(50);
     Request : Association to TheatreOrderRequest;
+
 }
+
+  entity MediaOrder :cuid,managed{
+    mediaType          : String;
+key mediaOrderId       : String(40);
+    TheatreID          : String(50);
+    contentId          : Integer;
+    cancelFlag         : Boolean;
+    operation          : String;
+    playdateBegin      : Date;
+    playdateEnd        : Date;
+    holdKeyFlag        : String;
+    tmcMediaOrderId    : String;
+    tmcTheaterId       : String;
+    note               : String;
+    screeningScreenNo  : String;
+    screeningTime      : String;
+    doNotShip          : String;
+    shipHoldType       : String;
+    deliveryMethod     : String;
+    returnMethod       : String;
+    isNoKey            : String;
+    bookerName         : String;
+    bookerPhone        : String;
+    bookerEmail        : String;
+    Request : Association to TheatreOrderRequest;
+  }
 
 entity DigitalComposition : cuid, managed {
     key ID : UUID;
     ContentID : String(50);
     Title : String(500);
     CPL_UUID : String(100);
+    FilmID: String(100);
     Request : Association to TheatreOrderRequest;
 }
 
