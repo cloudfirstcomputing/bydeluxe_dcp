@@ -773,13 +773,23 @@ annotate service.BookingSalesorderItem with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : KeyEndTime,
-                Label : '{i18n>Keyendtime}',
+                Value : StartDate,
+                Label : '{i18n>Startdate}',
             },
             {
                 $Type : 'UI.DataField',
-                Value : KeyStartTime,
-                Label : '{i18n>Keystarttime}',
+                Value : StartTime,
+                Label : '{i18n>Starttime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : EndDate,
+                Label : '{i18n>Enddate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : EndTime,
+                Label : '{i18n>Endtime}',
             },
             {
                 $Type : 'UI.DataField',
