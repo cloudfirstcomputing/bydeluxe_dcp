@@ -552,6 +552,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oSalesOrder._Item[item]["MaxKDMSDuration"] = distroSpecData.MaxKDMSDuration;
                                 oSalesOrder._Item[item]["StudioHoldOverRule"] = distroSpecData.StudioHoldOverRule;
                                 oSalesOrder._Item[item]["SalesTerritory"] = distroSpecData.SalesTerritory_SalesDistrict;
+                                
+                                oSalesOrder._Item[item]["StartDate"] = sStartDate;
+                                oSalesOrder._Item[item]["StartTime"] = sStartTime;
+                                oSalesOrder._Item[item]["EndDate"] = sEndDate;
+                                oSalesOrder._Item[item]["EndTime"] = sEndTime;
 
                                 delete oSalesOrder._Item[item].ShippingType;
                             } //ITERATING ITEM END

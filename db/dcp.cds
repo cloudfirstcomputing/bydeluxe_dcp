@@ -142,10 +142,6 @@ entity BookingSalesOrder : managed {
         CountryCode             : String(2);
         ScreenID                : String(1);
         SingleScreen            : String;
-        StartDate               : Date;
-        StartTime               : Time;
-        EndDate                 : Date;
-        EndTime                 : Time;
         Releasempm              : String(12);
         Territory               : String(2);
         DeliveryOnDate          : Date;
@@ -193,8 +189,10 @@ entity BookingSalesorderItem : managed {
         CTT                      : String;
         CPLUUID                  : String;
         PricingReferenceMaterial : String(40);
-        KeyStartTime             : Time;
-        KeyEndTime               : Time;
+        StartDate               : Date;
+        StartTime               : Time;
+        EndDate                 : Date;
+        EndTime                 : Time;                
         InitialKeyDuration       : Integer;
         NextKeyDuration          : Integer;
         OffsetEPD                : Integer;
