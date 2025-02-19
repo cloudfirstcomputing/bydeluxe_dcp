@@ -324,17 +324,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 }
                             });
                             if (aPackageFiltered?.length) {
-                                // var aBPFromS4 = await s4h_bp_Txn.run(SELECT.from(S4H_BuisnessPartner, (bp) => {
-                                //     bp.to_BusinessPartnerAddress((bpAddr) => { }),
-                                //         bp.to_Customer((bpCustomer) => { })
-                                // }).where({ BusinessPartner: sSoldToCustomer }));
-                                // var oBusinessPartnerAddrfromS4 = "";
-                                // if (aBPFromS4?.length) {
-                                //     var oBPFromS4 = aBPFromS4[0];
-                                //     if (oBPFromS4.to_BusinessPartnerAddress?.length) {
-                                //         oBusinessPartnerAddrfromS4 = oBPFromS4.to_BusinessPartnerAddress[0];
-                                //     }
-                                // }
                                 var oBPPackage = aPackageFiltered.find((oPkg) => {
                                     return oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
                                         oPkg?.PrimaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
@@ -365,16 +354,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         oBPPackage.PrimaryDeliveryMethod_ShippingCondition === "10" ||
                                         oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "05" ||
                                         oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "06" ||
-                                        oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "10"
+                                        oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "10" &&
+                                        !oShipToSalesData?.YY1_DCDCFlag_csa
                                     ) {
-                                        if (!oShipToSalesData?.YY1_DCDCFlag_csa) {
-                                            // sErrorMessage = `DCDC Capability not found. Primary Del.Method from Distrospec Package: ${PrimaryDeliveryMethod_ShippingCondition}, Secondary Del.Method from Distrospec Package: ${SecondaryDeliveryMethod_ShippingCondition}`;
-                                            sErrorMessage = `DCDC Capability not found.`;
-                                        }
+                                        sErrorMessage = `DCDC Capability not found.`;
                                     }
                                 }
                                 else {
-                                    // sErrorMessage = `Theater Capability not found. Primary Del.Method from Distrospec Package: ${PrimaryDeliveryMethod_ShippingCondition}, Secondary Del.Method from Distrospec Package: ${SecondaryDeliveryMethod_ShippingCondition}`;
                                     sErrorMessage = `Theater Capability not found. Ship-To:${sShipTo}`;
                                 }
                                 for (var i in aPackageFiltered) {
@@ -480,7 +466,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 var bPostingSuccess = false, sSalesOrder = "";
                 if (sErrorMessage) {
-                    // aContentData[i].ErrorMessage = sErrorMessage;
                     updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage, Status_ID: "D" }).where({ BookingID: oContentData.BookingID }));
                     aResponseStatus.push({
                         "message": `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
