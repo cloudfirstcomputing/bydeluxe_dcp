@@ -15,7 +15,8 @@
     "@sap/xssec": "^4",
     "express": "^4",
     "passport": "^0.7.0",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@cap-js/cds-types": "^0.6",
@@ -224,6 +225,13 @@
           "path": "/sap/opu/odata/sap/YY1_I_SHIPPINGTYPE_CDS",
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
+        }
+      },
+      "deluxe-ads-rest-api": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "deluxe-ads-rest-api",
+          "forwardAuthToken": true
         }
       }
     }

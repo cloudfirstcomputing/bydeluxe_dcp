@@ -1,5 +1,6 @@
 const cds = require("@sap/cds");
 const { v4: uuidv4 } = require('uuid'); // Import UUID package
+const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
@@ -12,6 +13,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_sohv2_Txn = await cds.connect.to("API_SALES_ORDER_V2_SRV");
         var s4h_shtypev2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
         var s4h_shpointv2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGPOINT_CDS_0001");
+        var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         // var sSoldToCustomer = '1000011', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
@@ -852,6 +854,72 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     // console.log("Test");
             //     return aSalesArea;
         });
+
+
+        this.on("downloadFormADS", async (req, res) => {
+
+
+            try{
+            var form_name = 'frm_058'
+            var query = `/v1/forms/${form_name}`;
+            var oFormObject =  await deluxe_adsrestapi.get(query);
+            var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+            const jsonData = {
+                customer: {
+                  name: "John Doe",
+                  address: "1234 Elm Street",
+                  city: "Berlin",
+                  country: "Germany"
+                },
+                items: [
+                  { description: "Laptop", quantity: 1, price: 1200 },
+                  { description: "Mouse", quantity: 2, price: 25 }
+                ],
+                total: 1250
+              };
+        
+            // Wrap everything in a single root element to ensure well-formed XML
+            const wrappedJson = { root: jsonData };
+            
+            // Convert JSON to XML (Ensure single root)
+            const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });
+              
+              // Encode XML to Base64
+              const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+
+              const headers = {
+				"Content-Type": 'application/json',
+				"accept": 'application/json',
+			};
+
+              // Print PDF code logic
+              var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+
+              const data =   {
+                                "xdpTemplate": sXMLTemplate,
+                                "xmlData": base64EncodedXml,
+                                "formType": "print",
+                                "formLocale": "en_US",
+                                "taggedPdf": 1,
+                                "embedFont": 0,
+                                "changeNotAllowed": false,
+                                "printNotAllowed": false
+                        };
+
+                  var oPrintForm =  await deluxe_adsrestapi.send({
+                    method: "POST",
+                    path: sDownloadPDFurl,
+                    data,
+                    headers
+                });
+              
+            return oPrintForm.fileContent;
+        }
+            catch(e){
+                req.error(502,e)
+            }
+        });
+        
         return super.init();
     }
 
