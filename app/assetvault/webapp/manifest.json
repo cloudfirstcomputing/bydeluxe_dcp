@@ -133,6 +133,15 @@
                   "tableSettings": {
                     "type": "ResponsiveTable",
                     "selectionMode": "Single"
+                  },
+                  "actions": {
+                    "AssetVaultExt": {
+                      "press": "com.dlx.assetvault.ext.assetVaultExt.AssetVaultExt.onPreviewForm",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "Preview Form"
+                    }
                   }
                 }
               }
