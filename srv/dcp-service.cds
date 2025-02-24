@@ -213,5 +213,5 @@ service BookingOrderService {
 
     action createDisneyOFE(Request : array of OrderRequestType) returns String;
 
-    function downloadFormADS() returns LargeString
+    
 }

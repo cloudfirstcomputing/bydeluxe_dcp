@@ -30,3 +30,9 @@ entity AssetVault {
                                         CPLS3location       : String;
                                 }
 };
+
+
+entity MediaFiles  {
+   key name      : String(255);
+       content   : LargeBinary @Core.MediaType;  // This stores the binary content
+}
