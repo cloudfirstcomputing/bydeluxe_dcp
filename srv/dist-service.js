@@ -301,6 +301,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     .where({
                         DCP: req.DCPMaterialNumber_Product
                     })
+                req.EDeliveryDate = assetvault?.EDeliveryDate
+                req.EDeliveryTime = assetvault?.EDeliveryDate
+                req.SatelliteFDate = assetvault?.SatelliteFlightDate
+                req.SatelliteFTime = assetvault?.SatelliteFlightTime
                 if (assetvault?._Items?.length > 0) {
                     req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
                     req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)

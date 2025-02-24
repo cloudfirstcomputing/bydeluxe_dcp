@@ -190,7 +190,8 @@ annotate service.DistRestrictions with {
         Label          : '{i18n>Language}',
         Text           : DistributionFilterLanguage.name,
         TextArrangement: #TextOnly,
-    };
+    };    
+    PlayBackCapability@Common: {Label: '{i18n>PlayBackCapability', };
 };
 
 
@@ -205,8 +206,13 @@ annotate service.DCPMaterials with @(Common: {SideEffects: {
         Label: '{i18n>DCPMaterial}',
         Text : DCPMaterialNumber.Name,
     };
+    PublishDateOffset @Common: {Label: '{i18n>PublishDateOffset}', };
     CTT               @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
     CPLUUID           @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
+    EDeliveryDate     @Common: {Label: '{i18n>EDeliveryDate}', };
+    EDeliveryTime     @Common: {Label: '{i18n>EDeliveryTime}', };
+    SatelliteFDate    @Common: {Label: '{i18n>SatelliteFDate}', };
+    SatelliteFTime    @Common: {Label: '{i18n>SatelliteFTime}', };
 };
 
 annotate service.Studios with {
@@ -382,8 +388,8 @@ annotate service.StudioKey with @(
         $Type: 'UI.FieldGroupType',
         Data : [
             {
-                $Type : 'UI.DataField',
-                Value : Studio_BusinessPartner,
+                $Type: 'UI.DataField',
+                Value: Studio_BusinessPartner,
             },
             {
                 $Type: 'UI.DataField',
@@ -736,11 +742,31 @@ annotate service.DCPMaterials with @(
             },
             {
                 $Type: 'UI.DataField',
+                Value: PublishDateOffset,
+            },
+            {
+                $Type: 'UI.DataField',
                 Value: CTT,
             },
             {
                 $Type: 'UI.DataField',
                 Value: CPLUUID,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: EDeliveryDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: EDeliveryTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFTime,
             },
         ]
     },

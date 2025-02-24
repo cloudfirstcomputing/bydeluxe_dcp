@@ -13,6 +13,17 @@ annotate service.AssetVault with {
     KENCASTID             @Common: {Label: '{i18n>KENCASTID}', };
     ProjectType           @Common: {Label: '{i18n>ProjectType}', };
     VersionDescription    @Common: {Label: '{i18n>VersionDescription}', };
+    ExternalReference     @Common: {Label: '{i18n>ExternalReference}', };
+    Rating                @Common: {Label: '{i18n>Rating}', };
+    RunTime               @Common: {Label: '{i18n>RunTime}', };
+    EndCreditOffset       @Common: {Label: '{i18n>EndCreditOffset}', };
+    ImageFormats          @Common: {Label: '{i18n>ImageFormats}', };
+    AudioFormats          @Common: {Label: '{i18n>AudioFormats}', };
+    AccessibilityFeatures @Common: {Label: '{i18n>AccessibilityFeatures}', };
+    EDeliveryDate         @Common: {Label: '{i18n>EDeliveryDate}', };
+    EDeliveryTime         @Common: {Label: '{i18n>EDeliveryTime}', };
+    SatelliteFlightDate   @Common: {Label: '{i18n>SatelliteFlightDate}', };
+    SatelliteFlightTime   @Common: {Label: '{i18n>SatelliteFlightTime}', };
 };
 
 annotate service.AssetVault._Items with {
@@ -98,6 +109,50 @@ annotate service.AssetVault with @(
             {
                 $Type: 'UI.DataField',
                 Value: KENCASTID,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: AccessibilityFeatures,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: AudioFormats,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: EndCreditOffset,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ExternalReference,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ImageFormats,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Rating,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: RunTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: EDeliveryDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: EDeliveryTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFlightDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFlightTime,
             },
         ],
     },
