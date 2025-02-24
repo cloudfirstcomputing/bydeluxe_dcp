@@ -6,13 +6,24 @@ entity AssetVault {
         AssetMapID            : String(40);
         AssetMapIDDescription : String(80);
         AnnotationText        : String;
+        ExternalReference     : String;
         AssetMapFileSize      : String(80);
         Title                 : String(40);
+        Rating                : String(40);
         VersionDescription    : String(40);
         CreatedinSAP          : Boolean    @mandatory;
         DCP                   : String(40);
         GoFilexTitleID_NORAM  : String(40);
         KENCASTID             : String(40);
+        RunTime               : String(10);
+        EndCreditOffset       : String(10);
+        ImageFormats          : String(40);
+        AudioFormats          : String(40);
+        AccessibilityFeatures : String(40);
+        EDeliveryDate         : String(10);
+        EDeliveryTime         : String(10);
+        SatelliteFlightDate   : String(10);
+        SatelliteFlightTime   : String(10);
         _Items                : Composition of many {
                                     key ID                  : UUID;
                                         ProjectID           : String(40);
@@ -30,8 +41,6 @@ entity AssetVault {
                                         CPLS3location       : String;
                                 }
 };
-
-
 entity MediaFiles  {
    key name      : String(255);
        content   : LargeBinary @Core.MediaType;  // This stores the binary content
