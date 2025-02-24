@@ -2,7 +2,7 @@ using {
     managed,
     cuid,
     Country,
-// Language
+    Language
 } from '@sap/cds/common';
 using from '@sap/cds-common-content';
 using api from './common';
@@ -16,14 +16,35 @@ entity StudioVH      as projection on api.BusinessPartners;
 entity TheaterVH     as projection on api.BusinessPartners;
 
 entity DistroSpec : managed {
-    key DistroSpecUUID       : UUID;
-        DistroSpecID         : Integer default 0          @readonly;
-        Name                 : String(40)                 @mandatory;
-        Title                : Association to one TitleVH @mandatory;
+    key DistroSpecUUID     : UUID;
+        DistroSpecID       : Integer default 0          @readonly;
+        Name               : String(40)                 @mandatory;
+        Title              : Association to one TitleVH @mandatory;
+        DeliverySequence1  : Association to api.ShippingConditions;
+        DeliverySequence2  : Association to api.ShippingConditions;
+        DeliverySequence3  : Association to api.ShippingConditions;
+        DeliverySequence4  : Association to api.ShippingConditions;
+        DeliverySequence5  : Association to api.ShippingConditions;
+        DeliverySequence6  : Association to api.ShippingConditions;
+        DeliverySequence7  : Association to api.ShippingConditions;
+        DeliverySequence8  : Association to api.ShippingConditions;
+        DeliverySequence9  : Association to api.ShippingConditions;
+        DeliverySequence10 : Association to api.ShippingConditions;
+        FieldControl       : Int16                      @odata.Type: 'Edm.Byte' enum {
+            Inapplicable = 0;
+            ReadOnly     = 1;
+            Optional     = 3;
+            Mandatory    = 7;
+        };
+        to_Package         : Composition of many Package
+                                 on to_Package.to_DistroSpec = $self;
+        to_StudioKey       : Composition of many StudioKey
+                                 on to_StudioKey.to_DistroSpec = $self;
+};
+
+entity StudioKey {
+    key StudioKeyUUID        : UUID;
         Studio               : Association to one StudioVH;
-        CustomerReference    : String(40);
-        ValidFrom            : Date                       @mandatory;
-        ValidTo              : Date                       @mandatory;
         KeyStartTime         : Time;
         KeyEndTime           : Time;
         InitialKeyDuration   : Integer;
@@ -37,50 +58,59 @@ entity DistroSpec : managed {
         MaxKDMSDuration      : Integer;
         StudioHoldOverRule   : String(10);
         SalesTerritory       : Association to one api.SalesDistricts;
-        FieldControl         : Int16                      @odata.Type: 'Edm.Byte' enum {
-            Inapplicable = 0;
-            ReadOnly     = 1;
-            Optional     = 3;
-            Mandatory    = 7;
-        };
-        to_Package           : Composition of many Package
-                                   on to_Package.to_DistroSpec = $self;
+        to_DistroSpec        : Association to DistroSpec;
+        to_CustomerRef       : Composition of many CustomerRef
+                                   on to_CustomerRef.to_StudioKey = $self;
+};
+
+entity CustomerRef {
+    key ID                : UUID;
+        CustomerReference : String(40);
+        to_StudioKey      : Association to StudioKey;
+        to_DistroSpec     : Association to DistroSpec;
 };
 
 entity Package {
-    key PackageUUID             : UUID;
-        PackageName             : String(40)                                @mandatory;
-        Priority                : Association to one api.DeliveryPriority   @mandatory;
-        ContentIndicator        : String(1) enum {
+    key PackageUUID        : UUID;
+        PackageName        : String(40) @mandatory;
+        Priority           : Integer    @assert.range: [
+            0,
+            99
+        ]  @mandatory;
+        ContentIndicator   : String(1) enum {
             K;
             C
         };
-        PrimaryDeliveryMethod   : Association to one api.ShippingConditions @mandatory;
-        SecondaryDeliveryMethod : Association to one api.ShippingConditions;
-        ValidFrom               : Date                                      @mandatory;
-        ValidTo                 : Date                                      @mandatory;
-        to_DCPMaterial          : Composition of many DCPMaterials
-                                      on to_DCPMaterial.to_Package = $self;
-        to_DistRestriction      : Composition of many DistRestrictions
-                                      on to_DistRestriction.to_Package = $self;
-        to_DistroSpec           : Association to DistroSpec;
+        ValidFrom          : Date       @mandatory;
+        ValidTo            : Date       @mandatory;
+        DeliveryMethod1    : Association to api.ShippingConditions;
+        DeliveryMethod2    : Association to api.ShippingConditions;
+        DeliveryMethod3    : Association to api.ShippingConditions;
+        DeliveryMethod4    : Association to api.ShippingConditions;
+        DeliveryMethod5    : Association to api.ShippingConditions;
+        DeliveryMethod6    : Association to api.ShippingConditions;
+        DeliveryMethod7    : Association to api.ShippingConditions;
+        DeliveryMethod8    : Association to api.ShippingConditions;
+        DeliveryMethod9    : Association to api.ShippingConditions;
+        DeliveryMethod10   : Association to api.ShippingConditions;
+        to_DCPMaterial     : Composition of many DCPMaterials
+                                 on to_DCPMaterial.to_Package = $self;
+        to_DistRestriction : Composition of many DistRestrictions
+                                 on to_DistRestriction.to_Package = $self;
+        to_DistroSpec      : Association to DistroSpec;
 }
 
 entity DistRestrictions : cuid {
-    Theater                   : Association to one TheaterVH;
-    Circuit                   : Association to one api.CustomerGroup;
-    DistributionFilterRegion  : Association to one api.Regions;
-    DistributionFilterCountry : Country;
-    DistributionFilterCity    : String;
-    DistributionFilterPostal  : String;
-    OffsetRule                : Integer @assert.range: [
-        0,
-        999
-    ];
-    // PrimaryPlant              : Association to one api.Plants;
-    // SecondaryPlant            : Association to one api.Plants;
-    to_Package                : Association to Package;
-    to_DistroSpec             : Association to DistroSpec;
+    Theater                    : Association to one TheaterVH;
+    Circuit                    : Association to one api.CustomerGroup;
+    DistributionFilterRegion   : Association to one api.Regions;
+    DistributionFilterCountry  : Country;
+    DistributionFilterCity     : String;
+    DistributionFilterPostal   : String;
+    DistributionFilterLanguage : Language;
+    PlayBackCapability         : String(2);
+    to_Package                 : Association to Package;
+    to_DistroSpec              : Association to DistroSpec;
 };
 
 entity DCPMaterials {

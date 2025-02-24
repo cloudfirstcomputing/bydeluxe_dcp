@@ -20,24 +20,71 @@ using DistributionService as service from '../../srv/dist-service';
     },
 )
 annotate service.DistroSpec with {
-    DistroSpecID         @Common: {Label: '{i18n>DistroSpecID}', };
-    Name                 @Common: {Label: '{i18n>Name}', };
-    Title                @Common: {
+    DistroSpecID       @Common: {Label: '{i18n>DistroSpecID}', };
+    Name               @Common: {Label: '{i18n>Name}', };
+    Title              @Common: {
         Label          : '{i18n>Title}',
         Text           : Title.Name,
         TextArrangement: #TextOnly,
     };
+    DeliverySequence1  @Common: {
+        Label          : '{i18n>DeliverySequence1}',
+        Text           : DeliverySequence1.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence2  @Common: {
+        Label          : '{i18n>DeliverySequence2}',
+        Text           : DeliverySequence2.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence3  @Common: {
+        Label          : '{i18n>DeliverySequence3}',
+        Text           : DeliverySequence3.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence4  @Common: {
+        Label          : '{i18n>DeliverySequence4}',
+        Text           : DeliverySequence4.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence5  @Common: {
+        Label          : '{i18n>DeliverySequence5}',
+        Text           : DeliverySequence5.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence6  @Common: {
+        Label          : '{i18n>DeliverySequence6}',
+        Text           : DeliverySequence6.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence7  @Common: {
+        Label          : '{i18n>DeliverySequence7}',
+        Text           : DeliverySequence7.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence8  @Common: {
+        Label          : '{i18n>DeliverySequence8}',
+        Text           : DeliverySequence8.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence9  @Common: {
+        Label          : '{i18n>DeliverySequence9}',
+        Text           : DeliverySequence9.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliverySequence10 @Common: {
+        Label          : '{i18n>DeliverySequence10}',
+        Text           : DeliverySequence10.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+};
+
+annotate service.StudioKey with {
     Studio               @Common: {
         Label          : '{i18n>Studio}',
         Text           : Studio.BusinessPartnerFullName,
         TextArrangement: #TextOnly,
     };
-    CustomerReference    @Common: {Label: '{i18n>CustomerReference}', };
-    ValidFrom            @Common: {
-        Label       : '{i18n>ValidFrom}',
-        FieldControl: FieldControl,
-    };
-    ValidTo              @Common: {Label: '{i18n>ValidTo}', };
     KeyStartTime         @Common: {Label: '{i18n>KeyStartTime}', };
     KeyEndTime           @Common: {Label: '{i18n>KeyEndTime}', };
     InitialKeyDuration   @Common: {Label: '{i18n>InitialKeyDuration}', };
@@ -57,47 +104,93 @@ annotate service.DistroSpec with {
     };
 };
 
+annotate service.CustomerRef with {
+    CustomerReference @Common: {Label: '{i18n>CustomerReference}', };
+};
+
+
 annotate service.Package with {
-    PackageName             @Common: {Label: '{i18n>PackageName}', };
-    Priority                @Common: {
-        Label: '{i18n>Priority}',
-        Text : Priority.DeliveryPriorityDesc,
-    };
-    ContentIndicator        @Common: {Label: '{i18n>ContentIndicator}', };
-    PrimaryDeliveryMethod   @Common: {
-        Label          : '{i18n>PrimaryDeliveryMethod}',
-        Text           : PrimaryDeliveryMethod.ShippingConditionName,
+    PackageName      @Common: {Label: '{i18n>PackageName}', };
+    Priority         @Common: {Label: '{i18n>Priority}', };
+    ContentIndicator @Common: {Label: '{i18n>ContentIndicator}', };
+    DeliveryMethod1  @Common: {
+        Label          : '{i18n>DeliveryMethod1}',
+        Text           : DeliveryMethod1.ShippingConditionName,
         TextArrangement: #TextOnly,
     };
-    SecondaryDeliveryMethod @Common: {
-        Label          : '{i18n>SecondaryDeliveryMethod}',
-        Text           : SecondaryDeliveryMethod.ShippingConditionName,
+    DeliveryMethod2  @Common: {
+        Label          : '{i18n>DeliveryMethod2}',
+        Text           : DeliveryMethod2.ShippingConditionName,
         TextArrangement: #TextOnly,
     };
-    ValidFrom               @Common: {Label: '{i18n>ValidFrom}', };
-    ValidTo                 @Common: {Label: '{i18n>ValidTo}', };
+    DeliveryMethod3  @Common: {
+        Label          : '{i18n>DeliveryMethod3}',
+        Text           : DeliveryMethod3.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod4  @Common: {
+        Label          : '{i18n>DeliveryMethod4}',
+        Text           : DeliveryMethod4.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod5  @Common: {
+        Label          : '{i18n>DeliveryMethod5}',
+        Text           : DeliveryMethod5.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod6  @Common: {
+        Label          : '{i18n>DeliveryMethod6}',
+        Text           : DeliveryMethod6.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod7  @Common: {
+        Label          : '{i18n>DeliveryMethod7}',
+        Text           : DeliveryMethod7.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod8  @Common: {
+        Label          : '{i18n>DeliveryMethod8}',
+        Text           : DeliveryMethod8.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod9  @Common: {
+        Label          : '{i18n>DeliveryMethod9}',
+        Text           : DeliveryMethod9.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod10 @Common: {
+        Label          : '{i18n>DeliveryMethod10}',
+        Text           : DeliveryMethod10.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    ValidFrom        @Common: {Label: '{i18n>ValidFrom}', };
+    ValidTo          @Common: {Label: '{i18n>ValidTo}', };
 };
 
 annotate service.DistRestrictions with {
-    Theater                   @Common: {Label: '{i18n>Theater}', };
-    Circuit                   @Common: {
+    Theater                    @Common: {Label: '{i18n>Theater}', };
+    Circuit                    @Common: {
         Label          : '{i18n>Circuit}',
         Text           : Circuit.Name,
         TextArrangement: #TextOnly,
     };
-    DistributionFilterRegion  @Common: {
+    DistributionFilterRegion   @Common: {
         Label          : '{i18n>DistributionFilterRegion}',
         Text           : DistributionFilterRegion.RegionName,
         TextArrangement: #TextOnly,
     };
-    DistributionFilterCountry @Common: {
+    DistributionFilterCountry  @Common: {
         Label          : '{i18n>DistributionFilterCountry}',
         Text           : DistributionFilterCountry.name,
         TextArrangement: #TextOnly,
     };
-    DistributionFilterCity    @Common: {Label: '{i18n>DistributionFilterCity}', };
-    DistributionFilterPostal  @Common: {Label: '{i18n>DistributionFilterPostal}', };
-    OffsetRule                @Common: {Label: '{i18n>OffsetRule}', };
+    DistributionFilterCity     @Common: {Label: '{i18n>DistributionFilterCity}', };
+    DistributionFilterPostal   @Common: {Label: '{i18n>DistributionFilterPostal}', };
+    DistributionFilterLanguage @Common: {
+        Label          : '{i18n>Language}',
+        Text           : DistributionFilterLanguage.name,
+        TextArrangement: #TextOnly,
+    };
 };
 
 
@@ -157,11 +250,8 @@ annotate service.SalesDistricts with {
 };
 
 annotate service.DistroSpec with @(
-    UI.SelectionFields         : [
-        Studio_BusinessPartner,
-        Title_Product
-    ],
-    UI.HeaderInfo              : {
+    UI.SelectionFields     : [Title_Product],
+    UI.HeaderInfo          : {
         Title         : {
             $Type: 'UI.DataField',
             Value: Title_Product,
@@ -169,9 +259,132 @@ annotate service.DistroSpec with @(
         TypeName      : '{i18n>DistroSpec}',
         TypeNamePlural: '{i18n>DistroSpecs}',
     },
-    UI.FieldGroup #StudioKey   : {
+    UI.FieldGroup #General : {
         $Type: 'UI.FieldGroupType',
         Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: DistroSpecID,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Name,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Title_Product,
+            },
+
+        ],
+    },
+    UI.FieldGroup #Delivery: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence1_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence2_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence3_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence4_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence5_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence6_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence7_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence8_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence9_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliverySequence10_ShippingCondition,
+            },
+        ]
+    },
+    UI.Facets              : [
+        {
+            $Type : 'UI.CollectionFacet',
+            ID    : 'PackageCollection',
+            Label : '{i18n>PackageInfo}',
+            Facets: [{
+                $Type : 'UI.ReferenceFacet',
+                ID    : 'General',
+                Label : '{i18n>GeneralInfo}',
+                Target: '@UI.FieldGroup#General',
+            }, ],
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'Delivery',
+            Label : '{i18n>DeliverySeq}',
+            Target: '@UI.FieldGroup#Delivery',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'StudioKey',
+            Label : '{i18n>StudioKey}',
+            Target: 'to_StudioKey/@UI.LineItem',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'Package',
+            Label : '{i18n>Package}',
+            Target: 'to_Package/@UI.LineItem',
+        },
+    ],
+    UI.LineItem            : [
+        {
+            $Type: 'UI.DataField',
+            Value: DistroSpecID,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Name,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Title_Product,
+        },
+    ],
+);
+
+annotate service.StudioKey with @(
+    UI.HeaderInfo           : {
+        Title         : {
+            $Type: 'UI.DataField',
+            Value: Studio_BusinessPartner,
+        },
+        TypeName      : '{i18n>Studio}',
+        TypeNamePlural: '{i18n>Studio}',
+    },
+    UI.FieldGroup #StudioKey: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : Studio_BusinessPartner,
+            },
             {
                 $Type: 'UI.DataField',
                 Value: KeyStartTime,
@@ -221,112 +434,56 @@ annotate service.DistroSpec with @(
                 Value: StudioHoldOverRule,
             },
             {
-                $Type : 'UI.DataField',
-                Value : SalesTerritory_SalesDistrict,
+                $Type: 'UI.DataField',
+                Value: SalesTerritory_SalesDistrict,
             },
         ],
     },
-    UI.FieldGroup #ValidityDate: {
-        $Type: 'UI.FieldGroupType',
-        Data : [
-            {
-                $Type: 'UI.DataField',
-                Value: ValidFrom,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: ValidTo,
-            },
-        ],
-    },
-    UI.FieldGroup #General     : {
-        $Type: 'UI.FieldGroupType',
-        Data : [
-            {
-                $Type: 'UI.DataField',
-                Value: DistroSpecID,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Name,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Title_Product,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Studio_BusinessPartner,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: CustomerReference,
-            },
-        ],
-    },
-    UI.Facets                  : [
-        {
-            $Type : 'UI.CollectionFacet',
-            ID    : 'PackageCollection',
-            Label : '{i18n>PackageInfo}',
-            Facets: [
-                {
-                    $Type : 'UI.ReferenceFacet',
-                    ID    : 'General',
-                    Label : '{i18n>GeneralInfo}',
-                    Target: '@UI.FieldGroup#General',
-                },
-                {
-                    $Type : 'UI.ReferenceFacet',
-                    ID    : 'ValidDate',
-                    Label : '{i18n>ValidityDate}',
-                    Target: '@UI.FieldGroup#ValidityDate',
-                },
-            ],
-        },
+    UI.LineItem             : [{
+        $Type: 'UI.DataField',
+        Value: Studio_BusinessPartner,
+    }, ],
+    UI.Facets               : [
         {
             $Type : 'UI.ReferenceFacet',
-            ID    : 'StudioKey',
+            ID    : 'StudioKey1',
             Label : '{i18n>StudioKey}',
             Target: '@UI.FieldGroup#StudioKey',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            ID    : 'Package',
-            Label : '{i18n>Package}',
-            Target: 'to_Package/@UI.LineItem',
+            ID    : 'CustRef',
+            Label : '{i18n>CustomerReference}',
+            Target: 'to_CustomerRef/@UI.LineItem',
         },
     ],
-    UI.LineItem                : [
-        {
+);
+
+annotate service.CustomerRef with @(
+    UI.LineItem                     : [{
+        $Type: 'UI.DataField',
+        Value: CustomerReference,
+    }, ],
+    UI.FieldGroup #CustomerReference: {
+        $Type: 'UI.FieldGroupType',
+        Data : [{
             $Type: 'UI.DataField',
-            Value: DistroSpecID,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: Name,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: Title_Product,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: Studio_BusinessPartner,
-        },
-        {
+            Value: CustomerReference,
+        }, ]
+    },
+    UI.HeaderInfo                   : {
+        Title         : {
             $Type: 'UI.DataField',
             Value: CustomerReference,
         },
-        {
-            $Type: 'UI.DataField',
-            Value: ValidFrom,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: ValidTo,
-        },
-    ],
+        TypeName      : '{i18n>CustomerReference}',
+        TypeNamePlural: '{i18n>CustomerReference}',
+    },
+    UI.Facets                       : [{
+        $Type : 'UI.ReferenceFacet',
+        ID    : 'CustRef1',
+        Target: '@UI.FieldGroup#CustomerReference',
+    }, ]
 );
 
 annotate service.Package with @(
@@ -347,7 +504,7 @@ annotate service.Package with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: Priority_DeliveryPriority,
+                Value: Priority,
             },
             {
                 $Type: 'UI.DataField',
@@ -373,11 +530,43 @@ annotate service.Package with @(
         Data : [
             {
                 $Type: 'UI.DataField',
-                Value: PrimaryDeliveryMethod_ShippingCondition,
+                Value: DeliveryMethod1_ShippingCondition,
             },
             {
                 $Type: 'UI.DataField',
-                Value: SecondaryDeliveryMethod_ShippingCondition,
+                Value: DeliveryMethod2_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod3_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod4_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod5_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod6_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod7_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod8_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod9_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod10_ShippingCondition,
             },
         ],
     },
@@ -395,19 +584,18 @@ annotate service.Package with @(
                 },
                 {
                     $Type : 'UI.ReferenceFacet',
-                    ID    : '_PackageDeliveryethod',
-                    Label : '{i18n>DeliveryMethod}',
-                    Target: '@UI.FieldGroup#_PackageDeliveryethod',
-                },
-                {
-                    $Type : 'UI.ReferenceFacet',
                     ID    : '_PackageValidityDate',
                     Label : '{i18n>PackageValidityDate}',
                     Target: '@UI.FieldGroup#_PackageValidityDate',
                 },
             ],
         },
-
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_PackageDeliveryethod',
+            Label : '{i18n>DeliveryMethod}',
+            Target: '@UI.FieldGroup#_PackageDeliveryethod',
+        },
         {
             $Type : 'UI.ReferenceFacet',
             ID    : '_PackageFilter',
@@ -428,7 +616,7 @@ annotate service.Package with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: Priority_DeliveryPriority,
+            Value: Priority,
         },
         {
             $Type: 'UI.DataField',
@@ -436,11 +624,11 @@ annotate service.Package with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: PrimaryDeliveryMethod_ShippingCondition,
+            Value: DeliveryMethod1_ShippingCondition,
         },
         {
             $Type: 'UI.DataField',
-            Value: SecondaryDeliveryMethod_ShippingCondition,
+            Value: DeliveryMethod2_ShippingCondition,
         },
     ]
 );
@@ -473,14 +661,14 @@ annotate service.DistRestrictions with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: OffsetRule,
+            Value: DistributionFilterLanguage_code,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: PlayBackCapability,
         },
     ],
     UI.HeaderInfo                  : {
-        Title         : {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterCountry_code,
-        },
         TypeName      : '{i18n>DistRestriction}',
         TypeNamePlural: '{i18n>DistRestrictions}',
     },
@@ -513,7 +701,11 @@ annotate service.DistRestrictions with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: OffsetRule,
+                Value: DistributionFilterLanguage_code,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability,
             },
         ]
     },
@@ -564,7 +756,7 @@ annotate service.DCPMaterials with @(
     }, ]
 );
 
-annotate service.DistroSpec with {
+annotate service.StudioKey with {
     Studio         @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
@@ -579,25 +771,6 @@ annotate service.DistroSpec with {
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty: 'BusinessPartnerFullName',
-                },
-            ],
-        },
-        Common.ValueListWithFixedValues: false
-    );
-    Title          @(
-        Common.ValueList               : {
-            $Type          : 'Common.ValueListType',
-            CollectionPath : 'Titles',
-            SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: Title_Product,
-                    ValueListProperty: 'Product',
-                },
-                {
-                    $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'Name',
                 },
             ],
         },
@@ -621,12 +794,223 @@ annotate service.DistroSpec with {
             ],
         },
         Common.ValueListWithFixedValues: false
-    )
+    );
+};
 
+annotate service.DistroSpec with {
+    Title              @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Titles',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Title_Product,
+                    ValueListProperty: 'Product',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence1  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence1_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence2  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence2_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence3  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence3_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence4  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence4_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence5  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence5_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence6  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence6_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence7  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence7_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence8  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence8_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence9  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence9_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliverySequence10 @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliverySequence10_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
 };
 
 annotate service.Package with {
-    PrimaryDeliveryMethod   @(
+    DeliveryMethod1  @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'ShippingConditions',
@@ -634,7 +1018,7 @@ annotate service.Package with {
             Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PrimaryDeliveryMethod_ShippingCondition,
+                    LocalDataProperty: DeliveryMethod1_ShippingCondition,
                     ValueListProperty: 'ShippingCondition',
                 },
                 {
@@ -645,7 +1029,7 @@ annotate service.Package with {
         },
         Common.ValueListWithFixedValues: false
     );
-    SecondaryDeliveryMethod @(
+    DeliveryMethod2  @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'ShippingConditions',
@@ -653,7 +1037,7 @@ annotate service.Package with {
             Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: SecondaryDeliveryMethod_ShippingCondition,
+                    LocalDataProperty: DeliveryMethod2_ShippingCondition,
                     ValueListProperty: 'ShippingCondition',
                 },
                 {
@@ -664,20 +1048,153 @@ annotate service.Package with {
         },
         Common.ValueListWithFixedValues: false
     );
-    Priority                @(
+    DeliveryMethod3  @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'DeliveryPriority',
+            CollectionPath : 'ShippingConditions',
             SearchSupported: false,
             Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: Priority_DeliveryPriority,
-                    ValueListProperty: 'DeliveryPriority',
+                    LocalDataProperty: DeliveryMethod3_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'DeliveryPriorityDesc',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod4  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod4_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod5  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod5_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod6  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod6_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod7  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod7_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod8  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod8_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod9  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod9_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod10 @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod10_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
                 },
             ],
         },

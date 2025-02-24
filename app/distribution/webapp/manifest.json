@@ -120,6 +120,16 @@
           "name": "DistroSpec_to_Package_to_DistRestrictionObjectPage",
           "pattern": "DistroSpec({key})/to_Package({key2})/to_DistRestriction({to_DistRestrictionKey}):?query:",
           "target": "DistroSpec_to_Package_to_DistRestrictionObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_StudioKeyObjectPage",
+          "pattern": "DistroSpec({key})/to_StudioKey({to_StudioKeyKey}):?query:",
+          "target": "DistroSpec_to_StudioKeyObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage",
+          "pattern": "DistroSpec({key})/to_StudioKey({to_StudioKeyKey})/to_CustomerRef({to_CustomerRefKey}):?query:",
+          "target": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage"
         }
       ],
       "targets": {
@@ -161,6 +171,11 @@
                 "to_Package": {
                   "detail": {
                     "route": "DistroSpec_to_PackageObjectPage"
+                  }
+                },
+                "to_StudioKey": {
+                  "detail": {
+                    "route": "DistroSpec_to_StudioKeyObjectPage"
                   }
                 }
               }
@@ -207,8 +222,37 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
-              "navigation": {},
+              "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_Package/to_DistRestriction"
+            }
+          }
+        },
+        "DistroSpec_to_StudioKeyObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_StudioKeyObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "navigation": {
+                "to_CustomerRef": {
+                  "detail": {
+                    "route": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage"
+                  }
+                }
+              },
+              "contextPath": "/DistroSpec/to_StudioKey"
+            }
+          }
+        },
+        "DistroSpec_to_StudioKey_to_CustomerRefObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/DistroSpec/to_StudioKey/to_CustomerRef"
             }
           }
         }

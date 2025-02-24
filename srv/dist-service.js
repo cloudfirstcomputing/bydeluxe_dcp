@@ -51,10 +51,59 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.FieldControl = 1
         })
 
+        this.on("READ", `StudioKey`, async (req, next) => {
+            if (!req.query.SELECT.columns) return next();
+            const fields = ["Studio_BusinessPartner", "SalesTerritory_SalesDistrict"]
+            const { processedField, lreq } = expand(req, fields)
+            if (processedField.length === 0) return next();
+
+            const response = await cds.run(lreq.query);
+
+            const asArray = x => Array.isArray(x) ? x : [x];
+
+            for (let index = 0; index < processedField.length; index++) {
+                const element = processedField[index].split('_');
+                const ids = asArray(response).map(resp => resp[processedField[index]]);
+                const maps = {};
+                let records = []
+
+                switch (processedField[index]) {
+                    case "Studio_BusinessPartner":
+                        records = await bptx.run(SELECT.from(Studios).where({ BusinessPartner: ids }))
+
+                        break;
+
+                    case "SalesTerritory_SalesDistrict":
+                        const rec = asArray(await salesdisttx.run(SELECT.from(SalesDistricts)
+                            .columns(["SalesDistrict", { "ref": ["to_Text"], "expand": ["*"] }])
+                            .where({ SalesDistrict: ids })))
+                        records = rec.map(item => {
+                            return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
+                        })
+                        break;
+
+                    default:
+                        break;
+                }
+
+                for (const record of records)
+                    maps[record[element[1]]] = record;
+
+                // Add titles to result
+                for (const note of asArray(response)) {
+                    note[element[0]] = maps[note[processedField[index]]];
+                }
+            }
+            return response;
+        })
+
         // DistroSpec?$expand
         this.on("READ", DistroSpec, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Title_Product", "Studio_BusinessPartner", "SalesTerritory_SalesDistrict"]
+            const fields = ["Title_Product", "DeliverySequence1_ShippingCondition", "DeliverySequence2_ShippingCondition", "DeliverySequence3_ShippingCondition"
+                , "DeliverySequence4_ShippingCondition", "DeliverySequence5_ShippingCondition", "DeliverySequence6_ShippingCondition", "DeliverySequence7_ShippingCondition"
+                , "DeliverySequence8_ShippingCondition", "DeliverySequence9_ShippingCondition", "DeliverySequence10_ShippingCondition"
+            ]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -78,21 +127,13 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         })
 
                         break;
-
-                    case "Studio_BusinessPartner":
-                        records = await bptx.run(SELECT.from(Studios).where({ BusinessPartner: ids }))
-
+                    case "DeliverySequence1_ShippingCondition" || "DeliverySequence2_ShippingCondition" ||
+                        "DeliverySequence3_ShippingCondition" || "DeliverySequence7_ShippingCondition" ||
+                        "DeliverySequence4_ShippingCondition" || "DeliverySequence8_ShippingCondition" ||
+                        "DeliverySequence5_ShippingCondition" || "DeliverySequence9_ShippingCondition" ||
+                        "DeliverySequence6_ShippingCondition" || "DeliverySequence10_ShippingCondition":
+                        records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
                         break;
-
-                    case "SalesTerritory_SalesDistrict":
-                        const rec = asArray(await salesdisttx.run(SELECT.from(SalesDistricts)
-                            .columns(["SalesDistrict", { "ref": ["to_Text"], "expand": ["*"] }])
-                            .where({ SalesDistrict: ids })))
-                        records = rec.map(item => {
-                            return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
-                        })
-                        break;
-
                     default:
                         break;
                 }
@@ -169,7 +210,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // Package?$expand
         this.on("READ", `Package`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["PrimaryDeliveryMethod_ShippingCondition", "SecondaryDeliveryMethod_ShippingCondition", "Priority_DeliveryPriority"]
+            const fields = ["DeliveryMethod1_ShippingCondition", "DeliveryMethod2_ShippingCondition", "DeliveryMethod3_ShippingCondition"
+                , "DeliveryMethod4_ShippingCondition", "DeliveryMethod5_ShippingCondition", "DeliveryMethod6_ShippingCondition", "DeliveryMethod7_ShippingCondition"
+                , "DeliveryMethod8_ShippingCondition", "DeliveryMethod9_ShippingCondition", "DeliveryMethod10_ShippingCondition"
+            ]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -183,16 +227,12 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 let records = []
 
                 switch (processedField[index]) {
-                    case "PrimaryDeliveryMethod_ShippingCondition":
+                    case "DeliveryMethod1_ShippingCondition" || "DeliveryMethod2_ShippingCondition" ||
+                        "DeliveryMethod3_ShippingCondition" || "DeliveryMethod7_ShippingCondition" ||
+                        "DeliveryMethod4_ShippingCondition" || "DeliveryMethod8_ShippingCondition" ||
+                        "DeliveryMethod5_ShippingCondition" || "DeliveryMethod9_ShippingCondition" ||
+                        "DeliveryMethod6_ShippingCondition" || "DeliveryMethod10_ShippingCondition":
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
-
-                        break;
-                    case "SecondaryDeliveryMethod_ShippingCondition":
-                        records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
-
-                        break;
-                    case "Priority_DeliveryPriority":
-                        records = await dlvprtx.run(SELECT.from(DeliveryPriority).where({ DeliveryPriority: ids }))
 
                         break;
                     default:
@@ -266,15 +306,6 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
                 }
             }
-        })
-
-        this.before('SAVE', DistroSpec, req => {
-            const { ValidFrom, ValidTo } = req.data
-            if (ValidFrom > ValidTo) req.error(400, `Valid To must be after Valid From.`, 'in/ValidTo')
-        })
-
-        this.before('NEW', DistroSpec.drafts, req => {
-            req.data.ValidFrom = today()
         })
 
         this.before('NEW', `Package.drafts`, req => {
