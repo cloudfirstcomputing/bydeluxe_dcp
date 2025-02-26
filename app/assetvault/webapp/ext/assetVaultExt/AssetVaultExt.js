@@ -8,7 +8,7 @@ sap.ui.define([
         onPreviewForm: function (oEvent) {
 
             // Get the OData Model attached to the view or component
-            var oModel = this.getOwnerComponent().getModel(); // Assuming the default model
+            var oModel = this._view.getModel(); // Assuming the default model
 
             // Get the service URL from the OData model
             var sServiceUrl = oModel.sServiceUrl;
