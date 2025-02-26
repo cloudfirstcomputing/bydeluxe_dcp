@@ -355,9 +355,9 @@ entity OrderRequest : cuid, managed {
     StartDate : DateTime;
     EndDate : DateTime;
     NumberOfCompositions : Integer;
-    IsCancellation : Boolean;
+    IsCancellation : String;
     DeliveryType : String(50);
-    IsRemediation : Boolean;
+    IsRemediation : String;
 
     DeliveryAddress : Composition of one AddressType;
     PhysicalAddress : Composition of one AddressType;
@@ -399,7 +399,7 @@ entity CompositionType : cuid {
     Sub2 : String(100);
     ContentType : String(50);
     ContentSize : Integer;
-    IsUpdated : Boolean;
+    IsUpdated : String;
     CompositionStatus : String(50);
     Package : Association to PackageType;
 }
@@ -429,7 +429,7 @@ entity KeyOrders {
     cpl : String;
     licenseBeginDate : DateTime;
     licenseEndDate : DateTime;
-    isSpecialDelivery : Boolean;
+    isSpecialDelivery : String;
     cancelOrder : String;
     screenId : String;
     contacts : Composition of many Contacts on contacts.KeyOrderRequest = $self;

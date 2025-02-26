@@ -158,9 +158,9 @@ service BookingOrderService {
         StartDate            : DateTime;
         EndDate              : DateTime;
         NumberOfCompositions : Integer;
-        IsCancellation       : Boolean;
+        IsCancellation       : String;
         DeliveryType         : String(50);
-        IsRemediation        : Boolean;
+        IsRemediation        : String;
         DeliveryAddress      : AddressType;
         PhysicalAddress      : AddressType;
         Package              : PackageType;
@@ -199,7 +199,7 @@ service BookingOrderService {
         Sub2              : String(100);
         ContentType       : String(50);
         ContentSize       : Integer;
-        IsUpdated         : Boolean;
+        IsUpdated         : String;
         CompositionStatus : String(50);
     }
 
@@ -230,7 +230,7 @@ service BookingOrderService {
     cpl : String;
     licenseBeginDate : DateTime;
     licenseEndDate : DateTime;
-    isSpecialDelivery : Boolean;
+    isSpecialDelivery : String;
     cancelOrder : String;
     screenId : String;
        contacts : array of Contacts;
