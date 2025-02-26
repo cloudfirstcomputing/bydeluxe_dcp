@@ -6,8 +6,16 @@ sap.ui.define([
 
     return {
         onPreviewForm: function (oEvent) {
-            var sSource = "/odata/v4/asset-vault/MediaFiles('')/content";
-			window.open(sSource);
+
+            // Get the OData Model attached to the view or component
+            var oModel = this.getOwnerComponent().getModel(); // Assuming the default model
+
+            // Get the service URL from the OData model
+            var sServiceUrl = oModel.sServiceUrl;
+
+            // Construct the full PDF URL
+            var sPdfUrl = sServiceUrl + "/MediaFiles('')/content";
+            window.open(sPdfUrl);
         }
     };
 });
