@@ -412,3 +412,40 @@ key ID : Integer;
     Fax : String(50);
     OrderRequest : Association to OrderRequest;
 }
+
+//OFE Key
+
+entity OFEOrders : managed {
+    key orderId : Integer;
+    key studioId : String;
+    key generatedDate : DateTime;
+    keyOrders : Composition of many KeyOrders on keyOrders.OrderRequest = $self;
+}
+
+entity KeyOrders {
+    key id : Integer;
+    showtimeType : String;
+    contentDescription : String;
+    cpl : String;
+    licenseBeginDate : DateTime;
+    licenseEndDate : DateTime;
+    isSpecialDelivery : Boolean;
+    cancelOrder : String;
+    screenId : String;
+    contacts : Composition of many Contacts on contacts.KeyOrderRequest = $self;
+    site : Composition of many Site on site.KeyOrderRequest = $self;
+    OrderRequest : Association to OFEOrders;
+}
+
+entity Site {
+    key siteID : String;
+    siteName : String;
+    physicalAddress : String;
+    deliveryAddress : String;
+    KeyOrderRequest : Association to KeyOrders;
+}
+
+entity Contacts {
+    key email : String;
+    KeyOrderRequest : Association to KeyOrders;
+}

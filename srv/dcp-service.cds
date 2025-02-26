@@ -211,7 +211,41 @@ service BookingOrderService {
         Fax   : String(50);
     }
 
-    action createDisneyOFE(Request : array of OrderRequestType) returns String;
+    action createDisneyOFE(Request : OrderRequestType) returns String;
+
+
+
+    //OFE Key
+
+    type OFEOrders{
+        orderId : Integer;
+    studioId : String;
+    generatedDate : DateTime;
+    keyOrders : array of KeyOrders;
+    }
+     type KeyOrders{
+        id : Integer;
+    showtimeType : String;
+    contentDescription : String;
+    cpl : String;
+    licenseBeginDate : DateTime;
+    licenseEndDate : DateTime;
+    isSpecialDelivery : Boolean;
+    cancelOrder : String;
+    screenId : String;
+       contacts : array of Contacts;
+    site : array of Site;
+    }
+     type Site{
+        siteID : String;
+    siteName : String;
+    physicalAddress : String;
+    deliveryAddress : String;
+    }
+     type Contacts{
+        email : String;
+    }
+    action createDisneyOFEKey(Request : OFEOrders) returns String;
 
     
 }
