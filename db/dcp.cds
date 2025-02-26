@@ -391,6 +391,7 @@ entity PackageType : cuid {
 
 entity CompositionType : cuid {
    key ID : UUID;
+    UUID: String(500);
     ContentUniqueID : String(100);
     Description : String(500);
     TrackLanguage : String(100);
