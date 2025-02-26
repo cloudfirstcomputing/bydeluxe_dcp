@@ -265,13 +265,12 @@ entity Maccs_Dchub : managed {
 /// Comscore Hollywood
 
 entity TheatreOrderRequest : cuid, managed {
-    key ID : UUID;
-    StudioID : String(50);
-    GenerateDate : DateTime;
-    Version:String(50);
-    ServerName:String(50);
-    DataBaseName:String(50);
-    notes :String(500);
+key    StudioID : String(50);
+key    GenerateDate : DateTime;
+key    Version:String(50);
+        ServerName:String(50);
+        DataBaseName:String(50);
+        notes :String(500);
     // Compositions
     Theatre_Ass : Composition of many Theatre
         on Theatre_Ass.Request = $self;
@@ -284,8 +283,7 @@ entity TheatreOrderRequest : cuid, managed {
 }
 
 entity Theatre : cuid, managed {
-    key ID : UUID;
-    TheatreID : String(50);
+key  TheatreID : String(50);
     Name : String(200);
     City : String(200);
     State : String(100);
@@ -323,8 +321,7 @@ key mediaOrderId       : Integer;
   }
 
 entity DigitalComposition : cuid, managed {
-    key ID : UUID;
-    ContentID : String(50);
+  key  ContentID : String(50);
     Title : String(500);
     CPL_UUID : String(100);
     FilmID: String(100);
@@ -332,8 +329,7 @@ entity DigitalComposition : cuid, managed {
 }
 
 entity DigitalKeyOrder : cuid, managed {
-    key ID : UUID;
-    DigitalKeyOrderID : String(50);
+   key  DigitalKeyOrderID : String(50);
     ContentID : String(50);
     Screens : String(200);
     CancelFlag : Boolean;
@@ -344,10 +340,9 @@ entity DigitalKeyOrder : cuid, managed {
 
   /// Disney OFE
 entity OrderRequest : cuid, managed {
-    key ID : UUID;
     ShowTimeType : String(50);
-    OrderID : Integer;
-    ContentOrderID : Integer;
+   key OrderID : Integer;
+   key ContentOrderID : Integer;
     TransactionType : String(50);
     BookingID : String(50);
     BookingSystem : String(50);
@@ -355,9 +350,9 @@ entity OrderRequest : cuid, managed {
     StartDate : DateTime;
     EndDate : DateTime;
     NumberOfCompositions : Integer;
-    IsCancellation : String;
+    IsCancellation : Boolean;
     DeliveryType : String(50);
-    IsRemediation : String;
+    IsRemediation : Boolean;
 
     DeliveryAddress : Composition of one AddressType;
     PhysicalAddress : Composition of one AddressType;
@@ -366,8 +361,7 @@ entity OrderRequest : cuid, managed {
 }
 
 entity AddressType : cuid {
-    key ID: UUID;
-        SiteID : String(50);
+  key   SiteID : String(50);
         SiteName : String(200);
         CircuitName : String(200);
         ShortName : String(50);
@@ -383,23 +377,23 @@ entity AddressType : cuid {
 }
 
 entity PackageType : cuid {
-   key  ID : Integer;
+key  ID : Integer;
     Description : String(200);
     TitleName : String(500);
-    Compositions : Composition of many CompositionType on Compositions.Package = $self;
+    Compositions : Composition of one CompositionType on Compositions.Package = $self;
 }
 
-entity CompositionType : cuid {
-   key ID : UUID;
-    UUID: String(500);
+entity CompositionType{
+key ID :String;
+   key UUID: String(500);
     ContentUniqueID : String(100);
     Description : String(500);
     TrackLanguage : String(100);
     Sub1 : String(100);
     Sub2 : String(100);
     ContentType : String(50);
-    ContentSize : Integer;
-    IsUpdated : String;
+    ContentSize : String(200);
+    IsUpdated : Boolean;
     CompositionStatus : String(50);
     Package : Association to PackageType;
 }
@@ -429,11 +423,11 @@ entity KeyOrders {
     cpl : String;
     licenseBeginDate : DateTime;
     licenseEndDate : DateTime;
-    isSpecialDelivery : String;
+    isSpecialDelivery : Boolean;
     cancelOrder : String;
     screenId : String;
     contacts : Composition of many Contacts on contacts.KeyOrderRequest = $self;
-    site : Composition of many Site on site.KeyOrderRequest = $self;
+    site : Composition of one Site on site.KeyOrderRequest = $self;
     OrderRequest : Association to OFEOrders;
 }
 
@@ -447,5 +441,5 @@ entity Site {
 
 entity Contacts {
     key email : String;
-    KeyOrderRequest : Association to KeyOrders;
+    key KeyOrderRequest : Association to KeyOrders;
 }

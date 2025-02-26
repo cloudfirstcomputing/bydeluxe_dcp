@@ -133,19 +133,21 @@ service BookingOrderService {
 
         /// Disney OFE
 
-            @readonly
-    entity OrderRequests as projection on db.OrderRequest;
 
-    @readonly
+    entity OrderRequest as projection on db.OrderRequest;
+
+    
+
+
     entity AddressTypes as projection on db.AddressType;
 
-    @readonly
+
     entity PackageTypes as projection on db.PackageType
 
-    @readonly
+
     entity CompositionTypes as projection on db.CompositionType 
 
-    @readonly
+
     entity VendorTypes as projection on db.VendorType;
     type OrderRequestType {
         ShowTimeType         : String(50);
@@ -158,9 +160,9 @@ service BookingOrderService {
         StartDate            : DateTime;
         EndDate              : DateTime;
         NumberOfCompositions : Integer;
-        IsCancellation       : String;
+        IsCancellation       : Boolean;
         DeliveryType         : String(50);
-        IsRemediation        : String;
+        IsRemediation        : Boolean;
         DeliveryAddress      : AddressType;
         PhysicalAddress      : AddressType;
         Package              : PackageType;
@@ -186,7 +188,7 @@ service BookingOrderService {
         ID           : Integer;
         Description  : String(200);
         TitleName    : String(500);
-        Compositions : array of CompositionType;
+        Compositions : CompositionType;
     }
 
     type CompositionType {
@@ -199,7 +201,7 @@ service BookingOrderService {
         Sub2              : String(100);
         ContentType       : String(50);
         ContentSize       : Integer;
-        IsUpdated         : String;
+        IsUpdated         : Boolean;
         CompositionStatus : String(50);
     }
 
@@ -216,36 +218,43 @@ service BookingOrderService {
 
 
     //OFE Key
+ 
+    entity OFEOrders as projection on db.OFEOrders;
 
-    type OFEOrders{
+    entity KeyOrders as projection on db.KeyOrders;
+    entity Site as projection on db.Site;
+    entity Contacts as projection on db.Contacts;
+
+
+    type OFEOrderstype{
         orderId : Integer;
     studioId : String;
     generatedDate : DateTime;
-    keyOrders : array of KeyOrders;
+    keyOrders : array of KeyOrderstype;
     }
-     type KeyOrders{
+     type KeyOrderstype{
         id : Integer;
     showtimeType : String;
     contentDescription : String;
     cpl : String;
     licenseBeginDate : DateTime;
     licenseEndDate : DateTime;
-    isSpecialDelivery : String;
+    isSpecialDelivery : Boolean;
     cancelOrder : String;
     screenId : String;
-       contacts : array of Contacts;
-    site : array of Site;
+       contacts : array of Contactstype;
+    site : Sitetype;
     }
-     type Site{
+     type Sitetype{
         siteID : String;
     siteName : String;
     physicalAddress : String;
     deliveryAddress : String;
     }
-     type Contacts{
+     type Contactstype{
         email : String;
     }
-    action createDisneyOFEKey(Request : OFEOrders) returns String;
+    action createDisneyOFEKey(Request :OFEOrderstype) returns String;
 
     
 }

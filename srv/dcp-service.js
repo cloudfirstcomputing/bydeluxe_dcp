@@ -5,7 +5,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH ,OrderRequest,OFEOrders} = this.entities;
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -13,7 +13,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_sohv2_Txn = await cds.connect.to("API_SALES_ORDER_V2_SRV");
         var s4h_shtypev2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
         var s4h_shpointv2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGPOINT_CDS_0001");
-        
+
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         // var sSoldToCustomer = '1000011', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
@@ -59,7 +59,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         // failedEntries.push(data[i]);
 
                         //update code by Sahas as per request for Anand as Client needs Update as well
-                        await UPDATE(dcpkey).set(data[i]).where({  BookingID: data[i].BookingID  })
+                        await UPDATE(dcpkey).set(data[i]).where({ BookingID: data[i].BookingID })
                     }
                     else {
                         data[i].Status_ID = "A";
@@ -82,37 +82,41 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(); // Generate a unique ID
-            try{
-            var aRequests = req.data.Request;
-            var aRequestUpdated = await INSERT.into(Maccs_Dchub).entries(aRequests);
-            return aRequestUpdated;
+            try {
+                var aRequests = req.data.Request;
+                var aRequestUpdated = await INSERT.into(Maccs_Dchub).entries(aRequests);
+                return aRequestUpdated;
             }
             catch (e) {
-                req.error(502, uuid+"  "+e)
+                req.error(502, uuid + "  " + e)
             }
         });
         this.on("createComscoreHollywood", async (req, res) => {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-                var aSelected = await SELECT.ONE.from(TheatreOrderRequest).where ({StudioID : aRequests.StudioID,
-                    GenerateDate : aRequests.GenerateDate,
-                    Version:aRequests.Version,
-                    ServerName:aRequests.ServerName,
-                    DataBaseName:aRequests.DataBaseName})
-                 if(aSelected){
-                    var aRequestUpdated = await UPDATE(TheatreOrderRequest).set(aRequests).where ({StudioID : aRequests.StudioID,
-                        GenerateDate : aRequests.GenerateDate,
-                        Version:aRequests.Version,
-                        ServerName:aRequests.ServerName,
-                        DataBaseName:aRequests.DataBaseName});
-                 }  else{
+                var aSelected = await SELECT.one.from(TheatreOrderRequest).where({
+                    StudioID: aRequests.StudioID,
+                    GenerateDate: aRequests.GenerateDate,
+                    Version: aRequests.Version,
+                    ServerName: aRequests.ServerName,
+                    DataBaseName: aRequests.DataBaseName
+                })
+                if (aSelected) {
+                    var aRequestUpdated = await UPDATE(TheatreOrderRequest).set(aRequests).where({
+                        StudioID: aRequests.StudioID,
+                        GenerateDate: aRequests.GenerateDate,
+                        Version: aRequests.Version,
+                        ServerName: aRequests.ServerName,
+                        DataBaseName: aRequests.DataBaseName
+                    });
+                } else {
                     var aRequestUpdated = await INSERT.into(TheatreOrderRequest).entries(aRequests);
-                 }
+                }
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(502, uuid+"  "+e)
+                req.error(502, uuid + "  " + e)
             }
 
         });
@@ -120,12 +124,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-
-                var aRequestUpdated = await INSERT.into(OrderRequest).entries(aRequests);
+                var aSelected = await SELECT.from(OrderRequest).where({
+                    OrderID: aRequests.OrderID,
+                    ContentOrderID: aRequests.ContentOrderID
+                })
+                if (aSelected.length != 0) {
+                    var aRequestUpdated = await UPDATE(OrderRequest).set(aRequests).where({
+                        OrderID: aRequests.OrderID,
+                        ContentOrderID: aRequests.ContentOrderID
+                    });
+                } else {
+                    var aRequestUpdated = await INSERT.into(OrderRequest).entries(aRequests);
+                }
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(502, uuid+"  "+e)
+                req.error(502, uuid + "  " + e)
             }
         });
 
@@ -133,12 +147,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-
-                var aRequestUpdated = await INSERT.into(OFEOrders).entries(aRequests);
+                var aSelected = await SELECT.one.from(OFEOrders).where({
+                    orderId: aRequests.orderId,
+                    studioId: aRequests.studioId,
+                    generatedDate: aRequests.generatedDate
+                })
+                if (aSelected) {
+                    var aRequestUpdated = await UPDATE(OFEOrders).set(aRequests).where({
+                        orderId: aRequests.orderId,
+                        studioId: aRequests.studioId,
+                        generatedDate: aRequests.generatedDate
+                    });
+                } else {
+                    var aRequestUpdated = await INSERT.into(OFEOrders).entries(aRequests);
+                }
                 return aRequestUpdated;
             }
             catch (e) {
-                req.error(502, uuid+"  "+e)
+                req.error(502, uuid + "  " + e)
             }
         });
         this.on("processContent", async (req, res) => {
@@ -567,7 +593,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oSalesOrder._Item[item]["MaxKDMSDuration"] = distroSpecData.MaxKDMSDuration;
                                 oSalesOrder._Item[item]["StudioHoldOverRule"] = distroSpecData.StudioHoldOverRule;
                                 oSalesOrder._Item[item]["SalesTerritory"] = distroSpecData.SalesTerritory_SalesDistrict;
-                                
+
                                 oSalesOrder._Item[item]["StartDate"] = sStartDate;
                                 oSalesOrder._Item[item]["StartTime"] = sStartTime;
                                 oSalesOrder._Item[item]["EndDate"] = sEndDate;
@@ -613,9 +639,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     sShipType = req.data?.shipTypeSelected, sShipPoint = req.data?.shipPointSelected, oContentData, sMaterialGroup,
             //     sShippingCondition = req.data?.shippingCondition, sDeliveryDate = req.data?.deliveryDate, aResponseStatus = [], hanaDBTable;
             var sBookingID = oInput?.bookingID, sSalesOrder = oInput?.salesOrder, sPlant = oInput?.plant,
-            sShipType = oInput?.shipTypeSelected, sShipPoint = oInput?.shipPointSelected, oContentData, sMaterialGroup,
-            sShippingCondition = oInput?.shippingCondition, sDeliveryDate = oInput?.deliveryDate, aResponseStatus = [], hanaDBTable;
-            
+                sShipType = oInput?.shipTypeSelected, sShipPoint = oInput?.shipPointSelected, oContentData, sMaterialGroup,
+                sShippingCondition = oInput?.shippingCondition, sDeliveryDate = oInput?.deliveryDate, aResponseStatus = [], hanaDBTable;
+
             hanaDBTable = sContentIndicator === "C" ? dcpcontent : dcpkey;
             sMaterialGroup = sContentIndicator === "C" ? "Z003" : "Z004";
             if (sBookingID) {
@@ -638,13 +664,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             var oSalesorderItem_PayLoad = {};
             var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder, MaterialGroup: sMaterialGroup }));
-            if(!aSalesOrderItem?.length){
+            if (!aSalesOrderItem?.length) {
                 aResponseStatus.push({
                     "message": `| No items available for remediation in Sales Order: ${sSalesOrder} |`,
                     "status": "E"
                 });
             }
-            else{
+            else {
                 for (var i in aSalesOrderItem) {
                     var oSalesOrderItem = aSalesOrderItem[i];
                     oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
@@ -869,8 +895,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
 
 
-      
-        
+
+
         return super.init();
     }
 
