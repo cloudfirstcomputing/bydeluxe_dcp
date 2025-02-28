@@ -4,7 +4,7 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
@@ -16,7 +16,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
-        // var sSoldToCustomer = '1000011', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
+        let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
+        var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
+            SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
+            DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
+            Division = aConfig?.find((e) => { return e.VariableName === 'Division_SPIRITWORLD' })?.VariableValue;
         this.on("createContent", async (req, res) => {
             var aResult = await createBookingFeed(req, "C");
             return aResult;
@@ -35,20 +39,20 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
 
-                var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ref:['createdAt'],sort:'desc'});
+                var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                 if (entry_Active) {
                     data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
                     recordsToBeUpdated.push(entry_Active);
                 }
-                    recordsToBeInserted.push(data[i]);
+                recordsToBeInserted.push(data[i]);
             }
             if (recordsToBeInserted.length) {
                 let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
                 successEntries.push(recordsToBeInserted);
                 successEntries.push(insertResult);
             }
-            if(recordsToBeUpdated.length){
-                let updateResult = await UPDATE(hanatable).set({IsActive: "N"}).where({
+            if (recordsToBeUpdated.length) {
+                let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
                     BookingID: entry_Active.BookingID,
                     createdAt: entry_Active.createdAt
                 });
@@ -162,11 +166,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return;
             }
             hanaDBTable = sContentIndicator === "C" ? dcpcontent : dcpkey;
-            var aContentData = await SELECT.from(hanaDBTable).where({ BookingID: { "IN": aBookingIDs }, IsActive: "Y"});
+            var aContentData = await SELECT.from(hanaDBTable).where({ BookingID: { "IN": aBookingIDs }, IsActive: "Y" });
             if (!aContentData?.length) {
                 sErrorMessage = "No active data available to process";
                 req.reject(400, "No active data available to process");
                 return;
+            }
+            else if(!aConfig){
+                req.reject(400, 
+                    `Parameter table not configured. Maintain the Following entries:
+                        Material_GT24
+                        Material_LT24
+                        SoldTo_SPIRITWORLD
+                        SalesOrg_SPIRITWORLD
+                        DistChannel_SPIRITWORLD
+                        Division_SPIRITWORLD
+                        SOType_SPIRITWORLD
+                        PartnerFunc_SPIRITWORLD`);
+                return;  
             }
             for (var i in aContentData) {
                 var oContentData = aContentData[i];
@@ -176,12 +193,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oPayLoad.DistributionChannel = DistributionChannel;
                 oPayLoad.OrganizationDivision = Division;
                 oPayLoad.PurchaseOrderByCustomer = oContentData.BookingID;
-                oPayLoad.SalesOrderType = "TA";
+                oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
                 var sCustomerRef = oContentData.UUID;
                 var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
                     dist.DistroSpecUUID,
                         dist.DistroSpecID,
-                        dist.Studio,
                         dist.ValidFrom,
                         dist.ValidTo,
                         dist.Title_Product,
@@ -286,7 +302,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
                                 if (sBPCustomerNumber) {
                                     sShipTo = sBPCustomerNumber;
-                                    oPayLoad.to_Partner.push({ "PartnerFunction": "WE", "Customer": sBPCustomerNumber });
+                                    oPayLoad.to_Partner.push({ "PartnerFunction": aConfig?.find((e) => { return e.VariableName === 'PartnerFunc_SPIRITWORLD' })?.VariableValue, "Customer": sBPCustomerNumber });
                                 }
                                 else {
                                     sShipTo = "";
@@ -408,7 +424,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
                                         if (iDifferenceInHours > 24) {
                                             var oEntry = {
-                                                "Material": "2292",
+                                                "Material": aConfig?.find((e) => { return e.VariableName === 'Material_GT24' })?.VariableValue,
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
                                                 "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority,
@@ -418,7 +434,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         }
                                         else {
                                             oEntry = {
-                                                "Material": "2570",
+                                                "Material": aConfig?.find((e) => { return e.VariableName === 'Material_LT24' })?.VariableValue,
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
                                                 "DeliveryPriority": oFilteredPackage?.Priority_DeliveryPriority,
@@ -605,7 +621,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: JSON.stringify(aResponseStatus)
             });
         };
-        this.on(['READ'], "S4_Parameters", async(req)=>{
+        this.on(['READ'], S4_Parameters, async (req) => {
             return s4h_param_Txn.run(req.query);
         });
         this.on("remediateContentSalesOrder", async (req, res) => {

@@ -26,7 +26,11 @@ service BookingOrderService {
     entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
     entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
     entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
-    entity S4_Parameters as projection on S4_Param.YY1_PARAMETER;
+    entity S4_Parameters as projection on S4_Param.YY1_PARAMETER{
+        key ID,
+        VariableName,
+        VariableValue
+    };
 
     @readonly
     entity S4_Plants             as projection on api.Plants;
