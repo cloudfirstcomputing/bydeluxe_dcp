@@ -190,8 +190,9 @@ annotate service.DistRestrictions with {
         Label          : '{i18n>Language}',
         Text           : DistributionFilterLanguage.name,
         TextArrangement: #TextOnly,
-    };    
-    PlayBackCapability@Common: {Label: '{i18n>PlayBackCapability', };
+    };
+    PlayBackCapability         @Common: {Label: '{i18n>PlayBackCapability}', };
+    TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
 };
 
 
@@ -512,10 +513,10 @@ annotate service.Package with @(
                 $Type: 'UI.DataField',
                 Value: Priority,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: ContentIndicator,
-            },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: ContentIndicator,
+        // },
         ],
     },
     UI.FieldGroup #_PackageValidityDate : {
@@ -624,10 +625,10 @@ annotate service.Package with @(
             $Type: 'UI.DataField',
             Value: Priority,
         },
-        {
-            $Type: 'UI.DataField',
-            Value: ContentIndicator,
-        },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: ContentIndicator,
+        // },
         {
             $Type: 'UI.DataField',
             Value: DeliveryMethod1_ShippingCondition,
@@ -673,6 +674,10 @@ annotate service.DistRestrictions with @(
             $Type: 'UI.DataField',
             Value: PlayBackCapability,
         },
+        {
+            $Type: 'UI.DataField',
+            Value: TrailMixSub,
+        },
     ],
     UI.HeaderInfo                  : {
         TypeName      : '{i18n>DistRestriction}',
@@ -712,6 +717,10 @@ annotate service.DistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: PlayBackCapability,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: TrailMixSub,
             },
         ]
     },

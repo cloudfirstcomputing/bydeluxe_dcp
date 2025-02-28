@@ -109,25 +109,26 @@ entity DistRestrictions : cuid {
     DistributionFilterPostal   : String;
     DistributionFilterLanguage : Language;
     PlayBackCapability         : String(2);
+    TrailMixSub                : Boolean;
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
 };
 
 entity DCPMaterials {
-    key DCPMaterialUUID        : UUID;
-        DCPMaterialNumber      : Association to one DCPMaterialVH @mandatory;
-        PublishDateOffset      : Integer                          @assert.range: [
+    key DCPMaterialUUID   : UUID;
+        DCPMaterialNumber : Association to one DCPMaterialVH @mandatory;
+        PublishDateOffset : Integer                          @assert.range: [
             0,
             999
         ];
-        virtual CTT            : String;
-        virtual CPLUUID        : String;
-        virtual EDeliveryDate  : String;
-        virtual EDeliveryTime  : String;
-        virtual SatelliteFDate : String;
-        virtual SatelliteFTime : String;
-        to_Package             : Association to Package;
-        to_DistroSpec          : Association to DistroSpec;
+        virtual CTT       : String;
+        virtual CPLUUID   : String;
+        EDeliveryDate     : String;
+        EDeliveryTime     : String;
+        SatelliteFDate    : String;
+        SatelliteFTime    : String;
+        to_Package        : Association to Package;
+        to_DistroSpec     : Association to DistroSpec;
 }
 
 entity DCPMaterialConfig : cuid, managed {
