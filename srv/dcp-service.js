@@ -13,73 +13,53 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_sohv2_Txn = await cds.connect.to("API_SALES_ORDER_V2_SRV");
         var s4h_shtypev2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
         var s4h_shpointv2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGPOINT_CDS_0001");
-
+        var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         // var sSoldToCustomer = '1000011', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         this.on("createContent", async (req, res) => {
-            let data = req?.data?.Records;
-            let recordsToBePosted = [], finalResult = [], successEntries = [], failedEntries = [];
-            for (var i in data) {
-                try {
-                    let entry_Active = await SELECT.one.from(dcpcontent).where({ BookingID: data[i].BookingID });
-                    if (entry_Active) {
-                        data[i].Message = `Booking ID ${data[i].BookingID} already exists`;
-                        failedEntries.push(data[i]);
-                    }
-                    else {
-                        // data[i].ApplicationID = "1000011";
-                        data[i].Status_ID = "A";
-                        recordsToBePosted.push(data[i]);
-                    }
-                }
-                catch (e) {
-                    data[i].Message = e.message;
-                    failedEntries.push(data[i]);
-                }
-            }
-            if (recordsToBePosted.length) {
-                let postResult = await INSERT.into(dcpcontent).entries(recordsToBePosted);
-                successEntries.push(recordsToBePosted);
-                successEntries.push(postResult);
-            }
-            finalResult.push({ "Success": successEntries });
-            finalResult.push({ "Error": failedEntries });
-            return finalResult;
+            var aResult = await createBookingFeed(req, "C");
+            return aResult;
         });
         this.on("createKey", async (req, res) => {
+            var aResult = await createBookingFeed(req, "K");
+            return aResult;
+        });
+        const createBookingFeed = async (req, sContentIndicator) => {
             let data = req?.data?.Records;
-            let recordsToBePosted = [], finalResult = [], successEntries = [], failedEntries = [];
-            for (var i in data) {
-                try {
-                    let entry_Active = await SELECT.one.from(dcpkey).where({ BookingID: data[i].BookingID });
-                    if (entry_Active) {
-                        //commented by Sahas as per request for Anand as Client needs Update as well
-                        // data[i].Message = `Booking ID ${data[i].BookingID} already exists`;
-                        // failedEntries.push(data[i]);
+            let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
+            hanatable = sContentIndicator === "C" ? dcpcontent : dcpkey;
 
-                        //update code by Sahas as per request for Anand as Client needs Update as well
-                        await UPDATE(dcpkey).set(data[i]).where({ BookingID: data[i].BookingID })
-                    }
-                    else {
-                        data[i].Status_ID = "A";
-                        recordsToBePosted.push(data[i]);
-                    }
+            for (var i in data) {
+                data[i].Status_ID = "A";
+                data[i].IsActive = "Y";
+                data[i].Version = 1;
+
+                var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ref:['createdAt'],sort:'desc'});
+                if (entry_Active) {
+                    data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                    recordsToBeUpdated.push(entry_Active);
                 }
-                catch (e) {
-                    data[i].Message = e.message;
-                    failedEntries.push(data[i]);
-                }
+                    recordsToBeInserted.push(data[i]);
             }
-            if (recordsToBePosted.length) {
-                let postResult = await INSERT.into(dcpkey).entries(recordsToBePosted);
-                successEntries.push(recordsToBePosted);
-                successEntries.push(postResult);
+            if (recordsToBeInserted.length) {
+                let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
+                successEntries.push(recordsToBeInserted);
+                successEntries.push(insertResult);
+            }
+            if(recordsToBeUpdated.length){
+                let updateResult = await UPDATE(hanatable).set({IsActive: "N"}).where({
+                    BookingID: entry_Active.BookingID,
+                    createdAt: entry_Active.createdAt
+                });
+                updateSuccessEntries.push(entry_Active);
+                updateSuccessEntries.push(updateResult);
             }
             finalResult.push({ "Success": successEntries });
+            finalResult.push({ "UpdateSuccess": updateSuccessEntries });
             finalResult.push({ "Error": failedEntries });
             return finalResult;
-        });
+        };
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(); // Generate a unique ID
             try {
@@ -182,11 +162,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return;
             }
             hanaDBTable = sContentIndicator === "C" ? dcpcontent : dcpkey;
-            var aContentData = await SELECT.from(hanaDBTable).where({ BookingID: { "IN": aBookingIDs } });
-
+            var aContentData = await SELECT.from(hanaDBTable).where({ BookingID: { "IN": aBookingIDs }, IsActive: "Y"});
             if (!aContentData?.length) {
-                sErrorMessage = "No data available to process";
-                req.reject(400, "No data available to process");
+                sErrorMessage = "No active data available to process";
+                req.reject(400, "No active data available to process");
                 return;
             }
             for (var i in aContentData) {
@@ -249,7 +228,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 if (!distroSpecData || !Object.keys(distroSpecData).length) {
                     sErrorMessage = "DistroSpec not found";
-                    updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
+                    updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
                 }
                 else {
                     var sShipDate = oContentData.ShipDate;
@@ -507,7 +486,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 var bPostingSuccess = false, sSalesOrder = "";
                 if (sErrorMessage) {
-                    updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage, Status_ID: "D" }).where({ BookingID: oContentData.BookingID }));
+                    updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage, Status_ID: "D" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
                     aResponseStatus.push({
                         "message": `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
                         "status": "E"
@@ -519,7 +498,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         path: '/A_SalesOrder',
                         data: oPayLoad
                     }).catch((err) => {
-                        updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID }));
+                        updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
                         aResponseStatus.push({
                             "message": `| Booking ID: ${oContentData.BookingID}: ${err.message} |`,
                             "status": "E"
@@ -528,7 +507,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (result) {
                             bPostingSuccess = true;
                             sSalesOrder = result?.SalesOrder;
-                            updateQuery.push(UPDATE(hanaDBTable).set({ SalesOrder: result?.SalesOrder, Status_ID: "C", ErrorMessage: "" }).where({ BookingID: oContentData.BookingID }));
+                            updateQuery.push(UPDATE(hanaDBTable).set({ SalesOrder: result?.SalesOrder, Status_ID: "C", ErrorMessage: "" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
                             aResponseStatus.push({
                                 "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
                                 "status": "S"
@@ -626,7 +605,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: JSON.stringify(aResponseStatus)
             });
         };
-
+        this.on(['READ'], "S4_Parameters", async(req)=>{
+            return s4h_param_Txn.run(req.query);
+        });
         this.on("remediateContentSalesOrder", async (req, res) => {
             await remediateSalesOrder(req, "C");
         });

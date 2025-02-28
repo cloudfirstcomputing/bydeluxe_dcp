@@ -3,6 +3,7 @@ using {API_SALES_ORDER_SRV as S4_SalesOrder} from './external/API_SALES_ORDER_SR
 using {API_BUSINESS_PARTNER as S4_BuisnessPartner} from './external/API_BUSINESS_PARTNER';
 using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
 using {AssetVaultService.AssetVault as AssetVault} from './asset-vault';
+using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
 using api from '../db/common';
 
 service BookingOrderService {
@@ -25,6 +26,7 @@ service BookingOrderService {
     entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
     entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
     entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
+    entity S4_Parameters as projection on S4_Param.YY1_PARAMETER;
 
     @readonly
     entity S4_Plants             as projection on api.Plants;

@@ -1,0 +1,157 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.7.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_PARAMETER_CDS_0001": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_PARAMETER_CDS_0001.P_Scbo_User": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.addressable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "User",
+   "elements": {
+    "name": {
+     "key": true,
+     "type": "cds.String",
+     "length": 12,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "User",
+     "@sap.quickinfo": "User Name in User Master Record",
+     "notNull": true
+    },
+    "description": {
+     "type": "cds.String",
+     "length": 80,
+     "@sap.label": "Description",
+     "@sap.quickinfo": "Description of the Technical User Account"
+    }
+   }
+  },
+  "YY1_PARAMETER_CDS_0001.YY1_PARAMETER": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.searchable": "true",
+   "@sap.content.version": "1",
+   "@sap.label": "Parameter",
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "@sap.label": "UUID",
+     "@sap.quickinfo": "16 Byte UUID in 16 Bytes (Raw Format)",
+     "notNull": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@odata.Precision": 7,
+     "@sap.label": "Created On",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "SAP_CreatedByUser_Text",
+     "@sap.label": "Created By",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80,
+     "@sap.label": "Description",
+     "@sap.quickinfo": "Description of the Technical User Account",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@odata.Precision": 7,
+     "@sap.label": "Last Changed On",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "SAP_LastChangedByUser_Text",
+     "@sap.label": "Last Changed By",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80,
+     "@sap.label": "Description",
+     "@sap.quickinfo": "Description of the Technical User Account",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "ID",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "VariableName"
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "VariableValue"
+    },
+    "to_SAPSysAdminDataChangeUser": {
+     "type": "cds.Association",
+     "target": "YY1_PARAMETER_CDS_0001.P_Scbo_User",
+     "keys": []
+    },
+    "to_SAPSysAdminDataCreateUser": {
+     "type": "cds.Association",
+     "target": "YY1_PARAMETER_CDS_0001.P_Scbo_User",
+     "keys": []
+    }
+   }
+  },
+  "YY1_PARAMETER_CDS_0001.YY1_PARAMETERSap_upsert": {
+   "kind": "action",
+   "@cds.external": true,
+   "params": {
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "Text of length 50"
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "Text of length 50"
+    }
+   },
+   "returns": {
+    "type": "YY1_PARAMETER_CDS_0001.YY1_PARAMETER"
+   }
+  }
+ }
+}

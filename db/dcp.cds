@@ -1,6 +1,9 @@
 namespace dcp.db;
 
-using {managed,cuid} from '@sap/cds/common';
+using {
+    managed,
+    cuid
+} from '@sap/cds/common';
 using api from './common';
 
 entity TitleVH as projection on api.Products;
@@ -8,6 +11,8 @@ entity TitleVH as projection on api.Products;
 entity dcpcontent : managed {
         ApplicationID       : String(20) not null          @mandatory;
     key BookingID           : String(10) not null          @mandatory;
+    key Version             : Integer not null;
+        IsActive            : String(1) not null;
         EntityID            : String;
         ReleaseID           : String(10) not null          @mandatory;
         TheaterID           : String(12) not null          @mandatory;
@@ -20,7 +25,7 @@ entity dcpcontent : managed {
         DepotID             : String(1);
         SoundID             : String(8) not null           @mandatory;
         Language            : String(3) not null           @mandatory;
-        SubtitleType        : String(1) not null           @mandatory;
+        SubtitleType        : String(1);
         PrintFormat         : String(3) not null           @mandatory;
         ReleaseHold         : String(1) not null           @mandatory;
         ShipDate            : Date not null                @mandatory;
@@ -44,6 +49,8 @@ entity dcpcontent : managed {
 entity dcpkey : managed {
         ApplicationID       : String(20) not null          @mandatory;
     key BookingID           : String(10) not null          @mandatory;
+    key Version             : Integer not null;
+        IsActive            : String(1) not null;
         EntityID            : String;
         ReleaseID           : String(10) not null          @mandatory;
         TheaterID           : String(12) not null          @mandatory;
@@ -189,10 +196,10 @@ entity BookingSalesorderItem : managed {
         CTT                      : String;
         CPLUUID                  : String;
         PricingReferenceMaterial : String(40);
-        StartDate               : Date;
-        StartTime               : Time;
-        EndDate                 : Date;
-        EndTime                 : Time;                
+        StartDate                : Date;
+        StartTime                : Time;
+        EndDate                  : Date;
+        EndTime                  : Time;
         InitialKeyDuration       : Integer;
         NextKeyDuration          : Integer;
         OffsetEPD                : Integer;
@@ -214,14 +221,16 @@ entity BookingSalesorderPartner : managed {
 }
 
 entity ShippingConditionTypeMapping {
-    key ShippingCondition: String(2);
-    ShippingType: String(2);
-    ShippingTypeDescription: String;
+    key ShippingCondition       : String(2);
+        ShippingType            : String(2);
+        ShippingTypeDescription : String;
 }
-entity ShippingTypeMaster{   
-    key ID: String(2);
-    ShippingTypeDescription: String; 
+
+entity ShippingTypeMaster {
+    key ID                      : String(2);
+        ShippingTypeDescription : String;
 }
+
 // Maccs_Dchub
 entity Maccs_Dchub : managed {
     key requestId                     : String(18) not null @mandatory;
@@ -243,7 +252,7 @@ entity Maccs_Dchub : managed {
         startDate                     : Date not null       @mandatory;
         endDate                       : Date not null       @mandatory;
         deliveryDate                  : Date not null       @mandatory;
-    key customerRef                   : String(20) not null    @mandatory;
+    key customerRef                   : String(20) not null @mandatory;
         distributorId                 : Integer;
         distributorDescription        : String(15);
         distributorKDMArchive         : String(20);
@@ -265,181 +274,184 @@ entity Maccs_Dchub : managed {
 /// Comscore Hollywood
 
 entity TheatreOrderRequest : cuid, managed {
-key    StudioID : String(50);
-key    GenerateDate : DateTime;
-key    Version:String(50);
-        ServerName:String(50);
-        DataBaseName:String(50);
-        notes :String(500);
-    // Compositions
-    Theatre_Ass : Composition of many Theatre
-        on Theatre_Ass.Request = $self;
-    Content_Ass : Composition of many DigitalComposition
-        on Content_Ass.Request = $self;
-    DigitalKeyOrders_Ass : Composition of many DigitalKeyOrder
-        on DigitalKeyOrders_Ass.Request = $self;
-    MediaOrder_Ass : Composition of many MediaOrder
-        on MediaOrder_Ass.Request = $self;
+    key StudioID             : String(50);
+    key GenerateDate         : DateTime;
+    key Version              : String(50);
+        ServerName           : String(50);
+        DataBaseName         : String(50);
+        notes                : String(500);
+        // Compositions
+        Theatre_Ass          : Composition of many Theatre
+                                   on Theatre_Ass.Request = $self;
+        Content_Ass          : Composition of many DigitalComposition
+                                   on Content_Ass.Request = $self;
+        DigitalKeyOrders_Ass : Composition of many DigitalKeyOrder
+                                   on DigitalKeyOrders_Ass.Request = $self;
+        MediaOrder_Ass       : Composition of many MediaOrder
+                                   on MediaOrder_Ass.Request = $self;
 }
 
 entity Theatre : cuid, managed {
-key  TheatreID : String(50);
-    Name : String(200);
-    City : String(200);
-    State : String(100);
-    PostalCode : String(50);
-    CountryCode : String(50);
-    Address: String(500);
-    Request : Association to TheatreOrderRequest;
+    key TheatreID   : String(50);
+        Name        : String(200);
+        City        : String(200);
+        State       : String(100);
+        PostalCode  : String(50);
+        CountryCode : String(50);
+        Address     : String(500);
+        Request     : Association to TheatreOrderRequest;
 
 }
 
-  entity MediaOrder :cuid,managed{
-    mediaType          : String;
-key mediaOrderId       : Integer;
-    TheatreID          : String(50);
-    contentId          : Integer;
-    cancelFlag         : String;
-    operation          : String;
-    playdateBegin      : Date;
-    playdateEnd        : Date;
-    holdKeyFlag        : String;
-    tmcMediaOrderId    : String;
-    tmcTheaterId       : String;
-    note               : String;
-    screeningScreenNo  : String;
-    screeningTime      : String;
-    doNotShip          : String;
-    shipHoldType       : String;
-    deliveryMethod     : String;
-    returnMethod       : String;
-    isNoKey            : String;
-    bookerName         : String;
-    bookerPhone        : String;
-    bookerEmail        : String;
-    Request : Association to TheatreOrderRequest;
-  }
+entity MediaOrder : cuid, managed {
+        mediaType         : String;
+    key mediaOrderId      : Integer;
+        TheatreID         : String(50);
+        contentId         : Integer;
+        cancelFlag        : String;
+        operation         : String;
+        playdateBegin     : Date;
+        playdateEnd       : Date;
+        holdKeyFlag       : String;
+        tmcMediaOrderId   : String;
+        tmcTheaterId      : String;
+        note              : String;
+        screeningScreenNo : String;
+        screeningTime     : String;
+        doNotShip         : String;
+        shipHoldType      : String;
+        deliveryMethod    : String;
+        returnMethod      : String;
+        isNoKey           : String;
+        bookerName        : String;
+        bookerPhone       : String;
+        bookerEmail       : String;
+        Request           : Association to TheatreOrderRequest;
+}
 
 entity DigitalComposition : cuid, managed {
-  key  ContentID : String(50);
-    Title : String(500);
-    CPL_UUID : String(100);
-    FilmID: String(100);
-    Request : Association to TheatreOrderRequest;
+    key ContentID : String(50);
+        Title     : String(500);
+        CPL_UUID  : String(100);
+        FilmID    : String(100);
+        Request   : Association to TheatreOrderRequest;
 }
 
 entity DigitalKeyOrder : cuid, managed {
-   key  DigitalKeyOrderID : String(50);
-    ContentID : String(50);
-    Screens : String(200);
-    CancelFlag : Boolean;
-    LicenseBeginDate : DateTime;
-    LicenseEndDate : DateTime;
-    Request : Association to TheatreOrderRequest;
+    key DigitalKeyOrderID : String(50);
+        ContentID         : String(50);
+        Screens           : String(200);
+        CancelFlag        : Boolean;
+        LicenseBeginDate  : DateTime;
+        LicenseEndDate    : DateTime;
+        Request           : Association to TheatreOrderRequest;
 }
 
-  /// Disney OFE
+/// Disney OFE
 entity OrderRequest : cuid, managed {
-    ShowTimeType : String(50);
-   key OrderID : Integer;
-   key ContentOrderID : Integer;
-    TransactionType : String(50);
-    BookingID : String(50);
-    BookingSystem : String(50);
-    DeliveryDate : DateTime;
-    StartDate : DateTime;
-    EndDate : DateTime;
-    NumberOfCompositions : Integer;
-    IsCancellation : Boolean;
-    DeliveryType : String(50);
-    IsRemediation : Boolean;
-
-    DeliveryAddress : Composition of one AddressType;
-    PhysicalAddress : Composition of one AddressType;
-    Package : Composition of one PackageType;
-    Vendor : Composition of one VendorType;
+        ShowTimeType         : String(50);
+    key OrderID              : Integer;
+    key ContentOrderID       : Integer;
+        TransactionType      : String(50);
+        BookingID            : String(50);
+        BookingSystem        : String(50);
+        DeliveryDate         : DateTime;
+        StartDate            : DateTime;
+        EndDate              : DateTime;
+        NumberOfCompositions : Integer;
+        IsCancellation       : Boolean;
+        DeliveryType         : String(50);
+        IsRemediation        : Boolean;
+        DeliveryAddress      : Composition of one AddressType;
+        PhysicalAddress      : Composition of one AddressType;
+        Package              : Composition of one PackageType;
+        Vendor               : Composition of one VendorType;
 }
 
 entity AddressType : cuid {
-  key   SiteID : String(50);
-        SiteName : String(200);
-        CircuitName : String(200);
-        ShortName : String(50);
-        Address1 : String(200);
-        Address2 : String(200);
-        City : String(100);
-        State : String(50);
-        Territory : String(100);
-        ISO : String(10);
-        PostalCode : String(20);
-        Region : String(50);
+    key SiteID       : String(50);
+        SiteName     : String(200);
+        CircuitName  : String(200);
+        ShortName    : String(50);
+        Address1     : String(200);
+        Address2     : String(200);
+        City         : String(100);
+        State        : String(50);
+        Territory    : String(100);
+        ISO          : String(10);
+        PostalCode   : String(20);
+        Region       : String(50);
         OrderRequest : Association to OrderRequest;
 }
 
 entity PackageType : cuid {
-key  ID : Integer;
-    Description : String(200);
-    TitleName : String(500);
-    Compositions : Composition of one CompositionType on Compositions.Package = $self;
+    key ID           : Integer;
+        Description  : String(200);
+        TitleName    : String(500);
+        Compositions : Composition of one CompositionType
+                           on Compositions.Package = $self;
 }
 
-entity CompositionType{
-key ID :String;
-   key UUID: String(500);
-    ContentUniqueID : String(100);
-    Description : String(500);
-    TrackLanguage : String(100);
-    Sub1 : String(100);
-    Sub2 : String(100);
-    ContentType : String(50);
-    ContentSize : String(200);
-    IsUpdated : Boolean;
-    CompositionStatus : String(50);
-    Package : Association to PackageType;
+entity CompositionType {
+    key ID                : String;
+    key UUID              : String(500);
+        ContentUniqueID   : String(100);
+        Description       : String(500);
+        TrackLanguage     : String(100);
+        Sub1              : String(100);
+        Sub2              : String(100);
+        ContentType       : String(50);
+        ContentSize       : String(200);
+        IsUpdated         : Boolean;
+        CompositionStatus : String(50);
+        Package           : Association to PackageType;
 }
 
 entity VendorType : cuid {
-key ID : Integer;
-    Name : String(200);
-    Email : String(500);
-    Phone : String(50);
-    Fax : String(50);
-    OrderRequest : Association to OrderRequest;
+    key ID           : Integer;
+        Name         : String(200);
+        Email        : String(500);
+        Phone        : String(50);
+        Fax          : String(50);
+        OrderRequest : Association to OrderRequest;
 }
 
 //OFE Key
 
 entity OFEOrders : managed {
-    key orderId : Integer;
-    key studioId : String;
+    key orderId       : Integer;
+    key studioId      : String;
     key generatedDate : DateTime;
-    keyOrders : Composition of many KeyOrders on keyOrders.OrderRequest = $self;
+        keyOrders     : Composition of many KeyOrders
+                            on keyOrders.OrderRequest = $self;
 }
 
 entity KeyOrders {
-    key id : Integer;
-    showtimeType : String;
-    contentDescription : String;
-    cpl : String;
-    licenseBeginDate : DateTime;
-    licenseEndDate : DateTime;
-    isSpecialDelivery : Boolean;
-    cancelOrder : String;
-    screenId : String;
-    contacts : Composition of many Contacts on contacts.KeyOrderRequest = $self;
-    site : Composition of one Site on site.KeyOrderRequest = $self;
-    OrderRequest : Association to OFEOrders;
+    key id                 : Integer;
+        showtimeType       : String;
+        contentDescription : String;
+        cpl                : String;
+        licenseBeginDate   : DateTime;
+        licenseEndDate     : DateTime;
+        isSpecialDelivery  : Boolean;
+        cancelOrder        : String;
+        screenId           : String;
+        contacts           : Composition of many Contacts
+                                 on contacts.KeyOrderRequest = $self;
+        site               : Composition of one Site
+                                 on site.KeyOrderRequest = $self;
+        OrderRequest       : Association to OFEOrders;
 }
 
 entity Site {
-    key siteID : String;
-    siteName : String;
-    physicalAddress : String;
-    deliveryAddress : String;
-    KeyOrderRequest : Association to KeyOrders;
+    key siteID          : String;
+        siteName        : String;
+        physicalAddress : String;
+        deliveryAddress : String;
+        KeyOrderRequest : Association to KeyOrders;
 }
 
 entity Contacts {
-    key email : String;
+    key email           : String;
     key KeyOrderRequest : Association to KeyOrders;
 }

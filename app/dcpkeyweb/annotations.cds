@@ -25,6 +25,16 @@ annotate service.dcpkey with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : IsActive,
+                Label : '{i18n>Isactive}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Version,
+                Label : '{i18n>Version}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Theaterid}',
                 Value : TheaterID,
             },
@@ -146,7 +156,7 @@ annotate service.dcpkey with @(
             {
                 $Type : 'UI.DataField',
                 Value : UUID,
-                Label : '{i18n>Uuid}',
+                Label : '{i18n>Isactive}',
             },
         ],
     },
@@ -181,6 +191,18 @@ annotate service.dcpkey with @(
             $Type : 'UI.DataField',
             Value : EntityID,
             Label : '{i18n>Entityid}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : IsActive,
+            Label : '{i18n>Isactive}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Version,
+            Label : '{i18n>Version}',
             ![@UI.Importance] : #High,
         },
         {
@@ -258,7 +280,7 @@ annotate service.dcpkey with @(
         {
             $Type : 'UI.DataField',
             Value : UUID,
-            Label : '{i18n>Uuid}',
+            Label : '{i18n>Isactive1}',
             ![@UI.Importance] : #High,
         },
     ],
@@ -368,11 +390,27 @@ annotate service.dcpkey with @(
                     Property : createdAt,
                     Descending : true,
                 },
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : Version,
+                    Descending : true,
+                },
             ],
         },
         SelectionVariant : {
             $Type : 'UI.SelectionVariantType',
             SelectOptions : [
+                {
+                    $Type : 'UI.SelectOptionType',
+                    PropertyName : IsActive,
+                    Ranges : [
+                        {
+                            Sign : #I,
+                            Option : #EQ,
+                            Low : 'Y',
+                        },
+                    ],
+                },
             ],
         },
     },

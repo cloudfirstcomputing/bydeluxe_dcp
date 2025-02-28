@@ -25,6 +25,16 @@ annotate service.dcpcontent with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : IsActive,
+                Label : '{i18n>Isactive}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Version,
+                Label : '{i18n>Version}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : '{i18n>Playstartdate}',
                 Value : PlayStartDate,
             },
@@ -190,6 +200,18 @@ annotate service.dcpcontent with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : IsActive,
+            Label : '{i18n>Isactive}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Version,
+            Label : '{i18n>Version}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Label : '{i18n>Releaseid}',
             Value : ReleaseID,
             ![@UI.Importance] : #High,
@@ -245,7 +267,7 @@ annotate service.dcpcontent with @(
         {
             $Type : 'UI.DataField',
             Value : Status_ID,
-            Label : '{i18n>Status}',
+            Label : '{i18n>Isactive}',
             ![@UI.Importance] : #High,
         },
     ],
@@ -347,11 +369,27 @@ annotate service.dcpcontent with @(
                     Property : BookingID,
                     Descending : true,
                 },
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : Version,
+                    Descending : true,
+                },
             ],
         },
         SelectionVariant : {
             $Type : 'UI.SelectionVariantType',
             SelectOptions : [
+                {
+                    $Type : 'UI.SelectOptionType',
+                    PropertyName : IsActive,
+                    Ranges : [
+                        {
+                            Sign : #I,
+                            Option : #EQ,
+                            Low : 'Y',
+                        },
+                    ],
+                },
             ],
         },
     },    
