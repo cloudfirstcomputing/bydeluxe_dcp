@@ -34,6 +34,10 @@ annotate service.AssetVault with {
     AudioFormats                   @Common: {Label: '{i18n>AudioFormats}', };
     SatelliteDistributionStartDate @Common: {Label: '{i18n>SatelliteDistributionStartDate}', };
     SatelliteDistributionEndDate   @Common: {Label: '{i18n>SatelliteDistributionEndDate}', };
+    KDMFlag                        @Common: {Label: '{i18n>KDMFlag}', };
+    Email                          @Common: {Label: '{i18n>Email}', };
+    Download                       @Common: {Label: '{i18n>Download}', };
+    IngestLetter                   @Common: {Label: '{i18n>IngestLetter}', };
 };
 
 annotate service.AssetVault._Items with {
@@ -60,9 +64,6 @@ annotate service.AssetVault._Items with {
     DcpResolution         @Common: {Label: '{i18n>DcpResolution}', };
     AspectRatio           @Common: {Label: '{i18n>AspectRatio}', };
     PictureFormat         @Common: {Label: '{i18n>PictureFormat}', };
-    KDMFlag               @Common: {Label: '{i18n>KDMFlag}', };
-    Email                 @Common: {Label: '{i18n>Email}', };
-    Download              @Common: {Label: '{i18n>Download}', };
 };
 
 annotate service.AssetVault with @(
@@ -215,6 +216,18 @@ annotate service.AssetVault with @(
             {
                 $Type: 'UI.DataField',
                 Value: SatelliteDistributionEndDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: KDMFlag,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Email,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Download,
             },
             {
                 $Type: 'UI.DataField',
@@ -383,18 +396,6 @@ annotate service.AssetVault._Items with @(
             {
                 $Type: 'UI.DataField',
                 Value: DcpFormatType,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: KDMFlag,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Email,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Download,
             },
         ],
     }

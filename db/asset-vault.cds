@@ -35,6 +35,9 @@ entity AssetVault {
         PublishDaysBeforePlaydate      : String(40);
         SatelliteDistributionStartDate : String(40);
         SatelliteDistributionEndDate   : String(40);
+        KDMFlag               : Boolean;
+                                                 Email                 : Boolean;
+                                                 Download              : Boolean;
         IngestLetter                   : String(200);
         _Items                         : Composition of many {
                                              key ID                    : UUID;
@@ -61,9 +64,6 @@ entity AssetVault {
                                                  DcpResolution         : String(10);
                                                  AspectRatio           : String(10);
                                                  PictureFormat         : String(10);
-                                                 KDMFlag               : Boolean;
-                                                 Email                 : Boolean;
-                                                 Download              : Boolean;
                                          }
 };
 
