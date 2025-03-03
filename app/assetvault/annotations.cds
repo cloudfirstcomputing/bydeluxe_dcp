@@ -56,6 +56,10 @@ annotate service.AssetVault._Items with {
     ClosedCaptionsFlag    @Common: {Label: '{i18n>ClosedCaptionsFlag}', };
     SignLanguageVideoFlag @Common: {Label: '{i18n>SignLanguageVideoFlag}', };
     DcpFormatType         @Common: {Label: '{i18n>DcpFormatType}', };
+    SoundFormat           @Common: {Label: '{i18n>SoundFormat}', };
+    DcpResolution         @Common: {Label: '{i18n>DcpResolution}', };
+    AspectRatio           @Common: {Label: '{i18n>AspectRatio}', };
+    PictureFormat         @Common: {Label: '{i18n>PictureFormat}', };
     KDMFlag               @Common: {Label: '{i18n>KDMFlag}', };
     Email                 @Common: {Label: '{i18n>Email}', };
     Download              @Common: {Label: '{i18n>Download}', };
