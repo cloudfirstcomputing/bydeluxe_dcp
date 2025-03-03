@@ -57,6 +57,10 @@ entity AssetVault {
                                                  ClosedCaptionsFlag    : Integer;
                                                  SignLanguageVideoFlag : Integer;
                                                  DcpFormatType         : String(40);
+                                                 SoundFormat           : String(10);
+                                                 DcpResolution         : String(10);
+                                                 AspectRatio           : String(10);
+                                                 PictureFormat         : String(10);
                                                  KDMFlag               : Boolean;
                                                  Email                 : Boolean;
                                                  Download              : Boolean;
