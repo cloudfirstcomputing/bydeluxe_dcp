@@ -282,6 +282,7 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
+              "editableHeaderContent": false,
               "navigation": {
                 "to_CPLDetail": {
                   "detail": {
@@ -304,7 +305,7 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
-              "navigation": {},
+              "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_KeyPackage/to_CPLDetail"
             }
           }
@@ -315,7 +316,7 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
-              "navigation": {},
+              "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_KeyPackage/to_DistRestriction"
             }
           }
