@@ -9,107 +9,104 @@ using api from './common';
 entity TitleVH as projection on api.Products;
 
 entity dcpcontent : managed {
-        ApplicationID       : String(20) not null          @mandatory;
-    key BookingID           : String(10) not null          @mandatory;
-    key Version             : Integer not null;
-        IsActive            : String(1) not null;
+        ApplicationID       : String(20)                   @mandatory;
+    key BookingID           : String(10)                   @mandatory;
+    key Version             : Integer;
+        IsActive            : String(1);
         EntityID            : String;
-        ReleaseID           : String(10) not null          @mandatory;
-        TheaterID           : String(12) not null          @mandatory;
+        ReleaseID           : String(10)                   @mandatory;
+        TheaterID           : String(12)                   @mandatory;
         Circuit             : String(12);
-        ShipmentIndicator   : String(1) not null           @mandatory;
+        ShipmentIndicator   : String(1)                    @mandatory;
         ScreeningIndicator  : String(1)                    @mandatory;
-        PlayStartDate       : Date not null                @mandatory;
-        PlayEndDate         : Date not null                @mandatory;
-        BranchID            : String(2) not null           @mandatory;
+        PlayStartDate       : Date                         @mandatory;
+        PlayEndDate         : Date                         @mandatory;
+        BranchID            : String(2)                    @mandatory;
         DepotID             : String(1);
-        SoundID             : String(8) not null           @mandatory;
-        Language            : String(3) not null           @mandatory;
+        SoundID             : String(8)                    @mandatory;
+        Language            : String(3)                    @mandatory;
         SubtitleType        : String(1);
-        PrintFormat         : String(3) not null           @mandatory;
-        ReleaseHold         : String(1) not null           @mandatory;
-        ShipDate            : Date not null                @mandatory;
-        ShipPriority        : String(2) not null           @mandatory;
-        AuditoriumType      : String(1) not null           @mandatory;
-        PrintQuality        : String(4) not null           @mandatory;
-        FilmStock           : String(4) not null           @mandatory;
-        Key_Content         : String(1) not null           @mandatory;
+        PrintFormat         : String(3)                    @mandatory;
+        ReleaseHold         : String(1)                    @mandatory;
+        ShipDate            : Date                         @mandatory;
+        ShipPriority        : String(2)                    @mandatory;
+        AuditoriumType      : String(1)                    @mandatory;
+        PrintQuality        : String(4)                    @mandatory;
+        FilmStock           : String(4)                    @mandatory;
+        Key_Content         : String(1)                    @mandatory;
         TimeofEntry         : Time;
-        BookingType         : String(4) not null           @mandatory;
-        PackageName         : String not null              @mandatory;
-        UUID                : String(40) not null;
-        Territory           : String(2) not null           @mandatory;
-
-
+        BookingType         : String(4)                    @mandatory;
+        PackageName         : String                       @mandatory;
+        UUID                : String(40);
+        Territory           : String(2)                    @mandatory;
         //Key Specific
-        BookingUpdater      : String(10) not null          @mandatory;
-        CountryCode         : String(2) not null           @mandatory;
-        ScreenID            : String(1) not null           @mandatory;
-        SingleScreen        : String not null              @mandatory;
-        StartDate           : Date not null                @mandatory;
-        StartTime           : Time not null                @mandatory;
-        EndDate             : Date not null                @mandatory;
-        EndTime             : Time not null                @mandatory;
-        DeliveryOnDate      : Date not null                @mandatory;
-        ApprovedScreensList : String not null              @mandatory;
-        ReleaseName         : String(40) not null          @mandatory;
-        ReleaseShortName    : String(2) not null           @mandatory;
-        ReleaseNameHO       : String(40) not null          @mandatory;
+        BookingUpdater      : String(10)                   @mandatory;
+        CountryCode         : String(2)                    @mandatory;
+        ScreenID            : String(1)                    @mandatory;
+        SingleScreen        : String                       @mandatory;
+        StartDate           : Date                         @mandatory;
+        StartTime           : Time                         @mandatory;
+        EndDate             : Date                         @mandatory;
+        EndTime             : Time                         @mandatory;
+        DeliveryOnDate      : Date                         @mandatory;
+        ApprovedScreensList : String                       @mandatory;
+        ReleaseName         : String(40)                   @mandatory;
+        ReleaseShortName    : String(2)                    @mandatory;
+        ReleaseNameHO       : String(40)                   @mandatory;
         ReleaseTitleHO      : String(40);
-
         //Common custom fields
         Status              : Association to BookingStatus @mandatory;
         SalesOrder          : String                       @readonly;
         ErrorMessage        : String                       @readonly;
         ReferenceSDDocument : String                       @readonly;
-        Warnings            : String        
+        Warnings            : String
 }
 
 entity dcpkey : managed {
-        ApplicationID       : String(20) not null          @mandatory;
-    key BookingID           : String(10) not null          @mandatory;
-    key Version             : Integer not null;
-        IsActive            : String(1) not null;
+        ApplicationID       : String(20)                   @mandatory;
+    key BookingID           : String(10)                   @mandatory;
+    key Version             : Integer;
+        IsActive            : String(1);
         EntityID            : String;
-        ReleaseID           : String(10) not null          @mandatory;
-        TheaterID           : String(12) not null          @mandatory;
+        ReleaseID           : String(10)                   @mandatory;
+        TheaterID           : String(12)                   @mandatory;
         Circuit             : String(12);
-        ShipmentIndicator   : String(1) not null           @mandatory;
+        ShipmentIndicator   : String(1)                    @mandatory;
         ScreeningIndicator  : String(1)                    @mandatory;
-        PlayStartDate       : Date not null                @mandatory;
-        PlayEndDate         : Date not null                @mandatory;
-        BranchID            : String(2) not null           @mandatory;
+        PlayStartDate       : Date                         @mandatory;
+        PlayEndDate         : Date                         @mandatory;
+        BranchID            : String(2)                    @mandatory;
         DepotID             : String(1);
-        SoundID             : String(8) not null           @mandatory;
-        Language            : String(3) not null           @mandatory;
-        SubtitleType        : String(1) not null           @mandatory;
+        SoundID             : String(8)                    @mandatory;
+        Language            : String(3)                    @mandatory;
+        SubtitleType        : String(1)                    @mandatory;
         PrintFormat         : String(3);
-        ReleaseHold         : String(1) not null           @mandatory;
-        BookingUpdater      : String(10) not null          @mandatory;
-        ShipDate            : Date not null                @mandatory;
-        ShipPriority        : String(2) not null           @mandatory;
-        AuditoriumType      : String(1) not null           @mandatory;
-        PrintQuality        : String(4) not null           @mandatory;
-        FilmStock           : String(4) not null           @mandatory;
-        CountryCode         : String(2) not null           @mandatory;
-        ScreenID            : String(1) not null           @mandatory;
-        SingleScreen        : String not null              @mandatory;
-        StartDate           : Date not null                @mandatory;
-        StartTime           : Time not null                @mandatory;
-        EndDate             : Date not null                @mandatory;
-        EndTime             : Time not null                @mandatory;
-        Key_Content         : String(1) not null           @mandatory;
-        UUID                : String(40) not null          @mandatory;
+        ReleaseHold         : String(1)                    @mandatory;
+        BookingUpdater      : String(10)                   @mandatory;
+        ShipDate            : Date                         @mandatory;
+        ShipPriority        : String(2)                    @mandatory;
+        AuditoriumType      : String(1)                    @mandatory;
+        PrintQuality        : String(4)                    @mandatory;
+        FilmStock           : String(4)                    @mandatory;
+        CountryCode         : String(2)                    @mandatory;
+        ScreenID            : String(1)                    @mandatory;
+        SingleScreen        : String                       @mandatory;
+        StartDate           : Date                         @mandatory;
+        StartTime           : Time                         @mandatory;
+        EndDate             : Date                         @mandatory;
+        EndTime             : Time                         @mandatory;
+        Key_Content         : String(1)                    @mandatory;
+        UUID                : String(40)                   @mandatory;
         TimeofEntry         : Time;
-        BookingType         : String(4) not null           @mandatory;
-        PackageName         : String not null              @mandatory;
-        Releasempm          : String(12) not null          @mandatory;
-        Territory           : String(2) not null           @mandatory;
-        DeliveryOnDate      : Date not null                @mandatory;
-        ApprovedScreensList : String not null              @mandatory;
-        ReleaseName         : String(40) not null          @mandatory;
-        ReleaseShortName    : String(2) not null           @mandatory;
-        ReleaseNameHO       : String(40) not null          @mandatory;
+        BookingType         : String(4)                    @mandatory;
+        PackageName         : String                       @mandatory;
+        Releasempm          : String(12)                   @mandatory;
+        Territory           : String(2)                    @mandatory;
+        DeliveryOnDate      : Date                         @mandatory;
+        ApprovedScreensList : String                       @mandatory;
+        ReleaseName         : String(40)                   @mandatory;
+        ReleaseShortName    : String(2)                    @mandatory;
+        ReleaseNameHO       : String(40)                   @mandatory;
         ReleaseTitleHO      : String(40);
         Status              : Association to BookingStatus @mandatory;
         SalesOrder          : String                       @readonly;
@@ -130,8 +127,8 @@ entity BookingStatus {
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
 @readonly
 entity BookingSalesOrder : managed {
-    key SalesOrder              : String(10) not null                           @mandatory;
-    key BookingID               : String(10) not null                           @mandatory;
+    key SalesOrder              : String(10)                                    @mandatory;
+    key BookingID               : String(10)                                    @mandatory;
         EntityID                : String;
         SoldToParty             : String(10);
         SalesOrganization       : String(4);
@@ -142,7 +139,7 @@ entity BookingSalesOrder : managed {
         TransactionCurrency     : String(3);
         ShippingCondition       : String(2);
         ShipDate                : Date;
-        ApplicationID           : String(20) not null;
+        ApplicationID           : String(20);
         ReleaseID               : String(10);
         TheaterID               : String(12);
         Circuit                 : String(12);
@@ -187,8 +184,8 @@ entity BookingSalesOrder : managed {
 
 @readonly
 entity BookingSalesorderItem : managed {
-    key SalesOrder               : String(10) not null @mandatory;
-    key SalesOrderItem           : String(6) not null;
+    key SalesOrder               : String(10) @mandatory;
+    key SalesOrderItem           : String(6);
         Product                  : String(16);
         RequestedQuantity        : Decimal(15, 3);
         RequestedQuantityISOUnit : String(3);
@@ -233,8 +230,8 @@ entity BookingSalesorderItem : managed {
 }
 
 entity BookingSalesorderPartner : managed {
-    key SalesOrder      : String(10) not null @mandatory;
-    key PartnerFunction : String(2) not null;
+    key SalesOrder      : String(10) @mandatory;
+    key PartnerFunction : String(2);
         Customer        : String(10);
 
 }
@@ -252,26 +249,26 @@ entity ShippingTypeMaster {
 
 // Maccs_Dchub
 entity Maccs_Dchub : managed {
-    key requestId                     : String(18) not null @mandatory;
+    key requestId                     : String(18) @mandatory;
         product                       : String(16);
-        titleId                       : Integer not null    @mandatory;
-        titleExternalRef              : Integer not null    @mandatory;
+        titleId                       : Integer    @mandatory;
+        titleExternalRef              : Integer    @mandatory;
         titleDescription              : String(40);
-    key cinemaId                      : String(10) not null @mandatory;
+    key cinemaId                      : String(10) @mandatory;
         screenId                      : String(40);
-        screenNumber                  : Integer not null    @mandatory;
+        screenNumber                  : Integer    @mandatory;
         cinemaDescription             : String(40);
-        cinemaTerritory               : String(2) not null  @mandatory;
+        cinemaTerritory               : String(2)  @mandatory;
         recipientExternalRef          : String(10);
         versionId                     : Integer;
         versionDescription            : String(20);
         versionExternalRefVendor      : String(20);
         versionExternalRefDistributor : String(10);
         versionAdditionalInfo         : String(20);
-        startDate                     : Date not null       @mandatory;
-        endDate                       : Date not null       @mandatory;
-        deliveryDate                  : Date not null       @mandatory;
-    key customerRef                   : String(20) not null @mandatory;
+        startDate                     : Date       @mandatory;
+        endDate                       : Date       @mandatory;
+        deliveryDate                  : Date       @mandatory;
+    key customerRef                   : String(20) @mandatory;
         distributorId                 : Integer;
         distributorDescription        : String(15);
         distributorKDMArchive         : String(20);
@@ -281,12 +278,12 @@ entity Maccs_Dchub : managed {
         screeningTime                 : Time;
         showcode                      : String(10);
         techCheckKey                  : String;
-    key quantity                      : Integer             @mandatory;
+    key quantity                      : Integer    @mandatory;
         requestType                   : String(10);
         requestStatusCode             : Integer;
         requestStatusDescription      : String(20);
         remark                        : String(40);
-        bookerName                    : String(20)          @mandatory;
+        bookerName                    : String(20) @mandatory;
 }
 
 
