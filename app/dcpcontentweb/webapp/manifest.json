@@ -158,6 +158,17 @@
                         "placement": "After",
                         "anchor": "process"
                       }
+                    },
+                    "MassUpload": {
+                      "press": "dcpcontentweb.ext.controller.Actions.handleMassUpload",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "{i18n>massUpload}",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "process"
+                      }
                     }
                   }
                 }
