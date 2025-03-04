@@ -38,6 +38,8 @@ entity DistroSpec : managed {
         };
         to_Package         : Composition of many Package
                                  on to_Package.to_DistroSpec = $self;
+        to_KeyPackage      : Composition of many KeyPackage
+                                 on to_KeyPackage.to_DistroSpec = $self;
         to_StudioKey       : Composition of many StudioKey
                                  on to_StudioKey.to_DistroSpec = $self;
 };
@@ -68,6 +70,22 @@ entity CustomerRef {
         CustomerReference : String(40);
         to_StudioKey      : Association to StudioKey;
         to_DistroSpec     : Association to DistroSpec;
+};
+
+entity KeyPackage {
+    key PackageUUID        : UUID;
+        PackageName        : String(40) @mandatory;
+        Priority           : Integer    @assert.range: [
+            0,
+            99
+        ]  @mandatory;
+        ValidFrom          : Date       @mandatory;
+        ValidTo            : Date       @mandatory;
+        to_CPLDetail       : Composition of many CPLDetail
+                                 on to_CPLDetail.to_KeyPackage = $self;
+        to_DistRestriction : Composition of many KeyDistRestrictions
+                                 on to_DistRestriction.to_KeyPackage = $self;
+        to_DistroSpec      : Association to DistroSpec;
 };
 
 entity Package {
@@ -108,29 +126,66 @@ entity DistRestrictions : cuid {
     DistributionFilterCity     : String;
     DistributionFilterPostal   : String;
     DistributionFilterLanguage : Language;
-    PlayBackCapability1         : String(40);
-    PlayBackCapability2         : String(40);
-    PlayBackCapability3         : String(40);
-    PlayBackCapability4         : String(40);
-    PlayBackCapability5         : String(40);
-    PlayBackCapability6         : String(40);
-    PlayBackCapability7         : String(40);
-    PlayBackCapability8         : String(40);
-    PlayBackCapability9         : String(40);
-    PlayBackCapability10         : String(40);
+    PlayBackCapability1        : String(40);
+    PlayBackCapability2        : String(40);
+    PlayBackCapability3        : String(40);
+    PlayBackCapability4        : String(40);
+    PlayBackCapability5        : String(40);
+    PlayBackCapability6        : String(40);
+    PlayBackCapability7        : String(40);
+    PlayBackCapability8        : String(40);
+    PlayBackCapability9        : String(40);
+    PlayBackCapability10       : String(40);
     TrailMixSub                : String(1) enum {
         Monthly = 'M';
         Weekly  = 'W';
         NA      = '0';
     };
-    OrderType : String(1) enum {
+    OrderType                  : String(1) enum {
         Content = 'C';
-        Keys = 'K';
-        Both = 'B';
+        Keys    = 'K';
+        Both    = 'B';
     };
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
 };
+
+entity KeyDistRestrictions : cuid {
+    Theater                    : Association to one TheaterVH;
+    Circuit                    : Association to one api.CustomerGroup;
+    DistributionFilterRegion   : Association to one api.Regions;
+    DistributionFilterCountry  : Country;
+    DistributionFilterCity     : String;
+    DistributionFilterPostal   : String;
+    DistributionFilterLanguage : Language;
+    PlayBackCapability1        : String(40);
+    PlayBackCapability2        : String(40);
+    PlayBackCapability3        : String(40);
+    PlayBackCapability4        : String(40);
+    PlayBackCapability5        : String(40);
+    PlayBackCapability6        : String(40);
+    PlayBackCapability7        : String(40);
+    PlayBackCapability8        : String(40);
+    PlayBackCapability9        : String(40);
+    PlayBackCapability10       : String(40);
+    TrailMixSub                : String(1) enum {
+        Monthly = 'M';
+        Weekly  = 'W';
+        NA      = '0';
+    };
+    OrderType                  : String(1) enum {
+        Content = 'C';
+        Keys    = 'K';
+        Both    = 'B';
+    };
+    to_KeyPackage              : Association to KeyPackage;
+    to_DistroSpec              : Association to DistroSpec;
+};
+
+entity CPLDetail : cuid {
+    CPLUUID       : String(40);
+    to_KeyPackage : Association to KeyPackage;
+}
 
 entity DCPMaterials {
     key DCPMaterialUUID          : UUID;
@@ -152,8 +207,9 @@ entity DCPMaterials {
         to_Package               : Association to Package;
         to_DistroSpec            : Association to DistroSpec;
 }
+
 entity DCPMaterialConfig : cuid, managed {
-    ProjectID     : Association to one av.DistributionDcp @mandatory;
+    ProjectID        : Association to one av.DistributionDcp @mandatory;
     to_SalesDelivery : Composition of many {
                            key ProductSalesOrg         : Association to one api.SalesOrganizations   @mandatory;
                            key ProductDistributionChnl : Association to one api.DistributionChannels @mandatory;

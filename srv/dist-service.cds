@@ -26,6 +26,8 @@ service DistributionService @(requires: 'authenticated-user') {
                 a.Download,
                 a.Email
         }
+        where
+            b.CreatedinSAP = true
         actions {
             @(
                 cds.odata.bindingparameter.name: '_it',

@@ -130,6 +130,21 @@
           "name": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage",
           "pattern": "DistroSpec({key})/to_StudioKey({to_StudioKeyKey})/to_CustomerRef({to_CustomerRefKey}):?query:",
           "target": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_KeyPackageObjectPage",
+          "pattern": "DistroSpec({key})/to_KeyPackage({to_KeyPackageKey}):?query:",
+          "target": "DistroSpec_to_KeyPackageObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_KeyPackage_to_CPLDetailObjectPage",
+          "pattern": "DistroSpec({key})/to_KeyPackage({to_KeyPackageKey})/to_CPLDetail({to_CPLDetailKey}):?query:",
+          "target": "DistroSpec_to_KeyPackage_to_CPLDetailObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage",
+          "pattern": "DistroSpec({key})/to_KeyPackage({to_KeyPackageKey})/to_DistRestriction({to_DistRestrictionKey}):?query:",
+          "target": "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage"
         }
       ],
       "targets": {
@@ -176,6 +191,11 @@
                 "to_StudioKey": {
                   "detail": {
                     "route": "DistroSpec_to_StudioKeyObjectPage"
+                  }
+                },
+                "to_KeyPackage": {
+                  "detail": {
+                    "route": "DistroSpec_to_KeyPackageObjectPage"
                   }
                 }
               }
@@ -253,6 +273,50 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_StudioKey/to_CustomerRef"
+            }
+          }
+        },
+        "DistroSpec_to_KeyPackageObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_KeyPackageObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {
+                "to_CPLDetail": {
+                  "detail": {
+                    "route": "DistroSpec_to_KeyPackage_to_CPLDetailObjectPage"
+                  }
+                },
+                "to_DistRestriction": {
+                  "detail": {
+                    "route": "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage"
+                  }
+                }
+              },
+              "contextPath": "/DistroSpec/to_KeyPackage"
+            }
+          }
+        },
+        "DistroSpec_to_KeyPackage_to_CPLDetailObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_KeyPackage_to_CPLDetailObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/DistroSpec/to_KeyPackage/to_CPLDetail"
+            }
+          }
+        },
+        "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/DistroSpec/to_KeyPackage/to_DistRestriction"
             }
           }
         }
