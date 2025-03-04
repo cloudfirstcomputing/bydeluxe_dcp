@@ -167,6 +167,13 @@ annotate service.Package with {
     ValidTo          @Common: {Label: '{i18n>ValidTo}', };
 };
 
+annotate service.KeyPackage with {
+    PackageName @Common: {Label: '{i18n>PackageName}', };
+    Priority    @Common: {Label: '{i18n>Priority}', };
+    ValidFrom   @Common: {Label: '{i18n>ValidFrom}', };
+    ValidTo     @Common: {Label: '{i18n>ValidTo}', };
+};
+
 annotate service.DistRestrictions with {
     Theater                    @Common: {Label: '{i18n>Theater}', };
     Circuit                    @Common: {
@@ -191,49 +198,83 @@ annotate service.DistRestrictions with {
         Text           : DistributionFilterLanguage.name,
         TextArrangement: #TextOnly,
     };
-    PlayBackCapability1         @Common: {Label: '{i18n>PlayBackCapability1}', };
-    PlayBackCapability2         @Common: {Label: '{i18n>PlayBackCapability2}', };
-    PlayBackCapability3         @Common: {Label: '{i18n>PlayBackCapability3}', };
-    PlayBackCapability4         @Common: {Label: '{i18n>PlayBackCapability4}', };
-    PlayBackCapability5         @Common: {Label: '{i18n>PlayBackCapability5}', };
-    PlayBackCapability6         @Common: {Label: '{i18n>PlayBackCapability6}', };
-    PlayBackCapability7         @Common: {Label: '{i18n>PlayBackCapability7}', };
-    PlayBackCapability8         @Common: {Label: '{i18n>PlayBackCapability8}', };
-    PlayBackCapability9         @Common: {Label: '{i18n>PlayBackCapability9}', };
-    PlayBackCapability10         @Common: {Label: '{i18n>PlayBackCapability10}', };
+    PlayBackCapability1        @Common: {Label: '{i18n>PlayBackCapability1}', };
+    PlayBackCapability2        @Common: {Label: '{i18n>PlayBackCapability2}', };
+    PlayBackCapability3        @Common: {Label: '{i18n>PlayBackCapability3}', };
+    PlayBackCapability4        @Common: {Label: '{i18n>PlayBackCapability4}', };
+    PlayBackCapability5        @Common: {Label: '{i18n>PlayBackCapability5}', };
+    PlayBackCapability6        @Common: {Label: '{i18n>PlayBackCapability6}', };
+    PlayBackCapability7        @Common: {Label: '{i18n>PlayBackCapability7}', };
+    PlayBackCapability8        @Common: {Label: '{i18n>PlayBackCapability8}', };
+    PlayBackCapability9        @Common: {Label: '{i18n>PlayBackCapability9}', };
+    PlayBackCapability10       @Common: {Label: '{i18n>PlayBackCapability10}', };
     TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
 };
 
+annotate service.KeyDistRestrictions with {
+    Theater                    @Common: {Label: '{i18n>Theater}', };
+    Circuit                    @Common: {
+        Label          : '{i18n>Circuit}',
+        Text           : Circuit.Name,
+        TextArrangement: #TextOnly,
+    };
+    DistributionFilterRegion   @Common: {
+        Label          : '{i18n>DistributionFilterRegion}',
+        Text           : DistributionFilterRegion.RegionName,
+        TextArrangement: #TextOnly,
+    };
+    DistributionFilterCountry  @Common: {
+        Label          : '{i18n>DistributionFilterCountry}',
+        Text           : DistributionFilterCountry.name,
+        TextArrangement: #TextOnly,
+    };
+    DistributionFilterCity     @Common: {Label: '{i18n>DistributionFilterCity}', };
+    DistributionFilterPostal   @Common: {Label: '{i18n>DistributionFilterPostal}', };
+    DistributionFilterLanguage @Common: {
+        Label          : '{i18n>Language}',
+        Text           : DistributionFilterLanguage.name,
+        TextArrangement: #TextOnly,
+    };
+    PlayBackCapability1        @Common: {Label: '{i18n>PlayBackCapability1}', };
+    PlayBackCapability2        @Common: {Label: '{i18n>PlayBackCapability2}', };
+    PlayBackCapability3        @Common: {Label: '{i18n>PlayBackCapability3}', };
+    PlayBackCapability4        @Common: {Label: '{i18n>PlayBackCapability4}', };
+    PlayBackCapability5        @Common: {Label: '{i18n>PlayBackCapability5}', };
+    PlayBackCapability6        @Common: {Label: '{i18n>PlayBackCapability6}', };
+    PlayBackCapability7        @Common: {Label: '{i18n>PlayBackCapability7}', };
+    PlayBackCapability8        @Common: {Label: '{i18n>PlayBackCapability8}', };
+    PlayBackCapability9        @Common: {Label: '{i18n>PlayBackCapability9}', };
+    PlayBackCapability10       @Common: {Label: '{i18n>PlayBackCapability10}', };
+    TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
+};
 
-annotate service.DCPMaterials with @(Common: {SideEffects: {
-    SourceProperties: [DCPMaterialNumber_Product],
-    TargetProperties: [
-        'CPLUUID',
-        'CTT'
-    ]
-}}) {
-    DCPMaterialNumber @Common: {
+annotate service.CPLDetail with {
+    CPLUUID @Common: {Label: '{i18n>CPL}'};
+};
+
+annotate service.DCPMaterials with {
+    DCPMaterialNumber        @Common: {
         Label: '{i18n>DCPMaterial}',
         Text : DCPMaterialNumber.Name,
     };
-    PublishDateOffset @Common: {Label: '{i18n>PublishDateOffset}', };
-    CTT               @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
-    CPLUUID           @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
-    RevealPublishGlobalDate;
-    RevealPublishGlobalTime;
-    RevealPublishLocalDate;
-    RevealPublishLocalTime;
-    SatelliteFlightStartDate;
-    SatelliteFlightStartTime;
-    SatelliteFlightEndDate;
-    SatelliteFlightEndTime;
+    PublishDateOffset        @Common: {Label: '{i18n>PublishDateOffset}', };
+    CTT                      @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
+    CPLUUID                  @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
+    RevealPublishGlobalDate  @Common: {Label: '{i18n>RevealPublishGlobalDate', };
+    RevealPublishGlobalTime  @Common: {Label: '{i18n>RevealPublishGlobalTime', };
+    RevealPublishLocalDate   @Common: {Label: '{i18n>RevealPublishLocalDate', };
+    RevealPublishLocalTime   @Common: {Label: '{i18n>RevealPublishLocalTime', };
+    SatelliteFlightStartDate @Common: {Label: '{i18n>SatelliteFlightStartDate', };
+    SatelliteFlightStartTime @Common: {Label: '{i18n>SatelliteFlightStartTime', };
+    SatelliteFlightEndDate   @Common: {Label: '{i18n>SatelliteFlightEndDate', };
+    SatelliteFlightEndTime   @Common: {Label: '{i18n>SatelliteFlightEndTime', };
 };
 
 annotate service.CplList with {
-    LinkedCTT@Common: {Label: '{i18n>CTT}'};
-    LinkedCPLUUID@Common: {Label: '{i18n>CPL}'};
-    Email@Common: {Label: '{i18n>Email}'};
-    Download@Common: {Label: '{i18n>Download}'};
+    LinkedCTT     @Common: {Label: '{i18n>CTT}'};
+    LinkedCPLUUID @Common: {Label: '{i18n>CPL}'};
+    Email         @Common: {Label: '{i18n>Email}'};
+    Download      @Common: {Label: '{i18n>Download}'};
 };
 
 annotate service.Studios with {
@@ -378,6 +419,12 @@ annotate service.DistroSpec with @(
             ID    : 'Package',
             Label : '{i18n>Package}',
             Target: 'to_Package/@UI.LineItem',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'KeyPackage',
+            Label : '{i18n>KeyPackage}',
+            Target: 'to_KeyPackage/@UI.LineItem',
         },
     ],
     UI.LineItem            : [
@@ -533,10 +580,6 @@ annotate service.Package with @(
                 $Type: 'UI.DataField',
                 Value: Priority,
             },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: ContentIndicator,
-        // },
         ],
     },
     UI.FieldGroup #_PackageValidityDate : {
@@ -660,8 +703,88 @@ annotate service.Package with @(
     ]
 );
 
+annotate service.KeyPackage with @(
+    UI.HeaderInfo                         : {
+        Title         : {
+            $Type: 'UI.DataField',
+            Value: PackageName,
+        },
+        TypeName      : '{i18n>KeyPackage}',
+        TypeNamePlural: '{i18n>KeyPackages}',
+    },
+    UI.FieldGroup #_KeyPackage            : {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: PackageName,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Priority,
+            },
+        ],
+    },
+    UI.FieldGroup #_KeyPackageValidityDate: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: ValidFrom,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ValidTo,
+            },
+        ],
+    },
+    UI.Facets                             : [
+        {
+            $Type : 'UI.CollectionFacet',
+            ID    : 'KeyPackageCollection',
+            Label : '{i18n>PackageInfo}',
+            Facets: [
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    ID    : '_KeyPackage',
+                    Label : '{i18n>GeneralInfo}',
+                    Target: '@UI.FieldGroup#_KeyPackage',
+                },
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    ID    : '_KeyPackageValidityDate',
+                    Label : '{i18n>PackageValidityDate}',
+                    Target: '@UI.FieldGroup#_KeyPackageValidityDate',
+                },
+            ],
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_KeyPackageFilter',
+            Label : '{i18n>DistRestriction}',
+            Target: 'to_DistRestriction/@UI.LineItem',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'CPLDetail',
+            Label : '{i18n>CPLDetail}',
+            Target: 'to_CPLDetail/@UI.LineItem',
+        },
+    ],
+    UI.LineItem                           : [
+        {
+            $Type: 'UI.DataField',
+            Value: PackageName,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Priority,
+        },
+    ]
+);
+
 annotate service.DistRestrictions with @(
-    UI.LineItem                    : [
+    UI.LineItem                         : [
         {
             $Type: 'UI.DataField',
             Value: DistributionFilterCountry_code,
@@ -691,10 +814,11 @@ annotate service.DistRestrictions with @(
             Value: DistributionFilterLanguage_code,
         },
     ],
-    UI.HeaderInfo                  : {
+    UI.HeaderInfo                       : {
         TypeName      : '{i18n>DistRestriction}',
         TypeNamePlural: '{i18n>DistRestrictions}',
-    },UI.FieldGroup #_PlayBackCapabilities: {
+    },
+    UI.FieldGroup #_PlayBackCapabilities: {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -736,8 +860,10 @@ annotate service.DistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: PlayBackCapability10,
-            },]},
-    UI.FieldGroup #_DistRestriction: {
+            },
+        ]
+    },
+    UI.FieldGroup #_DistRestriction     : {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -774,19 +900,154 @@ annotate service.DistRestrictions with @(
             },
         ]
     },
-    UI.Facets                      : [{
-        $Type : 'UI.ReferenceFacet',
-        ID    : '_DistRest',
-        Label : '{i18n>DistRestriction}',
-        Target: '@UI.FieldGroup#_DistRestriction',
-    },{
-        $Type : 'UI.ReferenceFacet',
-        ID    : '_DistRestPlay',
-        Label : '{i18n>PlayBackCapabilities}',
-        Target: '@UI.FieldGroup#_PlayBackCapabilities',
-    }, ],
+    UI.Facets                           : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_DistRest',
+            Label : '{i18n>DistRestriction}',
+            Target: '@UI.FieldGroup#_DistRestriction',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_DistRestPlay',
+            Label : '{i18n>PlayBackCapabilities}',
+            Target: '@UI.FieldGroup#_PlayBackCapabilities',
+        },
+    ],
 );
 
+annotate service.KeyDistRestrictions with @(
+    UI.LineItem                         : [
+        {
+            $Type: 'UI.DataField',
+            Value: DistributionFilterCountry_code,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: DistributionFilterRegion_Region,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: DistributionFilterCity,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: DistributionFilterPostal,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Circuit_CustomerGroup,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Theater_BusinessPartner,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: DistributionFilterLanguage_code,
+        },
+    ],
+    UI.HeaderInfo                       : {
+        TypeName      : '{i18n>DistRestriction}',
+        TypeNamePlural: '{i18n>DistRestrictions}',
+    },
+    UI.FieldGroup #_PlayBackCapabilities: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability1,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability2,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability3,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability4,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability5,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability6,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability7,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability8,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability9,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: PlayBackCapability10,
+            },
+        ]
+    },
+    UI.FieldGroup #_DistRestriction     : {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: DistributionFilterCountry_code,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DistributionFilterRegion_Region,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DistributionFilterCity,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DistributionFilterPostal,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Circuit_CustomerGroup,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Theater_BusinessPartner,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DistributionFilterLanguage_code,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: TrailMixSub,
+            },
+        ]
+    },
+    UI.Facets                           : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_KeyDistRest',
+            Label : '{i18n>DistRestriction}',
+            Target: '@UI.FieldGroup#_DistRestriction',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_KeyDistRestPlay',
+            Label : '{i18n>PlayBackCapabilities}',
+            Target: '@UI.FieldGroup#_PlayBackCapabilities',
+        },
+    ],
+);
 
 annotate service.DCPMaterials with @(
     UI.HeaderInfo              : {
@@ -850,11 +1111,14 @@ annotate service.DCPMaterials with @(
             Target: '@UI.FieldGroup#_DCPMaterial',
         },
         {
-            $Type : 'UI.ReferenceFacet',
-            ID    : 'DCPDetail',
-            Label : '{i18n>DCPDetail}',
-            ![@UI.Hidden] : {$edmJson : {$Ne : [{$Path : 'IsActiveEntity'}, true]}},
-            Target: 'to_DCPDetail/@UI.LineItem',
+            $Type        : 'UI.ReferenceFacet',
+            ID           : 'DCPDetail',
+            Label        : '{i18n>DCPDetail}',
+            ![@UI.Hidden]: {$edmJson: {$Ne: [
+                {$Path: 'IsActiveEntity'},
+                true
+            ]}},
+            Target       : 'to_DCPDetail/@UI.LineItem',
         },
     ],
     UI.LineItem                : [{
@@ -863,31 +1127,58 @@ annotate service.DCPMaterials with @(
     }, ]
 );
 
-annotate service.CplList with @(
-    UI.LineItem              : [
-        {
-            $Type : 'UI.DataFieldForAction',
-            Action : 'DistributionService.setDownloadEmail',
-            Label : 'Set Download/Email'
-        },        
-        {
+annotate service.CPLDetail with @(
+    UI.HeaderInfo            : {
+        Title         : {
             $Type: 'UI.DataField',
-            Value: LinkedCPLUUID,
+            Value: CPLUUID,
         },
-        {
+        TypeName      : '{i18n>CPLDetail}',
+        TypeNamePlural: '{i18n>CPLDetails}',
+    },
+    UI.FieldGroup #_CPLDetail: {
+        $Type: 'UI.FieldGroupType',
+        Data : [{
             $Type: 'UI.DataField',
-            Value: LinkedCTT,
-        },
-            {
-                $Type: 'UI.DataField',
-                Value: Download,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Email,
-            },
-    ]
+            Value: CPLUUID,
+        }, ]
+    },
+    UI.Facets                : [{
+        $Type : 'UI.ReferenceFacet',
+        ID    : '_CPLDetail',
+        Label : '{i18n>CPLDetail}',
+        Target: '@UI.FieldGroup#_CPLDetail',
+    }, ],
+    UI.LineItem              : [{
+        $Type: 'UI.DataField',
+        Value: CPLUUID,
+    }, ]
 );
+
+
+annotate service.CplList with @(UI.LineItem: [
+    {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'DistributionService.setDownloadEmail',
+        Label : 'Set Download/Email'
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: LinkedCPLUUID,
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: LinkedCTT,
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: Download,
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: Email,
+    },
+]);
 
 annotate service.StudioKey with {
     Studio         @(
@@ -1398,153 +1689,328 @@ annotate service.DistRestrictions with {
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability1                  @(
+    PlayBackCapability1      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability1',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability1,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability1,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability2                  @(
+    PlayBackCapability2      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability2',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability2,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability2,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability3                  @(
+    PlayBackCapability3      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability3',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability3,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability3,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability4                  @(
+    PlayBackCapability4      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability4',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability4,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability4,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability5                  @(
+    PlayBackCapability5      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability5',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability5,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability5,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability6                  @(
+    PlayBackCapability6      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability6',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability6,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability6,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability7                  @(
+    PlayBackCapability7      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability7',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability7,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability7,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability8                  @(
+    PlayBackCapability8      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability8',
             SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability8,
-                    ValueListProperty: 'VariableValue',
-                },
-            ],
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability8,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability9                  @(
+    PlayBackCapability9      @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability9',
             SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability9,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability10     @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability10',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability10,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+};
+
+annotate service.KeyDistRestrictions with {
+    DistributionFilterRegion @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Regions',
+            SearchSupported: false,
             Parameters     : [
                 {
+                    $Type            : 'Common.ValueListParameterIn',
+                    LocalDataProperty: DistributionFilterCountry_code,
+                    ValueListProperty: 'Country',
+                },
+                {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability9,
-                    ValueListProperty: 'VariableValue',
+                    LocalDataProperty: DistributionFilterRegion_Region,
+                    ValueListProperty: 'Region',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'RegionName',
                 },
             ],
         },
         Common.ValueListWithFixedValues: false
     );
-    PlayBackCapability10                  @(
+    Theater                  @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'PlayBackCapability10',
+            CollectionPath : 'Theaters',
             SearchSupported: false,
             Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: PlayBackCapability10,
-                    ValueListProperty: 'VariableValue',
+                    LocalDataProperty: Theater_BusinessPartner,
+                    ValueListProperty: 'BusinessPartner',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'BusinessPartnerFullName',
                 },
             ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    Circuit                  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'CustomerGroup',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Circuit_CustomerGroup,
+                    ValueListProperty: 'CustomerGroup',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability1      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability1',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability1,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability2      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability2',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability2,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability3      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability3',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability3,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability4      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability4',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability4,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability5      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability5',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability5,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability6      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability6',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability6,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability7      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability7',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability7,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability8      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability8',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability8,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability9      @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability9',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability9,
+                ValueListProperty: 'VariableValue',
+            }, ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    PlayBackCapability10     @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'PlayBackCapability10',
+            SearchSupported: false,
+            Parameters     : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: PlayBackCapability10,
+                ValueListProperty: 'VariableValue',
+            }, ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1565,6 +2031,28 @@ annotate service.DCPMaterials with {
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty: 'Name',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+};
+
+annotate service.CPLDetail with {
+    CPLUUID @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'CplList',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: CPLUUID,
+                    ValueListProperty: 'LinkedCPLUUID',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'DCP',
                 },
             ],
         },
