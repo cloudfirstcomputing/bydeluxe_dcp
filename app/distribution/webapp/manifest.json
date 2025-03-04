@@ -212,7 +212,21 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/DistroSpec/to_Package/to_DCPMaterial"
+              "contextPath": "/DistroSpec/to_Package/to_DCPMaterial",
+              "content": {
+                "body": {
+                  "sections": {
+                    "Dcpcpl": {
+                      "template": "com.dlx.distribution.ext.fragment.Dcpcpl",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "_DCPMaterial"
+                      },
+                      "title": "CPL"
+                    }
+                  }
+                }
+              }
             }
           }
         },

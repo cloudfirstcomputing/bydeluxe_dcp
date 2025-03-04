@@ -294,8 +294,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         })
 
-        this.on(['CREATE', 'UPDATE'], `DCPMaterials`, async req => {
-            debugger
+        this.after('each', `DCPMaterials`, async req => {
             if (req.DCPMaterialNumber_Product) {
                 const assetvault = await SELECT.one.from(DistributionDcp)
                     .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
@@ -309,33 +308,27 @@ module.exports = class DistributionService extends cds.ApplicationService {
             }
         })
 
-        // this.after('each', `DCPMaterials`, async req => {
-        //     if (req.DCPMaterialNumber_Product) {
-        //         const assetvault = await SELECT.one.from(DistributionDcp)
-        //             .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
-        //             .where({
-        //                 DCP: req.DCPMaterialNumber_Product
-        //             })
-        //         // req.EDeliveryDate = assetvault?.EDeliveryDate
-        //         // req.EDeliveryTime = assetvault?.EDeliveryDate
-        //         // req.SatelliteFDate = assetvault?.SatelliteFlightDate
-        //         // req.SatelliteFTime = assetvault?.SatelliteFlightTime
-        //         if (assetvault?._Items?.length > 0) {
-        //             req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
-        //             req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
-        //         }
-        //     }
-        // })
+        this.on('setDownloadEmail', async req => {
+            const { DCPMaterialUUID } = req.params[2]
+            const material = await SELECT.one.from('DistributionService.DCPMaterials').where({ DCPMaterialUUID: DCPMaterialUUID })
+            const assetvault = await SELECT.one.from(DistributionDcp)
+                .columns(["*"])
+                .where({
+                    DCP: material.DCPMaterialNumber_Product
+                })
+            if (assetvault) {
+                await UPDATE('DistributionService.DistributionDcp__Items').with({
+                    Email: req.data.email,
+                    Download: req.data.download
+                }).where({ up__ProjectID: assetvault.ProjectID, LinkedCPLUUID: req.data.cpl })
+            }
+        })
 
         this.before('NEW', `Package.drafts`, req => {
             req.data.ValidFrom = today()
         })
 
-        this.on(['CREATE', 'UPDATE'], Products, req => {
-            return pdtx.run(req.query)
-        })
-
-        this.on(['READ'], Products, req => {
+        this.on(['READ', 'CREATE', 'UPDATE'], Products, req => {
             return pdtx.run(req.query)
         })
 

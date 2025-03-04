@@ -148,10 +148,10 @@ service BookingOrderService {
     entity AddressTypes as projection on db.AddressType;
 
 
-    entity PackageTypes as projection on db.PackageType
+    entity PackageTypes as projection on db.PackageType;
 
 
-    entity CompositionTypes as projection on db.CompositionType 
+    entity CompositionTypes as projection on db.CompositionType ;
 
 
     entity VendorTypes as projection on db.VendorType;

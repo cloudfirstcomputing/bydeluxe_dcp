@@ -220,11 +220,11 @@ annotate service.DCPMaterials with @(Common: {SideEffects: {
     SatelliteFlightEndTime;
 };
 
-annotate service.DCPDetail with {
-    CTT;
-    CPLUUID;
-    IsEmail;
-    IsDownload;
+annotate service.CplList with {
+    LinkedCTT@Common: {Label: '{i18n>CTT}'};
+    LinkedCPLUUID@Common: {Label: '{i18n>CPL}'};
+    Email@Common: {Label: '{i18n>Email}'};
+    Download@Common: {Label: '{i18n>Download}'};
 };
 
 annotate service.Studios with {
@@ -757,6 +757,11 @@ annotate service.DCPMaterials with @(
         $Type: 'UI.FieldGroupType',
         Data : [
             {
+                $Type : 'UI.DataFieldForAction',
+                Action : 'DistributionService.setDownloadEmail',
+                Label: 'Email/Download'
+            },
+            {
                 $Type: 'UI.DataField',
                 Value: DCPMaterialNumber_Product,
             },
@@ -817,7 +822,7 @@ annotate service.DCPMaterials with @(
             $Type : 'UI.ReferenceFacet',
             ID    : 'DCPDetail',
             Label : '{i18n>DCPMaterial}',
-            Target: 'to_DCPDetail/@UI.LineItem',
+            Target: 'to_DCPDetail1/@UI.LineItem',
         },
     ],
     UI.LineItem                : [{
@@ -826,51 +831,51 @@ annotate service.DCPMaterials with @(
     }, ]
 );
 
-annotate service.DCPDetail with @(
-    // UI.HeaderInfo              : {
-    //     Title         : {
-    //         $Type: 'UI.DataField',
-    //         Value: DCPMaterialNumber_Product,
-    //     },
-    //     TypeName      : '{i18n>DCPMaterial}',
-    //     TypeNamePlural: '{i18n>DCPMaterials}',
+annotate service.CplList with @(
+    // UI.FieldGroup #_DCPDetail: {
+    //     $Type: 'UI.FieldGroupType',
+    //     Data : [
+    //         {
+    //             $Type: 'UI.DataField',
+    //             Value: CPLUUID,
+    //         },
+    //         {
+    //             $Type: 'UI.DataField',
+    //             Value: CTT,
+    //         },
+    //         {
+    //             $Type: 'UI.DataField',
+    //             Value: IsDownload,
+    //         },
+    //         {
+    //             $Type: 'UI.DataField',
+    //             Value: IsEmail,
+    //         },
+    //     ]
     // },
-    UI.FieldGroup #_DCPDetail: {
-        $Type: 'UI.FieldGroupType',
-        Data : [
-            {
-                $Type: 'UI.DataField',
-                Value: CPLUUID,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: CTT,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: IsDownload,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: IsEmail,
-            },
-        ]
-    },
-    UI.Facets                : [{
-        $Type : 'UI.ReferenceFacet',
-        ID    : '_DCPDet',
-        Label : '{i18n>DCPMaterial}',
-        Target: '@UI.FieldGroup#_DCPDetail',
-    }, ],
+    // UI.Facets                : [{
+    //     $Type : 'UI.ReferenceFacet',
+    //     ID    : '_DCPDet',
+    //     Label : '{i18n>DCPMaterial}',
+    //     Target: '@UI.FieldGroup#_DCPDetail',
+    // }, ],
     UI.LineItem              : [
         {
             $Type: 'UI.DataField',
-            Value: CTT,
+            Value: LinkedCPLUUID,
         },
         {
             $Type: 'UI.DataField',
-            Value: CPLUUID,
+            Value: LinkedCTT,
         },
+            {
+                $Type: 'UI.DataField',
+                Value: Download,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Email,
+            },
     ]
 );
 

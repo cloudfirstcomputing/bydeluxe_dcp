@@ -14,6 +14,18 @@ service DistributionService @(requires: 'authenticated-user') {
                                    where
                                        CreatedinSAP = false;
 
+    entity CplList              as
+        select from av.DistributionDcp._Items as a
+        inner join av.DistributionDcp as b
+            on a.up_.ProjectID = b.ProjectID
+        {
+            key DCP,
+            key a.LinkedCPLUUID,
+            a.LinkedCTT,
+            a.Download,
+            a.Email
+        };
+
     @readonly
     entity CustomerGroup        as projection on api.CustomerGroup;
 
@@ -60,6 +72,11 @@ service DistributionService @(requires: 'authenticated-user') {
 
     entity DistroSpec           as projection on db.DistroSpec;
 
+    entity DCPMaterials         as projection on db.DCPMaterials
+        actions {
+            action setDownloadEmail(cpl : String(40), download : Boolean, email : Boolean);
+        };
+
     entity DCPMaterialConfig    as projection on db.DCPMaterialConfig
                                    where
                                        createdBy = $user.id
@@ -69,6 +86,10 @@ service DistributionService @(requires: 'authenticated-user') {
 
     annotate DistroSpec with @odata.draft.enabled;
     annotate DCPMaterialConfig with @odata.draft.enabled;
+
+    extend projection DCPMaterials with {
+        to_DCPDetail1 : Association to many CplList on DCPMaterialNumber.Product = to_DCPDetail1.DCP
+    }
 
     extend projection CustomerGroup with {
         virtual null as Name : String
