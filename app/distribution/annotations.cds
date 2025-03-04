@@ -210,10 +210,21 @@ annotate service.DCPMaterials with @(Common: {SideEffects: {
     PublishDateOffset @Common: {Label: '{i18n>PublishDateOffset}', };
     CTT               @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
     CPLUUID           @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
-    EDeliveryDate     @Common: {Label: '{i18n>EDeliveryDate}', };
-    EDeliveryTime     @Common: {Label: '{i18n>EDeliveryTime}', };
-    SatelliteFDate    @Common: {Label: '{i18n>SatelliteFDate}', };
-    SatelliteFTime    @Common: {Label: '{i18n>SatelliteFTime}', };
+    RevealPublishGlobalDate;
+    RevealPublishGlobalTime;
+    RevealPublishLocalDate;
+    RevealPublishLocalTime;
+    SatelliteFlightStartDate;
+    SatelliteFlightStartTime;
+    SatelliteFlightEndDate;
+    SatelliteFlightEndTime;
+};
+
+annotate service.DCPDetail with {
+    CTT;
+    CPLUUID;
+    IsEmail;
+    IsDownload;
 };
 
 annotate service.Studios with {
@@ -763,32 +774,104 @@ annotate service.DCPMaterials with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: EDeliveryDate,
+                Value: RevealPublishGlobalDate,
             },
             {
                 $Type: 'UI.DataField',
-                Value: EDeliveryTime,
+                Value: RevealPublishGlobalTime,
             },
             {
                 $Type: 'UI.DataField',
-                Value: SatelliteFDate,
+                Value: RevealPublishLocalDate,
             },
             {
                 $Type: 'UI.DataField',
-                Value: SatelliteFTime,
+                Value: RevealPublishLocalTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFlightStartDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFlightStartTime,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFlightEndDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: SatelliteFlightEndTime,
             },
         ]
     },
-    UI.Facets                  : [{
-        $Type : 'UI.ReferenceFacet',
-        ID    : '_DCPMaterial',
-        Label : '{i18n>DCPMaterial}',
-        Target: '@UI.FieldGroup#_DCPMaterial',
-    }, ],
+    UI.Facets                  : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : '_DCPMaterial',
+            Label : '{i18n>DCPMaterial}',
+            Target: '@UI.FieldGroup#_DCPMaterial',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'DCPDetail',
+            Label : '{i18n>DCPMaterial}',
+            Target: 'to_DCPDetail/@UI.LineItem',
+        },
+    ],
     UI.LineItem                : [{
         $Type: 'UI.DataField',
         Value: DCPMaterialNumber_Product,
     }, ]
+);
+
+annotate service.DCPDetail with @(
+    // UI.HeaderInfo              : {
+    //     Title         : {
+    //         $Type: 'UI.DataField',
+    //         Value: DCPMaterialNumber_Product,
+    //     },
+    //     TypeName      : '{i18n>DCPMaterial}',
+    //     TypeNamePlural: '{i18n>DCPMaterials}',
+    // },
+    UI.FieldGroup #_DCPDetail: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: CPLUUID,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: CTT,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: IsDownload,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: IsEmail,
+            },
+        ]
+    },
+    UI.Facets                : [{
+        $Type : 'UI.ReferenceFacet',
+        ID    : '_DCPDet',
+        Label : '{i18n>DCPMaterial}',
+        Target: '@UI.FieldGroup#_DCPDetail',
+    }, ],
+    UI.LineItem              : [
+        {
+            $Type: 'UI.DataField',
+            Value: CTT,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: CPLUUID,
+        },
+    ]
 );
 
 annotate service.StudioKey with {

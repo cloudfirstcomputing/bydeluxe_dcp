@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, Regions, Plants, AssetVault, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
+        const { DistroSpec, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
             StorageLocations, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
@@ -294,23 +294,38 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         })
 
-        this.after('each', `DCPMaterials`, async req => {
+        this.on(['CREATE', 'UPDATE'], `DCPMaterials`, async req => {
+            debugger
             if (req.DCPMaterialNumber_Product) {
-                const assetvault = await SELECT.one.from(AssetVault)
+                const assetvault = await SELECT.one.from(DistributionDcp)
                     .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
                     .where({
                         DCP: req.DCPMaterialNumber_Product
                     })
-                // req.EDeliveryDate = assetvault?.EDeliveryDate
-                // req.EDeliveryTime = assetvault?.EDeliveryDate
-                // req.SatelliteFDate = assetvault?.SatelliteFlightDate
-                // req.SatelliteFTime = assetvault?.SatelliteFlightTime
                 if (assetvault?._Items?.length > 0) {
                     req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
                     req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
                 }
             }
         })
+
+        // this.after('each', `DCPMaterials`, async req => {
+        //     if (req.DCPMaterialNumber_Product) {
+        //         const assetvault = await SELECT.one.from(DistributionDcp)
+        //             .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+        //             .where({
+        //                 DCP: req.DCPMaterialNumber_Product
+        //             })
+        //         // req.EDeliveryDate = assetvault?.EDeliveryDate
+        //         // req.EDeliveryTime = assetvault?.EDeliveryDate
+        //         // req.SatelliteFDate = assetvault?.SatelliteFlightDate
+        //         // req.SatelliteFTime = assetvault?.SatelliteFlightTime
+        //         if (assetvault?._Items?.length > 0) {
+        //             req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+        //             req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
+        //         }
+        //     }
+        // })
 
         this.before('NEW', `Package.drafts`, req => {
             req.data.ValidFrom = today()
@@ -411,7 +426,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             const to_Plant = []
             const to_SalesDelivery = []
             const to_Valuation = []
-            const assetvault = await SELECT.one.from(AssetVault, material.AssetVaultID_AssetVaultID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+            const assetvault = await SELECT.one.from(DistributionDcp, material.ProjectID_ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
             if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
             try {
                 for (let j = 0; j < material.to_Plant.length; j++) {
@@ -494,7 +509,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         "StorageConditions": "10"
                     },
                 }))
-                await UPDATE(AssetVault, assetvault.AssetVaultID).with({
+                await UPDATE(DistributionDcp, assetvault.ProjectID).with({
                     DCP: ins.Product,
                     CreatedinSAP: true
                 })

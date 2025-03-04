@@ -3,13 +3,13 @@
         "name": "DELUXE_EXTERNAL_ACCESS",
         "object_privileges": [
             { 
-                "name":"DELUXE_ASSETVAULT_ASSETVAULT", 
+                "name":"DELUXE_ASSETVAULT_DISTRIBUTIONDCP", 
                 "type":"TABLE", 
                 "privileges":[ "SELECT" ], 
                 "privileges_with_grant_option":[] 
             },
             { 
-                "name":"DELUXE_ASSETVAULT_ASSETVAULT__ITEMS", 
+                "name":"DELUXE_ASSETVAULT_DISTRIBUTIONDCP__ITEMS", 
                 "type":"TABLE", 
                 "privileges":[ "SELECT" ], 
                 "privileges_with_grant_option":[] 

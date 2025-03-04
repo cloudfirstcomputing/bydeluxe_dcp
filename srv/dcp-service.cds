@@ -2,7 +2,7 @@ using dcp.db as db from '../db/dcp';
 using {API_SALES_ORDER_SRV as S4_SalesOrder} from './external/API_SALES_ORDER_SRV';
 using {API_BUSINESS_PARTNER as S4_BuisnessPartner} from './external/API_BUSINESS_PARTNER';
 using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
-using {AssetVaultService.AssetVault as AssetVault} from './asset-vault';
+using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
 using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
 using api from '../db/common';
 

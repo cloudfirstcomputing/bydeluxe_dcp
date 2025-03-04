@@ -109,30 +109,51 @@ entity DistRestrictions : cuid {
     DistributionFilterPostal   : String;
     DistributionFilterLanguage : Language;
     PlayBackCapability         : String(2);
-    TrailMixSub                : Boolean;
+    TrailMixSub                : String(1) enum {
+        Monthly = 'M';
+        Weekly  = 'W';
+        NA      = '0';
+    };
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
 };
 
 entity DCPMaterials {
-    key DCPMaterialUUID   : UUID;
-        DCPMaterialNumber : Association to one DCPMaterialVH @mandatory;
-        PublishDateOffset : Integer                          @assert.range: [
+    key DCPMaterialUUID          : UUID;
+        DCPMaterialNumber        : Association to one DCPMaterialVH @mandatory;
+        PublishDateOffset        : Integer                          @assert.range: [
             0,
             999
         ];
-        virtual CTT       : String;
-        virtual CPLUUID   : String;
-        EDeliveryDate     : String;
-        EDeliveryTime     : String;
-        SatelliteFDate    : String;
-        SatelliteFTime    : String;
-        to_Package        : Association to Package;
-        to_DistroSpec     : Association to DistroSpec;
+        virtual CTT              : String;
+        virtual CPLUUID          : String;
+        RevealPublishGlobalDate  : Date;
+        RevealPublishGlobalTime  : Time;
+        RevealPublishLocalDate   : Date;
+        RevealPublishLocalTime   : Time;
+        SatelliteFlightStartDate : Date;
+        SatelliteFlightStartTime : Time;
+        SatelliteFlightEndDate   : Date;
+        SatelliteFlightEndTime   : Time;
+        to_DCPDetail             : Composition of many DCPDetail
+                                       on to_DCPDetail.to_DCPMaterial = $self;
+        to_Package               : Association to Package;
+        to_DistroSpec            : Association to DistroSpec;
+}
+
+entity DCPDetail {
+    key DCPDetailUUID  : UUID;
+        CTT            : String(40);
+        CPLUUID        : String(40);
+        IsEmail        : Boolean;
+        IsDownload     : Boolean;
+        to_DCPMaterial : Association to DCPMaterials;
+        to_Package     : Association to Package;
+        to_DistroSpec  : Association to DistroSpec;
 }
 
 entity DCPMaterialConfig : cuid, managed {
-    AssetVaultID     : Association to one av.AssetVault @mandatory;
+    ProjectID     : Association to one av.DistributionDcp @mandatory;
     to_SalesDelivery : Composition of many {
                            key ProductSalesOrg         : Association to one api.SalesOrganizations   @mandatory;
                            key ProductDistributionChnl : Association to one api.DistributionChannels @mandatory;

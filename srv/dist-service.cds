@@ -8,9 +8,9 @@ service DistributionService @(requires: 'authenticated-user') {
         Insertable: false
     }
     @cds.redirection.target
-    entity AssetVault           as projection on av.AssetVault;
+    entity DistributionDcp      as projection on av.DistributionDcp;
 
-    entity AssetVaultVH         as projection on av.AssetVault
+    entity DistributionDcpVH    as projection on av.DistributionDcp
                                    where
                                        CreatedinSAP = false;
 

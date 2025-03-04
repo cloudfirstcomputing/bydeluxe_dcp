@@ -1,7 +1,7 @@
 using AssetVaultService as service from '../../srv/asset-vault';
 
-annotate service.AssetVault with {
-    AssetVaultID                   @Common: {Label: '{i18n>DistPrjID}', };
+annotate service.DistributionDcp with {
+    ProjectID                      @Common: {Label: '{i18n>DistPrjID}', };
     AssetMapID                     @Common: {Label: '{i18n>AssetMapID}', };
     AssetMapIDDescription          @Common: {Label: '{i18n>AssetMapIDDescription}', };
     AnnotationText                 @Common: {Label: '{i18n>AnnotationText}', };
@@ -34,13 +34,9 @@ annotate service.AssetVault with {
     AudioFormats                   @Common: {Label: '{i18n>AudioFormats}', };
     SatelliteDistributionStartDate @Common: {Label: '{i18n>SatelliteDistributionStartDate}', };
     SatelliteDistributionEndDate   @Common: {Label: '{i18n>SatelliteDistributionEndDate}', };
-    KDMFlag                        @Common: {Label: '{i18n>KDMFlag}', };
-    Email                          @Common: {Label: '{i18n>Email}', };
-    Download                       @Common: {Label: '{i18n>Download}', };
-    IngestLetter                   @Common: {Label: '{i18n>IngestLetter}', };
 };
 
-annotate service.AssetVault._Items with {
+annotate service.DistributionDcp._Items with {
     LinkedDCP             @Common: {Label: '{i18n>LinkedDCP}', };
     LinkedCPLUUID         @Common: {Label: '{i18n>LinkedCPLUUID}', };
     LinkedCTT             @Common: {Label: '{i18n>LinkedCTT}', };
@@ -64,15 +60,19 @@ annotate service.AssetVault._Items with {
     DcpResolution         @Common: {Label: '{i18n>DcpResolution}', };
     AspectRatio           @Common: {Label: '{i18n>AspectRatio}', };
     PictureFormat         @Common: {Label: '{i18n>PictureFormat}', };
+    KDMFlag               @Common: {Label: '{i18n>KDMFlag}', };
+    Email                 @Common: {Label: '{i18n>Email}', };
+    Download              @Common: {Label: '{i18n>Download}', };
+
 };
 
-annotate service.AssetVault with @(
+annotate service.DistributionDcp with @(
     UI.DeleteHidden              : true,
     UI.CreateHidden              : true,
     UI.UpdateHidden              : true,
     UI.HeaderInfo                : {
-        TypeName      : '{i18n>AssetVault}',
-        TypeNamePlural: '{i18n>AssetVaults}',
+        TypeName      : '{i18n>DistributionDcp}',
+        TypeNamePlural: '{i18n>DistributionDcp}',
         Title         : {
             $Type: 'UI.DataField',
             Value: AssetMapID,
@@ -87,7 +87,7 @@ annotate service.AssetVault with @(
         Data : [
             {
                 $Type: 'UI.DataField',
-                Value: AssetVaultID,
+                Value: ProjectID,
             },
             {
                 $Type: 'UI.DataField',
@@ -217,22 +217,6 @@ annotate service.AssetVault with @(
                 $Type: 'UI.DataField',
                 Value: SatelliteDistributionEndDate,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: KDMFlag,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Email,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: Download,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: IngestLetter,
-            },
         ],
     },
     UI.Facets                    : [
@@ -252,7 +236,7 @@ annotate service.AssetVault with @(
     UI.LineItem                  : [
         {
             $Type: 'UI.DataField',
-            Value: AssetVaultID,
+            Value: ProjectID,
         },
         {
             $Type: 'UI.DataField',
@@ -273,7 +257,7 @@ annotate service.AssetVault with @(
     ],
 );
 
-annotate service.AssetVault._Items with @(
+annotate service.DistributionDcp._Items with @(
     UI.LineItem          : [
         {
             $Type                : 'UI.DataField',
@@ -396,6 +380,18 @@ annotate service.AssetVault._Items with @(
             {
                 $Type: 'UI.DataField',
                 Value: DcpFormatType,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: KDMFlag,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Email,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Download,
             },
         ],
     }
