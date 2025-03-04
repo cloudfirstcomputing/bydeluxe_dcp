@@ -1,4 +1,10 @@
 const cds = require("@sap/cds");
+const XLSX = require("xlsx")
+const { TextBundle } = require('@sap/textbundle');
+// const { postMaterialDoc } = require('../../barcodescanner/srv/utils/handler');
+const bundle = new TextBundle('_i18n/i18n', 'en_EN')
+const { or, and } = require('@sap-cloud-sdk/odata-v2');
+
 const { v4: uuidv4 } = require('uuid'); // Import UUID package
 const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
@@ -29,8 +35,72 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aResult = await createBookingFeed(req, "K");
             return aResult;
         });
-        const createBookingFeed = async (req, sContentIndicator) => {
-            let data = req?.data?.Records;
+
+        this.on('MassUploadBookingFeed', async (req) => {
+            let excelData = {}
+            let uploadedData = []
+            let errorData = []
+            let aBookingFeeds = [];
+
+            let workbook = XLSX.read(req.data.fileData, {
+                type: 'binary'
+            })
+
+            workbook.SheetNames.forEach(sheetName => {
+                excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
+            })
+            if (req.data.fieldNames.length === 0) req.reject(400, 'reqfieldNames')
+            if (excelData.length === 0) req.reject(400, 'emptySheet')
+            try {
+                for (let index = 0; index < excelData.length; index++) {
+                    let object = excelData[index]
+                    let row = object.__rowNum__ + 1
+                    let element = {}
+                    let error = {}
+                    error.RowNumber = row.toString()
+                    // error.ID = id
+                    for (const property in object) {
+                        const fieldName = req.data.fieldNames.find(item => {
+                            return item.excelColumn === property
+                        })
+                        if (!fieldName) req.reject(400, 'invalidSheet')
+                        if (fieldName.technicalName) {
+                            element[fieldName.technicalName] = object[property]
+                        }
+                    }
+                    if (!element.hasOwnProperty('ApplicationID')) {
+                        error.Message = bundle.getText(`reqField`, ['Application ID'])
+                        // _fillData(errorData, error)
+                    } 
+                    else if (!element.hasOwnProperty('BookingID')) {
+                        error.Message = bundle.getText(`reqField`, ['Booking ID'])
+                        // _fillData(errorData, error)
+                    }  
+                    else if (!element.hasOwnProperty('Key_Content')) {
+                        error.Message = bundle.getText(`reqField`, ['Key_Content'])
+                        // _fillData(errorData, error)
+                    } else {
+                        aBookingFeeds.push(element)
+                    }
+                    if (!error.Message) {
+                        // _fillData(uploadedData, element)
+                    }
+                }
+                if(aBookingFeeds){
+                    await createBookingFeed(req, "C", aBookingFeeds);
+                }
+            } catch (error) {
+                return req.reject(400, error)
+            }
+        });        
+        const createBookingFeed = async (req, sContentIndicator, aData) => {
+            if(aData){
+                var data = aData;
+            }
+            else{
+                data = req?.data?.Records;
+            }
+            
             let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
             hanatable = sContentIndicator === "C" ? dcpcontent : dcpkey;
 
@@ -126,7 +196,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.error(502, uuid + "  " + e)
             }
         });
-
         this.on("createDisneyOFEKey", async (req, res) => {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
@@ -851,7 +920,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("test", async (req, res) => {
 
         });
-
         this.on("READ", S4H_SOHeader, async (req, res) => {
             // await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
 
@@ -890,10 +958,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     // console.log("Test");
             //     return aSalesArea;
         });
-
-
-
-
         return super.init();
     }
 

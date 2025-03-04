@@ -17,6 +17,7 @@ service BookingOrderService {
     action postKeyToSAP(bookingIDs : array of String)                                                                                             returns String;
     action remediateContentSalesOrder(oInput: RemediateType) returns String;
     action remediateKeySalesOrder(oInput: RemediateType) returns String;
+    action MassUploadBookingFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
     // action remediateContentSalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String) returns String;
     // action remediateKeySalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String)     returns String;
     // action reconcileKey(bookingIDs: array of  String) returns String;
@@ -31,7 +32,14 @@ service BookingOrderService {
         VariableName,
         VariableValue
     };
-
+    type FieldMap           : many {
+        technicalName : String;
+        excelColumn   : String;
+    };
+    type UploadResponse     : {
+        acknowledgement : String;
+        recordsUpdate   : Integer;
+    };
     @readonly
     entity S4_Plants             as projection on api.Plants;
 

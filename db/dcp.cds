@@ -39,11 +39,30 @@ entity dcpcontent : managed {
         PackageName         : String not null              @mandatory;
         UUID                : String(40) not null;
         Territory           : String(2) not null           @mandatory;
+
+
+        //Key Specific
+        BookingUpdater      : String(10) not null          @mandatory;
+        CountryCode         : String(2) not null           @mandatory;
+        ScreenID            : String(1) not null           @mandatory;
+        SingleScreen        : String not null              @mandatory;
+        StartDate           : Date not null                @mandatory;
+        StartTime           : Time not null                @mandatory;
+        EndDate             : Date not null                @mandatory;
+        EndTime             : Time not null                @mandatory;
+        DeliveryOnDate      : Date not null                @mandatory;
+        ApprovedScreensList : String not null              @mandatory;
+        ReleaseName         : String(40) not null          @mandatory;
+        ReleaseShortName    : String(2) not null           @mandatory;
+        ReleaseNameHO       : String(40) not null          @mandatory;
+        ReleaseTitleHO      : String(40);
+
+        //Common custom fields
         Status              : Association to BookingStatus @mandatory;
         SalesOrder          : String                       @readonly;
         ErrorMessage        : String                       @readonly;
         ReferenceSDDocument : String                       @readonly;
-        Warnings            : String
+        Warnings            : String        
 }
 
 entity dcpkey : managed {
