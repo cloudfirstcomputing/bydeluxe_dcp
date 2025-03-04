@@ -13,6 +13,7 @@ using {API_SALES_ORDER_V2_SRV as salesorderv2} from '../srv/external/API_SALES_O
 using {API_SALESDISTRICT_SRV as salesdist} from '../srv/external/API_SALESDISTRICT_SRV';
 using {YY1_I_SHIPPINGPOINT_CDS_0001 as S4_ShippingPoint} from '../srv/external/YY1_I_SHIPPINGPOINT_CDS_0001';
 using {YY1_I_SHIPPINGTYPE_CDS_0001 as S4_ShippingType} from '../srv/external/YY1_I_SHIPPINGTYPE_CDS_0001';
+using {YY1_PARAMETER_CDS_0001 as Parameter} from '../srv/external/YY1_PARAMETER_CDS_0001';
 
 context api {
 
@@ -37,6 +38,7 @@ context api {
     entity SalesOrderHeader     as projection on salesorderv2.A_SalesOrder;
     entity SalesDistricts       as projection on salesdist.A_SalesDistrict;
     entity SalesOrderItem       as projection on salesorderv2.A_SalesOrderItem;
-    entity ShippingType_VH as projection on S4_ShippingType.YY1_I_ShippingType;
-    entity ShippingPoint_VH as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
+    entity ShippingType_VH      as projection on S4_ShippingType.YY1_I_ShippingType;
+    entity ShippingPoint_VH     as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
+    entity Parameters           as projection on Parameter.YY1_PARAMETER;
 }

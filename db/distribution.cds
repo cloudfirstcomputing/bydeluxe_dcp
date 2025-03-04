@@ -108,11 +108,25 @@ entity DistRestrictions : cuid {
     DistributionFilterCity     : String;
     DistributionFilterPostal   : String;
     DistributionFilterLanguage : Language;
-    PlayBackCapability         : String(2);
+    PlayBackCapability1         : String(40);
+    PlayBackCapability2         : String(40);
+    PlayBackCapability3         : String(40);
+    PlayBackCapability4         : String(40);
+    PlayBackCapability5         : String(40);
+    PlayBackCapability6         : String(40);
+    PlayBackCapability7         : String(40);
+    PlayBackCapability8         : String(40);
+    PlayBackCapability9         : String(40);
+    PlayBackCapability10         : String(40);
     TrailMixSub                : String(1) enum {
         Monthly = 'M';
         Weekly  = 'W';
         NA      = '0';
+    };
+    OrderType : String(1) enum {
+        Content = 'C';
+        Keys = 'K';
+        Both = 'B';
     };
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
@@ -135,23 +149,9 @@ entity DCPMaterials {
         SatelliteFlightStartTime : Time;
         SatelliteFlightEndDate   : Date;
         SatelliteFlightEndTime   : Time;
-        to_DCPDetail             : Composition of many DCPDetail
-                                       on to_DCPDetail.to_DCPMaterial = $self;
         to_Package               : Association to Package;
         to_DistroSpec            : Association to DistroSpec;
 }
-
-entity DCPDetail {
-    key DCPDetailUUID  : UUID;
-        CTT            : String(40);
-        CPLUUID        : String(40);
-        IsEmail        : Boolean;
-        IsDownload     : Boolean;
-        to_DCPMaterial : Association to DCPMaterials;
-        to_Package     : Association to Package;
-        to_DistroSpec  : Association to DistroSpec;
-}
-
 entity DCPMaterialConfig : cuid, managed {
     ProjectID     : Association to one av.DistributionDcp @mandatory;
     to_SalesDelivery : Composition of many {

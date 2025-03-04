@@ -3,7 +3,7 @@ const cds = require("@sap/cds");
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
         const { DistroSpec, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
-            StorageLocations, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+            StorageLocations, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -18,6 +18,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const salesorgtx = await cds.connect.to('API_SALESORGANIZATION_SRV')
         const distchtx = await cds.connect.to('API_DISTRIBUTIONCHANNEL_SRV')
         const salesdisttx = await cds.connect.to('API_SALESDISTRICT_SRV')
+        const paramtx = await cds.connect.to('YY1_PARAMETER_CDS_0001')
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -309,18 +310,17 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         this.on('setDownloadEmail', async req => {
-            const { DCPMaterialUUID } = req.params[2]
-            const material = await SELECT.one.from('DistributionService.DCPMaterials').where({ DCPMaterialUUID: DCPMaterialUUID })
+            const { DCP, LinkedCPLUUID } = req.params[3]
             const assetvault = await SELECT.one.from(DistributionDcp)
                 .columns(["*"])
                 .where({
-                    DCP: material.DCPMaterialNumber_Product
+                    DCP: DCP
                 })
             if (assetvault) {
                 await UPDATE('DistributionService.DistributionDcp__Items').with({
                     Email: req.data.email,
                     Download: req.data.download
-                }).where({ up__ProjectID: assetvault.ProjectID, LinkedCPLUUID: req.data.cpl })
+                }).where({ up__ProjectID: assetvault.ProjectID, LinkedCPLUUID: LinkedCPLUUID })
             }
         })
 
@@ -514,6 +514,41 @@ module.exports = class DistributionService extends cds.ApplicationService {
             } catch (error) {
                 req.error(502, error)
             }
+        })
+
+        this.on('READ', Parameters, async req => {
+            return paramtx.run(req.query)
+        })
+
+        this.on('READ', 'PlayBackCapability1', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability1' }))
+        })
+        this.on('READ', 'PlayBackCapability2', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability2' }))
+        })
+        this.on('READ', 'PlayBackCapability3', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability3' }))
+        })
+        this.on('READ', 'PlayBackCapability4', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability4' }))
+        })
+        this.on('READ', 'PlayBackCapability5', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability5' }))
+        })
+        this.on('READ', 'PlayBackCapability6', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability6' }))
+        })
+        this.on('READ', 'PlayBackCapability7', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability7' }))
+        })
+        this.on('READ', 'PlayBackCapability8', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability8' }))
+        })
+        this.on('READ', 'PlayBackCapability9', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability9' }))
+        })
+        this.on('READ', 'PlayBackCapability10', () => {
+            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability10' }))
         })
 
         return super.init()
