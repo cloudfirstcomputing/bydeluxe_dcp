@@ -98,33 +98,33 @@
       "routes": [
         {
           "pattern": ":?query:",
-          "name": "AssetVaultList",
-          "target": "AssetVaultList"
+          "name": "DistributionDcpList",
+          "target": "DistributionDcpList"
         },
         {
-          "pattern": "AssetVault({key}):?query:",
-          "name": "AssetVaultObjectPage",
-          "target": "AssetVaultObjectPage"
+          "pattern": "DistributionDcp({key}):?query:",
+          "name": "DistributionDcpObjectPage",
+          "target": "DistributionDcpObjectPage"
         },
         {
-          "name": "AssetVault__ItemsObjectPage",
-          "pattern": "AssetVault({key})/_Items({_ItemsKey}):?query:",
-          "target": "AssetVault__ItemsObjectPage"
+          "name": "DistributionDcp__ItemsObjectPage",
+          "pattern": "DistributionDcp({key})/_Items({_ItemsKey}):?query:",
+          "target": "DistributionDcp__ItemsObjectPage"
         }
       ],
       "targets": {
-        "AssetVaultList": {
+        "DistributionDcpList": {
           "type": "Component",
-          "id": "AssetVaultList",
+          "id": "DistributionDcpList",
           "name": "sap.fe.templates.ListReport",
           "options": {
             "settings": {
-              "contextPath": "/AssetVault",
+              "contextPath": "/DistributionDcp",
               "variantManagement": "Page",
               "navigation": {
-                "AssetVault": {
+                "DistributionDcp": {
                   "detail": {
-                    "route": "AssetVaultObjectPage"
+                    "route": "DistributionDcpObjectPage"
                   }
                 }
               },
@@ -135,8 +135,8 @@
                     "selectionMode": "Single"
                   },
                   "actions": {
-                    "AssetVaultExt": {
-                      "press": "com.dlx.assetvault.ext.assetVaultExt.AssetVaultExt.onPreviewForm",
+                    "DistributionDcpExt": {
+                      "press": "com.dlx.assetvault.ext.assetVaultExt.DistributionDcpExt.onPreviewForm",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": true,
@@ -148,32 +148,32 @@
             }
           }
         },
-        "AssetVaultObjectPage": {
+        "DistributionDcpObjectPage": {
           "type": "Component",
-          "id": "AssetVaultObjectPage",
+          "id": "DistributionDcpObjectPage",
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/AssetVault",
+              "contextPath": "/DistributionDcp",
               "navigation": {
                 "_Items": {
                   "detail": {
-                    "route": "AssetVault__ItemsObjectPage"
+                    "route": "DistributionDcp__ItemsObjectPage"
                   }
                 }
               }
             }
           }
         },
-        "AssetVault__ItemsObjectPage": {
+        "DistributionDcp__ItemsObjectPage": {
           "type": "Component",
-          "id": "AssetVault__ItemsObjectPage",
+          "id": "DistributionDcp__ItemsObjectPage",
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
               "navigation": {},
-              "contextPath": "/AssetVault/_Items"
+              "contextPath": "/DistributionDcp/_Items"
             }
           }
         }
