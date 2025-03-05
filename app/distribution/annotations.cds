@@ -260,14 +260,14 @@ annotate service.DCPMaterials with {
     PublishDateOffset        @Common: {Label: '{i18n>PublishDateOffset}', };
     CTT                      @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
     CPLUUID                  @Common: {Label: '{i18n>CPL}', }  @UI.MultiLineText;
-    RevealPublishGlobalDate  @Common: {Label: '{i18n>RevealPublishGlobalDate', };
-    RevealPublishGlobalTime  @Common: {Label: '{i18n>RevealPublishGlobalTime', };
-    RevealPublishLocalDate   @Common: {Label: '{i18n>RevealPublishLocalDate', };
-    RevealPublishLocalTime   @Common: {Label: '{i18n>RevealPublishLocalTime', };
-    SatelliteFlightStartDate @Common: {Label: '{i18n>SatelliteFlightStartDate', };
-    SatelliteFlightStartTime @Common: {Label: '{i18n>SatelliteFlightStartTime', };
-    SatelliteFlightEndDate   @Common: {Label: '{i18n>SatelliteFlightEndDate', };
-    SatelliteFlightEndTime   @Common: {Label: '{i18n>SatelliteFlightEndTime', };
+    RevealPublishGlobalDate  @Common: {Label: '{i18n>RevealPublishGlobalDate}', };
+    RevealPublishGlobalTime  @Common: {Label: '{i18n>RevealPublishGlobalTime}', };
+    RevealPublishLocalDate   @Common: {Label: '{i18n>RevealPublishLocalDate}', };
+    RevealPublishLocalTime   @Common: {Label: '{i18n>RevealPublishLocalTime}', };
+    SatelliteFlightStartDate @Common: {Label: '{i18n>SatelliteFlightStartDate}', };
+    SatelliteFlightStartTime @Common: {Label: '{i18n>SatelliteFlightStartTime}', };
+    SatelliteFlightEndDate   @Common: {Label: '{i18n>SatelliteFlightEndDate}', };
+    SatelliteFlightEndTime   @Common: {Label: '{i18n>SatelliteFlightEndTime}', };
 };
 
 annotate service.CplList with {

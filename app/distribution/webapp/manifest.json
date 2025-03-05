@@ -112,11 +112,6 @@
           "target": "DistroSpec_to_PackageObjectPage"
         },
         {
-          "pattern": "DistroSpec({key})/to_Package({key2})/to_DCPMaterial({key3}):?query:",
-          "name": "DistroSpec_to_DCPMaterialObjectPage",
-          "target": "DistroSpec_to_DCPMaterialObjectPage"
-        },
-        {
           "name": "DistroSpec_to_Package_to_DistRestrictionObjectPage",
           "pattern": "DistroSpec({key})/to_Package({key2})/to_DistRestriction({to_DistRestrictionKey}):?query:",
           "target": "DistroSpec_to_Package_to_DistRestrictionObjectPage"
@@ -145,6 +140,11 @@
           "name": "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage",
           "pattern": "DistroSpec({key})/to_KeyPackage({to_KeyPackageKey})/to_DistRestriction({to_DistRestrictionKey}):?query:",
           "target": "DistroSpec_to_KeyPackage_to_DistRestrictionObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_Package_to_DCPMaterialObjectPage",
+          "pattern": "DistroSpec({key})/to_Package({key2})/to_DCPMaterial({to_DCPMaterialKey}):?query:",
+          "target": "DistroSpec_to_Package_to_DCPMaterialObjectPage"
         }
       ],
       "targets": {
@@ -211,28 +211,17 @@
               "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_Package",
               "navigation": {
-                "to_DCPMaterial": {
-                  "detail": {
-                    "route": "DistroSpec_to_DCPMaterialObjectPage"
-                  }
-                },
                 "to_DistRestriction": {
                   "detail": {
                     "route": "DistroSpec_to_Package_to_DistRestrictionObjectPage"
                   }
+                },
+                "to_DCPMaterial": {
+                  "detail": {
+                    "route": "DistroSpec_to_Package_to_DCPMaterialObjectPage"
+                  }
                 }
               }
-            }
-          }
-        },
-        "DistroSpec_to_DCPMaterialObjectPage": {
-          "type": "Component",
-          "id": "DistroSpec_to_DCPMaterialObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
-          "options": {
-            "settings": {
-              "editableHeaderContent": false,
-              "contextPath": "/DistroSpec/to_Package/to_DCPMaterial"
             }
           }
         },
@@ -318,6 +307,17 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_KeyPackage/to_DistRestriction"
+            }
+          }
+        },
+        "DistroSpec_to_Package_to_DCPMaterialObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_Package_to_DCPMaterialObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/DistroSpec/to_Package/to_DCPMaterial"
             }
           }
         }
