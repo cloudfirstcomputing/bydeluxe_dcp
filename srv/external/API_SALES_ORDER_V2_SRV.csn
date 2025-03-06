@@ -1,6 +1,6 @@
 {
  "meta": {
-  "creator": "cds-dk 8.6.1"
+  "creator": "cds-dk 8.7.3"
  },
  "$version": "2.0",
  "definitions": {
@@ -1677,6 +1677,14 @@
      "@sap.display.format": "UpperCase",
      "@sap.label": "ISO Unit Item Volume",
      "@sap.quickinfo": "ISO Unit Code for Item Volume"
+    },
+    "OriginallyRequestedMaterial": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Material Entered",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
     },
     "TransactionCurrency": {
      "type": "cds.String",

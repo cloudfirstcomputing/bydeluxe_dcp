@@ -275,7 +275,7 @@ service BookingOrderService {
     entity ExternalTitleIDs as projection on db.ExternalTitleIDs;
 
     @readonly
-    entity TitleV   as projection on db.TitleV;
+    entity TitleV   as select from db.TitleV;
     
 
     

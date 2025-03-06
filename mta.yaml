@@ -99,6 +99,10 @@ modules:
       - booksalesorderweb.zip
       name: booksalesorderweb
       target-path: resources/
+    - artifacts:
+      - comdlxmanagematerialtitle.zip
+      name: comdlxmanagematerialtitle
+      target-path: resources/
 - name: comdlxdistribution
   type: html5
   path: app/distribution
@@ -152,6 +156,16 @@ modules:
 - name: booksalesorderweb
   type: html5
   path: app/booksalesorderweb
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: comdlxmanagematerialtitle
+  type: html5
+  path: app/managematerialtitle
   build-parameters:
     build-result: dist
     builder: custom

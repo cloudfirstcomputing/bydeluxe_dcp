@@ -34,7 +34,8 @@
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-createdcpmaterials": "cds watch --open createdcpmaterials/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-booksalesorderweb": "cds watch --open booksalesorderweb/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-booksalesorderweb": "cds watch --open booksalesorderweb/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-managematerialtitle": "cds watch --open managematerialtitle/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -267,6 +268,7 @@
     "app/dcpcontentweb",
     "app/dcpkeyweb",
     "app/assetvault",
-    "app/booksalesorderweb"
+    "app/booksalesorderweb",
+    "app/managematerialtitle"
   ]
 }

@@ -521,7 +521,7 @@ define view RatingsConcat as
         Title.RegionCode,
         STRING_AGG(
             RatingCode, ','
-        ) as RatingCode
+        ) as RatingCode: String
     }
     group by
         Title.MaterialMasterTitleID,
