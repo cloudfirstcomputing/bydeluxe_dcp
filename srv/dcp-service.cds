@@ -2,6 +2,7 @@ using dcp.db as db from '../db/dcp';
 using {API_SALES_ORDER_SRV as S4_SalesOrder} from './external/API_SALES_ORDER_SRV';
 using {API_BUSINESS_PARTNER as S4_BuisnessPartner} from './external/API_BUSINESS_PARTNER';
 using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
+using {DistributionService as distService} from './dist-service';
 using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
 using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
 using api from '../db/common';
@@ -48,7 +49,6 @@ service BookingOrderService {
     entity S4_ShippingPoint_VH as projection on api.ShippingPoint_VH;
     entity DistroSpec_Local as projection on DistroSpec;
     entity AssetVault_Local as projection on AssetVault;
-
     entity BookingSalesOrder as projection on db.BookingSalesOrder;
     action test(bookingIDs: array of String) returns String;
     

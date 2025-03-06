@@ -2,7 +2,7 @@ using deluxe.distribution as db from '../db/distribution';
 using api from '../db/common';
 using deluxe.assetvault as av from '../db/asset-vault';
 
-service DistributionService @(requires: 'authenticated-user') {
+service DistributionService {
     @Capabilities: {
         Deletable : false,
         Insertable: false

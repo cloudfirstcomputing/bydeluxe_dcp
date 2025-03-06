@@ -22,16 +22,6 @@ annotate service.BookingSalesOrder with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : DistroSpecPackageID,
-                Label : '{i18n>Distrospecpackageid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DistroSpecPackageName,
-                Label : '{i18n>Distrospecpackagename}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Label : '{i18n>Soldtoparty}',
                 Value : SoldToParty,
             },
@@ -234,26 +224,6 @@ annotate service.BookingSalesOrder with @(
                 $Type : 'UI.DataField',
                 Value : SoundID,
                 Label : '{i18n>Soundid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : StartDate,
-                Label : '{i18n>Startdate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : StartTime,
-                Label : '{i18n>Starttime}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : EndDate,
-                Label : '{i18n>Enddate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : EndTime,
-                Label : '{i18n>Endtime}',
             },
             {
                 $Type : 'UI.DataField',
@@ -506,16 +476,6 @@ annotate service.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : KeyEndTime,
-            Label : '{i18n>Keyendtime}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : KeyStartTime,
-            Label : '{i18n>Keystarttime}',
-        },
-        {
-            $Type : 'UI.DataField',
             Value : Language,
             Label : '{i18n>Language}',
         },
@@ -620,6 +580,16 @@ annotate service.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : SalesOrder,
                 Label : '{i18n>Salesorder}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DistroSpecPackageID,
+                Label : '{i18n>Distrospecpackageid}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DistroSpecPackageName,
+                Label : '{i18n>Distrospecpackagename}',
             },
             {
                 $Type : 'UI.DataField',
@@ -770,6 +740,16 @@ annotate service.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : InitialKeyDuration,
                 Label : '{i18n>Initialkeyduration}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : KeyStartTime,
+                Label : '{i18n>Keystarttime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : KeyEndTime,
+                Label : '{i18n>Keyendtime}',
             },
             {
                 $Type : 'UI.DataField',
