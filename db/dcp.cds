@@ -477,13 +477,13 @@ entity Contacts {
 entity Titles : cuid, managed {
     key MaterialMasterTitleID : Integer;  // CUID for unique identifier
     key LocalTitleId          : UUID;
+    key RegionCode           : String(4);
     OriginalTitleName        : String(240);
     TitleType                : String(10);
     TitleCategory            : String(20);
     RegionalTitleName        : String(240);
     ShortTitle               : String(240);
-    SecurityTitle            : String(240);
-    RegionCode               : String(4);
+    SecurityTitle            : String(240);    
     LanguageCode             : String(4);
     ReleaseDate              : Date;
     RepertoryDate            : Date;
@@ -494,29 +494,20 @@ entity Titles : cuid, managed {
     AssetVaultTitleId        : String(50);
     ImdbId                   : String(50);
     StudioTitleId            : String(50);
-    StudioDistributor        : String(20);
-
-    // Compositions
+    StudioDistributor        : String(20);       
     ExternalTitleIDs_Ass : Composition of many ExternalTitleIDs
-                              on ExternalTitleIDs_Ass.Title = $self;
-    
+                              on ExternalTitleIDs_Ass.Title = $self;    
     Ratings_Ass : Composition of many Ratings
                               on Ratings_Ass.Title = $self;
 }
 
 entity ExternalTitleIDs : cuid, managed {
-    key ID                  : Integer;    
-    key LocalTitleId        : UUID;
     IDType                  : String(20);
     IDValue                 : String(50);
-    Title                   : Association to Titles;
-    
+    Title                   : Association to Titles;    
 }
 
-entity Ratings : cuid, managed {
-    key ID                  : Integer;    
-    key LocalTitleId        : UUID;
-    key RegionCode          : String(20);
+entity Ratings : cuid, managed {    
     RatingCode              : String(20);
     AgencyName              : String(40);
     Title                   : Association to Titles;
