@@ -270,5 +270,9 @@ service BookingOrderService {
     }
     action createDisneyOFEKey(Request :OFEOrderstype) returns String;
 
+    entity Titles as projection on db.Titles;
+    entity Ratings as projection on db.Ratings;
+    entity ExternalTitleIDs as projection on db.ExternalTitleIDs;
+
     
 }
