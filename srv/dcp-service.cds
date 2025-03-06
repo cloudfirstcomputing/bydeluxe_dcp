@@ -274,5 +274,9 @@ service BookingOrderService {
     entity Ratings as projection on db.Ratings;
     entity ExternalTitleIDs as projection on db.ExternalTitleIDs;
 
+    @readonly
+    entity TitleV   as projection on db.TitleV;
+    
+
     
 }
