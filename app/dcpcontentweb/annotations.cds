@@ -1,4 +1,9 @@
 using BookingOrderService as service from '../../srv/dcp-service';
+annotate service.dcpcontent with @(Capabilities: {
+	    Insertable: false,
+	    Updatable : true,
+	    Deletable : true,
+});
 annotate service.dcpcontent with @(
     UI.FieldGroup #GeneratedGroup : {
         $Type : 'UI.FieldGroupType',

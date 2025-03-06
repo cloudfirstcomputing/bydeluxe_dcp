@@ -9,56 +9,56 @@ using api from './common';
 entity TitleVH as projection on api.Products;
 
 entity dcpcontent : managed {
-        ApplicationID       : String(20)                   @mandatory;
-    key BookingID           : String(10)                   @mandatory;
+        ApplicationID       : String(20) @mandatory;
+    key BookingID           : String(10) @mandatory;
     key Version             : Integer;
         IsActive            : String(1);
         EntityID            : String;
-        ReleaseID           : String(10)                   @mandatory;
-        TheaterID           : String(12)                   @mandatory;
+        ReleaseID           : String(10) @mandatory;
+        TheaterID           : String(12) @mandatory;
         Circuit             : String(12);
-        ShipmentIndicator   : String(1)                    @mandatory;
-        ScreeningIndicator  : String(1)                    @mandatory;
-        PlayStartDate       : Date                         @mandatory;
-        PlayEndDate         : Date                         @mandatory;
-        BranchID            : String(2)                    @mandatory;
+        ShipmentIndicator   : String(1)  @mandatory;
+        ScreeningIndicator  : String(1)  @mandatory;
+        PlayStartDate       : Date       @mandatory;
+        PlayEndDate         : Date       @mandatory;
+        BranchID            : String(2)  @mandatory;
         DepotID             : String(1);
-        SoundID             : String(8)                    @mandatory;
-        Language            : String(3)                    @mandatory;
-        SubtitleType        : String(1);
-        PrintFormat         : String(3)                    @mandatory;
-        ReleaseHold         : String(1)                    @mandatory;
-        ShipDate            : Date                         @mandatory;
-        ShipPriority        : String(2)                    @mandatory;
-        AuditoriumType      : String(1)                    @mandatory;
-        PrintQuality        : String(4)                    @mandatory;
-        FilmStock           : String(4)                    @mandatory;
-        Key_Content         : String(1)                    @mandatory;
+        SoundID             : String(8)  @mandatory;
+        Language            : String(3)  @mandatory;
+        SubtitleType        : String(2);
+        PrintFormat         : String(3)  @mandatory;
+        ReleaseHold         : String(1)  @mandatory;
+        ShipDate            : Date       @mandatory;
+        ShipPriority        : String(2)  @mandatory;
+        AuditoriumType      : String(1)  @mandatory;
+        PrintQuality        : String(4)  @mandatory;
+        FilmStock           : String(4)  @mandatory;
+        Key_Content         : String(1)  @mandatory;
         TimeofEntry         : Time;
-        BookingType         : String(4)                    @mandatory;
-        PackageName         : String                       @mandatory;
+        BookingType         : String(4)  @mandatory;
+        PackageName         : String     @mandatory;
         UUID                : String(40);
-        Territory           : String(2)                    @mandatory;
+        Territory           : String(2)  @mandatory;
         //Key Specific
-        BookingUpdater      : String(10)                   @mandatory;
-        CountryCode         : String(2)                    @mandatory;
-        ScreenID            : String(1)                    @mandatory;
-        SingleScreen        : String                       @mandatory;
-        StartDate           : Date                         @mandatory;
-        StartTime           : Time                         @mandatory;
-        EndDate             : Date                         @mandatory;
-        EndTime             : Time                         @mandatory;
-        DeliveryOnDate      : Date                         @mandatory;
-        ApprovedScreensList : String                       @mandatory;
-        ReleaseName         : String(40)                   @mandatory;
-        ReleaseShortName    : String(2)                    @mandatory;
-        ReleaseNameHO       : String(40)                   @mandatory;
+        BookingUpdater      : String(10);
+        CountryCode         : String(2);
+        ScreenID            : String(1);
+        SingleScreen        : String;
+        StartDate           : Date;
+        StartTime           : Time;
+        EndDate             : Date;
+        EndTime             : Time;
+        DeliveryOnDate      : Date;
+        ApprovedScreensList : String;
+        ReleaseName         : String(40);
+        ReleaseShortName    : String(2);
+        ReleaseNameHO       : String(40);
         ReleaseTitleHO      : String(40);
         //Common custom fields
-        Status              : Association to BookingStatus @mandatory;
-        SalesOrder          : String                       @readonly;
-        ErrorMessage        : String                       @readonly;
-        ReferenceSDDocument : String                       @readonly;
+        Status              : Association to BookingStatus;
+        SalesOrder          : String     @readonly;
+        ErrorMessage        : String     @readonly;
+        ReferenceSDDocument : String     @readonly;
         Warnings            : String
 }
 
@@ -79,7 +79,7 @@ entity dcpkey : managed {
         DepotID             : String(1);
         SoundID             : String(8)                    @mandatory;
         Language            : String(3)                    @mandatory;
-        SubtitleType        : String(1)                    @mandatory;
+        SubtitleType        : String(2)                    @mandatory;
         PrintFormat         : String(3);
         ReleaseHold         : String(1)                    @mandatory;
         BookingUpdater      : String(10)                   @mandatory;
@@ -153,7 +153,7 @@ entity BookingSalesOrder : managed {
         DepotID                 : String(1);
         SoundID                 : String(8);
         Language                : String(3);
-        SubtitleType            : String(1);
+        SubtitleType            : String(2);
         PrintFormat             : String(3);
         ReleaseHold             : String(1);
         ShipPriority            : String(2);
@@ -178,8 +178,6 @@ entity BookingSalesOrder : managed {
         _Partner                : Composition of many BookingSalesorderPartner
                                       on $self.SalesOrder = _Partner.SalesOrder @readonly;
         DistroSpecID            : Integer default 0                             @readonly;
-        DistroSpecPackageID     : UUID;
-        DistroSpecPackageName   : String(40);
 }
 
 @readonly
@@ -200,7 +198,7 @@ entity BookingSalesorderItem : managed {
         DepotID                  : String(1);
         SoundID                  : String(8);
         Language                 : String(3);
-        SubtitleType             : String(1);
+        SubtitleType             : String(2);
         PrintFormat              : String(3);
         ReleaseHold              : String(1);
         ShipPriority             : String(2);
@@ -225,6 +223,10 @@ entity BookingSalesorderItem : managed {
         ProcessScreeningKDMS     : Integer;
         MaxKDMSDuration          : Integer;
         StudioHoldOverRule       : String(10);
+        DistroSpecPackageID      : UUID;
+        DistroSpecPackageName    : String(40);
+        KeyStartTime             : Time;
+        KeyEndTime               : Time;
         ShippingType             : Association to one ShippingTypeMaster;
         SalesTerritory           : Association to one api.SalesDistricts;
 }

@@ -584,7 +584,7 @@ sap.ui.define([
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt5"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt5")
             },{
-                technicalName: oResourceBundle.getText("uploadFileColTechnical6"),
+                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt6"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt6")
             }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt7"),
@@ -919,7 +919,46 @@ sap.ui.define([
 
                             oContext.execute().then(function () {
                                 response = oContext.getBoundContext().getObject();
+                                if(response?.message){
+                                    var aResponse = JSON.parse(response.message);
+                                    var iSuccessCount = 0, iErrorCount = 0, iUpdateCount = 0;
+                                    for(var i in aResponse){
+                                        if(aResponse[i].Success){
+                                            iSuccessCount = aResponse[i].Success.length;
+                                        };
+                                        if(aResponse[i].Error){
+                                            iErrorCount = aResponse[i].Error.length; 
+                                        };
+                                        if(aResponse[i].UpdateSuccess){
+                                            iUpdateCount = aResponse[i].UpdateSuccess.length; 
+                                        };
 
+                                    }
+                                    if(iErrorCount){
+                                        MessageBox.error(uploadError, {
+                                            title: uploadErrorTitle + iErrorCount+ ' entries',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    if(iSuccessCount ){
+                                        MessageBox.success(`${iSuccessCount} entries were created/updated.`, {
+                                            title: "Upload has been completed successfully",
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });                                        
+                                    }
+                                }
                                 if (response.acknowledgement === "error") {
                                     MessageBox.error(uploadError, {
                                         title: uploadErrorTitle,
@@ -933,7 +972,7 @@ sap.ui.define([
                                         }
                                     });
 
-                                } else if (response.acknowledgement === "success") {
+                                } else {
                                     that.Obj.callUploadAction(data,filename);
                                     sap.ui.getCore().byId("dialog").close();
                                 }
@@ -993,7 +1032,7 @@ sap.ui.define([
                                         }
                                     });
 
-                                } else if (response.acknowledgement === "success") {
+                                } else {
                                     MessageBox.success(uploadSuccess + "\n\n" + uploadSuccessCount + " " + response.recordsUpdate, {
                                         title: uploadSuccessTitle,
                                         actions: MessageBox.Action.OK,
@@ -1008,7 +1047,6 @@ sap.ui.define([
                                 }
                                 batchModel.refresh();
                                 BusyIndicator.hide();
-                                // }.bind(this), function (oErr) {  // Keeping it for bind reference
 
                             }, function (oErr) {
                                 var errorCode = uploadFailed + " " + oErr.error.message;
