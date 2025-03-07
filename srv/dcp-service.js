@@ -10,7 +10,7 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
@@ -573,6 +573,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             }
                                             oPayLoad.to_Item.push(oEntry);
                                         }
+
+                                        var aDCPs = oFilteredPackage?.to_DCPMaterial.map((item)=>{return item.DCPMaterialNumber_Product});
                                     }
                                     else {
                                         sErrorMessage = "DCP Material not available";
@@ -680,6 +682,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         await updateItemTextForSalesOrder(req, "0001", oCTTCPL.LinkedCTT, aResponseStatus, oSalesOrderItem, oContentData);
                                     }
                                 }
+                                var aProjectIDs = await SELECT.columns(['ProjectID']).from(CplList_Local).where({DCP: {"IN":aDCPs}});
+                                for(var p in aProjectIDs){
+                                    var sProjectID = aProjectIDs[p].ProjectID;
+                                    await updateItemTextForSalesOrder(req, "Z006", sProjectID, aResponseStatus, oSalesOrderItem, oContentData);
+                                }
                                 await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, aResponseStatus, oSalesOrderItem, oContentData);
                                 await updateItemTextForSalesOrder(req, "Z009", aPackageFiltered[0].PackageUUID, aResponseStatus, oSalesOrderItem, oContentData);
                                 await updateItemTextForSalesOrder(req, "Z010", aPackageFiltered[0].PackageName, aResponseStatus, oSalesOrderItem, oContentData);
@@ -753,10 +760,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             hanaDBTable = sContentIndicator === "C" ? dcpcontent : dcpkey;
             sMaterialGroup = sContentIndicator === "C" ? "Z003" : "Z004";
             if (sBookingID) {
-                oContentData = await SELECT.one.from(hanaDBTable).where({ BookingID: sBookingID });
+                oContentData = await SELECT.one.from(hanaDBTable).where({ BookingID: sBookingID , IsActive: "Y"});
             }
             else if (sSalesOrder) {
-                oContentData = SELECT.one.from(hanaDBTable).where({ SalesOrder: sSalesOrder });
+                oContentData = SELECT.one.from(hanaDBTable).where({ SalesOrder: sSalesOrder, IsActive: "Y" });
             }
             else {
                 req.reject(501, "Booking ID / Sales order not available for processing");
@@ -787,10 +794,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["ProductionPlant"] = sPlant;
                     // oSalesorderItem_PayLoad["ShippingPoint"] = oSalesOrderItem.ShippingPoint;
                     // oSalesorderItem_PayLoad["ShippingType"] = oSalesOrderItem.ShippingType;
+
                     oSalesorderItem_PayLoad["ShippingType"] = sShipType ? sShipType : oSalesOrderItem.ShippingType;
-                    oSalesorderItem_PayLoad["ShippingPoint"] = sShipPoint ? sShipPoint : oSalesOrderItem.ShippingType;
+                    oSalesorderItem_PayLoad["ShippingPoint"] = sShipPoint ? sShipPoint : oSalesOrderItem.ShippingPoint;
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
+                    oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
                         path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
