@@ -539,7 +539,7 @@ define view TitleV as select from Titles
     Titles.OriginalTitleName,
     Titles.TitleType,
     Titles.TitleCategory,
-    Titles.RegionalTitleName,
+    Titles.RegionalTitleName,    
     Titles.ShortTitle,
     Titles.SecurityTitle,
     Titles.LanguageCode,

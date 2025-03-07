@@ -1,154 +1,72 @@
 using BookingOrderService as service from '../../srv/dcp-service';
+
 annotate service.TitleV with @(
-    UI.FieldGroup #GeneratedGroup : {
+    // Selection Fields (Filters in Fiori Elements)
+    UI.SelectionFields : [
+        MaterialMasterTitleID,
+        TitleType,
+        RegionCode,
+        ReleaseDate,
+        ImdbId
+    ],
+
+    // Define Table Columns in List Report
+    UI.LineItem : [
+        { $Type : 'UI.DataField', Value : MaterialMasterTitleID, Label : 'Material Master Title ID' },
+        { $Type : 'UI.DataField', Value : LocalTitleId, Label : 'Local Title Id' },
+        { $Type : 'UI.DataField', Value : OriginalTitleName, Label : 'Original Title Name' },
+        { $Type : 'UI.DataField', Value : TitleType, Label : 'Title Type' },
+        { $Type : 'UI.DataField', Value : TitleCategory, Label : 'Title Category' },
+        { $Type : 'UI.DataField', Value : RegionalTitleName, Label : 'Regional Title Name' },
+        { $Type : 'UI.DataField', Value : ShortTitle, Label : 'Short Title' },
+        { $Type : 'UI.DataField', Value : SecurityTitle, Label : 'Security Title' },
+        { $Type : 'UI.DataField', Value : RegionCode, Label : 'Region Code' },
+        { $Type : 'UI.DataField', Value : LanguageCode, Label : 'Language Code' },
+        { $Type : 'UI.DataField', Value : ReleaseDate, Label : 'Release Date' },
+        { $Type : 'UI.DataField', Value : RepertoryDate, Label : 'Repertory Date' },
+        { $Type : 'UI.DataField', Value : Format, Label : 'Format' },
+        { $Type : 'UI.DataField', Value : ReleaseSize, Label : 'Release Size' },
+        { $Type : 'UI.DataField', Value : Ratings, Label : 'Ratings' },
+        { $Type : 'UI.DataField', Value : ReelCountEstimated, Label : 'Reel Count (Estimated)' },
+        { $Type : 'UI.DataField', Value : AssetVaultTitleId, Label : 'Asset Vault Title Id' },
+        { $Type : 'UI.DataField', Value : ImdbId, Label : 'IMDB ID' },
+        { $Type : 'UI.DataField', Value : StudioTitleId, Label : 'Studio Title Id' },
+        { $Type : 'UI.DataField', Value : StudioDistributor, Label : 'Studio/Distributor' }
+    ],
+
+    // Define Field Group for Object Page Details
+    UI.FieldGroup #GeneralInfo : {
         $Type : 'UI.FieldGroupType',
         Data : [
-            {
-                $Type : 'UI.DataField',
-                Label : 'MaterialMasterTitleID',
-                Value : MaterialMasterTitleID,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'RegionCode',
-                Value : RegionCode,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'OriginalTitleName',
-                Value : OriginalTitleName,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'TitleType',
-                Value : TitleType,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'TitleCategory',
-                Value : TitleCategory,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'RegionalTitleName',
-                Value : RegionalTitleName,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'ShortTitle',
-                Value : ShortTitle,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'SecurityTitle',
-                Value : SecurityTitle,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'LanguageCode',
-                Value : LanguageCode,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'ReleaseDate',
-                Value : ReleaseDate,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'RepertoryDate',
-                Value : RepertoryDate,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'Format',
-                Value : Format,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'ReleaseSize',
-                Value : ReleaseSize,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'Ratings',
-                Value : Ratings,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'ReelCountEstimated',
-                Value : ReelCountEstimated,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'AssetVaultTitleId',
-                Value : AssetVaultTitleId,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'ImdbId',
-                Value : ImdbId,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'StudioTitleId',
-                Value : StudioTitleId,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'StudioDistributor',
-                Value : StudioDistributor,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'RatingCode',
-                Value : RatingCode,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'IDType',
-                Value : IDType,
-            },
-            {
-                $Type : 'UI.DataField',
-                Label : 'IDValue',
-                Value : IDValue,
-            },
-        ],
+            { $Type : 'UI.DataField', Value : MaterialMasterTitleID, Label : 'Material Master Title ID' },
+            { $Type : 'UI.DataField', Value : RegionCode, Label : 'Region Code' },
+            { $Type : 'UI.DataField', Value : OriginalTitleName, Label : 'Original Title Name' },
+            { $Type : 'UI.DataField', Value : TitleType, Label : 'Title Type' },
+            { $Type : 'UI.DataField', Value : TitleCategory, Label : 'Title Category' },
+            { $Type : 'UI.DataField', Value : RegionalTitleName, Label : 'Regional Title Name' },
+            { $Type : 'UI.DataField', Value : ShortTitle, Label : 'Short Title' },
+            { $Type : 'UI.DataField', Value : SecurityTitle, Label : 'Security Title' },
+            { $Type : 'UI.DataField', Value : LanguageCode, Label : 'Language Code' },
+            { $Type : 'UI.DataField', Value : ReleaseDate, Label : 'Release Date' },
+            { $Type : 'UI.DataField', Value : RepertoryDate, Label : 'Repertory Date' },
+            { $Type : 'UI.DataField', Value : Format, Label : 'Format' },
+            { $Type : 'UI.DataField', Value : ReleaseSize, Label : 'Release Size' },
+            { $Type : 'UI.DataField', Value : Ratings, Label : 'Ratings' },
+            { $Type : 'UI.DataField', Value : ReelCountEstimated, Label : 'Reel Count (Estimated)' },
+            { $Type : 'UI.DataField', Value : AssetVaultTitleId, Label : 'Asset Vault Title Id' },
+            { $Type : 'UI.DataField', Value : ImdbId, Label : 'IMDB ID' },
+            { $Type : 'UI.DataField', Value : StudioTitleId, Label : 'Studio Title Id' },
+            { $Type : 'UI.DataField', Value : StudioDistributor, Label : 'Studio/Distributor' }
+        ]
     },
+
+    // Define Facet for Object Page
     UI.Facets : [
         {
             $Type : 'UI.ReferenceFacet',
-            ID : 'GeneratedFacet1',
+            ID : 'GeneralInfoFacet',
             Label : 'General Information',
-            Target : '@UI.FieldGroup#GeneratedGroup',
-        },
-    ],
-    UI.LineItem : [
-        {
-            $Type : 'UI.DataField',
-            Label : 'MaterialMasterTitleID',
-            Value : MaterialMasterTitleID,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'RegionCode',
-            Value : RegionCode,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'OriginalTitleName',
-            Value : OriginalTitleName,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'TitleType',
-            Value : TitleType,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'TitleCategory',
-            Value : TitleCategory,
-        },
-    ],
+            Target : '@UI.FieldGroup#GeneralInfo'
+        }
+    ]
 );
-

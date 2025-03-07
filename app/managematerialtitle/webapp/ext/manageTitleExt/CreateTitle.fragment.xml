@@ -1,0 +1,50 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog id="addLineItemDialog"
+            title="Add New Title"
+            stretch="false"
+            contentWidth="40%">
+        
+        <VBox id="vboxContainer">
+            <f:SimpleForm id="simpleForm"
+                          layout="ResponsiveGridLayout"
+                          editable="true">
+                
+                <f:content>
+                    <Label id="lblMaterialId" text="Material Master Title ID"/>
+                    <Input id="inputMaterialId" value="{TitleV/MaterialMasterTitleID}" required="true"/>
+                    
+                    <Label id="lblLocalTitleId" text="Local Title ID"/>
+                    <Input id="inputLocalTitleId" value="{TitleV/LocalTitleId}" required="true"/>
+                    
+                    <Label id="lblRegionCode" text="Region Code"/>
+                    <Input id="inputRegionCode" value="{TitleV/RegionCode}"/>
+                    
+                    <Label id="lblOriginalTitle" text="Original Title Name"/>
+                    <Input id="inputOriginalTitle" value="{TitleV/OriginalTitleName}"/>
+                    
+                    <Label id="lblRatingCode" text="Rating Code"/>
+                    <Input id="inputRatingCode" value="{TitleV/AllRatings}"/>
+                    
+                    <Label id="lblIdType" text="External ID Type"/>
+                    <Input id="inputIdType" value="{TitleV/IDType}"/>
+                    
+                    <Label id="lblIdValue" text="External ID Value"/>
+                    <Input id="inputIdValue" value="{TitleV/IDValue}"/>
+                </f:content>
+                
+            </f:SimpleForm>
+        </VBox>
+        
+        <buttons>
+            <Button id="btnSave" text="Save" type="Emphasized" press="onSaveLineItem"/>
+            <Button id="btnCancel" text="Cancel" press="onCancel"/>
+        </buttons>
+        
+    </Dialog>
+</core:FragmentDefinition>
