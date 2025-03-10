@@ -293,7 +293,7 @@ entity Maccs_Dchub : managed {
 
 entity TheatreOrderRequest : cuid, managed {
     key StudioID             : String(50);
-    key GenerateDate         : DateTime;
+    key GenerateDate         : Date;
     key Version              : String(50);
         ServerName           : String(50);
         DataBaseName         : String(50);
@@ -309,8 +309,8 @@ entity TheatreOrderRequest : cuid, managed {
                                    on MediaOrder_Ass.Request = $self;
 }
 
-entity Theatre : cuid, managed {
-    key TheatreID   : String(50);
+entity Theatre : managed {
+    key ID   : String(50);
         Name        : String(200);
         City        : String(200);
         State       : String(100);
@@ -321,7 +321,7 @@ entity Theatre : cuid, managed {
 
 }
 
-entity MediaOrder : cuid, managed {
+entity MediaOrder :  managed {
         mediaType         : String;
     key mediaOrderId      : Integer;
         TheatreID         : String(50);
@@ -347,15 +347,15 @@ entity MediaOrder : cuid, managed {
         Request           : Association to TheatreOrderRequest;
 }
 
-entity DigitalComposition : cuid, managed {
-    key ContentID : String(50);
+entity DigitalComposition :  managed {
+    key ID : String(50);
         Title     : String(500);
         CPL_UUID  : String(100);
         FilmID    : String(100);
         Request   : Association to TheatreOrderRequest;
 }
 
-entity DigitalKeyOrder : cuid, managed {
+entity DigitalKeyOrder : managed {
     key DigitalKeyOrderID : String(50);
         ContentID         : String(50);
         Screens           : String(200);
@@ -366,7 +366,7 @@ entity DigitalKeyOrder : cuid, managed {
 }
 
 /// Disney OFE
-entity OrderRequest : cuid, managed {
+entity OrderRequest : managed {
         ShowTimeType         : String(50);
     key OrderID              : Integer;
     key ContentOrderID       : Integer;
@@ -386,7 +386,7 @@ entity OrderRequest : cuid, managed {
         Vendor               : Composition of one VendorType;
 }
 
-entity AddressType : cuid {
+entity AddressType {
     key SiteID       : String(50);
         SiteName     : String(200);
         CircuitName  : String(200);
@@ -402,7 +402,7 @@ entity AddressType : cuid {
         OrderRequest : Association to OrderRequest;
 }
 
-entity PackageType : cuid {
+entity PackageType {
     key ID           : Integer;
         Description  : String(200);
         TitleName    : String(500);
@@ -425,7 +425,7 @@ entity CompositionType {
         Package           : Association to PackageType;
 }
 
-entity VendorType : cuid {
+entity VendorType {
     key ID           : Integer;
         Name         : String(200);
         Email        : String(500);
