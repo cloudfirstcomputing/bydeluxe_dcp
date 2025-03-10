@@ -132,13 +132,36 @@
                   },
                   "actions": {
                     "CustomAction": {
-                        "press": "com.dlx.managematerialtitle.ext.manageTitleExt.CustomAction.fnCreateTitle",
-                        "visible": true,
-                        "enabled": true,
-                        "requiresSelection": true,
-                        "text": "{@i18n>createTileMain}"
+                      "press": "com.dlx.managematerialtitle.ext.manageTitleExt.CustomAction.fnCreateTitle",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "{@i18n>createTileMain}" 
+                    },
+                    "extActionLocalC": {
+                      "press": "com.dlx.managematerialtitle.ext.extActionLocalC.extActionLocalC.fnAddLocalTitle",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "{@i18n>addLocalregionalTitle}"
+                    },
+                    "editTitle": {
+                      "press": "com.dlx.managematerialtitle.ext.toolBarActions.editTitle.fnEditTitle",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{@i18n>editTitle}",
+                      "icon": "sap-icon://edit"
+                    },
+                    "deleteTitle": {
+                      "press": "com.dlx.managematerialtitle.ext.toolBarActions.deleteTitle.fndeleteTitle",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{@i18n>deleteTitle}",
+                      "icon": "sap-icon://delete"
                     }
-                }
+                  }
                 }
               }
             }

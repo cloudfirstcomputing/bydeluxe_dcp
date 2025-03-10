@@ -11,7 +11,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders } = this.entities;
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products  } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -20,6 +20,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_shtypev2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
         var s4h_shpointv2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGPOINT_CDS_0001");
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
+        var s4h_products_Crt = await cds.connect.to("API_PRODUCT_SRV");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
@@ -151,7 +152,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-                var aSelected = await SELECT.one.from(TheatreOrderRequest).where({
+                var aSelected = await SELECT.from(TheatreOrderRequest).where({
                     StudioID: aRequests.StudioID,
                     GenerateDate: aRequests.GenerateDate,
                     Version: aRequests.Version,
@@ -1015,6 +1016,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     "Division": "20"}));
             //     // console.log("Test");
             //     return aSalesArea;
+        });
+
+        this.on("createProduct", async (req) => {
+            try {
+                const input = req.data.input; // Extract input data from request
+                
+                // Make a POST call to the external API              
+                 const response = await s4h_products_Crt.run(INSERT.into(Products).entries(input))
+                
+                return response;
+            } catch (error) {
+                req.error(500, `Product creation failed: ${error.message}`);
+            }
         });
         return super.init();
     }

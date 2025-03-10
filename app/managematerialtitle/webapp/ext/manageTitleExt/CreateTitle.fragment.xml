@@ -6,44 +6,87 @@
     xmlns:f="sap.ui.layout.form"
 >
     <Dialog id="addLineItemDialog"
-            title="Add New Title"
+            title="Create New Title"
             stretch="false"
             contentWidth="40%">
         
-        <VBox id="vboxContainer">
-            <f:SimpleForm id="simpleForm"
+        <VBox id="vboxContainerTitle">
+            <f:SimpleForm id="simpleFormTitle"
                           layout="ResponsiveGridLayout"
                           editable="true">
                 
                 <f:content>
-                    <Label id="lblMaterialId" text="Material Master Title ID"/>
-                    <Input id="inputMaterialId" value="{TitleV/MaterialMasterTitleID}" required="true"/>
+                    <!-- <Label id="lblTitleName" text="Title Name"/>
+                    <Input id="inputTitleName"/>
                     
-                    <Label id="lblLocalTitleId" text="Local Title ID"/>
-                    <Input id="inputLocalTitleId" value="{TitleV/LocalTitleId}" required="true"/>
+                    <Label id="lblTitleDescription" text="Title Description"/>
+                    <Input id="inputTitleDescription"/>
                     
+                    <Label id="lblProductDescription1" text="Product Description"/>
+                    <Input id="inputProductDescription"/> -->
+                    <Label id="lblOriginalTitleName" text="Original Title Name"/>
+                    <Input id="inputOriginalTitleName" value="{formModel>/OriginalTitleName}"/>
+
+                    <Label id="lblLanguageKey1" text="Language Key"/>
+                    <Input id="inputLanguageKey" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+
+                    <Label id="lblTitleType" text="Title Type"/>
+                    <Select id="selectEditTitletypeC" selectedKey="{formModel>/TitleType}">
+                        <items>
+                            <core:Item id="itemEditTitleType2C" key="Parent" text="Parent"/>
+                            <core:Item id="itemEditTitleType1C" key="Local" text="Local"/>                            
+                        </items>
+                    </Select>
+
+                    <Label id="lblTitleCategory" text="Title Category"/>
+                    <Select id="selectTitleCategory" selectedKey="{formModel>/TitleCategory}">
+                        <items>
+                            <core:Item id="itemTitleCategory1" key="Z007" text="Confirmed/Known Title"/>
+                            <core:Item id="itemTitleCategory2" key="Z006" text="Provisional/Unknown Title"/>
+                        </items>
+                    </Select>
+
                     <Label id="lblRegionCode" text="Region Code"/>
-                    <Input id="inputRegionCode" value="{TitleV/RegionCode}"/>
-                    
-                    <Label id="lblOriginalTitle" text="Original Title Name"/>
-                    <Input id="inputOriginalTitle" value="{TitleV/OriginalTitleName}"/>
-                    
-                    <Label id="lblRatingCode" text="Rating Code"/>
-                    <Input id="inputRatingCode" value="{TitleV/AllRatings}"/>
-                    
-                    <Label id="lblIdType" text="External ID Type"/>
-                    <Input id="inputIdType" value="{TitleV/IDType}"/>
-                    
-                    <Label id="lblIdValue" text="External ID Value"/>
-                    <Input id="inputIdValue" value="{TitleV/IDValue}"/>
+                    <Input id="inputRegionCode" value="{formModel>/RegionCode}" showValueHelp="true"/>
+
+                    <Label id="lblLanguageCode1" text="Language Code"/>
+                    <Input id="inputLanguageCode" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+
+                    <Label id="lblReleaseDate1" text="Release Date"/>
+                    <DatePicker id="datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
+
+                    <Label id="lblFormat1" text="Format"/>
+                    <Select id="selectFormat" selectedKey="{formModel>/Format}">
+                        <items>
+                            <core:Item id="itemFormat1" key="2D" text="2D"/>
+                            <core:Item id="itemFormat2" key="3D" text="3D"/>
+                        </items>
+                    </Select>
+
+                    <Label id="lblReleaseSize1" text="Release Size"/>
+                    <Input id="inputReleaseSize" value="{formModel>/ReleaseSize}"/>
+
+                    <Label id="lblRatings1" text="Ratings"/>
+                    <Input id="inputRatings" value="{formModel>/Ratings}"/>
+
+                    <Label id="lblAssetVaultTitleId1" text="Asset Vault Title Id"/>
+                    <Input id="inputAssetVaultTitleId" value="{formModel>/AssetVaultTitleId}"/>
+
+                    <Label id="lblImdbId1" text="IMDB ID"/>
+                    <Input id="inputImdbId" value="{formModel>/ImdbId}"/>
+
+                    <Label id="lblStudioTitleId1" text="Studio Title Id"/>
+                    <Input id="inputStudioTitleId" value="{formModel>/StudioTitleId}"/>
+
+                    <Label id="lblStudioDistributor1" text="Studio/Distributor"/>
+                    <Input id="inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true"/>
                 </f:content>
-                
             </f:SimpleForm>
         </VBox>
         
         <buttons>
-            <Button id="btnSave" text="Save" type="Emphasized" press="onSaveLineItem"/>
-            <Button id="btnCancel" text="Cancel" press="onCancel"/>
+            <Button id="btnCancelTitle" text="Cancel" press="onCancelCreate"/>
+            <Button id="btnSaveTitle" text="Save" type="Emphasized" press="onSaveCreate"/>
         </buttons>
         
     </Dialog>

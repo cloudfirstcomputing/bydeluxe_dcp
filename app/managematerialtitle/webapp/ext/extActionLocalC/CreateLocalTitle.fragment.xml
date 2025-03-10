@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog id="productDialog"
+            title="Create Local Title"
+            stretch="false"
+            >
+        
+        <VBox id="vboxContainerL">
+            <f:SimpleForm id="simpleFormL"
+                          layout="ResponsiveGridLayout"
+                          editable="true">
+                
+                <f:content>
+                    <!-- <Label id="lblProduct" text="Title Name"/>
+                    <Input id="product"/>
+                    
+                    <Label id="lblProductType" text="Title Description"/>
+                    <Input id="productType" />
+                    
+                    <Label id="lblProductDescription" text="Product Description"/>
+                    <Input id="productDescription"/> -->
+                    <Label id="lblBasicText" text="Original Title Name"/>
+                    <Input id="basicText"/>
+                    
+                    <Label id="lblLanguageKey" text="Language Key"/>
+                    <Input id="languageKey" value="EN" editable="false"/>                    
+                                     
+                                    
+                    <Label id="lblProductGroup" text="Title Category"/>
+                    <Select id="productGroup">
+                        <items>
+                            <core:Item id="item1Lpg" key="Z007" text="Confirmed/Known Title"/>
+                            <core:Item id="item2Lpg" key="Z006" text="Provisional/Unknown Title"/>
+                        </items>
+                    </Select>
+                    
+                    <Label id="lblRegionCodeL" text="Region Code"/>
+                    <Input id="regionCode" showValueHelp="true"/>
+                    
+                    <Label id="lblLanguageCode" text="Language Code"/>
+                    <Input id="languageCode" showValueHelp="true"/>
+                    
+                    <Label id="lblReleaseDate" text="Release Date"/>
+                    <DatePicker id="releaseDate"/>
+                    
+                    <Label id="lblFormat" text="Format"/>
+                    <Select id="format">
+                        <items>
+                            <core:Item id="item1L" key="2D" text="2D"/>
+                            <core:Item id="item2L" key="3D" text="3D"/>
+                        </items>
+                    </Select>
+                    
+                    <Label id="lblReleaseSize" text="Release Size"/>
+                    <Input id="releaseSize"/>
+                    
+                    <Label id="lblRatings" text="Ratings"/>
+                    <Input id="ratings"/>
+                    
+                    <Label id="lblAssetVaultTitleId" text="Asset Vault Title Id"/>
+                    <Input id="assetVaultTitleId"/>
+                    
+                    <Label id="lblImdbId" text="IMDB ID"/>
+                    <Input id="imdbId"/>
+                    
+                    <Label id="lblStudioTitleId" text="Studio Title Id"/>
+                    <Input id="studioTitleId"/>
+                    
+                    <Label id="lblStudioDistributor" text="Studio / Distributor"/>
+                    <Input id="studioDistributor" showValueHelp="true"/>
+                </f:content>
+            </f:SimpleForm>
+        </VBox>
+        
+        <buttons>
+            <Button id="btnCancelL" text="Cancel" press="onCancel"/>
+            <Button id="btnSaveL" text="Save" type="Emphasized" press="onSaveLineItem"/>
+        </buttons>
+        
+    </Dialog>
+</core:FragmentDefinition>

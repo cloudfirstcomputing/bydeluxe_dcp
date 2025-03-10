@@ -475,26 +475,26 @@ entity Contacts {
 }
 
 entity Titles : cuid, managed {
-    key MaterialMasterTitleID : Integer;
-    key LocalTitleId          : UUID;
-    key RegionCode            : String(4);
-        OriginalTitleName     : String(240);
-        TitleType             : String(10);
-        TitleCategory         : String(20);
-        RegionalTitleName     : String(240);
-        ShortTitle            : String(240);
-        SecurityTitle         : String(240);
-        LanguageCode          : String(4);
-        ReleaseDate           : Date;
-        RepertoryDate         : Date;
-        Format                : String(8);
-        ReleaseSize           : String(20);
-        Ratings               : String(80);
-        ReelCountEstimated    : Integer;
-        AssetVaultTitleId     : String(50);
-        ImdbId                : String(50);
-        StudioTitleId         : String(50);
-        StudioDistributor     : String(20);
+    key MaterialMasterTitleID : Integer     @Common.Label: 'Material Master Title ID';
+    key LocalTitleId          : String      @Common.Label: 'Local Title ID';
+    key RegionCode            : String(4)   @Common.Label: 'Region Code';
+        OriginalTitleName     : String(240) @Common.Label: 'Original Title Name';
+        TitleType             : String(10)  @Common.Label: 'Title Type';
+        TitleCategory         : String(20)  @Common.Label: 'Title Category';
+        RegionalTitleName     : String(240) @Common.Label: 'Regional Title Name';
+        ShortTitle            : String(240) @Common.Label: 'Short Title';
+        SecurityTitle         : String(240) @Common.Label: 'Security Title';
+        LanguageCode          : String(4)   @Common.Label: 'Language Code';
+        ReleaseDate           : Date        @Common.Label: 'Release Date';
+        RepertoryDate         : Date        @Common.Label: 'Repertory Date';
+        Format                : String(8)   @Common.Label: 'Format';
+        ReleaseSize           : String(20)  @Common.Label: 'Release Size';
+        Ratings               : String(80)  @Common.Label: 'Ratings';
+        ReelCountEstimated    : Integer     @Common.Label: 'Reel Count Estimated';
+        AssetVaultTitleId     : String(50)  @Common.Label: 'Asset Vault Title ID';
+        ImdbId                : String(50)  @Common.Label: 'IMDB ID';
+        StudioTitleId         : String(50)  @Common.Label: 'Studio Title ID';
+        StudioDistributor     : String(20)  @Common.Label: 'Studio Distributor';
         ExternalTitleIDs_Ass  : Composition of many ExternalTitleIDs
                                     on ExternalTitleIDs_Ass.Title = $self;
         Ratings_Ass           : Composition of many Ratings
@@ -521,7 +521,7 @@ define view RatingsConcat as
         Title.RegionCode,
         STRING_AGG(
             RatingCode, ','
-        ) as RatingCode: String
+        ) as RatingCode : String
     }
     group by
         Title.MaterialMasterTitleID,
@@ -529,33 +529,36 @@ define view RatingsConcat as
         Title.ID,
         Title.RegionCode;
 
-define view TitleV as select from Titles
-    left outer join RatingsConcat on RatingsConcat.MaterialMasterTitleID = Titles.MaterialMasterTitleID
-    left outer join ExternalTitleIDs on ExternalTitleIDs.Title = Title {
-    
-    key Titles.MaterialMasterTitleID,
-    key Titles.LocalTitleId,
-    Titles.RegionCode,
-    Titles.OriginalTitleName,
-    Titles.TitleType,
-    Titles.TitleCategory,
-    Titles.RegionalTitleName,    
-    Titles.ShortTitle,
-    Titles.SecurityTitle,
-    Titles.LanguageCode,
-    Titles.ReleaseDate,
-    Titles.RepertoryDate,
-    Titles.Format,
-    Titles.ReleaseSize,
-    Titles.Ratings,
-    Titles.ReelCountEstimated,
-    Titles.AssetVaultTitleId,
-    Titles.ImdbId,
-    Titles.StudioTitleId,
-    Titles.StudioDistributor,
+define view TitleV as
+    select from Titles
+    left outer join RatingsConcat
+        on RatingsConcat.MaterialMasterTitleID = Titles.MaterialMasterTitleID
+    left outer join ExternalTitleIDs
+        on ExternalTitleIDs.Title = Title
+    {
 
-    RatingsConcat.RatingCode,
-    
-    ExternalTitleIDs.IDType,
-    ExternalTitleIDs.IDValue
-};
+        key Titles.MaterialMasterTitleID,
+        key Titles.LocalTitleId,
+            Titles.ID,
+            Titles.RegionCode,
+            Titles.OriginalTitleName,
+            Titles.TitleType,
+            Titles.TitleCategory,
+            Titles.RegionalTitleName,
+            Titles.ShortTitle,
+            Titles.SecurityTitle,
+            Titles.LanguageCode,
+            Titles.ReleaseDate,
+            Titles.RepertoryDate,
+            Titles.Format,
+            Titles.ReleaseSize,
+            Titles.Ratings,
+            Titles.ReelCountEstimated,
+            Titles.AssetVaultTitleId,
+            Titles.ImdbId,
+            Titles.StudioTitleId,
+            Titles.StudioDistributor,
+            RatingsConcat.RatingCode,
+            ExternalTitleIDs.IDType,
+            ExternalTitleIDs.IDValue
+    };

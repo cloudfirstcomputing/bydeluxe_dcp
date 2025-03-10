@@ -5,6 +5,7 @@ using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
 using {DistributionService as distService} from './dist-service';
 using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
 using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
+using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
 using api from '../db/common';
 
 service BookingOrderService {
@@ -277,6 +278,59 @@ service BookingOrderService {
 
     @readonly
     entity TitleV   as select from db.TitleV;
+
+    entity Products                      as
+    projection on externalProduct.A_Product {
+        key Product,
+            ProductGroup,
+            ProductType,
+            BaseUnit,
+            PreferredUnitOfMeasure,
+            PurchaseOrderQuantityUnit,
+            ProductManufacturerNumber,
+            to_ProductBasicText : redirected to ProductBasicText,
+            to_Description  : redirected to ProductDescription      
+    };
+
+    entity ProductDescription            as
+    projection on externalProduct.A_ProductDescription {
+        key Product,
+        key Language,
+            ProductDescription
+    };
+
+    entity ProductBasicText            as
+    projection on externalProduct.A_ProductBasicText {
+        key Product,
+        key Language,
+            LongText
+            
+    };
+
+    type ProductsType {
+            Product: String(40);
+            ProductGroup : String(9);
+            ProductType : String(4);
+            BaseUnit : String(3);
+            PurchaseOrderQuantityUnit:String(3);
+            PreferredUnitOfMeasure:String(3);
+            ProductManufacturerNumber:String(40);
+            to_ProductBasicText : array of ProductBasicTextType;
+            to_Description  : array of ProductDescriptionType; 
+    }
+
+    type ProductBasicTextType{
+        Product: String(40);
+        Language : String (2);
+        LongText :String;
+    }
+    type ProductDescriptionType {
+        Product: String(40);
+        Language : String (2);
+        ProductDescription :String(40)
+    }
+
+    action createProduct(input: ProductsType) returns Products;
     
 
     

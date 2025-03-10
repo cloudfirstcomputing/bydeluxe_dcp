@@ -31,7 +31,8 @@ annotate service.TitleV with @(
         { $Type : 'UI.DataField', Value : AssetVaultTitleId, Label : 'Asset Vault Title Id' },
         { $Type : 'UI.DataField', Value : ImdbId, Label : 'IMDB ID' },
         { $Type : 'UI.DataField', Value : StudioTitleId, Label : 'Studio Title Id' },
-        { $Type : 'UI.DataField', Value : StudioDistributor, Label : 'Studio/Distributor' }
+        { $Type : 'UI.DataField', Value : StudioDistributor, Label : 'Studio/Distributor' },
+        { $Type : 'UI.DataField', Value : ID, Label : 'ID' }
     ],
 
     // Define Field Group for Object Page Details

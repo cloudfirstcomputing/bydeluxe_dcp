@@ -1,0 +1,84 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog id="editLineItemDialog"
+            title="Edit Title"
+            stretch="false"
+            contentWidth="40%">
+        
+        <VBox id="vboxContainerEditTitle">
+            <f:SimpleForm id="simpleFormEditTitle"
+                          layout="ResponsiveGridLayout"
+                          editable="true">
+                
+                <f:content>
+                    <Label id="lblEditOriginalTitleName" text="Original Title Name"/>
+                    <Input id="inputEditOriginalTitleName" value="{formModel>/OriginalTitleName}"/>
+
+                    <Label id="lblEditLanguageKey" text="Language Key"/>
+                    <Input id="inputEditLanguageKey" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+                    <Label id="lblEditTitleTypey" text="Title Type"/>
+                    <Select id="selectEditTitletype" selectedKey="{formModel>/TitleType}">
+                        <items>
+                            <core:Item id="itemEditTitleType2" key="Parent" text="Parent"/>
+                            <core:Item id="itemEditTitleType1" key="Local" text="Local"/>                            
+                        </items>
+                    </Select>
+
+                    <Label id="lblEditTitleCategory" text="Title Category"/>
+                    <Select id="selectEditTitleCategory" selectedKey="{formModel>/TitleCategory}">
+                        <items>
+                            <core:Item id="itemEditTitleCategory1" key="Z007" text="Confirmed/Known Title"/>
+                            <core:Item id="itemEditTitleCategory2" key="Z006" text="Provisional/Unknown Title"/>
+                        </items>
+                    </Select>
+
+                    <Label id="lblEditRegionCode" text="Region Code"/>
+                    <Input id="inputEditRegionCode" value="{formModel>/RegionCode}" showValueHelp="true"/>
+
+                    <Label id="lblEditLanguageCode" text="Language Code"/>
+                    <Input id="inputEditLanguageCode" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+
+                    <Label id="lblEditReleaseDate" text="Release Date"/>
+                    <DatePicker id="datePickerEditReleaseDate" value="{formModel>/ReleaseDate}"/>
+
+                    <Label id="lblEditFormat" text="Format"/>
+                    <Select id="selectEditFormat" selectedKey="{formModel>/Format}">
+                        <items>
+                            <core:Item id="itemEditFormat1" key="2D" text="2D"/>
+                            <core:Item id="itemEditFormat2" key="3D" text="3D"/>
+                        </items>
+                    </Select>
+
+                    <Label id="lblEditReleaseSize" text="Release Size"/>
+                    <Input id="inputEditReleaseSize" value="{formModel>/ReleaseSize}"/>
+
+                    <Label id="lblEditRatings" text="Ratings"/>
+                    <Input id="inputEditRatings" value="{formModel>/Ratings}"/>
+
+                    <Label id="lblEditAssetVaultTitleId" text="Asset Vault Title Id"/>
+                    <Input id="inputEditAssetVaultTitleId" value="{formModel>/AssetVaultTitleId}"/>
+
+                    <Label id="lblEditImdbId" text="IMDB ID"/>
+                    <Input id="inputEditImdbId" value="{formModel>/ImdbId}"/>
+
+                    <Label id="lblEditStudioTitleId" text="Studio Title Id"/>
+                    <Input id="inputEditStudioTitleId" value="{formModel>/StudioTitleId}"/>
+
+                    <Label id="lblEditStudioDistributor" text="Studio/Distributor"/>
+                    <Input id="inputEditStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true"/>
+                </f:content>
+            </f:SimpleForm>
+        </VBox>
+        
+        <buttons>
+            <Button id="btnCancelEditTitle" text="Cancel" press="onCancelEdit"/>
+            <Button id="btnSaveEditTitle" text="Save" type="Emphasized" press="onSaveEdit"/>
+        </buttons>
+        
+    </Dialog>
+</core:FragmentDefinition>
