@@ -407,10 +407,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         else {
                             sErrorMessage = "Partner function not available";
                         }
+                        var aShiptoDelMethodsFromS4 = [];
                         if (sShipTo) {
                             var aShipToSalesData = await s4h_bp_Txn.run(SELECT.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
                             if (aShipToSalesData?.length) { //IDENTIFYING SHIP-TO
                                 var oShipToSalesData = aShipToSalesData[0];
+                                oShipToSalesData?.YY1_DeliveryMethod1_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod1_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod2_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod2_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod3_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod3_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod4_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod4_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod5_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod5_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod6_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod6_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod7_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod7_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod8_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod9_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa):'';
+                                oShipToSalesData?.YY1_DeliveryMethod10_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa):'';                                
                             }
                             else {
                                 sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
@@ -461,27 +472,27 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                             if (aPackageFiltered?.length) {
                                 var oBPPackage = aPackageFiltered.find((oPkg) => {
-                                    return oPkg?.DeliveryMethod1_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
-                                        oPkg?.DeliveryMethod2_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
-                                        oPkg?.DeliveryMethod3_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod3_csa ||
-                                        oPkg?.DeliveryMethod4_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod4_csa ||
-                                        oPkg?.DeliveryMethod5_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod5_csa ||
-                                        oPkg?.DeliveryMethod6_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod6_csa ||
-                                        oPkg?.DeliveryMethod7_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod7_csa ||
-                                        oPkg?.DeliveryMethod8_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
-                                        oPkg?.DeliveryMethod9_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
-                                        oPkg?.DeliveryMethod10_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa 
-                                        // ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod3_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod4_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod5_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod6_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod7_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
-                                        // oPkg?.SecondaryDeliveryMethod_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa
+                                    return aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod1_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod2_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod3_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod4_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod5_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod6_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod7_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod8_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod9_ShippingCondition) ||
+                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod10_ShippingCondition);
+
+                                    // oPkg?.DeliveryMethod1_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
+                                    //     oPkg?.DeliveryMethod2_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
+                                    //     oPkg?.DeliveryMethod3_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod3_csa ||
+                                    //     oPkg?.DeliveryMethod4_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod4_csa ||
+                                    //     oPkg?.DeliveryMethod5_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod5_csa ||
+                                    //     oPkg?.DeliveryMethod6_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod6_csa ||
+                                    //     oPkg?.DeliveryMethod7_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod7_csa ||
+                                    //     oPkg?.DeliveryMethod8_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
+                                    //     oPkg?.DeliveryMethod9_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
+                                    //     oPkg?.DeliveryMethod10_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa 
 
                                 });
                                 if (oBPPackage) {
@@ -695,9 +706,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     var sProjectID = aProjectIDs[p].ProjectID;
                                     await updateItemTextForSalesOrder(req, "Z006", sProjectID, aResponseStatus, oSalesOrderItem, oContentData);
                                 }
+                                var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
+                                if(oCplList){
+                                    await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, aResponseStatus, oSalesOrderItem, oContentData);                                
+                                }
                                 await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, aResponseStatus, oSalesOrderItem, oContentData);
-                                await updateItemTextForSalesOrder(req, "Z009", aPackageFiltered[0].PackageUUID, aResponseStatus, oSalesOrderItem, oContentData);
-                                await updateItemTextForSalesOrder(req, "Z010", aPackageFiltered[0].PackageName, aResponseStatus, oSalesOrderItem, oContentData);
+                                await updateItemTextForSalesOrder(req, "Z009", aPackageFiltered?.[0].PackageUUID, aResponseStatus, oSalesOrderItem, oContentData);
+                                await updateItemTextForSalesOrder(req, "Z010", aPackageFiltered?.[0].PackageName, aResponseStatus, oSalesOrderItem, oContentData);
                                 Object.assign(oSalesOrder._Item[item], oSalesOrderItem); //Assigining updated field name values back
 
                                 oSalesOrder._Item[item].ShippingType_ID = oSalesOrderItem.ShippingType;
