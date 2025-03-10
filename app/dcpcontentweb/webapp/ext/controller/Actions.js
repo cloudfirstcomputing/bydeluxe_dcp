@@ -266,8 +266,8 @@ sap.ui.define([
                 oView.getModel("dialogModel").setProperty("/salesOrder", oEntry?.SalesOrder)
                 oView.getModel("dialogModel").setProperty("/bookingID", oEntry?.BookingID)
                 // Code to open fragment dialog
-                if (!this._pDialog) {
-                    this._pDialog = Fragment.load({
+                if (!this._remediateDialog) {
+                    this._remediateDialog = Fragment.load({
                         name: "dcpcontentweb.ext.fragments.createRefSalesOrder",
                         controller: {
 
@@ -386,7 +386,7 @@ sap.ui.define([
                         return oDialog;
                     });
                 }
-                this._pDialog.then(function (oDialog) {
+                this._remediateDialog.then(function (oDialog) {
                     // Code to open the dialog
                     oDialog.open();
                 });
@@ -697,8 +697,8 @@ sap.ui.define([
             }];
 
             // Code to open fragment dialog
-            if (!this._pDialog) {
-                this._pDialog = Fragment.load({
+            if (!this._uploadDialog) {
+                this._uploadDialog = Fragment.load({
                     name: "dcpcontentweb.ext.fragments.uploadBookingFeed",
                     controller: {
 
@@ -1097,7 +1097,7 @@ sap.ui.define([
                     return oDialog;
                 });
             }
-            this._pDialog.then(function (oDialog) {
+            this._uploadDialog.then(function (oDialog) {
                 // Code to open the dialog
                 oDialog.open();
             });
