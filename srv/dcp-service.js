@@ -181,7 +181,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 })
                 console.log(aSelected)
                 if (aSelected.length!=0) {
-                    var aRequestUpdated = await UPDATE(TheatreOrderRequest).set(aRequests).where({
+
+                    var aUpdate = JSON.parse(JSON.stringify(aRequests));
+                    delete aUpdate.Theatre_Ass;
+                    delete aUpdate.Content_Ass;
+                    delete aUpdate.MediaOrder_Ass;
+
+                    var aRequestUpdated = await UPDATE(TheatreOrderRequest).set(aUpdate).where({
                         StudioID: aRequests.StudioID,
                         GenerateDate: aRequests.GenerateDate,
                         Version: aRequests.Version,
@@ -210,7 +216,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     ContentOrderID: aRequests.ContentOrderID
                 })
                 if (aSelected.length != 0) {
-                    var aRequestUpdated = await UPDATE(OrderRequest).set(aRequests).where({
+
+                    var aUpdate = JSON.parse(JSON.stringify(aRequests));
+                    delete aUpdate.DeliveryAddress
+                    delete aUpdate.PhysicalAddress  
+                    delete aUpdate.Package     
+                    delete aUpdate.Vendor 
+
+                    var aRequestUpdated = await UPDATE(OrderRequest).set(aUpdate).where({
                         OrderID: aRequests.OrderID,
                         ContentOrderID: aRequests.ContentOrderID
                     });
@@ -233,7 +246,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     generatedDate: aRequests.generatedDate
                 })
                 if (aSelected) {
-                    var aRequestUpdated = await UPDATE(OFEOrders).set(aRequests).where({
+                    var aUpdate = JSON.parse(JSON.stringify(aRequests));
+                    delete aUpdate.keyOrders;
+                    var aRequestUpdated = await UPDATE(OFEOrders).set(aUpdate).where({
                         orderId: aRequests.orderId,
                         studioId: aRequests.studioId,
                         generatedDate: aRequests.generatedDate
