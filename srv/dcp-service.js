@@ -718,11 +718,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         await updateItemTextForSalesOrder(req, "0001", oCTTCPL.LinkedCTT, aResponseStatus, oSalesOrderItem, oContentData);
                                     }
                                 }
-                                var aProjectIDs = await SELECT.columns(['ProjectID']).from(CplList_Local).where({ DCP: { "IN": aDCPs } });
-                                for (var p in aProjectIDs) {
-                                    var sProjectID = aProjectIDs[p].ProjectID;
-                                    await updateItemTextForSalesOrder(req, "Z006", sProjectID, aResponseStatus, oSalesOrderItem, oContentData);
-                                }
+                                // var aProjectIDs = await SELECT.columns(['ProjectID']).from(CplList_Local).where({ DCP: { "IN": aDCPs } });
+                                // for (var p in aProjectIDs) {
+                                //     var sProjectID = aProjectIDs[p].ProjectID;
+                                //     await updateItemTextForSalesOrder(req, "Z006", sProjectID, aResponseStatus, oSalesOrderItem, oContentData);
+                                // }
                                 var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
                                 if(oCplList){
                                     await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, aResponseStatus, oSalesOrderItem, oContentData);                                
