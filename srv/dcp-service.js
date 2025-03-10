@@ -494,6 +494,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                             if (aPackageFiltered?.length) {
                                 var oBPPackage = aPackageFiltered.find((oPkg) => {
+
                                     return aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod1_ShippingCondition) ||
                                     aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod2_ShippingCondition) ||
                                     aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod3_ShippingCondition) ||
@@ -515,7 +516,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     //     oPkg?.DeliveryMethod8_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
                                     //     oPkg?.DeliveryMethod9_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
                                     //     oPkg?.DeliveryMethod10_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa 
-
                                 });
                                 if (oBPPackage) {
                                     aPackageFiltered = [oBPPackage];
