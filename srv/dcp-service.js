@@ -382,6 +382,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sErrorMessage = "Ship Date is not maintained";
                         updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
                     }
+                    oPayLoad.IncotermsClassification="CPT";
+                    oPayLoad.IncotermsLocation1="Destination";
+                     var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
+                     var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));                    
                     // var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
                     // var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
                     // var sDistValidFrom = distroSpecData.ValidFrom;
@@ -471,41 +475,41 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 return a.Priority < b.Priority;
                             }); //SORT PACKAGES BASED ON PRIOIRTY       
                             var aPackageFiltered = aPackages;
-                            // var aPackageFiltered = aPackages.filter((item) => {
-                            // if (item.ValidFrom && item.ValidTo) {
-                            //     var dPackageValidFrom = new Date(item.ValidFrom.replace(/-/g, '/'));
-                            //     var dPackageValidTo = new Date(item.ValidTo.replace(/-/g, '/'));
-                            //     // var sPrimaryShipCondn = item.PrimaryDeliveryMethod_ShippingCondition;
-                            //     // var sSecondaryShipCondn = item.SecondaryDeliveryMethod_ShippingCondition;
-                            //     // if (dPlayStartDate < dPackageValidFrom || dPlayEndDate > dPackageValidTo) {
-                            //     //     return false;
-                            //     // }
-                            //     // else 
-                            //     if (item.ContentIndicator !== sContentIndicator) {
-                            //         return false;
-                            //     }
-                            //     else {
-                            //         return true;
-                            //     }
-                            //     // else if(sCustomerGroupFromS4 === sPrimaryShipCondn || sCustomerGroupFromS4 === sSecondaryShipCondn){
-                            //     //     return true;
-                            //     // }
-                            // }
-                            // else 
-                            // {//THE PACKAGE IS CONSIDERED EVEN IF NO VALIDITY PERIOD IS MAINTAINED
-                            //     if (sCustomerGroupFromS4 === item.DeliveryMethod1_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod2_ShippingCondition || 
-                            //         sCustomerGroupFromS4 === item.DeliveryMethod3_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod4_ShippingCondition || 
-                            //         sCustomerGroupFromS4 === item.DeliveryMethod5_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod6_ShippingCondition || 
-                            //         sCustomerGroupFromS4 === item.DeliveryMethod7_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod8_ShippingCondition || 
-                            //         sCustomerGroupFromS4 === item.DeliveryMethod9_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod10_ShippingCondition 
-                            //     ) {
-                            //         return true;
-                            //     }
-                            //     else {
-                            //         return false
-                            //     }
-                            // }
-                            // });
+                            var aPackageFiltered = aPackages.filter((item) => {
+                            if (item.ValidFrom && item.ValidTo) {
+                                var dPackageValidFrom = new Date(item.ValidFrom.replace(/-/g, '/'));
+                                var dPackageValidTo = new Date(item.ValidTo.replace(/-/g, '/'));
+                                // var sPrimaryShipCondn = item.PrimaryDeliveryMethod_ShippingCondition;
+                                // var sSecondaryShipCondn = item.SecondaryDeliveryMethod_ShippingCondition;
+                                if (dPlayStartDate < dPackageValidFrom || dPlayEndDate > dPackageValidTo) {
+                                    return false;
+                                }
+                                // else 
+                                // if (item.ContentIndicator !== sContentIndicator) {
+                                //     return false;
+                                // }
+                                else {
+                                    return true;
+                                }
+                                // else if(sCustomerGroupFromS4 === sPrimaryShipCondn || sCustomerGroupFromS4 === sSecondaryShipCondn){
+                                //     return true;
+                                // }
+                            }
+                            else 
+                            {//THE PACKAGE IS CONSIDERED EVEN IF NO VALIDITY PERIOD IS MAINTAINED
+                                if (sCustomerGroupFromS4 === item.DeliveryMethod1_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod2_ShippingCondition || 
+                                    sCustomerGroupFromS4 === item.DeliveryMethod3_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod4_ShippingCondition || 
+                                    sCustomerGroupFromS4 === item.DeliveryMethod5_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod6_ShippingCondition || 
+                                    sCustomerGroupFromS4 === item.DeliveryMethod7_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod8_ShippingCondition || 
+                                    sCustomerGroupFromS4 === item.DeliveryMethod9_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod10_ShippingCondition 
+                                ) {
+                                    return true;
+                                }
+                                else {
+                                    return false
+                                }
+                            }
+                            });
 
                             if (aPackageFiltered?.length) {
                                 var oBPPackage = aPackageFiltered.find((oPkg) => {
@@ -584,9 +588,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "Material": aConfig?.find((e) => { return e.VariableName === 'Material_GT24' })?.VariableValue,
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
-                                                "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                                // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                                "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                                "ShippingType": sShippingType
+                                                // "ShippingType": sShippingType
+                                                "ShippingType":"07"
                                             };
                                         }
                                         else {
@@ -594,9 +600,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "Material": aConfig?.find((e) => { return e.VariableName === 'Material_LT24' })?.VariableValue,
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
-                                                "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                                // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                                "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                                "ShippingType": sShippingType
+                                                // "ShippingType": sShippingType
+                                                "ShippingType":"07"
                                             };
                                         }
                                         oPayLoad.to_Item.push(oEntry);
@@ -608,9 +616,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "Material": oMatRecord.DCPMaterialNumber_Product,
                                                 "RequestedQuantity": '1',
                                                 "RequestedQuantityISOUnit": "EA",
-                                                "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                                // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                                "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                                "ShippingType": sShippingType
+                                                // "ShippingType": sShippingType
+                                                "ShippingType": sContentIndicator === "C" ? sShippingType: "07"
                                             };
                                             var assetvault = await SELECT.one.from(AssetVault_Local)
                                                 .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])

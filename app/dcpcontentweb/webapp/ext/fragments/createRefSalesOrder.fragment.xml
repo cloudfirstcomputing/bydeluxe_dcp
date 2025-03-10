@@ -7,18 +7,18 @@
 >
     <Dialog
         id="refSalesOrderDialog"
-        title="{i18n>dialogTitle}"
+        title="{i18n>dialogRemediateTitle}"
         contentWidth="760px"
         xmlns:form="sap.ui.comp.smartform"
         xmlns:sf="sap.ui.comp.smartfield"
     >
         <content>
             <Panel
-                id="panel"
+                id="remed_panel"
                 backgroundDesign="Transparent"
             >
                 <f:SimpleForm
-                    id="sf"
+                    id="remed_sf"
                     layout="ResponsiveGridLayout"
                     backgroundDesign="Transparent"
                 >
@@ -108,7 +108,7 @@
         </content>
         <buttons>
             <Button
-                id="submitBtn"
+                id="remed_submitBtn"
                 text="{i18n>submitBtn}"
                 class="sapUiTinyMarginEnd"
                 iconFirst="false"
@@ -117,7 +117,7 @@
                 press="handleRefSalesorderCreation"
             />
             <Button
-                id="closeBtn"
+                id="remed_closeBtn"
                 text="{i18n>closeBtn}"
                 press="onCloseBtnPress"
                 icon="sap-icon://cancel"
