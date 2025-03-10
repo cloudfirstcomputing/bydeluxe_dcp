@@ -291,7 +291,7 @@ entity Maccs_Dchub : managed {
 
 /// Comscore Hollywood
 
-entity TheatreOrderRequest : cuid, managed {
+entity TheatreOrderRequest : managed {
     key StudioID             : String(50);
     key GenerateDate         : Date;
     key Version              : String(50);
