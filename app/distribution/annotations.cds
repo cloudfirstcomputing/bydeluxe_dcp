@@ -91,7 +91,6 @@ annotate service.StudioKey with {
     NextKeyDuration      @Common: {Label: '{i18n>NextKeyDuration}', };
     OffsetBPD            @Common: {Label: '{i18n>OffsetBPD}', };
     OffsetEPD            @Common: {Label: '{i18n>OffsetEPD}', };
-    InferKeyContentOrder @Common: {Label: '{i18n>InferKeyContentOrder}', };
     AggregateKey         @Common: {Label: '{i18n>AggregateKey}', };
     ProcessKDMS          @Common: {Label: '{i18n>ProcessKDMS}', };
     ProcessScreeningKDMS @Common: {Label: '{i18n>ProcessScreeningKDMS}', };
@@ -112,7 +111,7 @@ annotate service.CustomerRef with {
 annotate service.Package with {
     PackageName      @Common: {Label: '{i18n>PackageName}', };
     Priority         @Common: {Label: '{i18n>Priority}', };
-    ContentIndicator @Common: {Label: '{i18n>ContentIndicator}', };
+    IncludeKey       @Common: {Label: '{i18n>IncludeKey}', };
     DeliveryMethod1  @Common: {
         Label          : '{i18n>DeliveryMethod1}',
         Text           : DeliveryMethod1.ShippingConditionName,
@@ -168,10 +167,61 @@ annotate service.Package with {
 };
 
 annotate service.KeyPackage with {
-    PackageName @Common: {Label: '{i18n>PackageName}', };
-    Priority    @Common: {Label: '{i18n>Priority}', };
-    ValidFrom   @Common: {Label: '{i18n>ValidFrom}', };
-    ValidTo     @Common: {Label: '{i18n>ValidTo}', };
+    PackageName      @Common: {Label: '{i18n>PackageName}', };
+    Priority         @Common: {Label: '{i18n>Priority}', };
+    IncludeContent   @Common: {Label: '{i18n>IncludeContent}', };
+    DeliveryMethod1  @Common: {
+        Label          : '{i18n>DeliveryMethod1}',
+        Text           : DeliveryMethod1.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod2  @Common: {
+        Label          : '{i18n>DeliveryMethod2}',
+        Text           : DeliveryMethod2.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod3  @Common: {
+        Label          : '{i18n>DeliveryMethod3}',
+        Text           : DeliveryMethod3.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod4  @Common: {
+        Label          : '{i18n>DeliveryMethod4}',
+        Text           : DeliveryMethod4.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod5  @Common: {
+        Label          : '{i18n>DeliveryMethod5}',
+        Text           : DeliveryMethod5.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod6  @Common: {
+        Label          : '{i18n>DeliveryMethod6}',
+        Text           : DeliveryMethod6.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod7  @Common: {
+        Label          : '{i18n>DeliveryMethod7}',
+        Text           : DeliveryMethod7.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod8  @Common: {
+        Label          : '{i18n>DeliveryMethod8}',
+        Text           : DeliveryMethod8.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod9  @Common: {
+        Label          : '{i18n>DeliveryMethod9}',
+        Text           : DeliveryMethod9.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    DeliveryMethod10 @Common: {
+        Label          : '{i18n>DeliveryMethod10}',
+        Text           : DeliveryMethod10.ShippingConditionName,
+        TextArrangement: #TextOnly,
+    };
+    ValidFrom        @Common: {Label: '{i18n>ValidFrom}', };
+    ValidTo          @Common: {Label: '{i18n>ValidTo}', };
 };
 
 annotate service.DistRestrictions with {
@@ -250,6 +300,7 @@ annotate service.KeyDistRestrictions with {
 
 annotate service.CPLDetail with {
     CPLUUID @Common: {Label: '{i18n>CPL}'};
+    CTT     @Common: {Label: '{i18n>CTT}'};
 };
 
 annotate service.DCPMaterials with {
@@ -485,10 +536,6 @@ annotate service.StudioKey with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: InferKeyContentOrder,
-            },
-            {
-                $Type: 'UI.DataField',
                 Value: AggregateKey,
             },
             {
@@ -579,6 +626,10 @@ annotate service.Package with @(
             {
                 $Type: 'UI.DataField',
                 Value: Priority,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: IncludeKey,
             },
         ],
     },
@@ -688,10 +739,10 @@ annotate service.Package with @(
             $Type: 'UI.DataField',
             Value: Priority,
         },
-        // {
-        //     $Type: 'UI.DataField',
-        //     Value: ContentIndicator,
-        // },
+        {
+            $Type: 'UI.DataField',
+            Value: IncludeKey,
+        },
         {
             $Type: 'UI.DataField',
             Value: DeliveryMethod1_ShippingCondition,
@@ -704,7 +755,7 @@ annotate service.Package with @(
 );
 
 annotate service.KeyPackage with @(
-    UI.HeaderInfo                         : {
+    UI.HeaderInfo                           : {
         Title         : {
             $Type: 'UI.DataField',
             Value: PackageName,
@@ -712,7 +763,52 @@ annotate service.KeyPackage with @(
         TypeName      : '{i18n>KeyPackage}',
         TypeNamePlural: '{i18n>KeyPackages}',
     },
-    UI.FieldGroup #_KeyPackage            : {
+    UI.FieldGroup #_KeyPackageDeliverymethod: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod1_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod2_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod3_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod4_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod5_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod6_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod7_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod8_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod9_ShippingCondition,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeliveryMethod10_ShippingCondition,
+            },
+        ],
+    },
+    UI.FieldGroup #_KeyPackage              : {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -723,9 +819,13 @@ annotate service.KeyPackage with @(
                 $Type: 'UI.DataField',
                 Value: Priority,
             },
+            {
+                $Type: 'UI.DataField',
+                Value: IncludeContent,
+            },
         ],
     },
-    UI.FieldGroup #_KeyPackageValidityDate: {
+    UI.FieldGroup #_KeyPackageValidityDate  : {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -738,7 +838,7 @@ annotate service.KeyPackage with @(
             },
         ],
     },
-    UI.Facets                             : [
+    UI.Facets                               : [
         {
             $Type : 'UI.CollectionFacet',
             ID    : 'KeyPackageCollection',
@@ -760,6 +860,12 @@ annotate service.KeyPackage with @(
         },
         {
             $Type : 'UI.ReferenceFacet',
+            ID    : '_KeyPackageDeliverymethod',
+            Label : '{i18n>DeliveryMethod}',
+            Target: '@UI.FieldGroup#_KeyPackageDeliverymethod',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
             ID    : '_KeyPackageFilter',
             Label : '{i18n>DistRestriction}',
             Target: 'to_DistRestriction/@UI.LineItem',
@@ -771,7 +877,7 @@ annotate service.KeyPackage with @(
             Target: 'to_CPLDetail/@UI.LineItem',
         },
     ],
-    UI.LineItem                           : [
+    UI.LineItem                             : [
         {
             $Type: 'UI.DataField',
             Value: PackageName,
@@ -779,6 +885,10 @@ annotate service.KeyPackage with @(
         {
             $Type: 'UI.DataField',
             Value: Priority,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: IncludeContent,
         },
     ]
 );
@@ -1138,10 +1248,16 @@ annotate service.CPLDetail with @(
     },
     UI.FieldGroup #_CPLDetail: {
         $Type: 'UI.FieldGroupType',
-        Data : [{
-            $Type: 'UI.DataField',
-            Value: CPLUUID,
-        }, ]
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: CPLUUID,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: CTT,
+            },
+        ]
     },
     UI.Facets                : [{
         $Type : 'UI.ReferenceFacet',
@@ -1149,10 +1265,16 @@ annotate service.CPLDetail with @(
         Label : '{i18n>CPLDetail}',
         Target: '@UI.FieldGroup#_CPLDetail',
     }, ],
-    UI.LineItem              : [{
-        $Type: 'UI.DataField',
-        Value: CPLUUID,
-    }, ]
+    UI.LineItem              : [
+        {
+            $Type: 'UI.DataField',
+            Value: CPLUUID,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: CTT,
+        },
+    ]
 );
 
 
@@ -1434,6 +1556,199 @@ annotate service.DistroSpec with {
 };
 
 annotate service.Package with {
+    DeliveryMethod1  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod1_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod2  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod2_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod3  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod3_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod4  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod4_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod5  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod5_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod6  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod6_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod7  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod7_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod8  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod8_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod9  @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod9_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+    DeliveryMethod10 @(
+        Common.ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'ShippingConditions',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: DeliveryMethod10_ShippingCondition,
+                    ValueListProperty: 'ShippingCondition',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ShippingConditionName',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues: false
+    );
+}
+
+annotate service.KeyPackage with {
     DeliveryMethod1  @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
@@ -2049,6 +2364,10 @@ annotate service.CPLDetail with {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: CPLUUID,
                     ValueListProperty: 'LinkedCPLUUID',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'LinkedCTT',
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',

@@ -53,7 +53,6 @@ entity StudioKey {
         NextKeyDuration      : Integer;
         OffsetBPD            : Integer;
         OffsetEPD            : Integer;
-        InferKeyContentOrder : Boolean;
         AggregateKey         : Boolean;
         ProcessKDMS          : Integer;
         ProcessScreeningKDMS : Integer;
@@ -81,6 +80,17 @@ entity KeyPackage {
         ]  @mandatory;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
+        IncludeContent     : Boolean;
+        DeliveryMethod1    : Association to api.ShippingConditions;
+        DeliveryMethod2    : Association to api.ShippingConditions;
+        DeliveryMethod3    : Association to api.ShippingConditions;
+        DeliveryMethod4    : Association to api.ShippingConditions;
+        DeliveryMethod5    : Association to api.ShippingConditions;
+        DeliveryMethod6    : Association to api.ShippingConditions;
+        DeliveryMethod7    : Association to api.ShippingConditions;
+        DeliveryMethod8    : Association to api.ShippingConditions;
+        DeliveryMethod9    : Association to api.ShippingConditions;
+        DeliveryMethod10   : Association to api.ShippingConditions;
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
         to_DistRestriction : Composition of many KeyDistRestrictions
@@ -95,10 +105,7 @@ entity Package {
             0,
             99
         ]  @mandatory;
-        ContentIndicator   : String(1) enum {
-            K;
-            C
-        };
+        IncludeKey         : Boolean;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
         DeliveryMethod1    : Association to api.ShippingConditions;
@@ -184,6 +191,7 @@ entity KeyDistRestrictions : cuid {
 
 entity CPLDetail : cuid {
     CPLUUID       : String(40);
+    virtual CTT   : String;
     to_KeyPackage : Association to KeyPackage;
 }
 

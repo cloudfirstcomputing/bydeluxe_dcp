@@ -3,7 +3,7 @@ const cds = require("@sap/cds");
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
         const { DistroSpec, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
-            StorageLocations, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+            StorageLocations, CplList, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -201,7 +201,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         // Package?$expand
-        this.on("READ", `Package`, async (req, next) => {
+        this.on("READ", [`KeyPackage`, `Package`], async (req, next) => {
             if (!req.query.SELECT.columns) return next();
             const fields = ["DeliveryMethod1_ShippingCondition", "DeliveryMethod2_ShippingCondition", "DeliveryMethod3_ShippingCondition"
                 , "DeliveryMethod4_ShippingCondition", "DeliveryMethod5_ShippingCondition", "DeliveryMethod6_ShippingCondition", "DeliveryMethod7_ShippingCondition"
@@ -220,11 +220,11 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 let records = []
 
                 switch (processedField[index]) {
-                    case "DeliveryMethod1_ShippingCondition" || "DeliveryMethod2_ShippingCondition" ||
-                        "DeliveryMethod3_ShippingCondition" || "DeliveryMethod7_ShippingCondition" ||
-                        "DeliveryMethod4_ShippingCondition" || "DeliveryMethod8_ShippingCondition" ||
-                        "DeliveryMethod5_ShippingCondition" || "DeliveryMethod9_ShippingCondition" ||
-                        "DeliveryMethod6_ShippingCondition" || "DeliveryMethod10_ShippingCondition":
+                    case "DeliveryMethod1_ShippingCondition": case "DeliveryMethod2_ShippingCondition":
+                    case "DeliveryMethod3_ShippingCondition": case "DeliveryMethod7_ShippingCondition":
+                    case "DeliveryMethod4_ShippingCondition": case "DeliveryMethod8_ShippingCondition":
+                    case "DeliveryMethod5_ShippingCondition": case "DeliveryMethod9_ShippingCondition":
+                    case "DeliveryMethod6_ShippingCondition": case "DeliveryMethod10_ShippingCondition":
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
 
                         break;
@@ -287,17 +287,24 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         })
 
-        this.after('each', `DCPMaterials`, async req => {
-            if (req.DCPMaterialNumber_Product) {
-                const assetvault = await SELECT.one.from(DistributionDcp)
-                    .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
-                    .where({
-                        DCP: req.DCPMaterialNumber_Product
-                    })
-                if (assetvault?._Items?.length > 0) {
-                    req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
-                    req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
-                }
+        // this.after('each', `DCPMaterials`, async req => {
+        //     if (req.DCPMaterialNumber_Product) {
+        //         const assetvault = await SELECT.one.from(DistributionDcp)
+        //             .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+        //             .where({
+        //                 DCP: req.DCPMaterialNumber_Product
+        //             })
+        //         if (assetvault?._Items?.length > 0) {
+        //             req.CTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+        //             req.CPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`)
+        //         }
+        //     }
+        // })
+
+        this.after('each', `CPLDetail`, async (req) => {
+            if (req.CPLUUID) {
+                const assetvault = await SELECT.one.from(CplList).where({ LinkedCPLUUID: req.CPLUUID })
+                req.CTT = assetvault.LinkedCTT
             }
         })
 
