@@ -743,14 +743,6 @@ annotate service.Package with @(
             $Type: 'UI.DataField',
             Value: IncludeKey,
         },
-        {
-            $Type: 'UI.DataField',
-            Value: DeliveryMethod1_ShippingCondition,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: DeliveryMethod2_ShippingCondition,
-        },
     ]
 );
 
