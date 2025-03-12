@@ -299,8 +299,10 @@ annotate service.KeyDistRestrictions with {
 };
 
 annotate service.CPLDetail with {
-    CPLUUID @Common: {Label: '{i18n>CPL}'};
-    CTT     @Common: {Label: '{i18n>CTT}'};
+    CPLUUID  @Common: {Label: '{i18n>CPL}'};
+    CTT      @Common: {Label: '{i18n>CTT}'};
+    Email    @Common: {Label: '{i18n>Email}'};
+    Download @Common: {Label: '{i18n>Download}'};
 };
 
 annotate service.DCPMaterials with {
@@ -1249,6 +1251,14 @@ annotate service.CPLDetail with @(
                 $Type: 'UI.DataField',
                 Value: CTT,
             },
+            {
+                $Type: 'UI.DataField',
+                Value: Email,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Download,
+            },
         ]
     },
     UI.Facets                : [{
@@ -1259,23 +1269,51 @@ annotate service.CPLDetail with @(
     }, ],
     UI.LineItem              : [
         {
-            $Type: 'UI.DataField',
-            Value: CPLUUID,
+            $Type        : 'UI.DataFieldForAction',
+            Action       : 'DistributionService.setDownloadEmail',
+            Label        : 'Set Download/Email',
+            ![@UI.Hidden]: {$edmJson: {$Ne: [
+                {$Path: 'IsActiveEntity'},
+                true
+            ]}},
         },
         {
-            $Type: 'UI.DataField',
-            Value: CTT,
+            $Type                : 'UI.DataField',
+            Value                : CPLUUID,
+            ![@HTML5.CssDefaults]: {
+                $Type: 'HTML5.CssDefaultsType',
+                width: 'auto',
+            },
+        },
+        {
+            $Type                : 'UI.DataField',
+            Value                : CTT,
+            ![@HTML5.CssDefaults]: {
+                $Type: 'HTML5.CssDefaultsType',
+                width: 'auto',
+            },
+        },
+        {
+            $Type                : 'UI.DataField',
+            Value                : Email,
+            ![@HTML5.CssDefaults]: {
+                $Type: 'HTML5.CssDefaultsType',
+                width: 'auto',
+            },
+        },
+        {
+            $Type                : 'UI.DataField',
+            Value                : Download,
+            ![@HTML5.CssDefaults]: {
+                $Type: 'HTML5.CssDefaultsType',
+                width: 'auto',
+            },
         },
     ]
 );
 
 
 annotate service.CplList with @(UI.LineItem: [
-    {
-        $Type : 'UI.DataFieldForAction',
-        Action: 'DistributionService.setDownloadEmail',
-        Label : 'Set Download/Email'
-    },
     {
         $Type: 'UI.DataField',
         Value: LinkedCPLUUID,

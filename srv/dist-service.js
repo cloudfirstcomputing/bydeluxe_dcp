@@ -3,7 +3,7 @@ const cds = require("@sap/cds");
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
         const { DistroSpec, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
-            StorageLocations, CplList, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+            StorageLocations, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -305,22 +305,33 @@ module.exports = class DistributionService extends cds.ApplicationService {
             if (req.CPLUUID) {
                 const assetvault = await SELECT.one.from(CplList).where({ LinkedCPLUUID: req.CPLUUID })
                 req.CTT = assetvault.LinkedCTT
+                req.Email = assetvault.Email
+                req.Download = assetvault.Download
             }
         })
 
+        // this.on('setDownloadEmail', async req => {
+        //     const { DCP, LinkedCPLUUID } = req.params[3]
+        //     const assetvault = await SELECT.one.from(DistributionDcp)
+        //         .columns(["*"])
+        //         .where({
+        //             DCP: DCP
+        //         })
+        //     if (assetvault) {
+        //         await UPDATE('DistributionService.DistributionDcp__Items').with({
+        //             Email: req.data.email,
+        //             Download: req.data.download
+        //         }).where({ up__ProjectID: assetvault.ProjectID, LinkedCPLUUID: LinkedCPLUUID })
+        //     }
+        // })
+
         this.on('setDownloadEmail', async req => {
-            const { DCP, LinkedCPLUUID } = req.params[3]
-            const assetvault = await SELECT.one.from(DistributionDcp)
-                .columns(["*"])
-                .where({
-                    DCP: DCP
-                })
-            if (assetvault) {
-                await UPDATE('DistributionService.DistributionDcp__Items').with({
-                    Email: req.data.email,
-                    Download: req.data.download
-                }).where({ up__ProjectID: assetvault.ProjectID, LinkedCPLUUID: LinkedCPLUUID })
-            }
+            const { ID } = req.params[2]
+            const cpl = await SELECT.one.from(CPLDetail, ID)
+            await UPDATE('DistributionService.DistributionDcp__Items').with({
+                Email: req.data.email,
+                Download: req.data.download
+            }).where({ LinkedCPLUUID: cpl.CPLUUID })
         })
 
         this.before('NEW', `Package.drafts`, req => {

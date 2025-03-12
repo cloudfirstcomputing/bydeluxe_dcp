@@ -28,14 +28,7 @@ service DistributionService {
                 a.Email
         }
         where
-            b.CreatedinSAP = true
-        actions {
-            @(
-                cds.odata.bindingparameter.name: '_it',
-                Common.SideEffects             : {TargetProperties: ['_it/*']}
-            )
-            action setDownloadEmail(download : Boolean, email : Boolean);
-        };
+            b.CreatedinSAP = true;
 
     @readonly
     entity CustomerGroup        as projection on api.CustomerGroup;
@@ -80,6 +73,15 @@ service DistributionService {
 
     @readonly
     entity DeliveryPriority     as projection on api.DeliveryPriority;
+
+    entity CPLDetail            as projection on db.CPLDetail
+        actions {
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: ['_it/*']}
+            )
+            action setDownloadEmail(download : Boolean, email : Boolean);
+        };
 
     entity DistroSpec           as projection on db.DistroSpec;
     entity DCPMaterials         as projection on db.DCPMaterials;

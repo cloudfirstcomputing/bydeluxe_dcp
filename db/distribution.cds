@@ -190,9 +190,11 @@ entity KeyDistRestrictions : cuid {
 };
 
 entity CPLDetail : cuid {
-    CPLUUID       : String(40);
-    virtual CTT   : String;
-    to_KeyPackage : Association to KeyPackage;
+    CPLUUID          : String(40) @mandatory;
+    virtual CTT      : String;
+    virtual Email    : Boolean;
+    virtual Download : Boolean;
+    to_KeyPackage    : Association to KeyPackage;
 }
 
 entity DCPMaterials {
