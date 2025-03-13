@@ -24,6 +24,20 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "materialtitle-manage": {
+          "semanticObject": "printform",
+          "action": "manage",
+          "title": "{{printform-manage.flpTitle}}",
+          "subTitle": "{{printform-manage.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
     }
   },
   "sap.ui": {
