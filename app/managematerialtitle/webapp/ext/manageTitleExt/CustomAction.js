@@ -20,7 +20,7 @@ sap.ui.define([
 
             // Load the fragment only once
             if (!this._oDialog) {
-              var oFragment = Fragment.load({
+                var oFragment = Fragment.load({
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.manageTitleExt.CreateTitle",
                     controller: {
@@ -29,19 +29,54 @@ sap.ui.define([
                                 this._oDialog.close();
                             }
                         }.bind(that),
-                        onSaveCreate: function(event) {
+                        onValidateOriginalTitle: function (oEvent) {
+                            var oInput = oEvent.getSource(),
+                                oModel = oView.getModel(),
+                                sProductDescription = oInput.getValue(),
+                                sUrl = `${oModel.sServiceUrl}ProductDescription?$filter=ProductDescription eq '${sProductDescription}'`;
+
+                            $.ajax({
+                                url: sUrl,
+                                type: "GET",
+                                async: false,
+                                contentType: "application/json",
+                                success: function (data) {
+                                    var resp = data.value;
+
+                                    if (!resp || !resp.length) {
+                                        oInput.setValueState("None");
+                                    } else {                                        
+                                        oInput.setValueState("Error");
+                                        oView.getModel("formModel").setProperty("/OriginalTitleName", "");
+
+                                        sap.ui.require(["sap/m/MessageBox"], function (MessageBox) {
+                                            MessageBox.error("Title Already Exists");
+                                        });
+                                    }
+                                }.bind(this),
+                                error: function (error) {
+                                    console.log(error);
+                                    oInput.setValueState("Error");
+                                    sap.ui.require(["sap/m/MessageBox"], function (MessageBox) {
+                                        MessageBox.error("Error fetching material information.");
+                                    });
+                                }
+                            });
+                        }.bind(that),
+                        onSaveCreate: function (event) {
                             var oContext = event.getSource().getBindingContext();
-                            var oModel = oView.getModel();                                                 
-                           
+                            var oModel = oView.getModel();
+
                             var oData = oView.getModel("formModel").getData();
-                            // oData.MaterialMasterTitleID = parseInt(oData.MaterialMasterTitleID);
-                            // oData.MaterialMasterTitleID = Math.floor(100000 + Math.random() * 900000);
+
                             if (oData.ReleaseDate) {
                                 oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
                             if (oData.RepertoryDate) {
                                 oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
+
+
 
                             var oDataS4API = {
                                 Product: "",
@@ -64,7 +99,9 @@ sap.ui.define([
                                     }
                                 ]
                             };
-                
+
+
+
                             var updateCall = $.ajax({
                                 url: `${oModel.sServiceUrl}createProduct`, // Call the action instead of the entity
                                 type: "POST",
@@ -74,16 +111,16 @@ sap.ui.define([
                                     console.log("Product creation successful:", response.Product);
                                     oView.getModel().refresh();
                                     oData.MaterialMasterTitleID = response.Product
-                                    this.postTitles(oData,response.Product)
+                                    this.postTitles(oData, response.Product)
                                 }.bind(this),
                                 error: function (xhr, status, error) {
                                     console.error("Product creation failed:", status, error, xhr.responseText);
                                 }
                             });
 
-                            
+
                         }.bind(that),
-                    }  
+                    }
                 }).then(function (oDialog) {
                     that._oDialog = oDialog;
                     var oFormModel = new sap.ui.model.json.JSONModel({
@@ -91,15 +128,15 @@ sap.ui.define([
                         LocalTitleId: "", // This should be ignored while Creating
                         RegionCode: "",
                         OriginalTitleName: "",
-                        TitleType: "",
-                        TitleCategory: "",
+                        TitleType: "Parent",
+                        TitleCategory: "Z007",
                         RegionalTitleName: "",
                         ShortTitle: "",
                         SecurityTitle: "",
-                        LanguageCode: "",
+                        LanguageCode: "EN",
                         ReleaseDate: null,
                         RepertoryDate: null,
-                        Format: "",
+                        Format: "2D",
                         ReleaseSize: "",
                         Ratings: "",
                         ReelCountEstimated: null,
@@ -112,7 +149,7 @@ sap.ui.define([
                         //IDType: "",
                         //IDValue: ""
                     });
-                
+
                     // Set the model to the view
                     oView.setModel(oFormModel, "formModel");
                     oView.addDependent(oDialog);
@@ -122,38 +159,38 @@ sap.ui.define([
                 this._oDialog.open();
             }
 
-            this.postTitles=function(oData,Product){
-                var oModel = oView.getModel();   
-                  var updateCall = $.ajax({
-                                    url: `${oModel.sServiceUrl}Titles`, 
-                                    type: "POST", // Use PATCH or PUT based on your OData service
-                                    contentType: "application/json",                                
-                                    data: JSON.stringify(oData),
-                                    success: function (response) {
-                                        console.log("Update successful:", response);
-                                        MessageBox.success(oView.getController().getResourceBundle().getText("Success", [Product]), {
-                                            title: oView.getController().getResourceBundle().getText("SuccessTitle"),
-                                            actions: MessageBox.Action.OK,
-                                            emphasizedAction: MessageBox.Action.OK,
-                                            onClose: function (oAction) {
-                                                if (oAction === MessageBox.Action.OK) {
-                                                    // funcReset(oView, that);
-                                                }
-                                            }
-                                        });
-                                        oView.getModel().refresh();
-                                        if (that._oDialog) {
-                                            that._oDialog.close();
-                                        }
-    
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error("Update failed:", status, error, xhr.responseText);
-                                    }
-                                });
+            this.postTitles = function (oData, Product) {
+                var oModel = oView.getModel();
+                var updateCall = $.ajax({
+                    url: `${oModel.sServiceUrl}Titles`,
+                    type: "POST", // Use PATCH or PUT based on your OData service
+                    contentType: "application/json",
+                    data: JSON.stringify(oData),
+                    success: function (response) {
+                        console.log("Update successful:", response);
+                        MessageBox.success(oView.getController().getResourceBundle().getText("Success", [Product]), {
+                            title: oView.getController().getResourceBundle().getText("SuccessTitle"),
+                            actions: MessageBox.Action.OK,
+                            emphasizedAction: MessageBox.Action.OK,
+                            onClose: function (oAction) {
+                                if (oAction === MessageBox.Action.OK) {
+                                    // funcReset(oView, that);
+                                }
+                            }
+                        });
+                        oView.getModel().refresh();
+                        if (that._oDialog) {
+                            that._oDialog.close();
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Update failed:", status, error, xhr.responseText);
+                    }
+                });
             }
         }
 
-        
+
     };
 });

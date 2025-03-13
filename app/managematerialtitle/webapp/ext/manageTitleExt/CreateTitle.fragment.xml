@@ -25,10 +25,7 @@
                     <Label id="lblProductDescription1" text="Product Description"/>
                     <Input id="inputProductDescription"/> -->
                     <Label id="lblOriginalTitleName" text="Original Title Name"/>
-                    <Input id="inputOriginalTitleName" value="{formModel>/OriginalTitleName}"/>
-
-                    <Label id="lblLanguageKey1" text="Language Key"/>
-                    <Input id="inputLanguageKey" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+                    <Input required="true" id="inputOriginalTitleName" value="{formModel>/OriginalTitleName}" change=".onValidateOriginalTitle"/>                    
 
                     <Label id="lblTitleType" text="Title Type"/>
                     <Select id="selectEditTitletypeC" selectedKey="{formModel>/TitleType}">

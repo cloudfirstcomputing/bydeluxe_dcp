@@ -35,7 +35,9 @@
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-createdcpmaterials": "cds watch --open createdcpmaterials/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-booksalesorderweb": "cds watch --open booksalesorderweb/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-managematerialtitle": "cds watch --open managematerialtitle/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-managematerialtitle": "cds watch --open managematerialtitle/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-adobeformprinting": "cds watch --open adobeformprinting/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-printdocuments": "cds watch --open printdocuments/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -259,6 +261,10 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "API_MATERIAL_DOCUMENT_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_MATERIAL_DOCUMENT_SRV"
       }
     }
   },
@@ -269,6 +275,7 @@
     "app/dcpkeyweb",
     "app/assetvault",
     "app/booksalesorderweb",
-    "app/managematerialtitle"
+    "app/managematerialtitle",
+    "app/adobeformprinting"
   ]
 }

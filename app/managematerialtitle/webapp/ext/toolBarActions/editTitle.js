@@ -36,14 +36,14 @@ sap.ui.define([
 
                             var oData = oContext.getObject();
 
-                            
-                            var oPostData = oView.getModel("formModel").getData();   
+
+                            var oPostData = oView.getModel("formModel").getData();
                             if (oPostData.ReleaseDate) {
                                 oPostData.ReleaseDate = new Date(oPostData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
                             if (oPostData.RepertoryDate) {
                                 oPostData.RepertoryDate = new Date(oPostData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
-                            }                    
+                            }
                             var sKey = `(MaterialMasterTitleID=${oData.MaterialMasterTitleID},LocalTitleId='${oData.LocalTitleId}',ID=${oData.ID},RegionCode='${oData.RegionCode}')`;
                             var updateCall = $.ajax({
                                 url: `${oModel.sServiceUrl}Titles${sKey}`,
@@ -70,14 +70,29 @@ sap.ui.define([
                     }
                 }).then(function (oDialog) {
                     that._oDialog = oDialog;
-                    oDialog.open();
                     var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
                     var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
+                    var sTitleType = oFormModel.getData().TitleType;
+                    if (!sTitleType || sTitleType === "Parent") {
+                        MessageToast.show("Select a non Parent Item to Edit!");
+                        return;
+                    }
+                    oDialog.open();
+
+
                     oView.setModel(oFormModel, "formModel");
                     oView.addDependent(oDialog);
 
                 });
             } else {
+                var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
+                var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
+                var sTitleType = oFormModel.getData().TitleType;
+                if (!sTitleType || sTitleType === "Parent") {
+                    MessageToast.show("Select a non Parent Item to Edit!");
+                    return;
+                }
+                oView.setModel(oFormModel, "formModel");
                 this._oDialog.open();
             }
         },

@@ -9,3 +9,5 @@ using from './booksalesorderweb/annotations';
 using from './distribution/annotations';
 
 using from './managematerialtitle/annotations';
+
+using from './printdocuments/annotations';

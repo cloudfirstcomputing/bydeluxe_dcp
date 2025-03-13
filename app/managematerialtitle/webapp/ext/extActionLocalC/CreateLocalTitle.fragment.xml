@@ -15,64 +15,68 @@
                           layout="ResponsiveGridLayout"
                           editable="true">
                 
-                <f:content>
-                    <!-- <Label id="lblProduct" text="Title Name"/>
-                    <Input id="product"/>
-                    
-                    <Label id="lblProductType" text="Title Description"/>
-                    <Input id="productType" />
-                    
-                    <Label id="lblProductDescription" text="Product Description"/>
-                    <Input id="productDescription"/> -->
-                    <Label id="lblBasicText" text="Original Title Name"/>
-                    <Input id="basicText"/>
-                    
-                    <Label id="lblLanguageKey" text="Language Key"/>
-                    <Input id="languageKey" value="EN" editable="false"/>                    
-                                     
-                                    
-                    <Label id="lblProductGroup" text="Title Category"/>
-                    <Select id="productGroup">
+                 <f:content>
+                    <Label id="localCreate_lblOriginalTitleName" text="Original Title Name"/>
+                    <Input required="true" id="localCreate_inputOriginalTitleName" 
+                           value="{formModel>/OriginalTitleName}" 
+                           change=".onValidateOriginalTitle" editable="false"/>
+                    <Input required="true" id="localCreate_inputOriginalRegionalTitle" 
+                           value="{formModel>/RegionalTitleName}" 
+                           change=".onValidateOriginalTitle" editable="true"/>
+                    <Input required="true" id="localCreate_inputOriginalShortTitle" 
+                           value="{formModel>/ShortTitle}" 
+                           change=".onValidateOriginalTitle" editable="true"/>
+
+                    <Label id="localCreate_lblTitleType" text="Title Type"/>
+                    <Select id="localCreate_selectEditTitletypeC" selectedKey="Local" editable="false">
                         <items>
-                            <core:Item id="item1Lpg" key="Z007" text="Confirmed/Known Title"/>
-                            <core:Item id="item2Lpg" key="Z006" text="Provisional/Unknown Title"/>
+                            <core:Item id="localCreate_itemEditTitleType2C" key="Parent" text="Parent"/>
+                            <core:Item id="localCreate_itemEditTitleType1C" key="Local" text="Local"/>                            
                         </items>
                     </Select>
-                    
-                    <Label id="lblRegionCodeL" text="Region Code"/>
-                    <Input id="regionCode" showValueHelp="true"/>
-                    
-                    <Label id="lblLanguageCode" text="Language Code"/>
-                    <Input id="languageCode" showValueHelp="true"/>
-                    
-                    <Label id="lblReleaseDate" text="Release Date"/>
-                    <DatePicker id="releaseDate"/>
-                    
-                    <Label id="lblFormat" text="Format"/>
-                    <Select id="format">
+
+                    <Label id="localCreate_lblTitleCategory" text="Title Category"/>
+                    <Select id="localCreate_selectTitleCategory" selectedKey="{formModel>/TitleCategory}">
                         <items>
-                            <core:Item id="item1L" key="2D" text="2D"/>
-                            <core:Item id="item2L" key="3D" text="3D"/>
+                            <core:Item id="localCreate_itemTitleCategory1" key="Z007" text="Confirmed/Known Title"/>
+                            <core:Item id="localCreate_itemTitleCategory2" key="Z006" text="Provisional/Unknown Title"/>
                         </items>
                     </Select>
-                    
-                    <Label id="lblReleaseSize" text="Release Size"/>
-                    <Input id="releaseSize"/>
-                    
-                    <Label id="lblRatings" text="Ratings"/>
-                    <Input id="ratings"/>
-                    
-                    <Label id="lblAssetVaultTitleId" text="Asset Vault Title Id"/>
-                    <Input id="assetVaultTitleId"/>
-                    
-                    <Label id="lblImdbId" text="IMDB ID"/>
-                    <Input id="imdbId"/>
-                    
-                    <Label id="lblStudioTitleId" text="Studio Title Id"/>
-                    <Input id="studioTitleId"/>
-                    
-                    <Label id="lblStudioDistributor" text="Studio / Distributor"/>
-                    <Input id="studioDistributor" showValueHelp="true"/>
+
+                    <Label id="localCreate_lblRegionCode" text="Region Code"/>
+                    <Input id="localCreate_inputRegionCode" value="{formModel>/RegionCode}" showValueHelp="true"/>
+
+                    <Label id="localCreate_lblLanguageCode1" text="Language Code"/>
+                    <Input id="localCreate_inputLanguageCode" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+
+                    <Label id="localCreate_lblReleaseDate1" text="Release Date"/>
+                    <DatePicker id="localCreate_datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
+
+                    <Label id="localCreate_lblFormat1" text="Format"/>
+                    <Select id="localCreate_selectFormat" selectedKey="{formModel>/Format}">
+                        <items>
+                            <core:Item id="localCreate_itemFormat1" key="2D" text="2D"/>
+                            <core:Item id="localCreate_itemFormat2" key="3D" text="3D"/>
+                        </items>
+                    </Select>
+
+                    <Label id="localCreate_lblReleaseSize1" text="Release Size"/>
+                    <Input id="localCreate_inputReleaseSize" value="{formModel>/ReleaseSize}"/>
+
+                    <Label id="localCreate_lblRatings1" text="Ratings"/>
+                    <Input id="localCreate_inputRatings" value="{formModel>/Ratings}"/>
+
+                    <Label id="localCreate_lblAssetVaultTitleId1" text="Asset Vault Title Id"/>
+                    <Input id="localCreate_inputAssetVaultTitleId" value="{formModel>/AssetVaultTitleId}"/>
+
+                    <Label id="localCreate_lblImdbId1" text="IMDB ID"/>
+                    <Input id="localCreate_inputImdbId" value="{formModel>/ImdbId}"/>
+
+                    <Label id="localCreate_lblStudioTitleId1" text="Studio Title Id"/>
+                    <Input id="localCreate_inputStudioTitleId" value="{formModel>/StudioTitleId}"/>
+
+                    <Label id="localCreate_lblStudioDistributor1" text="Studio/Distributor"/>
+                    <Input id="localCreate_inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true"/>
                 </f:content>
             </f:SimpleForm>
         </VBox>

@@ -11,7 +11,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products } = this.entities;
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, A_MaterialDocumentHeader } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -21,6 +21,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_shpointv2_vh_Txn = await cds.connect.to("YY1_I_SHIPPINGPOINT_CDS_0001");
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
         var s4h_products_Crt = await cds.connect.to("API_PRODUCT_SRV");
+        var s4h_material_read = await cds.connect.to("API_MATERIAL_DOCUMENT_SRV");
+
+        var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
@@ -1075,6 +1078,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     return aSalesArea;
         });
 
+        this.on(['READ'], ProductDescription, async req => {
+            return s4h_products_Crt.run(req.query);
+        }); 
+
+        this.on(['READ'], A_MaterialDocumentHeader, async req => {
+            return s4h_material_read.run(req.query);
+        }); 
+
         this.on("createProduct", async (req) => {
             try {
                 const input = req.data.input; // Extract input data from request
@@ -1087,6 +1098,68 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.error(500, `Product creation failed: ${error.message}`);
             }
         });
+
+         this.on("downloadFormADS", async (req, res) => {
+                    try {
+                        var form_name = 'frm_058'
+                        var query = `/v1/forms/${form_name}`;
+                        var oFormObject = await deluxe_adsrestapi.get(query);
+                        var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+                        const jsonData = {
+                            customer: {
+                                name: "John Doe",
+                                address: "1234 Elm Street",
+                                city: "Berlin",
+                                country: "Germany"
+                            },
+                            items: [
+                                { description: "Laptop", quantity: 1, price: 1200 },
+                                { description: "Mouse", quantity: 2, price: 25 }
+                            ],
+                            total: 1250
+                        };
+        
+                        // Wrap everything in a single root element to ensure well-formed XML
+                        const wrappedJson = { root: jsonData };
+        
+                        // Convert JSON to XML (Ensure single root)
+                        const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });
+        
+                        // Encode XML to Base64
+                        const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+        
+                        const headers = {
+                            "Content-Type": 'application/json',
+                            "accept": 'application/json',
+                        };
+        
+                        // Print PDF code logic
+                        var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+        
+                        const data = {
+                            "xdpTemplate": sXMLTemplate,
+                            "xmlData": base64EncodedXml,
+                            "formType": "print",
+                            "formLocale": "en_US",
+                            "taggedPdf": 1,
+                            "embedFont": 0,
+                            "changeNotAllowed": false,
+                            "printNotAllowed": false
+                        };
+        
+                        var oPrintForm = await deluxe_adsrestapi.send({
+                            method: "POST",
+                            path: sDownloadPDFurl,
+                            data,
+                            headers
+                        });
+        
+                        return oPrintForm.fileContent;
+                    }
+                    catch (e) {
+                        req.error(502, e)
+                    }
+                });
         return super.init();
     }
 

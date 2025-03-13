@@ -64,32 +64,13 @@ sap.ui.define([
                     }  
                 }).then(function (oDialog) {
                     that._oDialog = oDialog;
-                    var oFormModel = new sap.ui.model.json.JSONModel({
-                        MaterialMasterTitleID: "",
-                        LocalTitleId: "",
-                        RegionCode: "",
-                        OriginalTitleName: "",
-                        TitleType: "",
-                        TitleCategory: "",
-                        RegionalTitleName: "",
-                        ShortTitle: "",
-                        SecurityTitle: "",
-                        LanguageCode: "",
-                        ReleaseDate: null,
-                        RepertoryDate: null,
-                        Format: "",
-                        ReleaseSize: "",
-                        Ratings: "",
-                        ReelCountEstimated: null,
-                        AssetVaultTitleId: "",
-                        ImdbId: "",
-                        StudioTitleId: "",
-                        StudioDistributor: "",
-                        Ratings_Ass: [],
-                        ExternalTitleIDs_Ass: []
-                        //IDType: "",
-                        //IDValue: ""
-                    });
+                    var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
+                    var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
+                    var sTitleType = oFormModel.getData().TitleType;
+                    if (!sTitleType || sTitleType === "Local") {
+                        MessageToast.show("Select a non Parent Item to Edit!");
+                        return;
+                    }
                 
                     // Set the model to the view
                     oView.setModel(oFormModel, "formModel");

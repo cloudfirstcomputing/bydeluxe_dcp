@@ -1,0 +1,98 @@
+<mvc:View controllerName="com.dlx.printdocu.printdocuments.controller.PrintView"
+    xmlns:mvc="sap.ui.core.mvc"
+   	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:svm="sap.ui.comp.smartvariants">
+    <f:DynamicPage headerExpanded="{/headerExpanded}" >
+			<f:title>
+				<f:DynamicPageTitle>
+					<f:heading>
+						<Title text="Print Forms"/>
+					</f:heading>
+					<f:actions>
+						<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>						
+                	</f:actions>					
+					<f:expandedContent>
+						<Label id="expandedLabel" text="No filters active" />
+					</f:expandedContent>
+					<f:snappedContent>
+						<Label id="snappedLabel" text="No filters active" />
+					</f:snappedContent>
+				</f:DynamicPageTitle>
+			</f:title>
+			<f:header>
+				<f:DynamicPageHeader>
+					<f:content>
+						<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
+							<fb:filterGroupItems>
+								<fb:FilterGroupItem name="Name" label="Form Name / Output Type" groupName="Group1" visibleInFilterBar="true">
+									<fb:control>
+										<Select id="selectFormName">
+											<items>
+												<core:Item key="1" text="Inbound label (PID) (CAN only)"/>
+												<core:Item key="2" text="DCDC HDD label "/>
+												<core:Item key="3" text="Deluxe HDD Label"/>
+												<core:Item key="4" text="Master HDD Label "/>
+												<core:Item key="5" text="thumbnail_Hard Drive Label 4 x 6"/>
+											</items>
+										</Select>											
+									</fb:control>
+								</fb:FilterGroupItem>
+								<fb:FilterGroupItem groupName="General" label="Document Creation Date" name="StartDate" visibleInFilterBar="true">
+									<fb:control>
+								    	<DatePicker id="startDate" change="onDateChange"/>
+									</fb:control>
+								</fb:FilterGroupItem>
+
+								<fb:FilterGroupItem groupName="General" label="To" name="EndDate" visibleInFilterBar="true">
+									<fb:control>
+										<DatePicker id="endDate" change="onDateChange"/>
+									</fb:control>
+								</fb:FilterGroupItem>
+								<fb:FilterGroupItem groupName="General" label="Document Key" name="DocuKey" visibleInFilterBar="true">
+									<fb:control>
+										<Input id="documentKey" />
+									</fb:control>
+								</fb:FilterGroupItem>
+							</fb:filterGroupItems>
+						</fb:FilterBar>
+					</f:content>
+				</f:DynamicPageHeader>
+			</f:header>
+			<f:content>
+				 <Table id="docTable" mode="MultiSelect" items="{docModel>/documents}">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Documents"/>
+						 <ToolbarSpacer/>
+						<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>
+                    </Toolbar>
+                </headerToolbar>
+
+                <columns>                    
+                    <Column>
+                        <Text text="Document Number"/>
+                    </Column>
+                    <Column>
+                        <Text text="Document Type"/>
+                    </Column>
+                    <Column>
+                        <Text text="Document Date"/>
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem type="Active" press="onPrint">
+                        <cells>                            
+                            <Text text="{docModel>docNumber}"/>
+                            <Text text="{docModel>docType}"/>
+                            <Text text="{docModel>docDate}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+			</f:content>
+		</f:DynamicPage>
+</mvc:View>

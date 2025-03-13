@@ -102,6 +102,10 @@ modules:
     - artifacts:
       - comdlxmanagematerialtitle.zip
       name: comdlxmanagematerialtitle
+      target-path: resources/    
+    - artifacts:
+      - comdlxprintdocuprintdocuments.zip
+      name: comdlxprintdocuprintdocuments
       target-path: resources/
 - name: comdlxdistribution
   type: html5
@@ -166,6 +170,16 @@ modules:
 - name: comdlxmanagematerialtitle
   type: html5
   path: app/managematerialtitle
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: comdlxprintdocuprintdocuments
+  type: html5
+  path: app/printdocuments
   build-parameters:
     build-result: dist
     builder: custom

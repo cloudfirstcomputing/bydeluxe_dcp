@@ -6,6 +6,7 @@ using {DistributionService as distService} from './dist-service';
 using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
 using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
+using { API_MATERIAL_DOCUMENT_SRV as MaterialDoc } from '../srv/external/API_MATERIAL_DOCUMENT_SRV.csn'; //bydeluxe/srv/external/API_MATERIAL_DOCUMENT_SRV.csn
 using api from '../db/common';
 
 service BookingOrderService {
@@ -291,7 +292,7 @@ service BookingOrderService {
             to_ProductBasicText : redirected to ProductBasicText,
             to_Description  : redirected to ProductDescription      
     };
-
+    @readonly
     entity ProductDescription            as
     projection on externalProduct.A_ProductDescription {
         key Product,
@@ -331,6 +332,12 @@ service BookingOrderService {
     }
 
     action createProduct(input: ProductsType) returns Products;
+
+    function downloadFormADS() returns LargeString;
+
+    @readonly
+    entity A_MaterialDocumentHeader as projection on MaterialDoc.A_MaterialDocumentHeader;
+    
     
 
     
