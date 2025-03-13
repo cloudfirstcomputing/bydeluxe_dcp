@@ -14,6 +14,8 @@ using {API_SALESDISTRICT_SRV as salesdist} from '../srv/external/API_SALESDISTRI
 using {YY1_I_SHIPPINGPOINT_CDS_0001 as S4_ShippingPoint} from '../srv/external/YY1_I_SHIPPINGPOINT_CDS_0001';
 using {YY1_I_SHIPPINGTYPE_CDS_0001 as S4_ShippingType} from '../srv/external/YY1_I_SHIPPINGTYPE_CDS_0001';
 using {YY1_PARAMETER_CDS_0001 as Parameter} from '../srv/external/YY1_PARAMETER_CDS_0001';
+using {API_MATERIAL_DOCUMENT_SRV as MaterialDoc } from '../srv/external/API_MATERIAL_DOCUMENT_SRV';
+using {API_PRODUCTION_ORDER_2_SRV as s4_productionOrder} from '../srv/external/API_PRODUCTION_ORDER_2_SRV';
 
 context api {
 
@@ -41,4 +43,6 @@ context api {
     entity ShippingType_VH      as projection on S4_ShippingType.YY1_I_ShippingType;
     entity ShippingPoint_VH     as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
     entity Parameters           as projection on Parameter.YY1_PARAMETER;
+    entity MaterialDocumentHeader as projection on MaterialDoc.A_MaterialDocumentHeader;
+    entity ProductionOrder as projection on  s4_productionOrder.A_ProductionOrder_2;
 }

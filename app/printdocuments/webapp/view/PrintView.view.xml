@@ -25,11 +25,11 @@
 			<f:header>
 				<f:DynamicPageHeader>
 					<f:content>
-						<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
+						<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch1" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
 							<fb:filterGroupItems>
 								<fb:FilterGroupItem name="Name" label="Form Name / Output Type" groupName="Group1" visibleInFilterBar="true">
 									<fb:control>
-										<Select id="selectFormName">
+										<Select id="selectFormName" change="onSelectChange">
 											<items>
 												<core:Item key="1" text="Inbound label (PID) (CAN only)"/>
 												<core:Item key="2" text="DCDC HDD label "/>
@@ -62,7 +62,8 @@
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-				 <Table id="docTable" mode="MultiSelect" items="{docModel>/documents}">
+			<VBox>
+				 <Table id="docTable" mode="MultiSelect" items="{path:'/MaterialDocumentHeader',sorter: { path: 'DocumentDate', descending: false}}" visible="{viewModel>/visibleTable1}" growingScrollToLoad="true" growing="true" growingThreshold="10">
                 <headerToolbar>
                     <Toolbar>
                         <Title text="Documents"/>
@@ -86,13 +87,45 @@
                 <items>
                     <ColumnListItem type="Active" press="onPrint">
                         <cells>                            
-                            <Text text="{docModel>docNumber}"/>
-                            <Text text="{docModel>docType}"/>
-                            <Text text="{docModel>docDate}"/>
+                            <Text text="{MaterialDocument}"/>
+                            <Text text="{InventoryTransactionType}"/>
+                            <Text text="{DocumentDate}"/>
                         </cells>
                     </ColumnListItem>
                 </items>
             </Table>
+			<Table id="docTable2" mode="MultiSelect" items="{path:'/ProductionOrder',sorter: { path: 'MfgOrderCreationDate', descending: false}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Documents"/>
+						 <ToolbarSpacer/>
+						<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>
+                    </Toolbar>
+                </headerToolbar>
+
+                <columns>                    
+                    <Column>
+                        <Text text="Document Number"/>
+                    </Column>
+                    <Column>
+                        <Text text="Document Type"/>
+                    </Column>
+                    <Column>
+                        <Text text="Document Date"/>
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem type="Active" press="onPrint">
+                        <cells>                            
+                            <Text text="{ManufacturingOrder}"/>
+                            <Text text="{ManufacturingOrderType}"/>
+                            <Text text="{MfgOrderCreationDate}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+			</VBox>
 			</f:content>
 		</f:DynamicPage>
 </mvc:View>

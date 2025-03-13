@@ -264,7 +264,25 @@
       },
       "API_MATERIAL_DOCUMENT_SRV": {
         "kind": "odata-v2",
-        "model": "srv/external/API_MATERIAL_DOCUMENT_SRV"
+        "model": "srv/external/API_MATERIAL_DOCUMENT_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_MATERIAL_DOCUMENT_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "API_PRODUCTION_ORDER_2_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_PRODUCTION_ORDER_2_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_PRODUCTION_ORDER_2_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

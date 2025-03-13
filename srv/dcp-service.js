@@ -11,7 +11,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, A_MaterialDocumentHeader } = this.entities;
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription,MaterialDocumentHeader,ProductionOrder } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -22,6 +22,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
         var s4h_products_Crt = await cds.connect.to("API_PRODUCT_SRV");
         var s4h_material_read = await cds.connect.to("API_MATERIAL_DOCUMENT_SRV");
+        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
@@ -1008,6 +1009,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], S4_ShippingPoint_VH, req => {
             return s4h_shpointv2_vh_Txn.run(req.query);
         });
+        this.on(['READ'], ProductionOrder, req => {
+            return s4h_production_order.run(req.query);
+        });
 
         const updateItemTextForSalesOrder = async (req, sType, sText, aResponseStatus, oSalesOrderItem, oContentData) => {
             var oItemText =
@@ -1082,7 +1086,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return s4h_products_Crt.run(req.query);
         }); 
 
-        this.on(['READ'], A_MaterialDocumentHeader, async req => {
+        this.on(['READ'], MaterialDocumentHeader, async req => {
             return s4h_material_read.run(req.query);
         }); 
 

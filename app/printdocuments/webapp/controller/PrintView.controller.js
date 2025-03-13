@@ -8,7 +8,24 @@ sap.ui.define([
 
     return Controller.extend("com.dlx.printdocu.printdocuments.controller.PrintView", {
         onInit() {
+            var oViewModel = new sap.ui.model.json.JSONModel({
+                visibleTable1: true,
+                visibleTable2: false
+            });
+            this.getView().setModel(oViewModel, "viewModel");
             
+        },
+        onSelectChange: function (oEvent) {
+            var sSelectedKey = oEvent.getSource().getSelectedKey();
+            var oViewModel = this.getView().getModel("viewModel");
+        
+            if (sSelectedKey === "1") {
+                oViewModel.setProperty("/visibleTable1", true);
+                oViewModel.setProperty("/visibleTable2", false);
+            } else {
+                oViewModel.setProperty("/visibleTable1", false);
+                oViewModel.setProperty("/visibleTable2", true);
+            }
         },
         onPreviewForm: function (oEvent) {
             var oModel = this.getView().getModel(); // Assuming the default model
@@ -106,15 +123,15 @@ sap.ui.define([
            
             
             var updateCall = $.ajax({
-                url: sServiceUrl+"/A_MaterialDocumentHeader",
+                url: sServiceUrl+"MaterialDocumentHeader",
                 type: "GET",
                 headers: {
                     "Accept": "application/json"
                 },
                 success: function (data) {
-                    if (data && data.d && data.d.results) {
+                    if (data && data.value && data.value.length!=0) {
                         var oJSONModel = new sap.ui.model.json.JSONModel();
-                        oJSONModel.setData({ documents: data.d.results });
+                        oJSONModel.setData({ documents: data.value });
                         that.getView().setModel(oJSONModel, "docModel");
                     } else {
                         sap.m.MessageToast.show("No material documents found.");
@@ -149,6 +166,11 @@ sap.ui.define([
             that.getView().setModel(oJSONModel, "docModel");
         
             sap.m.MessageToast.show("Dummy data loaded successfully.");
+        },
+
+        fetchDatafromAPI:function(){
+
         }
+
     });
 });
