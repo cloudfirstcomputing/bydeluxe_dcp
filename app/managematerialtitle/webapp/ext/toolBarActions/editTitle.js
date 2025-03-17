@@ -20,14 +20,14 @@ sap.ui.define([
 
 
             // Load the fragment only once
-            if (!this._oDialog) {
+            if (!this._oDialogE) {
                 Fragment.load({
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.toolBarActions.EditTitle",
                     controller: {
                         onCancelEdit: function () {
-                            if (this._oDialog) {
-                                this._oDialog.close();
+                            if (this._oDialogE) {
+                                this._oDialogE.close();
                             }
                         }.bind(that),
                         onSaveEdit: function (event) {
@@ -44,6 +44,11 @@ sap.ui.define([
                             if (oPostData.RepertoryDate) {
                                 oPostData.RepertoryDate = new Date(oPostData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
+                            if (oPostData.Ratings) {
+                                oPostData.Ratings_Ass = oPostData.Ratings.split(",").map(rating => ({
+                                    RatingCode: rating.trim()
+                                }));
+                            }
                             var sKey = `(MaterialMasterTitleID=${oData.MaterialMasterTitleID},LocalTitleId='${oData.LocalTitleId}',ID=${oData.ID},RegionCode='${oData.RegionCode}')`;
                             var updateCall = $.ajax({
                                 url: `${oModel.sServiceUrl}Titles${sKey}`,
@@ -51,17 +56,18 @@ sap.ui.define([
                                 contentType: "application/json",
                                 data: JSON.stringify(oPostData),
                                 success: function (response) {
+                                    this.postTitles(oPostData, oPostData.MaterialMasterTitleID);
                                     console.log("Update successful:", response);
                                     oView.getModel().refresh();
-                                    if (that._oDialog) {
-                                        that._oDialog.close();
+                                    if (that._oDialogE) {
+                                        that._oDialogE.close();
                                     }
 
-                                },
+                                }.bind(this),
                                 error: function (xhr, status, error) {
                                     console.error("Update failed:", status, error, xhr.responseText);
-                                    if (that._oDialog) {
-                                        that._oDialog.close();
+                                    if (that._oDialogE) {
+                                        that._oDialogE.close();
                                     }
                                 }
                             });
@@ -69,14 +75,14 @@ sap.ui.define([
                         }.bind(that),
                     }
                 }).then(function (oDialog) {
-                    that._oDialog = oDialog;
+                    that._oDialogE = oDialog;
                     var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
                     var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
                     var sTitleType = oFormModel.getData().TitleType;
-                    if (!sTitleType || sTitleType === "Parent") {
-                        MessageToast.show("Select a non Parent Item to Edit!");
-                        return;
-                    }
+                    // if (sTitleType === "Parent") {
+                    //     MessageToast.show("Select a non Parent Item to Edit!");
+                    //     return;
+                    // }
                     oDialog.open();
 
 
@@ -88,12 +94,55 @@ sap.ui.define([
                 var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
                 var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
                 var sTitleType = oFormModel.getData().TitleType;
-                if (!sTitleType || sTitleType === "Parent") {
-                    MessageToast.show("Select a non Parent Item to Edit!");
-                    return;
-                }
+                // if (sTitleType === "Parent") {
+                //     MessageToast.show("Select a non Parent Item to Edit!");
+                //     return;
+                // }
                 oView.setModel(oFormModel, "formModel");
-                this._oDialog.open();
+                this._oDialogE.open();
+            }
+
+            this.postTitles = function (oData, Product) {
+                var oModel = oView.getModel();
+
+                var oPatchData = {
+                    Product: Product,
+                    ProductGroup: oData.TitleCategory,
+                    ProductType: "SERV", //TitleType
+                    BaseUnit: "EA",
+                    ProductManufacturerNumber: "",
+                    to_ProductBasicText: [
+                        {
+                            Product: Product,
+                            Language: "EN", //LanguageCode
+                            LongText: oData.RegionalTitleName
+                        }
+                    ],
+                    to_Description: [
+                        {
+                            Product: Product,
+                            Language: "EN",
+                            ProductDescription: oData.OriginalTitleName
+                        }
+                    ]
+                };
+                
+                var updateCall = $.ajax({
+                    url: `${oModel.sServiceUrl}/A_PRODUCT("${Product}")`, // Correct API Endpoint
+                    type: "PATCH",  // Use PATCH to update the existing Product
+                    contentType: "application/json",                   
+                    data: oPatchData,
+                    success: function (response) {
+                        console.log("Update successful:", response);                        
+                        oView.getModel().refresh();
+                        if (that._oDialogE) {
+                            that._oDialogE.close();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Update failed:", status, error, xhr.responseText);
+                    }
+                });
             }
         },
 

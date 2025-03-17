@@ -19,14 +19,14 @@ sap.ui.define([
             var that = this;
 
             // Load the fragment only once
-            if (!this._oDialog) {
+            if (!this._oDialogC) {
                 var oFragment = Fragment.load({
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.manageTitleExt.CreateTitle",
                     controller: {
                         onCancelCreate: function () {
-                            if (this._oDialog) {
-                                this._oDialog.close();
+                            if (this._oDialogC) {
+                                this._oDialogC.close();
                             }
                         }.bind(that),
                         onValidateOriginalTitle: function (oEvent) {
@@ -122,7 +122,7 @@ sap.ui.define([
                         }.bind(that),
                     }
                 }).then(function (oDialog) {
-                    that._oDialog = oDialog;
+                    that._oDialogC = oDialog;
                     var oFormModel = new sap.ui.model.json.JSONModel({
                         MaterialMasterTitleID: "",
                         LocalTitleId: "", // This should be ignored while Creating
@@ -156,11 +156,16 @@ sap.ui.define([
                     oDialog.open();
                 });
             } else {
-                this._oDialog.open();
+                this._oDialogC.open();
             }
 
             this.postTitles = function (oData, Product) {
                 var oModel = oView.getModel();
+                if (oData.Ratings) {
+                    oData.Ratings_Ass = oData.Ratings.split(",").map(rating => ({
+                        RatingCode: rating.trim()
+                    }));
+                }
                 var updateCall = $.ajax({
                     url: `${oModel.sServiceUrl}Titles`,
                     type: "POST", // Use PATCH or PUT based on your OData service
@@ -179,8 +184,8 @@ sap.ui.define([
                             }
                         });
                         oView.getModel().refresh();
-                        if (that._oDialog) {
-                            that._oDialog.close();
+                        if (that._oDialogC) {
+                            that._oDialogC.close();
                         }
 
                     },

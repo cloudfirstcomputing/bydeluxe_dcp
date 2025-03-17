@@ -142,7 +142,7 @@
                       "press": "com.dlx.managematerialtitle.ext.extActionLocalC.extActionLocalC.fnAddLocalTitle",
                       "visible": true,
                       "enabled": true,
-                      "requiresSelection": false,
+                      "requiresSelection": true,
                       "text": "{@i18n>addLocalregionalTitle}"
                     },
                     "editTitle": {

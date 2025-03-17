@@ -1082,9 +1082,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     return aSalesArea;
         });
 
-        this.on(['READ'], Products, async (req)=>{
+        this.on(['READ'], Products, async req => {
             return s4h_products_Crt.run(req.query);
-        });
+        }); 
+
         this.on(['READ'], ProductDescription, async req => {
             return s4h_products_Crt.run(req.query);
         }); 
@@ -1113,18 +1114,71 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var oFormObject = await deluxe_adsrestapi.get(query);
                         var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
                         const jsonData = {
-                            customer: {
-                                name: "John Doe",
-                                address: "1234 Elm Street",
-                                city: "Berlin",
-                                country: "Germany"
-                            },
-                            items: [
-                                { description: "Laptop", quantity: 1, price: 1200 },
-                                { description: "Mouse", quantity: 2, price: 25 }
-                            ],
-                            total: 1250
-                        };
+                              "AnnotationText": "",
+                              "AnyAtmos": "",
+                              "AnyCCAP": "",
+                              "AnyHI": "",
+                              "AnyOCAP": "",
+                              "AnySLV": "",
+                              "AnyVI": "",
+                              "AspectRatio": "",
+                              "AssetMapFileSize": "250 GB",
+                              "AssetMapID": "11aa544e-af8b-4f94-8b33-b68199e563ac",
+                              "AssetMapIDDescription": "Antebellum",
+                              "AudioFormats": "",
+                              "CreatedinSAP": true,
+                              "DCP": 2172,
+                              "DcpFormats": "",
+                              "EDeliveryApacTitleId": "",
+                              "EDeliveryNoramTitleId": "",
+                              "ExternalReference": "",
+                              "KencastID": "",
+                              "KrakenTitleID": 36483,
+                              "MaxCPLDuration": "",
+                              "PictureFormats": "",
+                              "ProjectID": 554455,
+                              "ProjectType": "",
+                              "PublishDaysBeforePlaydate": "",
+                              "Resolution": "",
+                              "SatelliteDistributionEndDate": "",
+                              "SatelliteDistributionStartDate": "",
+                              "StartOfCrawl": "",
+                              "StartOfCredit": "",
+                              "Title": "Antebellum",
+                              "VersionDescription": "TLR 1 DATE FLAT",
+                              "VolumeName": "",
+                              "_Items": {
+                                "AspectRatio": "",
+                                "AssetMapUUID": "",
+                                "AtmosFlag": "",
+                                "CPLS3location": "",
+                                "ClosedCaptionsFlag": "",
+                                "ContentKind": "",
+                                "DCDMFlag": "",
+                                "DKDMS3location": "",
+                                "DcpFormatType": "",
+                                "DcpProjectID": 380474,
+                                "DcpResolution": "",
+                                "DistributionSize": "",
+                                "Download": "",
+                                "Email": "",
+                                "ID": "5a10242c-9f8f-46ce-9e0a-99aa242c1dd1",
+                                "KDMFlag": "",
+                                "LinkedCPLUUID": "2a27e7b3-75ca-4fa8-8b31-3e6a789081f5",
+                                "LinkedCTT": "Antebellum_TRL-1-Date_F_EN-fr_FR_51_2K_METRO_20200226_TST_IOP_OV",
+                                "LinkedDCP": "",
+                                "PictureFormat": "",
+                                "ProjectTypeID": 1,
+                                "RunTime": "01:47:50",
+                                "SignLanguageVideoFlag": "",
+                                "SoundFormat": "",
+                                "StartOfCrawl": "01:42:09",
+                                "StartOfCredits": "01:30:21",
+                                "VersionDescription": "",
+                                "up__ProjectID": 554455
+                              }
+                          }
+                          
         
                         // Wrap everything in a single root element to ensure well-formed XML
                         const wrappedJson = { root: jsonData };

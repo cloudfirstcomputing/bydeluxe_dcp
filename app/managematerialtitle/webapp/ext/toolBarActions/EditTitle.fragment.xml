@@ -17,12 +17,21 @@
                 
                 <f:content>
                     <Label id="lblEditOriginalTitleName" text="Original Title Name"/>
-                    <Input id="inputEditOriginalTitleName" value="{formModel>/OriginalTitleName}"/>
+                    <Input id="inputEditOriginalTitleName" value="{formModel>/OriginalTitleName}" editable="false"/>
+
+                    <Label id="lblEdit_lblOriginalRegionalTitle" text="Regional Title Name"/>
+                    <Input  id="lblEdit_inputOriginalRegionalTitle" 
+                           value="{formModel>/RegionalTitleName}" 
+                           change=".onValidateOriginalTitle" editable="true"/>
+                    <Label id="lblEdit_lblOriginalShortTitle" text="Short Title Name"/>
+                    <Input  id="lblEdit_inputOriginalShortTitle" 
+                           value="{formModel>/ShortTitle}" 
+                           change=".onValidateOriginalTitle" editable="true"/>
 
                     <Label id="lblEditLanguageKey" text="Language Key"/>
                     <Input id="inputEditLanguageKey" value="{formModel>/LanguageCode}" showValueHelp="true"/>
                     <Label id="lblEditTitleTypey" text="Title Type"/>
-                    <Select id="selectEditTitletype" selectedKey="{formModel>/TitleType}">
+                    <Select id="selectEditTitletype" selectedKey="{formModel>/TitleType}" editable="false">
                         <items>
                             <core:Item id="itemEditTitleType2" key="Parent" text="Parent"/>
                             <core:Item id="itemEditTitleType1" key="Local" text="Local"/>                            

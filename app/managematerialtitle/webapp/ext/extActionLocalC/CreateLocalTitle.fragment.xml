@@ -6,7 +6,7 @@
     xmlns:u="sap.ui.unified"
     xmlns:f="sap.ui.layout.form">
     <Dialog id="productDialog"
-            title="Create Local Title"
+            title="Create Local Title for {formModel>/OriginalTitleName}"
             stretch="false"
             >
         
@@ -16,14 +16,16 @@
                           editable="true">
                 
                  <f:content>
-                    <Label id="localCreate_lblOriginalTitleName" text="Original Title Name"/>
+                    <Label id="localCreate_lblOriginalTitleName" text="Local ID"/>
                     <Input required="true" id="localCreate_inputOriginalTitleName" 
-                           value="{formModel>/OriginalTitleName}" 
-                           change=".onValidateOriginalTitle" editable="false"/>
-                    <Input required="true" id="localCreate_inputOriginalRegionalTitle" 
+                           value="{formModel>/LocalTitleId}" 
+                            editable="true"/>
+                    <Label id="localCreate_lblOriginalRegionalTitle" text="Regional Title Name"/>
+                    <Input  id="localCreate_inputOriginalRegionalTitle" 
                            value="{formModel>/RegionalTitleName}" 
                            change=".onValidateOriginalTitle" editable="true"/>
-                    <Input required="true" id="localCreate_inputOriginalShortTitle" 
+                    <Label id="localCreate_lblOriginalShortTitle" text="Short Title Name"/>
+                    <Input  id="localCreate_inputOriginalShortTitle" 
                            value="{formModel>/ShortTitle}" 
                            change=".onValidateOriginalTitle" editable="true"/>
 
@@ -35,8 +37,8 @@
                         </items>
                     </Select>
 
-                    <Label id="localCreate_lblTitleCategory" text="Title Category"/>
-                    <Select id="localCreate_selectTitleCategory" selectedKey="{formModel>/TitleCategory}">
+                    <Label id="localCreate_lblTitleCategory" text="Title Category" />
+                    <Select id="localCreate_selectTitleCategory" selectedKey="{formModel>/TitleCategory}" editable="false">
                         <items>
                             <core:Item id="localCreate_itemTitleCategory1" key="Z007" text="Confirmed/Known Title"/>
                             <core:Item id="localCreate_itemTitleCategory2" key="Z006" text="Provisional/Unknown Title"/>
