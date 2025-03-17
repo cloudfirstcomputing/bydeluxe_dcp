@@ -94,7 +94,7 @@
                     </ColumnListItem>
                 </items>
             </Table>
-			<Table id="docTable2" mode="MultiSelect" items="{path:'/ProductionOrder',sorter: { path: 'MfgOrderCreationDate', descending: false}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+			<Table id="docTable2" mode="MultiSelect" items="{path:'/Products',sorter: { path: 'CreationDate', descending: false}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
                 <headerToolbar>
                     <Toolbar>
                         <Title text="Documents"/>
@@ -118,9 +118,9 @@
                 <items>
                     <ColumnListItem type="Active" press="onPrint">
                         <cells>                            
-                            <Text text="{ManufacturingOrder}"/>
-                            <Text text="{ManufacturingOrderType}"/>
-                            <Text text="{MfgOrderCreationDate}"/>
+                            <Text text="{Product}"/>
+                            <Text text="{ProductType}"/>
+                            <Text text="{CreationDate}"/>
                         </cells>
                     </ColumnListItem>
                 </items>

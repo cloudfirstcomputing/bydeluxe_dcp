@@ -288,6 +288,7 @@ service BookingOrderService {
             PreferredUnitOfMeasure,
             PurchaseOrderQuantityUnit,
             ProductManufacturerNumber,
+            CreationDate,
             to_ProductBasicText : redirected to ProductBasicText,
             to_Description  : redirected to ProductDescription      
     };

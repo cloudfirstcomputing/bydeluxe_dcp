@@ -1082,6 +1082,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     return aSalesArea;
         });
 
+        this.on(['READ'], Products, async (req)=>{
+            return s4h_products_Crt.run(req.query);
+        });
         this.on(['READ'], ProductDescription, async req => {
             return s4h_products_Crt.run(req.query);
         }); 
