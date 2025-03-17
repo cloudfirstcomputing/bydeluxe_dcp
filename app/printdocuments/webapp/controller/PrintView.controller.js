@@ -41,13 +41,6 @@ sap.ui.define([
                     if(sProdId){
                         sPdfUrl = `/odata/v4/print-form/getKrakenHDDLabel(DCPBarcode='${sProdId}')`;
                     }
-                    // var opdfViewer = new PDFViewer();
-                    // this.getView().addDependent(opdfViewer);
-                    // var sSource = sServiceUrl + "downloadFormADS()";
-                    // opdfViewer.setSource(sSource);
-                    // opdfViewer.setTitle( "My PDF");
-                    // opdfViewer.open();
-                    // this.openPdfViewer(sSource);
                     var that = this;
                     var updateCall = $.ajax({
                         url: sPdfUrl,
@@ -64,6 +57,30 @@ sap.ui.define([
                         }
                     });
                 }
+            }
+            else{
+                // var opdfViewer = new PDFViewer();
+                    // this.getView().addDependent(opdfViewer);
+                    var sSource = sServiceUrl + "downloadFormADS()";
+                    // opdfViewer.setSource(sSource);
+                    // opdfViewer.setTitle( "My PDF");
+                    // opdfViewer.open();
+                    // this.openPdfViewer(sSource);
+                    var that = this;
+                    var updateCall = $.ajax({
+                        url: sSource,
+                        type: "GET",
+                        headers: {
+                            "Accept": "application/pdf"
+                        },
+                        success: function (data) {
+                            that.onOpenPDF(data);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching PDF:", status, error);
+                            sap.m.MessageToast.show("Failed to load the form.");
+                        }
+                    });
             }
            // // Get the OData Model attached to the view or component
             // var oModel = this.getView().getModel(); // Assuming the default model
