@@ -114,7 +114,72 @@ entity dcpkey : managed {
         ReferenceSDDocument : String                       @readonly;
         Warnings            : String
 }
+entity Studios : managed {
+    key BookingID           : String;
+    key SourceSystem        : String;
+        Origin              : Association to Origin;
+        EntityID            : String;
+        Studio              : String;
+        Title               : String;
+        CustomerReference   : String;
+        CreatedOn           : Date;
+        RequestedDelivDate  : Date;
+        ReleaseID           : String;
+        OrderType           : String;
+        RecordType          : String;
+        BookingType         : String;
+        TheaterID           : String;
+        Circuit             : String;
+        BookerName          : String;
+        RequestId           : String;
+        OrderID             : String;
+        PlayStartDate       : Date;
+        PlayStartTime       : Time;
+        PlayEndDate         : Date;
+        PlayEndTime         : Time;
+        KeyDeliveryOnDate   : Date;
+        KeyStartDate        : Date;
+        KeyStartTime        : Time;
+        KeyEndDate          : Date;
+        KeyEndTime          : Time;
+        HFR                 : String;
+        ShipmentIndicator   : String;
+        ScreeningIndicator  : String;
+        DepotID             : String;
+        SoundID             : String;
+        Language            : String;
+        SubtitleType1       : String;
+        SubtitleType2       : String;
+        PrintFormat         : String;
+        ShipPriority        : Integer @assert.range: [
+            1,
+            5
+        ];
+        PrintQuality        : String;
+        ApprovedScreens     : String;
+        CTTs                : String;
+        CPLUUIDs            : String;
+        CountryCode         : String;
+        ScreenID            : String;
+        ContentType         : String;
+        CancelOrder         : String;
+        Remediation         : String;
+        DeliveryType        : String;
+        //Common custom fields
+        Status              : Association to BookingStatus;
+        SalesOrder          : String  @readonly;
+        ErrorMessage        : String  @readonly;
+        ReferenceSDDocument : String  @readonly;
+        Warnings            : String
+}
 
+entity Origin {
+    key OriginID   : String(1) enum {
+            F;
+            P;
+        };
+        OriginText : String;
+};
 entity BookingStatus {
     key ID     : String(1) enum {
             A;
