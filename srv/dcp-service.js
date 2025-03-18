@@ -1135,33 +1135,55 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
          this.on("downloadFormADS", async (req, res) => {
                     try {
-                        var form_name = 'frm_058'
+
+                        var form_name = req.data.form;
                         var query = `/v1/forms/${form_name}`;
                         var oFormObject = await deluxe_adsrestapi.get(query);
                         var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+                        var sProduct = req.data.Product;
+
+                        var oAssetVault = await SELECT.one.from('DistributionService.DistributionDcp', (dist)=>{
+                            dist.Title,
+                            dist.VersionDescription,
+                            dist.KrakenTitleID,
+                            dist.AssetMapFileSize,
+                            dist.AssetMapID
+                            dist.AssetMapIDDescription
+                            dist.AudioFormats
+                            dist.CreatedinSAP
+                            dist.DCP,
+                            dist.ProjectID
+                            dist.VersionDescription
+                            dist._Items((items)=>{
+                                items.LinkedCTT,
+                                items.StartOfCrawl,
+                                items.LinkedCPLUUID,
+                                items.RunTime,
+                                items.StartOfCredits,
+                                items.DcpProjectID
+                            })
+                        }).where({DCP: sProduct});
+
                         const jsonData = {
-                            "Form58": {
-                              "AssetMapFileSize": "250 GB",
-                              "AssetMapID": "11aa544e-af8b-4f94-8b33-b68199e563ac",
-                              "AssetMapIDDescription": "Antebellum",
-                              "AudioFormats": "",
+                              "AssetMapFileSize": oAssetVault.AssetMapFileSize,
+                              "AssetMapID": oAssetVault.AssetMapID,
+                              "AssetMapIDDescription": oAssetVault.AssetMapIDDescription,
+                              "AudioFormats": oAssetVault.AudioFormats,
                               "CreatedinSAP": true,
-                              "DCP": 2172,
-                              "ProjectID": 554455,
-                              "VersionDescription": "TLR 1 DATE FLAT",
-                              "DcpProjectID": 380474,
-                              "LinkedCPLUUID": "2a27e7b3-75ca-4fa8-8b31-3e6a789081f5",
-                              "LinkedCTT": "Antebellum_TRL-1-Date_F_EN-fr_FR_51_2K_METRO_20200226_TST_IOP_OV",
-                              "RunTime": "01:47:50",
-                              "StartOfCrawl": "01:42:09",
-                              "StartOfCredits": "01:30:21",
-                              "VersionDescription": ""
-                            }
+                              "DCP": oAssetVault.DCP,
+                              "ProjectID": oAssetVault.ProjectID,
+                              "VersionDescription": oAssetVault.VersionDescription,
+                              "DcpProjectID": oAssetVault._Items[0].DcpProjectID,
+                              "LinkedCPLUUID": oAssetVault._Items[0].LinkedCPLUUID,
+                              "LinkedCTT": oAssetVault._Items[0].LinkedCTT,
+                              "RunTime": oAssetVault._Items[0].RunTime,
+                              "StartOfCrawl": oAssetVault._Items[0].StartOfCrawl,
+                              "StartOfCredits": oAssetVault._Items[0].StartOfCredits,
                           }
                           
         
                         // Wrap everything in a single root element to ensure well-formed XML
-                        const wrappedJson = { root: jsonData };
+                        const wrappedJson = { Form58: jsonData };
         
                         // Convert JSON to XML (Ensure single root)
                         const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });

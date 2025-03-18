@@ -61,17 +61,28 @@ sap.ui.define([
             else{
                 // var opdfViewer = new PDFViewer();
                     // this.getView().addDependent(opdfViewer);
-                    var sSource = sServiceUrl + "downloadFormADS()";
+                    var oSelecteditem;
                     // opdfViewer.setSource(sSource);
                     // opdfViewer.setTitle( "My PDF");
                     // opdfViewer.open();
                     // this.openPdfViewer(sSource);
+                    [oSelecteditem] = this.byId("docTable2").getSelectedItems();
+                    var sForm = "frm_058"
+                  
+                    var sProdId = oSelecteditem.getBindingContext().getObject().Product;
+                    var oData = {
+                        form:sForm,
+                        Product:sProdId
+                    }
+                      var sSource = sServiceUrl + `downloadFormADS`
                     var that = this;
                     var updateCall = $.ajax({
                         url: sSource,
-                        type: "GET",
+                        type: "POST",
+                        data : JSON.stringify(oData),
                         headers: {
-                            "Accept": "application/pdf"
+                            "Accept": "application/pdf",
+                            "Content-Type" :"application/json"
                         },
                         success: function (data) {
                             that.onOpenPDF(data);
@@ -158,7 +169,15 @@ sap.ui.define([
                 }
             }
             else{
-                sSuffix = "MaterialDocumentHeader"
+                // sSuffix = "MaterialDocumentHeader"
+                var sKey = this.byId("documentKey").getValue();
+                if(sKey){
+                    let oFilter = new Filter("Product", FilterOperator.EQ, sKey);
+                    this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
+                }
+                else{
+                    this.byId("docTable2").getBinding("items").filter(null, null, null);
+                }
             }
             // var updateCall = $.ajax({
             //     url: sServiceUrl+sSuffix,

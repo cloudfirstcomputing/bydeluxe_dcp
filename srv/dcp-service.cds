@@ -337,7 +337,7 @@ service BookingOrderService {
 
     action deleteProduct(input: ProductsType) returns Products;
 
-    function downloadFormADS() returns LargeString;
+    action downloadFormADS(form: String,Product :String) returns LargeString;
 
     @readonly
     entity MaterialDocumentHeader as projection on api.MaterialDocumentHeader;
