@@ -11,7 +11,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription,MaterialDocumentHeader,ProductionOrder } = this.entities;
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader,ProductionOrder } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -1107,6 +1107,32 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
         });
 
+        this.on("deleteProduct", async (req) => {
+            try {
+                const input = req.data.input; // Extract input data from request
+
+                // Make a POST call to the external API              
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({IsMarkedForDeletion:true}).where({Product:input.Product}))
+
+                return "Succesfully Deleted";
+            } catch (error) {
+                req.error(500, `Product creation failed: ${error.message}`);
+            }
+        });
+
+        this.on("editProduct", async (req) => {
+            try {
+                const input = req.data.input; // Extract input data from request
+
+                // Make a POST call to the external API              
+                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({LongText:input.to_ProductBasicText[0].LongText}).where({Product:input.Product,Language:'EN'}))
+                const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ProductDescription:input.to_ProductDescription[0].ProductDescription}).where({Product:input.Product,Language:'EN'}))
+                return "Succesfully Edited";
+            } catch (error) {
+                req.error(500, `Product creation failed: ${error.message}`);
+            }
+        });
+
          this.on("downloadFormADS", async (req, res) => {
                     try {
                         var form_name = 'frm_058'
@@ -1114,69 +1140,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var oFormObject = await deluxe_adsrestapi.get(query);
                         var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
                         const jsonData = {
-                              "AnnotationText": "",
-                              "AnyAtmos": "",
-                              "AnyCCAP": "",
-                              "AnyHI": "",
-                              "AnyOCAP": "",
-                              "AnySLV": "",
-                              "AnyVI": "",
-                              "AspectRatio": "",
+                            "Form58": {
                               "AssetMapFileSize": "250 GB",
                               "AssetMapID": "11aa544e-af8b-4f94-8b33-b68199e563ac",
                               "AssetMapIDDescription": "Antebellum",
                               "AudioFormats": "",
                               "CreatedinSAP": true,
                               "DCP": 2172,
-                              "DcpFormats": "",
-                              "EDeliveryApacTitleId": "",
-                              "EDeliveryNoramTitleId": "",
-                              "ExternalReference": "",
-                              "KencastID": "",
-                              "KrakenTitleID": 36483,
-                              "MaxCPLDuration": "",
-                              "PictureFormats": "",
                               "ProjectID": 554455,
-                              "ProjectType": "",
-                              "PublishDaysBeforePlaydate": "",
-                              "Resolution": "",
-                              "SatelliteDistributionEndDate": "",
-                              "SatelliteDistributionStartDate": "",
-                              "StartOfCrawl": "",
-                              "StartOfCredit": "",
-                              "Title": "Antebellum",
                               "VersionDescription": "TLR 1 DATE FLAT",
-                              "VolumeName": "",
-                              "_Items": {
-                                "AspectRatio": "",
-                                "AssetMapUUID": "",
-                                "AtmosFlag": "",
-                                "CPLS3location": "",
-                                "ClosedCaptionsFlag": "",
-                                "ContentKind": "",
-                                "DCDMFlag": "",
-                                "DKDMS3location": "",
-                                "DcpFormatType": "",
-                                "DcpProjectID": 380474,
-                                "DcpResolution": "",
-                                "DistributionSize": "",
-                                "Download": "",
-                                "Email": "",
-                                "ID": "5a10242c-9f8f-46ce-9e0a-99aa242c1dd1",
-                                "KDMFlag": "",
-                                "LinkedCPLUUID": "2a27e7b3-75ca-4fa8-8b31-3e6a789081f5",
-                                "LinkedCTT": "Antebellum_TRL-1-Date_F_EN-fr_FR_51_2K_METRO_20200226_TST_IOP_OV",
-                                "LinkedDCP": "",
-                                "PictureFormat": "",
-                                "ProjectTypeID": 1,
-                                "RunTime": "01:47:50",
-                                "SignLanguageVideoFlag": "",
-                                "SoundFormat": "",
-                                "StartOfCrawl": "01:42:09",
-                                "StartOfCredits": "01:30:21",
-                                "VersionDescription": "",
-                                "up__ProjectID": 554455
-                              }
+                              "DcpProjectID": 380474,
+                              "LinkedCPLUUID": "2a27e7b3-75ca-4fa8-8b31-3e6a789081f5",
+                              "LinkedCTT": "Antebellum_TRL-1-Date_F_EN-fr_FR_51_2K_METRO_20200226_TST_IOP_OV",
+                              "RunTime": "01:47:50",
+                              "StartOfCrawl": "01:42:09",
+                              "StartOfCredits": "01:30:21",
+                              "VersionDescription": ""
+                            }
                           }
                           
         

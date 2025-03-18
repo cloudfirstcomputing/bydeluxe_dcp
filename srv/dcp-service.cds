@@ -29,6 +29,8 @@ service BookingOrderService {
     entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
     entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
     entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
+    entity S4H_BusinessPartnerapi as projection on api.BusinessPartners;
+    entity S4H_Country as projection on api.Country;
     entity S4_Parameters as projection on S4_Param.YY1_PARAMETER{
         key ID,
         VariableName,
@@ -289,10 +291,10 @@ service BookingOrderService {
             PurchaseOrderQuantityUnit,
             ProductManufacturerNumber,
             CreationDate,
+            IsMarkedForDeletion,
             to_ProductBasicText : redirected to ProductBasicText,
             to_Description  : redirected to ProductDescription      
     };
-    @readonly
     entity ProductDescription            as
     projection on externalProduct.A_ProductDescription {
         key Product,
@@ -332,6 +334,8 @@ service BookingOrderService {
     }
 
     action createProduct(input: ProductsType) returns Products;
+
+    action deleteProduct(input: ProductsType) returns Products;
 
     function downloadFormADS() returns LargeString;
 
