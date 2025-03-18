@@ -63,7 +63,7 @@
 			</f:header>
 			<f:content>
 			<VBox>
-				 <Table id="docTable" mode="MultiSelect" items="{path:'/MaterialDocumentHeader',sorter: { path: 'DocumentDate', descending: false}}" visible="{viewModel>/visibleTable1}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+				 <Table id="docTable" mode="MultiSelect" items="{path:'/MaterialDocumentHeader',sorter: { path: 'DocumentDate', descending: true}}" visible="{viewModel>/visibleTable1}" growingScrollToLoad="true" growing="true" growingThreshold="10">
                 <headerToolbar>
                     <Toolbar>
                         <Title text="Documents"/>
@@ -94,7 +94,7 @@
                     </ColumnListItem>
                 </items>
             </Table>
-			<Table id="docTable2" mode="MultiSelect" items="{path:'/Products',sorter: { path: 'CreationDate', descending: false}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+			<Table id="docTable2" mode="MultiSelect" items="{path:'/Products',sorter: { path: 'CreationDate', descending: true}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
                 <headerToolbar>
                     <Toolbar>
                         <Title text="Documents"/>

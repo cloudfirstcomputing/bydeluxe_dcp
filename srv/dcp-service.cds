@@ -311,7 +311,7 @@ service BookingOrderService {
     };
 
     type ProductsType {
-            Product: String(40);
+            Product: Integer;
             ProductGroup : String(9);
             ProductType : String(4);
             BaseUnit : String(3);
@@ -323,17 +323,19 @@ service BookingOrderService {
     }
 
     type ProductBasicTextType{
-        Product: String(40);
+        Product: Integer;
         Language : String (2);
         LongText :String;
     }
     type ProductDescriptionType {
-        Product: String(40);
+        Product: Integer;
         Language : String (2);
         ProductDescription :String(40)
     }
 
     action createProduct(input: ProductsType) returns Products;
+
+    action editProduct(input: ProductsType) returns Products;
 
     action deleteProduct(input: ProductsType) returns Products;
 

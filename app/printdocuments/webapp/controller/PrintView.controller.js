@@ -67,7 +67,8 @@ sap.ui.define([
                     // opdfViewer.open();
                     // this.openPdfViewer(sSource);
                     [oSelecteditem] = this.byId("docTable2").getSelectedItems();
-                    var sForm = "frm_058"
+
+                    var sForm = this.byId("selectFormName").getSelectedKey() =='4' ? "frm_059" : "frm_058" ;
                   
                     var sProdId = oSelecteditem.getBindingContext().getObject().Product;
                     var oData = {
@@ -156,29 +157,47 @@ sap.ui.define([
         onSearch1: function () {
             var that = this;
             var oModel = this.getView().getModel(); // Assuming the default model
-            var sServiceUrl = oModel.sServiceUrl, sSuffix = "";
+            var sServiceUrl = oModel.sServiceUrl, sSuffix = "",aFilters =[];
            
             if(this.byId("selectFormName").getSelectedKey() === '5'){
                 var sKey = this.byId("documentKey").getValue();
                 if(sKey){
-                    let oFilter = new Filter("Product", FilterOperator.EQ, sKey);
-                    this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
+                    aFilters.push(new Filter("Product", FilterOperator.EQ, sKey))
+                    // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
                 }
-                else{
-                    this.byId("docTable2").getBinding("items").filter(null, null, null);
-                }
+                // else{
+                //     this.byId("docTable2").getBinding("items").filter(null, null, null);
+                // }
             }
             else{
                 // sSuffix = "MaterialDocumentHeader"
                 var sKey = this.byId("documentKey").getValue();
                 if(sKey){
-                    let oFilter = new Filter("Product", FilterOperator.EQ, sKey);
-                    this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
+                    // let oFilter = new Filter("Product", FilterOperator.EQ, sKey);
+                    aFilters.push(new Filter("Product", FilterOperator.EQ, sKey))
+                    // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
                 }
-                else{
-                    this.byId("docTable2").getBinding("items").filter(null, null, null);
-                }
+                // else{
+                //     this.byId("docTable2").getBinding("items").filter(null, null, null);
+                // }
             }
+
+            var dStartDate = this.byId("startDate").getValue();
+            var dEndDate = this.byId("endDate").getValue();
+    
+
+            if(dStartDate && dStartDate!= '' ){
+                var sFormatedStart = new Date(dStartDate).toISOString().split("T")[0];
+                var sFormatedEnd = new Date(dEndDate).toISOString().split("T")[0];
+                aFilters.push(new Filter("CreationDate", FilterOperator.BT, sFormatedStart,sFormatedEnd))
+                
+            }
+
+            this.byId("docTable2").getBinding("items").filter(aFilters);
+            // else{
+            //     this.byId("docTable2").getBinding("items").filter(null, null, null);
+            // }
+
             // var updateCall = $.ajax({
             //     url: sServiceUrl+sSuffix,
             //     type: "GET",

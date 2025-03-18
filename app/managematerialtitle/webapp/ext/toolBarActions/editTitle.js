@@ -128,19 +128,18 @@ sap.ui.define([
                 };
                 
                 var updateCall = $.ajax({
-                    url: `${oModel.sServiceUrl}/A_PRODUCT("${Product}")`, // Correct API Endpoint
-                    type: "PATCH",  // Use PATCH to update the existing Product
-                    contentType: "application/json",                   
-                    data: oPatchData,
+                    url: `${oModel.sServiceUrl}editProduct`, // Call the action instead of the entity
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ input: oPatchData }), // Pass data under `input`
                     success: function (response) {
-                        console.log("Update successful:", response);                        
+                        console.log("Product Edit successful:", response.Product);
                         oView.getModel().refresh();
-                        if (that._oDialogE) {
-                            that._oDialogE.close();
-                        }
-                    },
+                        oData.MaterialMasterTitleID = response.Product
+                        this.postTitles(oData, response.Product)
+                    }.bind(this),
                     error: function (xhr, status, error) {
-                        console.error("Update failed:", status, error, xhr.responseText);
+                        console.error("Product Edit failed:", status, error, xhr.responseText);
                     }
                 });
             }
