@@ -27,7 +27,7 @@
     },
     "crossNavigation": {
       "inbounds": {
-        "materialtitle-manage": {
+        "printform-manage": {
           "semanticObject": "printform",
           "action": "manage",
           "title": "{{printform-manage.flpTitle}}",
@@ -124,6 +124,10 @@
       "type": "XML",
       "id": "App"
     }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
   },
   "sap.cloud": {
     "public": true,
