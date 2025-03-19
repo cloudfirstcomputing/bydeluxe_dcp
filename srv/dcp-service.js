@@ -1161,8 +1161,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 const input = req.data.input; // Extract input data from request
 
                 // Make a POST call to the external API              
-                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({LongText:input.to_ProductBasicText[0].LongText}).where({Product:input.Product,Language:'EN'}))
-                const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ProductDescription:input.to_Description[0].ProductDescription}).where({Product:input.Product,Language:'EN'}))
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({LongText:input.to_ProductBasicText[0].LongText}).where({Product:input.Product,Language:'EN'}));
+                const response1 = await s4h_products_Crt.run(UPDATE(Products).set({ProductDescription:input.to_Description[0].ProductDescription}).where({Product:input.Product,Language:'EN'}));
                 return "Succesfully Edited";
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);
