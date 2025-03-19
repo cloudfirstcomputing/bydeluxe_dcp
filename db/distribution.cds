@@ -20,6 +20,8 @@ entity DistroSpec : managed {
         DistroSpecID       : Integer default 0          @readonly;
         Name               : String(40)                 @mandatory;
         Title              : Association to one TitleVH @mandatory;
+        ReleaseDate        : Date;
+        RepertoryDate      : Date;
         DeliverySequence1  : Association to api.ShippingConditions;
         DeliverySequence2  : Association to api.ShippingConditions;
         DeliverySequence3  : Association to api.ShippingConditions;
@@ -81,16 +83,6 @@ entity KeyPackage {
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
         IncludeContent     : Boolean;
-        DeliveryMethod1    : Association to api.ShippingConditions;
-        DeliveryMethod2    : Association to api.ShippingConditions;
-        DeliveryMethod3    : Association to api.ShippingConditions;
-        DeliveryMethod4    : Association to api.ShippingConditions;
-        DeliveryMethod5    : Association to api.ShippingConditions;
-        DeliveryMethod6    : Association to api.ShippingConditions;
-        DeliveryMethod7    : Association to api.ShippingConditions;
-        DeliveryMethod8    : Association to api.ShippingConditions;
-        DeliveryMethod9    : Association to api.ShippingConditions;
-        DeliveryMethod10   : Association to api.ShippingConditions;
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
         to_DistRestriction : Composition of many KeyDistRestrictions
@@ -229,3 +221,11 @@ entity DCPMaterialConfig : cuid, managed {
                                StorageLocation : Association to one api.StorageLocations @mandatory;
                        }
 };
+
+entity DCPMaterialMapping : cuid, managed {
+    ShippingType  : String(2);
+    Plant         : String(4);
+    Variable      : String(200);
+    Material      : String(40);
+    MaterialGroup : String(10);
+}

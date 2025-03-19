@@ -201,7 +201,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         // Package?$expand
-        this.on("READ", [`KeyPackage`, `Package`], async (req, next) => {
+        this.on("READ", [`Package`], async (req, next) => {
             if (!req.query.SELECT.columns) return next();
             const fields = ["DeliveryMethod1_ShippingCondition", "DeliveryMethod2_ShippingCondition", "DeliveryMethod3_ShippingCondition"
                 , "DeliveryMethod4_ShippingCondition", "DeliveryMethod5_ShippingCondition", "DeliveryMethod6_ShippingCondition", "DeliveryMethod7_ShippingCondition"
