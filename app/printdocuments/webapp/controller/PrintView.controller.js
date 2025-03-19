@@ -4,8 +4,9 @@ sap.ui.define([
     "sap/ui/core/Fragment",
     "sap/m/PDFViewer",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, MessageToast, Fragment,PDFViewer, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "sap/ui/core/BusyIndicator"
+], function (Controller, MessageToast, Fragment,PDFViewer, Filter, FilterOperator, BusyIndicator) {
     "use strict";
 
     return Controller.extend("com.dlx.printdocu.printdocuments.controller.PrintView", {
@@ -33,15 +34,17 @@ sap.ui.define([
             var oModel = this.getView().getModel(); // Assuming the default model
             var sServiceUrl = oModel.sServiceUrl;
             var sPdfUrl = sServiceUrl + "downloadFormADS()";
+            var oPrintModel = this.getView().getModel("printModel");
             if(this.byId("selectFormName").getSelectedKey() === '5'){
                 var aSelecteditems = this.byId("docTable2").getSelectedItems();
                 for(var i in aSelecteditems){
                     var oSelectedItem = aSelecteditems[i];
                     var sProdId = oSelectedItem.getBindingContext().getObject().Product;
                     if(sProdId){
-                        sPdfUrl = `/odata/v4/print-form/getKrakenHDDLabel(DCPBarcode='${sProdId}')`;
+                        sPdfUrl = `${oPrintModel.getServiceUrl()}getKrakenHDDLabel(DCPBarcode='${sProdId}')`;
                     }
                     var that = this;
+                    BusyIndicator.show();
                     var updateCall = $.ajax({
                         url: sPdfUrl,
                         type: "GET",
@@ -50,9 +53,11 @@ sap.ui.define([
                         },
                         success: function (data) {
                             that.onOpenPDF(data);
+                            BusyIndicator.hide();
                         },
                         error: function (xhr, status, error) {
                             console.error("Error fetching PDF:", status, error);
+                            BusyIndicator.hide();
                             sap.m.MessageToast.show("Failed to load the form.");
                         }
                     });
