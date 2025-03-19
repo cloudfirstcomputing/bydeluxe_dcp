@@ -23,8 +23,8 @@ service BookingOrderService {
     // action remediateContentSalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String) returns String;
     // action remediateKeySalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String)     returns String;
     // action reconcileKey(bookingIDs: array of  String) returns String;
-    entity Studios as projection on db.Studios;
-    action createStudioFeeds(studioFeed: array of Studios) returns String;
+    entity StudioFeed as projection on db.StudioFeed;
+    action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
     
     entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner   as projection on S4_BuisnessPartner.A_BusinessPartner;

@@ -114,9 +114,11 @@ entity dcpkey : managed {
         ReferenceSDDocument : String                       @readonly;
         Warnings            : String
 }
-entity Studios : managed {
+entity StudioFeed : managed {
     key BookingID           : String;
     key SourceSystem        : String;
+    key Version             : Integer;
+        IsActive            : String(1);
         Origin              : Association to Origin;
         EntityID            : String;
         Studio              : String;
@@ -169,7 +171,6 @@ entity Studios : managed {
         Status              : Association to BookingStatus;
         SalesOrder          : String  @readonly;
         ErrorMessage        : String  @readonly;
-        ReferenceSDDocument : String  @readonly;
         Warnings            : String
 }
 

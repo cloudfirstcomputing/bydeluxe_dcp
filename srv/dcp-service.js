@@ -11,7 +11,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader,ProductionOrder } = this.entities;
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader,ProductionOrder,
+            StudioFeed } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -40,6 +41,41 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aResult = await createBookingFeed(req, "K");
             return aResult;
         });
+        this.on('createStudioFeeds', async(req, res)=>{
+            var data = req.data?.StudioFeed;
+            let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
+            hanatable = StudioFeed;
+
+            for (var i in data) {
+                data[i].Status_ID = "A";
+                data[i].IsActive = "Y";
+                data[i].Version = 1;
+
+                var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                if (entry_Active) {
+                    data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                    recordsToBeUpdated.push(entry_Active);
+                }
+                recordsToBeInserted.push(data[i]);
+            }
+            if (recordsToBeInserted.length) {
+                let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
+                successEntries.push(recordsToBeInserted);
+                successEntries.push(insertResult);
+            }
+            for (var i in recordsToBeUpdated) {
+                let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
+                    BookingID: recordsToBeUpdated[i].BookingID,
+                    createdAt: recordsToBeUpdated[i].createdAt
+                });
+                updateSuccessEntries.push(recordsToBeUpdated[i]);
+                updateSuccessEntries.push(updateResult);
+            }
+            finalResult.push({ "Success": successEntries });
+            finalResult.push({ "UpdateSuccess": updateSuccessEntries });
+            finalResult.push({ "Error": failedEntries });
+            return finalResult;           
+        })
         this.on('MassUploadBookingFeed', async (req) => {
             let excelData = {}
             let uploadedData = []
