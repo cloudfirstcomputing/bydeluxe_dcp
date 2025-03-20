@@ -11,7 +11,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader,ProductionOrder,
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, ProductionOrder,
             StudioFeed } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
@@ -41,7 +41,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aResult = await createBookingFeed(req, "K");
             return aResult;
         });
-        this.on('createStudioFeeds', async(req, res)=>{
+        this.on('createStudioFeeds', async (req, res) => {
             var data = req.data?.StudioFeed;
             let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
             hanatable = StudioFeed;
@@ -74,7 +74,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "Success": successEntries });
             finalResult.push({ "UpdateSuccess": updateSuccessEntries });
             finalResult.push({ "Error": failedEntries });
-            return finalResult;           
+            return finalResult;
         })
         this.on('MassUploadBookingFeed', async (req) => {
             let excelData = {}
@@ -211,7 +211,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var uuid = uuidv4(); // Generate a unique ID
             var aRequests = req.data.Request;
             try {
-               
+
                 var aSelected = await SELECT.from(TheatreOrderRequest).where({
                     StudioID: aRequests.StudioID,
                     GenerateDate: aRequests.GenerateDate,
@@ -220,7 +220,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     DataBaseName: aRequests.DataBaseName
                 })
                 console.log(aSelected)
-                if (aSelected.length!=0) {
+                if (aSelected.length != 0) {
 
                     var aUpdate = JSON.parse(JSON.stringify(aRequests));
                     delete aUpdate.Theatre_Ass;
@@ -259,9 +259,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                     var aUpdate = JSON.parse(JSON.stringify(aRequests));
                     delete aUpdate.DeliveryAddress
-                    delete aUpdate.PhysicalAddress  
-                    delete aUpdate.Package     
-                    delete aUpdate.Vendor 
+                    delete aUpdate.PhysicalAddress
+                    delete aUpdate.Package
+                    delete aUpdate.Vendor
 
                     var aRequestUpdated = await UPDATE(OrderRequest).set(aUpdate).where({
                         OrderID: aRequests.OrderID,
@@ -422,10 +422,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sErrorMessage = "Ship Date is not maintained";
                         updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
                     }
-                    oPayLoad.IncotermsClassification="CPT";
-                    oPayLoad.IncotermsLocation1="Destination";
-                     var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
-                     var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));                    
+                    oPayLoad.IncotermsClassification = "CPT";
+                    oPayLoad.IncotermsLocation1 = "Destination";
+                    var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
+                    var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
                     // var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
                     // var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
                     // var sDistValidFrom = distroSpecData.ValidFrom;
@@ -493,16 +493,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             var aShipToSalesData = await s4h_bp_Txn.run(SELECT.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
                             if (aShipToSalesData?.length) { //IDENTIFYING SHIP-TO
                                 var oShipToSalesData = aShipToSalesData[0];
-                                oShipToSalesData?.YY1_DeliveryMethod1_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod1_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod2_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod2_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod3_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod3_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod4_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod4_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod5_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod5_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod6_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod6_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod7_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod7_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod8_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod9_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa):'';
-                                oShipToSalesData?.YY1_DeliveryMethod10_csa?aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa):'';                                
+                                oShipToSalesData?.YY1_DeliveryMethod1_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod1_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod2_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod2_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod3_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod3_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod4_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod4_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod5_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod5_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod6_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod6_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod7_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod7_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod8_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod9_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';
                             }
                             else {
                                 sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
@@ -516,54 +516,53 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }); //SORT PACKAGES BASED ON PRIOIRTY       
                             var aPackageFiltered = aPackages;
                             var aPackageFiltered = aPackages.filter((item) => {
-                            if (item.ValidFrom && item.ValidTo) {
-                                var dPackageValidFrom = new Date(item.ValidFrom.replace(/-/g, '/'));
-                                var dPackageValidTo = new Date(item.ValidTo.replace(/-/g, '/'));
-                                // var sPrimaryShipCondn = item.PrimaryDeliveryMethod_ShippingCondition;
-                                // var sSecondaryShipCondn = item.SecondaryDeliveryMethod_ShippingCondition;
-                                if (dPlayStartDate < dPackageValidFrom || dPlayEndDate > dPackageValidTo) {
-                                    return false;
+                                if (item.ValidFrom && item.ValidTo) {
+                                    var dPackageValidFrom = new Date(item.ValidFrom.replace(/-/g, '/'));
+                                    var dPackageValidTo = new Date(item.ValidTo.replace(/-/g, '/'));
+                                    // var sPrimaryShipCondn = item.PrimaryDeliveryMethod_ShippingCondition;
+                                    // var sSecondaryShipCondn = item.SecondaryDeliveryMethod_ShippingCondition;
+                                    if (dPlayStartDate < dPackageValidFrom || dPlayEndDate > dPackageValidTo) {
+                                        return false;
+                                    }
+                                    // else 
+                                    // if (item.ContentIndicator !== sContentIndicator) {
+                                    //     return false;
+                                    // }
+                                    else {
+                                        return true;
+                                    }
+                                    // else if(sCustomerGroupFromS4 === sPrimaryShipCondn || sCustomerGroupFromS4 === sSecondaryShipCondn){
+                                    //     return true;
+                                    // }
                                 }
-                                // else 
-                                // if (item.ContentIndicator !== sContentIndicator) {
-                                //     return false;
-                                // }
-                                else {
-                                    return true;
+                                else {//THE PACKAGE IS CONSIDERED EVEN IF NO VALIDITY PERIOD IS MAINTAINED
+                                    if (sCustomerGroupFromS4 === item.DeliveryMethod1_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod2_ShippingCondition ||
+                                        sCustomerGroupFromS4 === item.DeliveryMethod3_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod4_ShippingCondition ||
+                                        sCustomerGroupFromS4 === item.DeliveryMethod5_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod6_ShippingCondition ||
+                                        sCustomerGroupFromS4 === item.DeliveryMethod7_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod8_ShippingCondition ||
+                                        sCustomerGroupFromS4 === item.DeliveryMethod9_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod10_ShippingCondition
+                                    ) {
+                                        return true;
+                                    }
+                                    else {
+                                        return false
+                                    }
                                 }
-                                // else if(sCustomerGroupFromS4 === sPrimaryShipCondn || sCustomerGroupFromS4 === sSecondaryShipCondn){
-                                //     return true;
-                                // }
-                            }
-                            else 
-                            {//THE PACKAGE IS CONSIDERED EVEN IF NO VALIDITY PERIOD IS MAINTAINED
-                                if (sCustomerGroupFromS4 === item.DeliveryMethod1_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod2_ShippingCondition || 
-                                    sCustomerGroupFromS4 === item.DeliveryMethod3_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod4_ShippingCondition || 
-                                    sCustomerGroupFromS4 === item.DeliveryMethod5_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod6_ShippingCondition || 
-                                    sCustomerGroupFromS4 === item.DeliveryMethod7_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod8_ShippingCondition || 
-                                    sCustomerGroupFromS4 === item.DeliveryMethod9_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod10_ShippingCondition 
-                                ) {
-                                    return true;
-                                }
-                                else {
-                                    return false
-                                }
-                            }
                             });
 
                             if (aPackageFiltered?.length) {
                                 var oBPPackage = aPackageFiltered.find((oPkg) => {
 
-                                    return aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod1_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod2_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod3_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod4_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod5_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod6_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod7_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod8_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod9_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item)=> item === oPkg?.DeliveryMethod10_ShippingCondition);
+                                    return aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod1_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod2_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod3_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod4_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod5_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod6_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod7_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod8_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod9_ShippingCondition) ||
+                                        aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod10_ShippingCondition);
 
                                     // oPkg?.DeliveryMethod1_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
                                     //     oPkg?.DeliveryMethod2_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
@@ -632,7 +631,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                                 // "ShippingType": sShippingType
-                                                "ShippingType":"07"
+                                                "ShippingType": "07"
                                             };
                                         }
                                         else {
@@ -644,7 +643,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                                 // "ShippingType": sShippingType
-                                                "ShippingType":"07"
+                                                "ShippingType": "07"
                                             };
                                         }
                                         oPayLoad.to_Item.push(oEntry);
@@ -660,7 +659,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                                 // "ShippingType": sShippingType
-                                                "ShippingType": sContentIndicator === "C" ? sShippingType: "07"
+                                                "ShippingType": sContentIndicator === "C" ? sShippingType : "07"
                                             };
                                             var assetvault = await SELECT.one.from(AssetVault_Local)
                                                 .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
@@ -789,8 +788,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 //     await updateItemTextForSalesOrder(req, "Z006", sProjectID, aResponseStatus, oSalesOrderItem, oContentData);
                                 // }
                                 var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
-                                if(oCplList){
-                                    await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, aResponseStatus, oSalesOrderItem, oContentData);                                
+                                if (oCplList) {
+                                    await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, aResponseStatus, oSalesOrderItem, oContentData);
                                 }
                                 await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, aResponseStatus, oSalesOrderItem, oContentData);
                                 await updateItemTextForSalesOrder(req, "Z009", aPackageFiltered?.[0].PackageUUID, aResponseStatus, oSalesOrderItem, oContentData);
@@ -1120,15 +1119,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         this.on(['READ'], Products, async req => {
             return s4h_products_Crt.run(req.query);
-        }); 
+        });
 
         this.on(['READ'], ProductDescription, async req => {
             return s4h_products_Crt.run(req.query);
-        }); 
+        });
 
         this.on(['READ'], MaterialDocumentHeader, async req => {
             return s4h_material_read.run(req.query);
-        }); 
+        });
 
         this.on("createProduct", async (req) => {
             try {
@@ -1148,7 +1147,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 const input = req.data.input; // Extract input data from request
 
                 // Make a POST call to the external API              
-                const response = await s4h_products_Crt.run(UPDATE(Products).set({IsMarkedForDeletion:true}).where({Product:input.Product}))
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({ IsMarkedForDeletion: true }).where({ Product: input.Product }))
 
                 return "Succesfully Deleted";
             } catch (error) {
@@ -1161,103 +1160,225 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 const input = req.data.input; // Extract input data from request
 
                 // Make a POST call to the external API              
-                const response = await s4h_products_Crt.run(UPDATE(Products).set({LongText:input.to_ProductBasicText[0].LongText}).where({Product:input.Product,Language:'EN'}));
-                const response1 = await s4h_products_Crt.run(UPDATE(Products).set({ProductDescription:input.to_Description[0].ProductDescription}).where({Product:input.Product,Language:'EN'}));
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
+                const response1 = await s4h_products_Crt.run(UPDATE(Products).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
                 return "Succesfully Edited";
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);
             }
         });
 
-         this.on("downloadFormADS", async (req, res) => {
-                    try {
+        this.on("downloadFormADS", async (req, res) => {
+            // try {
+            //     var form_name = req.data.form;
+            //     var query = `/v1/forms/${form_name}`;
+            //     var oFormObject = await deluxe_adsrestapi.get(query);
+            //     var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+            //     var sProduct = req.data.Product;
 
-                        var form_name = req.data.form;
-                        var query = `/v1/forms/${form_name}`;
-                        var oFormObject = await deluxe_adsrestapi.get(query);
-                        var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
-                        var sProduct = req.data.Product;
+            //     var oAssetVault = await SELECT.one.from('DistributionService.DistributionDcp', (dist)=>{
+            //         dist.Title,
+            //         dist.VersionDescription,
+            //         dist.KrakenTitleID,
+            //         dist.AssetMapFileSize,
+            //         dist.AssetMapID
+            //         dist.AssetMapIDDescription
+            //         dist.AudioFormats
+            //         dist.CreatedinSAP
+            //         dist.DCP,
+            //         dist.ProjectID,
+            //         dist._Items((items)=>{
+            //             items.LinkedCTT,
+            //             items.StartOfCrawl,
+            //             items.LinkedCPLUUID,
+            //             items.RunTime,
+            //             items.StartOfCredits,
+            //             items.DcpProjectID
+            //         })
+            //     }).where({DCP: sProduct});
 
-                        var oAssetVault = await SELECT.one.from('DistributionService.DistributionDcp', (dist)=>{
-                            dist.Title,
+            //     const jsonData = {
+            //           "AssetMapFileSize": oAssetVault.AssetMapFileSize,
+            //           "AssetMapID": oAssetVault.AssetMapID,
+            //           "AssetMapIDDescription": oAssetVault.AssetMapIDDescription,
+            //           "AudioFormats": oAssetVault.AudioFormats,
+            //           "CreatedinSAP": true,
+            //           "DCP": oAssetVault.DCP,
+            //           "ProjectID": oAssetVault.ProjectID,
+            //           "VersionDescription": oAssetVault.VersionDescription,
+            //           "DcpProjectID": oAssetVault._Items[0].DcpProjectID,
+            //           "LinkedCPLUUID": oAssetVault._Items[0].LinkedCPLUUID,
+            //           "LinkedCTT": oAssetVault._Items[0].LinkedCTT,
+            //           "RunTime": oAssetVault._Items[0].RunTime,
+            //           "StartOfCrawl": oAssetVault._Items[0].StartOfCrawl,
+            //           "StartOfCredits": oAssetVault._Items[0].StartOfCredits,
+            //       }
+
+
+            //     // Wrap everything in a single root element to ensure well-formed XML
+            //     const wrappedJson = { Form58: jsonData };
+
+            //     // Convert JSON to XML (Ensure single root)
+            //     const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });
+
+            //     // Encode XML to Base64
+            //     const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+
+            //     const headers = {
+            //         "Content-Type": 'application/json',
+            //         "accept": 'application/json',
+            //     };
+
+            //     // Print PDF code logic
+            //     var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+
+            //     const data = {
+            //         "xdpTemplate": sXMLTemplate,
+            //         "xmlData": base64EncodedXml,
+            //         "formType": "print",
+            //         "formLocale": "en_US",
+            //         "taggedPdf": 1,
+            //         "embedFont": 0,
+            //         "changeNotAllowed": false,
+            //         "printNotAllowed": false
+            //     };
+
+            //     var oPrintForm = await deluxe_adsrestapi.send({
+            //         method: "POST",
+            //         path: sDownloadPDFurl,
+            //         data,
+            //         headers
+            //     });
+
+            //     return oPrintForm.fileContent;
+            // }
+            // catch (e) {
+            //     req.error(502, e)
+            // }
+
+            try {
+                var form_name = req.data.form;
+                var query = `/v1/forms/${form_name}`;
+                var oFormObject = await deluxe_adsrestapi.get(query);
+                var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+
+                // var DCPBarcode = req?.data?.DCPBarcode;
+                var DCPBarcode = req?.data?.Product;
+                var Title, Studio, VersionDescription, TotalSize, RatingCount, FeatureCount, TrailerCount, Content = [];
+                if (DCPBarcode) {
+                    var oAssetVault = await SELECT.one.from('DistributionService.DistributionDcp', (dist) => {
+                        dist.Title,
                             dist.VersionDescription,
                             dist.KrakenTitleID,
                             dist.AssetMapFileSize,
-                            dist.AssetMapID
-                            dist.AssetMapIDDescription
-                            dist.AudioFormats
-                            dist.CreatedinSAP
-                            dist.DCP,
-                            dist.ProjectID,
-                            dist._Items((items)=>{
+                            dist._Items((items) => {
                                 items.LinkedCTT,
-                                items.StartOfCrawl,
-                                items.LinkedCPLUUID,
-                                items.RunTime,
-                                items.StartOfCredits,
-                                items.DcpProjectID
+                                    items.StartOfCrawl,
+                                    items.LinkedCPLUUID,
+                                    items.RunTime,
+                                    items.StartOfCredits
                             })
-                        }).where({DCP: sProduct});
+                    }).where({ DCP: DCPBarcode });
 
-                        const jsonData = {
-                              "AssetMapFileSize": oAssetVault.AssetMapFileSize,
-                              "AssetMapID": oAssetVault.AssetMapID,
-                              "AssetMapIDDescription": oAssetVault.AssetMapIDDescription,
-                              "AudioFormats": oAssetVault.AudioFormats,
-                              "CreatedinSAP": true,
-                              "DCP": oAssetVault.DCP,
-                              "ProjectID": oAssetVault.ProjectID,
-                              "VersionDescription": oAssetVault.VersionDescription,
-                              "DcpProjectID": oAssetVault._Items[0].DcpProjectID,
-                              "LinkedCPLUUID": oAssetVault._Items[0].LinkedCPLUUID,
-                              "LinkedCTT": oAssetVault._Items[0].LinkedCTT,
-                              "RunTime": oAssetVault._Items[0].RunTime,
-                              "StartOfCrawl": oAssetVault._Items[0].StartOfCrawl,
-                              "StartOfCredits": oAssetVault._Items[0].StartOfCredits,
-                          }
-                          
-        
-                        // Wrap everything in a single root element to ensure well-formed XML
-                        const wrappedJson = { Form58: jsonData };
-        
-                        // Convert JSON to XML (Ensure single root)
-                        const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });
-        
-                        // Encode XML to Base64
-                        const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
-        
-                        const headers = {
-                            "Content-Type": 'application/json',
-                            "accept": 'application/json',
-                        };
-        
-                        // Print PDF code logic
-                        var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
-        
-                        const data = {
-                            "xdpTemplate": sXMLTemplate,
-                            "xmlData": base64EncodedXml,
-                            "formType": "print",
-                            "formLocale": "en_US",
-                            "taggedPdf": 1,
-                            "embedFont": 0,
-                            "changeNotAllowed": false,
-                            "printNotAllowed": false
-                        };
-        
-                        var oPrintForm = await deluxe_adsrestapi.send({
-                            method: "POST",
-                            path: sDownloadPDFurl,
-                            data,
-                            headers
-                        });
-        
-                        return oPrintForm.fileContent;
+                    var aItems = oAssetVault?._Items;
+                    var aFeatureItems = aItems?.filter((item) => {
+                        return item?.LinkedCTT?.toUpperCase().includes('FTR');
+                    });
+                    await aFeatureItems?.forEach(element => {
+                        Content.push({ "ContentText": `${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}` });
+                    });
+                    FeatureCount = aFeatureItems?.length;
+
+                    var aRatingItems = aItems?.filter((item) => {
+                        return item?.LinkedCTT?.toUpperCase().includes('RTG');
+                    });
+                    await aRatingItems?.forEach(element => {
+                        Content.push({ "ContentText": `${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}` });
+                    });
+                    RatingCount = aRatingItems?.length;
+
+                    var aTrailerItems = aItems?.filter((item) => {
+                        return item?.LinkedCTT?.toUpperCase().includes('TRL');
+                    });
+                    await aTrailerItems?.forEach(element => {
+                        Content.push({ "ContentText": `${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}` });
+                    });
+                    TrailerCount = aTrailerItems?.length;
+
+                    VersionDescription = oAssetVault?.VersionDescription;
+                    Title = oAssetVault?.Title;
+                    TotalSize = oAssetVault?.AssetMapFileSize;
+
+                    var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
+                        dist.DistroSpecUUID,
+                            dist.DistroSpecID,
+                            dist.Title_Product,
+                            dist.Name,
+                            dist.to_StudioKey((studio) => {
+                                studio.Studio_BusinessPartner
+                            })
+                    }).where({ Title_Product: DCPBarcode });
+                    var sBupa = distroSpecData?.to_StudioKey?.[0]?.Studio_BusinessPartner;
+
+                    if (sBupa) {
+                        var oBupa = await buspatx.run(SELECT.one.columns(['BusinessPartnerFullName']).from(BusinessPartner).where({ BusinessPartner: sBupa }));
+                        Studio = oBupa?.BusinessPartnerFullName;
                     }
-                    catch (e) {
-                        req.error(502, e)
+                }
+                const formData = {
+                    Form: {
+                        HDDLabelNode: {
+                            Title: Title,
+                            DCPBarcode: DCPBarcode,
+                            VersionDescription: VersionDescription,
+                            Studio: Studio,
+                            TotalSize: TotalSize,
+                            TrainingCount: TrailerCount,
+                            FeatureCount: FeatureCount,
+                            RatingCount: RatingCount,
+                            Content: { "ContentNode": Content }
+                        }
                     }
+                };
+
+                // Convert JSON to XML (Ensure single root)
+                const xmlData = xmljs.js2xml(formData, { compact: true, spaces: 4 });
+
+                // Encode XML to Base64
+                const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+
+                const headers = {
+                    "Content-Type": 'application/json',
+                    "accept": 'application/json',
+                };
+
+                // Print PDF code logic
+                var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+
+                const data = {
+                    "xdpTemplate": sXMLTemplate,
+                    "xmlData": base64EncodedXml,
+                    "formType": "print",
+                    "formLocale": "en_US",
+                    "taggedPdf": 1,
+                    "embedFont": 0,
+                    "changeNotAllowed": false,
+                    "printNotAllowed": false
+                };
+
+                var oPrintForm = await deluxe_adsrestapi.send({
+                    method: "POST",
+                    path: sDownloadPDFurl,
+                    data,
+                    headers
                 });
+
+                return oPrintForm.fileContent;
+            }
+            catch (e) {
+                req.error(502, e)
+            }
+        });
         return super.init();
     }
 

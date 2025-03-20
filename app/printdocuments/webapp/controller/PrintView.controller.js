@@ -73,7 +73,7 @@ sap.ui.define([
                     // this.openPdfViewer(sSource);
                     [oSelecteditem] = this.byId("docTable2").getSelectedItems();
 
-                    var sForm = this.byId("selectFormName").getSelectedKey() =='4' ? "frm_059" : "frm_058" ;
+                    var sForm = this.byId("selectFormName").getSelectedKey() =='3' ? "DCDCLabel" : this.byId("selectFormName").getSelectedKey() =='4' ? "DeluxeLabel": "MasterLabel" ;
                   
                     var sProdId = oSelecteditem.getBindingContext().getObject().Product;
                     var oData = {
