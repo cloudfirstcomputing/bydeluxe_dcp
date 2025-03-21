@@ -37,6 +37,12 @@ service DistributionService {
     entity Plants               as projection on api.Plants;
 
     @readonly
+    entity ShippingType         as projection on api.ShippingType_VH;
+
+    @readonly
+    entity ProductGroup         as projection on api.ProductGroup;
+
+    @readonly
     entity StorageLocations     as projection on api.StorageLocations;
 
     @readonly
@@ -63,7 +69,11 @@ service DistributionService {
     entity Products             as projection on api.Products;
 
     @readonly
+    @cds.redirection.target
     entity DCPProducts          as projection on db.DCPMaterialVH;
+
+    @readonly
+    entity DCPMapProducts          as projection on db.DCPMaterialVH;
 
     @readonly
     entity Titles               as projection on db.TitleVH;
@@ -103,15 +113,21 @@ service DistributionService {
         actions {
             action createDCPMaterial() returns Products;
         };
+    entity DCPMaterialMapping as projection on db.DCPMaterialMapping;
 
     annotate DistroSpec with @odata.draft.enabled;
     annotate DCPMaterialConfig with @odata.draft.enabled;
+    annotate DCPMaterialMapping with @odata.draft.enabled;
 
     extend projection DCPMaterials with {
         to_DCPDetail : Association to many CplList on DCPMaterialNumber.Product = to_DCPDetail.DCP
     }
 
     extend projection CustomerGroup with {
+        virtual null as Name : String
+    };
+
+    extend projection ProductGroup with {
         virtual null as Name : String
     };
 
@@ -124,6 +140,10 @@ service DistributionService {
     };
 
     extend projection DCPProducts with {
+        virtual null as Name : String
+    };
+
+    extend projection DCPMapProducts with {
         virtual null as Name : String
     };
 

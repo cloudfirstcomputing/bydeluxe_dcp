@@ -224,7 +224,6 @@ entity DCPMaterialConfig : cuid, managed {
 
 entity DCPMaterialMapping : cuid, managed {
     ShippingType  : String(2);
-    Plant         : String(4);
     Variable      : String(200);
     Material      : String(40);
     MaterialGroup : String(10);
