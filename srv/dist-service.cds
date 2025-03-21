@@ -43,6 +43,9 @@ service DistributionService {
     entity ProductGroup         as projection on api.ProductGroup;
 
     @readonly
+    entity ProductGroup1        as projection on api.ProductGroup1;
+
+    @readonly
     entity StorageLocations     as projection on api.StorageLocations;
 
     @readonly
@@ -73,7 +76,7 @@ service DistributionService {
     entity DCPProducts          as projection on db.DCPMaterialVH;
 
     @readonly
-    entity DCPMapProducts          as projection on db.DCPMaterialVH;
+    entity DCPMapProducts       as projection on db.DCPMaterialVH;
 
     @readonly
     entity Titles               as projection on db.TitleVH;
@@ -113,8 +116,8 @@ service DistributionService {
         actions {
             action createDCPMaterial() returns Products;
         };
-    entity DCPMaterialMapping as projection on db.DCPMaterialMapping;
 
+    entity DCPMaterialMapping   as projection on db.DCPMaterialMapping;
     annotate DistroSpec with @odata.draft.enabled;
     annotate DCPMaterialConfig with @odata.draft.enabled;
     annotate DCPMaterialMapping with @odata.draft.enabled;

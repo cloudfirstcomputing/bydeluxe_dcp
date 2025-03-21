@@ -1,5 +1,31 @@
 using DistributionService as service from '../../srv/dist-service';
 
+annotate service.ShippingType with {
+    ShippingType     @Common: {Label: '{i18n>ShippingType}', };
+    ShippingTypeName @Common: {Label: '{i18n>ShippingTypeName}', };
+};
+
+
+annotate service.DCPMaterialMapping with {
+    ID;
+    createdAt;
+    createdBy;
+    modifiedAt;
+    modifiedBy;
+    ShippingType  @Common: {Label: '{i18n>ShippingType}', };
+    Variable      @Common: {Label: '{i18n>Variable}', };
+    Material      @Common: {Label: '{i18n>Material}', };
+    MaterialGroup @Common: {Label: '{i18n>MaterialGroup}', };
+};
+
+
+annotate service.ProductGroup1 with {
+    AdditionalMaterialGroup1     @Common: {Label: '{i18n>AdditionalMaterialGroup1}', };
+    Language;
+    AdditionalMaterialGroup1Name @Common: {Label: '{i18n>AdditionalMaterialGroup1Name}', };
+};
+
+
 annotate service.DCPMaterialMapping with @(
     UI.SelectionFields           : [
         Material,
@@ -11,22 +37,18 @@ annotate service.DCPMaterialMapping with @(
         Data : [
             {
                 $Type: 'UI.DataField',
-                Label: 'Shipping Type',
                 Value: ShippingType,
             },
             {
                 $Type: 'UI.DataField',
-                Label: 'Variable',
                 Value: Variable,
             },
             {
                 $Type: 'UI.DataField',
-                Label: 'Material',
                 Value: Material,
             },
             {
                 $Type: 'UI.DataField',
-                Label: 'Material Group',
                 Value: MaterialGroup,
             },
         ],
@@ -34,28 +56,24 @@ annotate service.DCPMaterialMapping with @(
     UI.Facets                    : [{
         $Type : 'UI.ReferenceFacet',
         ID    : 'GeneratedFacet1',
-        Label : 'General Information',
+        Label : '{i18n>GeneralInformation}',
         Target: '@UI.FieldGroup#GeneratedGroup',
     }, ],
     UI.LineItem                  : [
         {
             $Type: 'UI.DataField',
-            Label: 'Shipping Type',
             Value: ShippingType,
         },
         {
             $Type: 'UI.DataField',
-            Label: 'Variable',
             Value: Variable,
         },
         {
             $Type: 'UI.DataField',
-            Label: 'Material',
             Value: Material,
         },
         {
             $Type: 'UI.DataField',
-            Label: 'Material Group',
             Value: MaterialGroup,
         },
 
@@ -104,17 +122,17 @@ annotate service.DCPMaterialMapping with {
     MaterialGroup @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'ProductGroup',
+            CollectionPath : 'ProductGroup1',
             SearchSupported: false,
             Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: MaterialGroup,
-                    ValueListProperty: 'MaterialGroup',
+                    ValueListProperty: 'AdditionalMaterialGroup1',
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'Name',
+                    ValueListProperty: 'AdditionalMaterialGroup1Name',
                 },
             ],
         },

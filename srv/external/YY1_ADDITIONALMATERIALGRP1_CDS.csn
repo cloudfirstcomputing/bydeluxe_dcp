@@ -1,0 +1,50 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.7.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_ADDITIONALMATERIALGRP1_CDS": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_ADDITIONALMATERIALGRP1_CDS.YY1_AdditionalMaterialGrp1": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "AdditionalMaterialGrp1",
+   "elements": {
+    "AdditionalMaterialGroup1": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Material Group 1",
+     "notNull": true
+    },
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Language Key",
+     "notNull": true
+    },
+    "AdditionalMaterialGroup1Name": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Description"
+    }
+   }
+  }
+ }
+}

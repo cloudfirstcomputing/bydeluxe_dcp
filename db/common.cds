@@ -17,6 +17,7 @@ using {YY1_PARAMETER_CDS_0001 as Parameter} from '../srv/external/YY1_PARAMETER_
 using {API_MATERIAL_DOCUMENT_SRV as MaterialDoc} from '../srv/external/API_MATERIAL_DOCUMENT_SRV';
 using {API_PRODUCTION_ORDER_2_SRV as s4_productionOrder} from '../srv/external/API_PRODUCTION_ORDER_2_SRV';
 using {API_PRODUCTGROUP_SRV as prdgrp} from '../srv/external/API_PRODUCTGROUP_SRV';
+using {YY1_ADDITIONALMATERIALGRP1_CDS as prdgrp1} from '../srv/external/YY1_ADDITIONALMATERIALGRP1_CDS';
 
 context api {
 
@@ -32,6 +33,7 @@ context api {
 
     entity Products               as projection on product.A_Product;
     entity ProductGroup           as projection on prdgrp.A_ProductGroup;
+    entity ProductGroup1          as projection on prdgrp1.YY1_AdditionalMaterialGrp1;
     entity DeliveryPriority       as projection on delvprior.YY1_DeliveryPriority;
     entity CustomerGroup          as projection on custgrp.A_CustomerGroup;
     entity Country                as projection on country.A_Country;
