@@ -50,32 +50,104 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-
                 var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                 if (entry_Active) {
                     data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
                     recordsToBeUpdated.push(entry_Active);
                 }
+                await createSalesOrderUsingRules(req, data[i]);
                 recordsToBeInserted.push(data[i]);
             }
             if (recordsToBeInserted.length) {
                 let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
-                successEntries.push(recordsToBeInserted);
-                successEntries.push(insertResult);
+                    successEntries.push(recordsToBeInserted);
+                    successEntries.push(insertResult);
             }
             for (var i in recordsToBeUpdated) {
                 let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
                     BookingID: recordsToBeUpdated[i].BookingID,
                     createdAt: recordsToBeUpdated[i].createdAt
                 });
-                updateSuccessEntries.push(recordsToBeUpdated[i]);
-                updateSuccessEntries.push(updateResult);
+                if(updateResult){
+                    updateSuccessEntries.push(recordsToBeUpdated[i]);
+                    updateSuccessEntries.push(updateResult);
+                }
             }
             finalResult.push({ "Success": successEntries });
             finalResult.push({ "UpdateSuccess": updateSuccessEntries });
             finalResult.push({ "Error": failedEntries });
             return finalResult;
-        })
+        });
+        const createSalesOrderUsingRules = async (req, oContentData)=>{
+            if(oContentData?.Origin !== "F"){
+                var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
+                    dist.DistroSpecUUID,
+                        dist.DistroSpecID,
+                        // dist.ValidFrom,
+                        // dist.ValidTo,
+                        dist.Title_Product,
+                        // dist.KeyStartTime,
+                        // dist.KeyEndTime,
+                        dist.to_StudioKey((studio) => {
+                            studio.Studio_BusinessPartner,
+                                studio.KeyStartTime,
+                                studio.KeyEndTime,
+                                studio.InitialKeyDuration,
+                                studio.NextKeyDuration,
+                                studio.OffsetEPD,
+                                studio.AggregateKey,
+                                studio.ProcessKDMS,
+                                studio.ProcessScreeningKDMS,
+                                studio.MaxKDMSDuration,
+                                studio.StudioHoldOverRule,
+                                studio.SalesTerritory_SalesDistrict,
+                                studio.InferKeyContentOrder
+                        }),
+                        dist.to_Package((pkg) => {
+                            pkg.PackageUUID,
+                                pkg.PackageName,
+                                pkg.ValidFrom,
+                                pkg.ValidTo,
+                                pkg.ContentIndicator,
+                                // pkg.SecondaryTerritory,
+                                // pkg.PrimaryTerritoryDeliveryMethod_ShippingCondition,
+                                // pkg.SecondaryTerritoryDeliveryMethod_ShippingCondition,
+                                // pkg.PrimaryDeliveryMethod_ShippingCondition,
+                                // pkg.SecondaryDeliveryMethod_ShippingCondition,
+                                // pkg.DepotID,
+                                pkg.DeliveryMethod1_ShippingCondition,
+                                pkg.DeliveryMethod2_ShippingCondition,
+                                pkg.DeliveryMethod3_ShippingCondition,
+                                pkg.DeliveryMethod4_ShippingCondition,
+                                pkg.DeliveryMethod5_ShippingCondition,
+                                pkg.DeliveryMethod6_ShippingCondition,
+                                pkg.DeliveryMethod7_ShippingCondition,
+                                pkg.DeliveryMethod8_ShippingCondition,
+                                pkg.DeliveryMethod9_ShippingCondition,
+                                pkg.DeliveryMethod10_ShippingCondition,
+                                pkg.Priority,
+                                pkg.to_DistRestriction((dist) => {
+                                    dist.Theater_BusinessPartner,
+                                        dist.Circuit_CustomerGroup,
+                                        dist.DistributionFilterCountry_code,
+                                        dist.DistributionFilterRegion_Country,
+                                        dist.DistributionFilterCity,
+                                        dist.DistributionFilterPostal
+                                }),
+                                pkg.to_DCPMaterial((dcpmat) => {
+                                    dcpmat.DCPMaterialUUID,
+                                        dcpmat.DCPMaterialNumber_Product
+                                    // dcpmat.PrintFormat
+                                });
+                        })
+                }).where({ DistroSpecUUID: to_DistroSpec_DistroSpecUUID }); 
+            }
+            else{
+                var sCustomerRef = oContentData.UUID;
+                var { to_DistroSpec_DistroSpecUUID, to_StudioKey_StudioKeyUUID } = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
+                
+            }
+        };
         this.on('MassUploadBookingFeed', async (req) => {
             let excelData = {}
             let uploadedData = []
@@ -1284,18 +1356,31 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var aFeatureItems = aItems?.filter((item) => {
                         return item?.LinkedCTT?.toUpperCase().includes('FTR');
                     });
-                    await aFeatureItems?.forEach(element => {
-                        Content.push({ "ContentText": `${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}` });
-                    });
-                    FeatureCount = aFeatureItems?.length;
 
-                    var aRatingItems = aItems?.filter((item) => {
-                        return item?.LinkedCTT?.toUpperCase().includes('RTG');
-                    });
-                    await aRatingItems?.forEach(element => {
-                        Content.push({ "ContentText": `${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}` });
-                    });
-                    RatingCount = aRatingItems?.length;
+                //FOLLOWING DELIMITATION OF DURATION IS REQUIRED TO SHOW IT PROPERLY IN PDF. DON'T ADD OR DELETE MORE SPACE THERE
+                await aFeatureItems?.forEach(element => {
+                    Content.push({"ContentText":`${element.LinkedCTT}
+Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:'-'} Crawl:${element.StartOfCrawl?element.StartOfCrawl:'-'}`});
+                });                
+                FeatureCount = aFeatureItems?.length;
+
+                var aRatingItems = aItems?.filter((item)=>{
+                    return item?.LinkedCTT?.toUpperCase().includes('RTG');
+                });
+                await aRatingItems?.forEach(element => {
+                    Content.push({"ContentText":`${element.LinkedCTT}
+Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:'-'} Crawl:${element.StartOfCrawl?element.StartOfCrawl:'-'}`});
+                });
+                RatingCount = aRatingItems?.length;
+
+                var aTrailerItems = aItems?.filter((item)=>{
+                    return item?.LinkedCTT?.toUpperCase().includes('TRL');
+                });
+                await aTrailerItems?.forEach(element => {
+                    Content.push({"ContentText":`${element.LinkedCTT}
+Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:'-'} Crawl:${element.StartOfCrawl?element.StartOfCrawl:'-'}`});
+                });
+                TrailerCount = aTrailerItems?.length;
 
                     var aTrailerItems = aItems?.filter((item) => {
                         return item?.LinkedCTT?.toUpperCase().includes('TRL');

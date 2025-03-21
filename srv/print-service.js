@@ -180,8 +180,10 @@ module.exports = class PrintFormService extends cds.ApplicationService {
                 var aFeatureItems = aItems?.filter((item)=>{
                     return item?.LinkedCTT?.toUpperCase().includes('FTR');
                 });
+                //FOLLOWING DELIMITATION OF DURATION IS REQUIRED TO SHOW IT PROPERLY IN PDF. DON'T ADD OR DELETE MORE SPACE THERE
                 await aFeatureItems?.forEach(element => {
-                    Content.push({"ContentText":`${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}`});
+                    Content.push({"ContentText":`${element.LinkedCTT}
+Duration:${element.RunTime?element.RunTime:''} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:''} Crawl:${element.StartOfCrawl?element.StartOfCrawl:''}`});
                 });                
                 FeatureCount = aFeatureItems?.length;
 
@@ -189,7 +191,8 @@ module.exports = class PrintFormService extends cds.ApplicationService {
                     return item?.LinkedCTT?.toUpperCase().includes('RTG');
                 });
                 await aRatingItems?.forEach(element => {
-                    Content.push({"ContentText":`${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}`});
+                    Content.push({"ContentText":`${element.LinkedCTT}
+Duration:${element.RunTime?element.RunTime:''} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:''} Crawl:${element.StartOfCrawl?element.StartOfCrawl:''}`});
                 });
                 RatingCount = aRatingItems?.length;
 
@@ -197,7 +200,8 @@ module.exports = class PrintFormService extends cds.ApplicationService {
                     return item?.LinkedCTT?.toUpperCase().includes('TRL');
                 });
                 await aTrailerItems?.forEach(element => {
-                    Content.push({"ContentText":`${element.LinkedCTT} Duration:${element.RunTime} Start Of Credits:${element.StartOfCredits} Crawl:${element.StartOfCrawl}`});
+                    Content.push({"ContentText":`${element.LinkedCTT}
+Duration:${element.RunTime?element.RunTime:''} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:''} Crawl:${element.StartOfCrawl?element.StartOfCrawl:''}`});
                 });
                 TrailerCount = aTrailerItems?.length;
 

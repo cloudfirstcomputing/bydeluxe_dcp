@@ -35,35 +35,36 @@ sap.ui.define([
             var sServiceUrl = oModel.sServiceUrl;
             var sPdfUrl = sServiceUrl + "downloadFormADS()";
             var oPrintModel = this.getView().getModel("printModel");
-            if(this.byId("selectFormName").getSelectedKey() === '5'){
-                var aSelecteditems = this.byId("docTable2").getSelectedItems();
-                for(var i in aSelecteditems){
-                    var oSelectedItem = aSelecteditems[i];
-                    var sProdId = oSelectedItem.getBindingContext().getObject().Product;
-                    if(sProdId){
-                        sPdfUrl = `${oPrintModel.getServiceUrl()}getKrakenHDDLabel(DCPBarcode='${sProdId}')`;
-                    }
-                    var that = this;
-                    BusyIndicator.show();
-                    var updateCall = $.ajax({
-                        url: sPdfUrl,
-                        type: "GET",
-                        headers: {
-                            "Accept": "application/pdf"
-                        },
-                        success: function (data) {
-                            that.onOpenPDF(data);
-                            BusyIndicator.hide();
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error fetching PDF:", status, error);
-                            BusyIndicator.hide();
-                            sap.m.MessageToast.show("Failed to load the form.");
-                        }
-                    });
-                }
-            }
-            else{
+            // if(this.byId("selectFormName").getSelectedKey() === '5'){
+            //     var aSelecteditems = this.byId("docTable2").getSelectedItems();
+            //     for(var i in aSelecteditems){
+            //         var oSelectedItem = aSelecteditems[i];
+            //         var sProdId = oSelectedItem.getBindingContext().getObject().Product;
+            //         if(sProdId){
+            //             sPdfUrl = `${oPrintModel.getServiceUrl()}getKrakenHDDLabel(DCPBarcode='${sProdId}')`;
+            //         }
+            //         var that = this;
+            //         BusyIndicator.show();
+            //         var updateCall = $.ajax({
+            //             url: sPdfUrl,
+            //             type: "GET",
+            //             headers: {
+            //                 "Accept": "application/pdf"
+            //             },
+            //             success: function (data) {
+            //                 that.onOpenPDF(data);
+            //                 BusyIndicator.hide();
+            //             },
+            //             error: function (xhr, status, error) {
+            //                 console.error("Error fetching PDF:", status, error);
+            //                 BusyIndicator.hide();
+            //                 sap.m.MessageToast.show("Failed to load the form.");
+            //             }
+            //         });
+            //     }
+            // }
+            // else
+            {
                 // var opdfViewer = new PDFViewer();
                     // this.getView().addDependent(opdfViewer);
                     var oSelecteditem;
@@ -73,7 +74,7 @@ sap.ui.define([
                     // this.openPdfViewer(sSource);
                     [oSelecteditem] = this.byId("docTable2").getSelectedItems();
 
-                    var sForm = this.byId("selectFormName").getSelectedKey() =='3' ? "DCDCLabel" : this.byId("selectFormName").getSelectedKey() =='4' ? "DeluxeLabel": "MasterLabel" ;
+                    var sForm = this.byId("selectFormName").getSelectedKey() =='5'? 'HDDLabel':this.byId("selectFormName").getSelectedKey() =='3' ? "DCDCLabel" : this.byId("selectFormName").getSelectedKey() =='4' ? "DeluxeLabel": "MasterLabel" ;
                   
                     var sProdId = oSelecteditem.getBindingContext().getObject().Product;
                     var oData = {
@@ -82,6 +83,7 @@ sap.ui.define([
                     }
                       var sSource = sServiceUrl + `downloadFormADS`
                     var that = this;
+                    BusyIndicator.show();
                     var updateCall = $.ajax({
                         url: sSource,
                         type: "POST",
@@ -91,9 +93,11 @@ sap.ui.define([
                             "Content-Type" :"application/json"
                         },
                         success: function (data) {
+                            BusyIndicator.hide();
                             that.onOpenPDF(data);
                         },
                         error: function (xhr, status, error) {
+                            BusyIndicator.hide();
                             console.error("Error fetching PDF:", status, error);
                             sap.m.MessageToast.show("Failed to load the form.");
                         }

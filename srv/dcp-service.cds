@@ -55,6 +55,7 @@ service BookingOrderService {
     entity DistroSpec_Local as projection on DistroSpec;
     entity AssetVault_Local as projection on AssetVault;
     entity BookingSalesOrder as projection on db.BookingSalesOrder;
+    entity BookingSalesorderItem as projection on db.BookingSalesorderItem;
     entity CplList_Local as projection on distService.CplList;
     action test(bookingIDs: array of String) returns String;
     
