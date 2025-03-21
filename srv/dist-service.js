@@ -2,8 +2,8 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts,
-            StorageLocations, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+        const { DistroSpec, ShippingType, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts, DCPMapProducts,
+            StorageLocations, ProductGroup, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -19,6 +19,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const distchtx = await cds.connect.to('API_DISTRIBUTIONCHANNEL_SRV')
         const salesdisttx = await cds.connect.to('API_SALESDISTRICT_SRV')
         const paramtx = await cds.connect.to('YY1_PARAMETER_CDS_0001')
+        const shiptyptx = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
+        const prdgrptx = await cds.connect.to("API_PRODUCTGROUP_SRV");
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -134,7 +136,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         "DeliverySequence5_ShippingCondition" || "DeliverySequence9_ShippingCondition" ||
                         "DeliverySequence6_ShippingCondition" || "DeliverySequence10_ShippingCondition":
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
-                        break;
+                        break; 
                     default:
                         break;
                 }
@@ -375,6 +377,13 @@ module.exports = class DistributionService extends cds.ApplicationService {
             })
         })
 
+        this.on(['READ'], DCPMapProducts, async req => {
+            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: ['Z003','Z004'] })))
+            return data.map(item => {
+                return { Product: item.Product, Name: item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription }
+            })
+        })
+
         this.on(['READ'], Titles, async req => {
             const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z007' })))
             return data.map(item => {
@@ -392,6 +401,17 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on('READ', ShippingConditions, async req => {
             return sctx.run(req.query)
+        })
+
+        this.on('READ', ShippingType, async req => {
+            return shiptyptx.run(req.query)
+        })
+
+        this.on('READ', ProductGroup, async req => {
+            const data = _asArray(await prdgrptx.run(SELECT.from(ProductGroup).columns(["*", { "ref": ["to_Text"], "expand": ["*"] }])))
+            return data.map(item => {
+                return { MaterialGroup: item.MaterialGroup, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).MaterialGroupName }
+            })
         })
 
         this.on('READ', Regions, async req => {

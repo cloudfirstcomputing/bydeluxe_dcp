@@ -37,7 +37,8 @@
     "watch-booksalesorderweb": "cds watch --open booksalesorderweb/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-managematerialtitle": "cds watch --open managematerialtitle/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-adobeformprinting": "cds watch --open adobeformprinting/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-printdocuments": "cds watch --open printdocuments/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-printdocuments": "cds watch --open printdocuments/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-dcpmatmap": "cds watch --open dcpmatmap/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -283,6 +284,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "API_PRODUCTGROUP_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_PRODUCTGROUP_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_PRODUCTGROUP_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
@@ -294,6 +306,7 @@
     "app/assetvault",
     "app/booksalesorderweb",
     "app/managematerialtitle",
-    "app/adobeformprinting"
+    "app/adobeformprinting",
+    "app/dcpmatmap"
   ]
 }

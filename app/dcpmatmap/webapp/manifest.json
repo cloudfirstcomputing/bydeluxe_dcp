@@ -1,0 +1,163 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.dlx.dcpmatmap",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.17.0",
+      "toolsId": "3ac13e54-ec22-49e4-b816-231ba751db30"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/distribution/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "dcpmatmap-manage": {
+          "semanticObject": "dcpmatmap",
+          "action": "manage",
+          "title": "{{dcpmatmap-manage.flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.134.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.dlx.dcpmatmap.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "DCPMaterialMappingList",
+          "target": "DCPMaterialMappingList"
+        },
+        {
+          "pattern": "DCPMaterialMapping({key}):?query:",
+          "name": "DCPMaterialMappingObjectPage",
+          "target": "DCPMaterialMappingObjectPage"
+        },
+        {
+          "pattern": "DCPMaterialMapping({key}):?query:",
+          "name": "DCPMaterialMappingObjectPage",
+          "target": "DCPMaterialMappingObjectPage"
+        }
+      ],
+      "targets": {
+        "DCPMaterialMappingList": {
+          "type": "Component",
+          "id": "DCPMaterialMappingList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/DCPMaterialMapping",
+              "variantManagement": "Page",
+              "navigation": {
+                "DCPMaterialMapping": {
+                  "detail": {
+                    "route": "DCPMaterialMappingObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DCPMaterialMappingObjectPage": {
+          "type": "Component",
+          "id": "DCPMaterialMappingObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/DCPMaterialMapping"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "bydeluxe"
+  }
+}
