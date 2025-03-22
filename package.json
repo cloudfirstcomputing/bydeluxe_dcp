@@ -38,7 +38,8 @@
     "watch-managematerialtitle": "cds watch --open managematerialtitle/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-adobeformprinting": "cds watch --open adobeformprinting/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-printdocuments": "cds watch --open printdocuments/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-dcpmatmap": "cds watch --open dcpmatmap/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-dcpmatmap": "cds watch --open dcpmatmap/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-normalizedorder": "cds watch --open normalizedorder/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -318,6 +319,7 @@
     "app/booksalesorderweb",
     "app/managematerialtitle",
     "app/adobeformprinting",
-    "app/dcpmatmap"
+    "app/dcpmatmap",
+    "app/normalizedorder"
   ]
 }

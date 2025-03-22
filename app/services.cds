@@ -13,3 +13,5 @@ using from './managematerialtitle/annotations';
 using from './printdocuments/annotations';
 
 using from './dcpmatmap/annotations';
+
+using from './normalizedorder/annotations';

@@ -55,7 +55,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
                     recordsToBeUpdated.push(entry_Active);
                 }
-                await createSalesOrderUsingRules(req, data[i]);
+                // await createSalesOrderUsingRules(req, data[i]);
                 recordsToBeInserted.push(data[i]);
             }
             if (recordsToBeInserted.length) {

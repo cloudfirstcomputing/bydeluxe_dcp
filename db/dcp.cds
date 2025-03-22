@@ -114,64 +114,65 @@ entity dcpkey : managed {
         ReferenceSDDocument : String                       @readonly;
         Warnings            : String
 }
-entity StudioFeed : managed {
-    key BookingID           : String;
-    key SourceSystem        : String;
-    key Version             : Integer;
-        IsActive            : String(1);
-        Origin              : Association to Origin;
-        EntityID            : String;
-        Studio              : String;
-        Title               : String;
-        CustomerReference   : String;
-        CreatedOn           : Date;
-        RequestedDelivDate  : Date;
-        ReleaseID           : String;
-        OrderType           : String;
-        RecordType          : String;
-        BookingType         : String;
-        TheaterID           : String;
-        Circuit             : String;
-        BookerName          : String;
-        RequestId           : String;
-        OrderID             : String;
-        PlayStartDate       : Date;
-        PlayStartTime       : Time;
-        PlayEndDate         : Date;
-        PlayEndTime         : Time;
-        KeyDeliveryOnDate   : Date;
-        KeyStartDate        : Date;
-        KeyStartTime        : Time;
-        KeyEndDate          : Date;
-        KeyEndTime          : Time;
-        HFR                 : String;
-        ShipmentIndicator   : String;
-        ScreeningIndicator  : String;
-        DepotID             : String;
-        SoundID             : String;
-        Language            : String;
-        SubtitleType1       : String;
-        SubtitleType2       : String;
-        PrintFormat         : String;
-        ShipPriority        : Integer @assert.range: [
-            1,
-            5
-        ];
-        PrintQuality        : String;
-        ApprovedScreens     : String;
-        CTTs                : String;
-        CPLUUIDs            : String;
-        CountryCode         : String;
-        ScreenID            : String;
-        ContentType         : String;
-        CancelOrder         : String;
-        Remediation         : String;
-        DeliveryType        : String;
-        //Common custom fields
-        Status              : Association to BookingStatus;
-        SalesOrder          : String  @readonly;
-        ErrorMessage        : String  @readonly;
-        Warnings            : String
+
+entity StudioFeed : cuid, managed {
+    BookingID          : String; @mandatory
+    SourceSystem       : String; @mandatory
+    Version            : Integer;
+    IsActive           : String(1);
+    Origin             : Association to Origin;
+    EntityID           : String;
+    Studio             : String;
+    Title              : String;
+    CustomerReference  : String;
+    CreatedOn          : Date;
+    RequestedDelivDate : Date;
+    ReleaseID          : String;
+    OrderType          : String;
+    RecordType         : String;
+    BookingType        : String;
+    TheaterID          : String;
+    Circuit            : String;
+    BookerName         : String;
+    RequestId          : String;
+    OrderID            : String;
+    PlayStartDate      : Date;
+    PlayStartTime      : Time;
+    PlayEndDate        : Date;
+    PlayEndTime        : Time;
+    KeyDeliveryOnDate  : Date;
+    KeyStartDate       : Date;
+    KeyStartTime       : Time;
+    KeyEndDate         : Date;
+    KeyEndTime         : Time;
+    HFR                : String;
+    ShipmentIndicator  : String;
+    ScreeningIndicator : String;
+    DepotID            : String;
+    SoundID            : String;
+    Language           : String;
+    SubtitleType1      : String;
+    SubtitleType2      : String;
+    PrintFormat        : String;
+    ShipPriority       : Integer @assert.range: [
+        1,
+        5
+    ];
+    PrintQuality       : String;
+    ApprovedScreens    : String;
+    CTTs               : String;
+    CPLUUIDs           : String;
+    CountryCode        : String;
+    ScreenID           : String;
+    ContentType        : String;
+    CancelOrder        : String;
+    Remediation        : String;
+    DeliveryType       : String;
+    //Common custom fields
+    Status             : Association to BookingStatus;
+    SalesOrder         : String  @readonly;
+    ErrorMessage       : String  @readonly;
+    Warnings           : String
 }
 
 entity Origin {
@@ -181,6 +182,7 @@ entity Origin {
         };
         OriginText : String;
 };
+
 entity BookingStatus {
     key ID     : String(1) enum {
             A;
@@ -376,7 +378,7 @@ entity TheatreOrderRequest : managed {
 }
 
 entity Theatre : managed {
-    key ID   : String(50);
+    key ID          : String(50);
         Name        : String(200);
         City        : String(200);
         State       : String(100);
@@ -387,7 +389,7 @@ entity Theatre : managed {
 
 }
 
-entity MediaOrder :  managed {
+entity MediaOrder : managed {
         mediaType         : String;
     key mediaOrderId      : Integer;
         TheatreID         : String(50);
@@ -413,12 +415,12 @@ entity MediaOrder :  managed {
         Request           : Association to TheatreOrderRequest;
 }
 
-entity DigitalComposition :  managed {
-    key ID : String(50);
-        Title     : String(500);
-        CPL_UUID  : String(100);
-        FilmID    : String(100);
-        Request   : Association to TheatreOrderRequest;
+entity DigitalComposition : managed {
+    key ID       : String(50);
+        Title    : String(500);
+        CPL_UUID : String(100);
+        FilmID   : String(100);
+        Request  : Association to TheatreOrderRequest;
 }
 
 entity DigitalKeyOrder : managed {

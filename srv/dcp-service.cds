@@ -24,6 +24,7 @@ service BookingOrderService {
     // action remediateKeySalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String)     returns String;
     // action reconcileKey(bookingIDs: array of  String) returns String;
     entity StudioFeed as projection on db.StudioFeed;
+    annotate StudioFeed with @odata.draft.enabled;
     action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
     
     entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;

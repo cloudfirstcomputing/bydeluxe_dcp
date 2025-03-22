@@ -1,0 +1,214 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "normalizedorder",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.17.0",
+      "toolsId": "16defecb-4b0b-4110-b6db-797a61313554"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/booking-order/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "normsalesorder-manage": {
+          "semanticObject": "normsalesorder",
+          "action": "manage",
+          "title": "{{normsalesorder-manage.flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.134.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {},
+        "sap.f": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "normalizedorder.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {
+        "flexibleColumnLayout": {
+          "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+          "defaultThreeColumnLayoutType": "ThreeColumnsMidExpanded"
+        },
+        "routerClass": "sap.f.routing.Router"
+      },
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "StudioFeedList",
+          "target": [
+            "StudioFeedList"
+          ]
+        },
+        {
+          "pattern": "StudioFeed({key}):?query:",
+          "name": "StudioFeedObjectPage",
+          "target": [
+            "StudioFeedList",
+            "StudioFeedObjectPage"
+          ]
+        }
+      ],
+      "targets": {
+        "StudioFeedList": {
+          "type": "Component",
+          "id": "StudioFeedList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/StudioFeed",
+              "variantManagement": "Page",
+              "navigation": {
+                "StudioFeed": {
+                  "detail": {
+                    "route": "StudioFeedObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "enableExport": true
+                  },
+                  "actions": {
+                    "MassUpload": {
+                      "press": "normalizedorder.ext.controller.ActionsExt.handleMassUpload",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>massUpload}"
+                    },
+                    "Reconcile": {
+                      "press": "normalizedorder.ext.controller.ActionsExt.handleReconcile",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>reconcile}",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "MassUpload"
+                      }
+                    },
+                    "Remediate": {
+                      "press": "normalizedorder.ext.controller.ActionsExt.handleRemediate",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>remediate}",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "Reconcile"
+                      }
+                    }
+                  }
+                }
+              },
+              "initialLoad": "Enabled",
+              "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
+            }
+          },
+          "controlAggregation": "beginColumnPages",
+          "contextPattern": ""
+        },
+        "StudioFeedObjectPage": {
+          "type": "Component",
+          "id": "StudioFeedObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/StudioFeed"
+            }
+          },
+          "controlAggregation": "midColumnPages",
+          "contextPattern": "/StudioFeed({key})"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+      "type": "XML",
+      "async": true,
+      "id": "appRootView"
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "bydeluxe"
+  }
+}
