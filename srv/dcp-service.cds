@@ -26,6 +26,7 @@ service BookingOrderService {
     entity StudioFeed as projection on db.StudioFeed;
     annotate StudioFeed with @odata.draft.enabled;
     action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
+    action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
     
     entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner   as projection on S4_BuisnessPartner.A_BusinessPartner;

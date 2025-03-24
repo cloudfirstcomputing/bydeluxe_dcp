@@ -116,19 +116,17 @@ entity dcpkey : managed {
 }
 
 entity StudioFeed : cuid, managed {
-    BookingID          : String; @mandatory
-    SourceSystem       : String; @mandatory
-    Version            : Integer;
-    IsActive           : String(1);
-    Origin             : Association to Origin;
-    EntityID           : String;
-    Studio             : String;
-    Title              : String;
+    BookingID          : String                       @mandatory;
+    SourceSystem       : String                       @mandatory;
+    EntityID           : String                       @mandatory;
+    Origin             : Association to Origin        @mandatory;
+    Studio             : String                       @mandatory;
     CustomerReference  : String;
+    Title              : String                       @mandatory;
     CreatedOn          : Date;
-    RequestedDelivDate : Date;
+    RequestedDelivDate : Date                         @mandatory;
     ReleaseID          : String;
-    OrderType          : String;
+    OrderType          : String                       @mandatory;
     RecordType         : String;
     BookingType        : String;
     TheaterID          : String;
@@ -154,7 +152,7 @@ entity StudioFeed : cuid, managed {
     SubtitleType1      : String;
     SubtitleType2      : String;
     PrintFormat        : String;
-    ShipPriority       : Integer @assert.range: [
+    ShipPriority       : Integer                      @assert.range: [
         1,
         5
     ];
@@ -166,19 +164,23 @@ entity StudioFeed : cuid, managed {
     ScreenID           : String;
     ContentType        : String;
     CancelOrder        : String;
-    Remediation        : String;
     DeliveryType       : String;
     //Common custom fields
-    Status             : Association to BookingStatus;
-    SalesOrder         : String  @readonly;
-    ErrorMessage       : String  @readonly;
-    Warnings           : String
+    Version            : Integer                      @readonly;
+    IsActive           : String(1)                    @readonly;
+    Remediation        : String                       @readonly;
+    Status             : Association to BookingStatus @readonly;
+    SalesOrder         : String                       @readonly;
+    ErrorMessage       : String                       @readonly;
+    Warnings           : String                       @readonly;
 }
 
 entity Origin {
     key OriginID   : String(1) enum {
             F;
             P;
+            S;
+            M;
         };
         OriginText : String;
 };

@@ -41,11 +41,78 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aResult = await createBookingFeed(req, "K");
             return aResult;
         });
-        this.on('createStudioFeeds', async (req, res) => {
-            var data = req.data?.StudioFeed;
+        this.before("SAVE", StudioFeed.drafts ,async(req)=>{
+            var oFeed = req.data;
+            oFeed.Version = 1;
+            oFeed.Origin_OriginID = "M";
+            oFeed.Status_ID = "A";
+        });
+        this.on("CREATE", StudioFeed ,async(req, next)=>{
+            var oFeed = req.data;
+            await createStudioFeeds(req, [oFeed]);
+        });
+        this.on('MassUploadStudioFeed', async (req, res)=>{
+            let excelData = {}
+            let uploadedData = []
+            let errorData = []
+            let aBookingFeeds = [];
+
+            let workbook = XLSX.read(req.data.fileData, {
+                type: 'binary'
+            })
+
+            workbook.SheetNames.forEach(sheetName => {
+                excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
+            })
+            if (req.data.fieldNames.length === 0) req.reject(400, 'reqfieldNames')
+            if (excelData.length === 0) req.reject(400, 'emptySheet')
+            try {
+                for (let index = 0; index < excelData.length; index++) {
+                    let object = excelData[index]
+                    let row = object.__rowNum__ + 1
+                    let element = {}
+                    let error = {}
+                    error.RowNumber = row.toString()
+                    // error.ID = id
+                    for (const property in object) {
+                        const fieldName = req.data.fieldNames.find(item => {
+                            return item.excelColumn === property
+                        })
+                        if (!fieldName) req.reject(400, 'invalidSheet')
+                        if (fieldName.technicalName) {
+                            element[fieldName.technicalName] = object[property]
+                        }
+                    }
+                    if (!element.hasOwnProperty('SourceSystem')) {
+                        error.Message = bundle.getText(`reqField`, ['Source System'])
+                        // _fillData(errorData, error)
+                    }
+                    else if (!element.hasOwnProperty('BookingID')) {
+                        error.Message = bundle.getText(`reqField`, ['Booking ID'])
+                        // _fillData(errorData, error)
+                    }else {
+                        aBookingFeeds.push(element)
+                    }
+                    if (!error.Message) {
+                        // _fillData(uploadedData, element)
+                    }
+                    element.Origin_OriginID = "S";
+                }
+                if (aBookingFeeds) {
+                    var aResults = await createStudioFeeds(req, aBookingFeeds);
+                    req.reply({
+                        code: 201,
+                        message: JSON.stringify(aResults)
+                    });
+                }
+            } catch (error) {
+                return req.reject(400, error)
+            }
+        });
+        const createStudioFeeds = async (req, aData)=>{
             let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
             hanatable = StudioFeed;
-
+            var data = aData;
             for (var i in data) {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
@@ -77,6 +144,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "UpdateSuccess": updateSuccessEntries });
             finalResult.push({ "Error": failedEntries });
             return finalResult;
+        };
+        this.on('createStudioFeeds', async (req, res) => {
+            var data = req.data?.StudioFeed;
+            await createStudioFeeds(req, data, 'batch')
+
         });
         const createSalesOrderUsingRules = async (req, oContentData)=>{
             if(oContentData?.Origin !== "F"){

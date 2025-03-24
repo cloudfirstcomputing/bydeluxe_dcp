@@ -146,7 +146,7 @@
                       "press": "normalizedorder.ext.controller.ActionsExt.handleMassUpload",
                       "visible": true,
                       "enabled": true,
-                      "requiresSelection": true,
+                      "requiresSelection": false,
                       "text": "{i18n>massUpload}"
                     },
                     "Reconcile": {
@@ -170,6 +170,47 @@
                         "placement": "After",
                         "anchor": "Reconcile"
                       }
+                    }
+                  },
+                  "columns": {
+                    "DataField::BookingID": {
+                      "width": "auto"
+                    },
+                    "DataField::SourceSystem": {
+                      "width": "auto"
+                    },
+                    "DataField::OrderType": {
+                      "width": "auto"
+                    },
+                    "DataField::Title": {
+                      "width": "auto"
+                    },
+                    "DataField::RequestedDelivDate": {
+                      "widthIncludingColumnHeader": true
+                    },
+                    "DataField::CustomerReference": {
+                      "widthIncludingColumnHeader": true
+                    },
+                    "DataField::Version": {
+                      "width": "auto"
+                    },
+                    "DataField::Status_ID": {
+                      "width": "auto"
+                    },
+                    "DataField::Remediation": {
+                      "width": "auto"
+                    },
+                    "DataField::createdAt": {
+                      "width": "auto"
+                    },
+                    "DataField::EntityID": {
+                      "width": "auto"
+                    },
+                    "DataField::SalesOrder": {
+                      "width": "auto"
+                    },
+                    "DataField::Studio": {
+                      "width": "auto"
                     }
                   }
                 }
