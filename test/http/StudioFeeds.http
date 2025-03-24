@@ -14,7 +14,7 @@ Content-Type:application/json
     "Title":"SPIDERMAN",
     "CustomerReference":"SelfExplanatory",
     "CreatedOn":"2025-02-28",
-    "Origin": "P",
+    "Origin_OriginID": "P",
     "RequestedDelivDate":"2025-03-07",
     "SourceSystem":"SPIRITWORLD",
     "BookingID":"1977095",
@@ -55,8 +55,7 @@ Content-Type:application/json
     "ContentType":"",
     "CancelOrder":"",
     "Remediation":"",
-    "DeliveryType":"",
-    "Status": "C"
+    "DeliveryType":""
     }
   ]
 }

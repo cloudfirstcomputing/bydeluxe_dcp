@@ -194,8 +194,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 studio.ProcessScreeningKDMS,
                                 studio.MaxKDMSDuration,
                                 studio.StudioHoldOverRule,
-                                studio.SalesTerritory_SalesDistrict,
-                                studio.InferKeyContentOrder
+                                studio.SalesTerritory_SalesDistrict
                         }),
                         dist.to_Package((pkg) => {
                             pkg.PackageUUID,
@@ -203,12 +202,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 pkg.ValidFrom,
                                 pkg.ValidTo,
                                 pkg.ContentIndicator,
-                                // pkg.SecondaryTerritory,
-                                // pkg.PrimaryTerritoryDeliveryMethod_ShippingCondition,
-                                // pkg.SecondaryTerritoryDeliveryMethod_ShippingCondition,
-                                // pkg.PrimaryDeliveryMethod_ShippingCondition,
-                                // pkg.SecondaryDeliveryMethod_ShippingCondition,
-                                // pkg.DepotID,
                                 pkg.DeliveryMethod1_ShippingCondition,
                                 pkg.DeliveryMethod2_ShippingCondition,
                                 pkg.DeliveryMethod3_ShippingCondition,
