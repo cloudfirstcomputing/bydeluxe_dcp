@@ -120,7 +120,8 @@ entity StudioFeed : cuid, managed {
     SourceSystem       : String                       @mandatory;
     EntityID           : String                       @mandatory;
     @readonly
-    Origin             : Association to Origin        @mandatory;
+    // Origin             : Association to Origin        @mandatory;
+    Origin             : String        @mandatory;
     Studio             : String                       @mandatory;
     CustomerReference  : String;
     Title              : String                       @mandatory;
@@ -170,7 +171,8 @@ entity StudioFeed : cuid, managed {
     Version            : Integer                      @readonly;
     IsActive           : String(1)                    @readonly;
     Remediation        : String                       @readonly;
-    Status             : Association to BookingStatus @readonly;
+    // Status             : Association to BookingStatus @readonly;
+    Status             : String @readonly;
     SalesOrder         : String                       @readonly;
     ErrorMessage       : String                       @readonly;
     Warnings           : String                       @readonly;

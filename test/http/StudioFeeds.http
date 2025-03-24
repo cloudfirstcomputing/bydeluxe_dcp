@@ -14,7 +14,7 @@ Content-Type:application/json
     "Title":"SPIDERMAN",
     "CustomerReference":"SelfExplanatory",
     "CreatedOn":"2025-02-28",
-    "Origin_OriginID": "P",
+    "Origin": "P",
     "RequestedDelivDate":"2025-03-07",
     "SourceSystem":"SPIRITWORLD",
     "BookingID":"1977095",
@@ -55,10 +55,9 @@ Content-Type:application/json
     "ContentType":"",
     "CancelOrder":"",
     "Remediation":"",
-    "DeliveryType":""
-    },
-    {"BookingID":"2855787","SourceSystem":"SPIRITWORLD","EntityID":"SPR",
-    "Origin_OriginID": "F","Studio":"Sony","Title":"BAD BOYS: RIDE OR DIE","CustomerReference":"05:00:00","RequestedDelivDate":"2024-06-04","ReleaseID":"110218","OrderType":"K","BookingType":"NO","TheaterID":"THR000064272","Circuit":"CRC000004716","PlayStartDate":"2024-06-06","PlayEndDate":"2024-08-02","ShipmentIndicator":"Y","ScreeningIndicator":"N","DepotID":"","SoundID":"51","SubtitleType1":"XX","ShipPriority":2,"PrintQuality":"2D"}
+    "DeliveryType":"",
+    "Status": "C"
+    }
   ]
 }
 
