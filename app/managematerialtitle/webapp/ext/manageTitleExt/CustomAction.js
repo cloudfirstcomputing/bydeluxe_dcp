@@ -78,22 +78,21 @@ sap.ui.define([
 
 
 
-                            var oDataS4API = {
-                                Product: "",
+                            var oDataS4API = {                                
                                 ProductGroup: oData.TitleCategory,
                                 ProductType: "SERV", //TitleType
                                 BaseUnit: "EA",
                                 ProductManufacturerNumber: "",
                                 to_ProductBasicText: [
                                     {
-                                        Product: "",
+                                        
                                         Language: "EN", //LanguageCode
-                                        LongText: oData.RegionalTitleName
+                                        LongText: oData.OriginalTitleName
                                     }
                                 ],
                                 to_Description: [
                                     {
-                                        Product: "",
+                                       
                                         Language: "EN",
                                         ProductDescription: oData.OriginalTitleName
                                     }

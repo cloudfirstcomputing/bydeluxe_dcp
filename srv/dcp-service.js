@@ -33,7 +33,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
             DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
             Division = aConfig?.find((e) => { return e.VariableName === 'Division_SPIRITWORLD' })?.VariableValue;
-        this.before("SAVE", StudioFeed.drafts ,async(req)=>{
+        this.before("SAVE", StudioFeed.drafts, async (req) => {
             var oFeed = req.data;
             oFeed.Version = 1;
             oFeed.Origin_OriginID = "M";
@@ -46,16 +46,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         //     oFeed.Status_ID = "A";
         //     await createStudioFeeds(req, [oFeed]);
         // });
-        this.on("CREATE", StudioFeed ,async(req, next)=>{
+        this.on("CREATE", StudioFeed, async (req, next) => {
             var oFeed = req.data;
             var aResponse = await createStudioFeeds(req, [oFeed]);
-            
+
             req.reply({
                 code: 201,
                 message: aResponse
             });
         });
-        this.on('MassUploadStudioFeed', async (req, res)=>{
+        this.on('MassUploadStudioFeed', async (req, res) => {
             let excelData = {}
             let uploadedData = []
             let errorData = []
@@ -105,8 +105,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     else if (!element.hasOwnProperty('OrderType')) {
                         error.Message = bundle.getText(`reqField`, ['OrderType'])
-                    } 
-                    else{
+                    }
+                    else {
                         aBookingFeeds.push(element)
                     }
                     if (!error.Message) {
@@ -127,14 +127,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on('createStudioFeeds', async (req, res) => {
             var data = req.data?.StudioFeed;
             var aResponse = await createStudioFeeds(req, data)
-            
+
             req.reply({
                 code: 201,
                 message: aResponse
             });
 
         });
-        const createStudioFeeds = async (req, aData)=>{
+        const createStudioFeeds = async (req, aData) => {
             let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
             hanatable = StudioFeed;
             var data = aData;
@@ -145,7 +145,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 // if(data[i].Origin_OriginID === "M"){
                 //     hanatable = StudioFeed.drafts;
                 // }
-                if(data[i].BookingType === "U" || data[i].BookingType === "C" ){ //VERSION is updated only when BookingType is U or C
+                if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                     if (entry_Active) {
                         data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
@@ -153,21 +153,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
                 recordsToBeInserted.push(data[i]); //INSERT is always required
-                
+
                 // await createSalesOrderUsingNormalizedRules(req, data[i]);
-                
+
             }
             if (recordsToBeInserted.length) {
                 let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
-                    successEntries.push(recordsToBeInserted);
-                    successEntries.push(insertResult);
+                successEntries.push(recordsToBeInserted);
+                successEntries.push(insertResult);
             }
             for (var i in recordsToBeUpdated) {
                 let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
                     BookingID: recordsToBeUpdated[i].BookingID,
                     createdAt: recordsToBeUpdated[i].createdAt
                 });
-                if(updateResult){
+                if (updateResult) {
                     updateSuccessEntries.push(recordsToBeUpdated[i]);
                     updateSuccessEntries.push(updateResult);
                 }
@@ -179,8 +179,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "NoOfRecordsUpdated": recordsToBeUpdated.length });
             return finalResult;
         };
-        const createSalesOrderUsingNormalizedRules = async (req, oContentData)=>{
-            if(oContentData?.Origin_OriginID !== "F"){
+        const createSalesOrderUsingNormalizedRules = async (req, oContentData) => {
+            if (oContentData?.Origin_OriginID !== "F") {
                 var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
                     dist.DistroSpecUUID,
                         dist.DistroSpecID,
@@ -234,12 +234,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     // dcpmat.PrintFormat
                                 });
                         })
-                }).where({ DistroSpecUUID: to_DistroSpec_DistroSpecUUID }); 
+                }).where({ DistroSpecUUID: to_DistroSpec_DistroSpecUUID });
             }
-            else{
+            else {
                 var sCustomerRef = oContentData.CustomerReference;
                 var { to_DistroSpec_DistroSpecUUID, to_StudioKey_StudioKeyUUID } = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
-                
+
             }
         };
         this.on("createMaccs", async (req, res) => {
@@ -1081,6 +1081,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], ProductDescription, async req => {
             return s4h_products_Crt.run(req.query);
         });
+        this.on(['READ'], ProductBasicText, async req => {
+            return s4h_products_Crt.run(req.query);
+        });
 
         this.on(['READ'], MaterialDocumentHeader, async req => {
             return s4h_material_read.run(req.query);
@@ -1117,8 +1120,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 const input = req.data.input; // Extract input data from request
 
                 // Make a POST call to the external API              
-                const response = await s4h_products_Crt.run(UPDATE(Products).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
-                const response1 = await s4h_products_Crt.run(UPDATE(Products).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
+                //const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
+                // const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
+                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: 'test1' }).where({ Product: '5962', Language: 'EN' })); 
+                var sData =
+                {
+                    "LongText": "Testing"
+                }
+                var jData = JSON.stringify(sData);
+                const headers = {
+                    "Content-Type": 'application/json',
+                    "Accept": '*/*',
+                };
+                var oEdit = await s4h_products_Crt.send({
+                    method: "PATCH",
+                    path: "/A_ProductBasicText(Product='5962',Language='EN')", ///A_ProductBasicText(Product='{Product}',Language='{Language}')
+                    data : sData,
+                    headers:headers                        
+                });
                 return "Succesfully Edited";
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);
@@ -1242,30 +1261,36 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         return item?.LinkedCTT?.toUpperCase().includes('FTR');
                     });
 
-                //FOLLOWING DELIMITATION OF DURATION IS REQUIRED TO SHOW IT PROPERLY IN PDF. DON'T ADD OR DELETE MORE SPACE THERE
-                await aFeatureItems?.forEach(element => {
-                    Content.push({"ContentText":`${element.LinkedCTT}
-Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:'-'} Crawl:${element.StartOfCrawl?element.StartOfCrawl:'-'}`});
-                });                
-                FeatureCount = aFeatureItems?.length;
+                    //FOLLOWING DELIMITATION OF DURATION IS REQUIRED TO SHOW IT PROPERLY IN PDF. DON'T ADD OR DELETE MORE SPACE THERE
+                    await aFeatureItems?.forEach(element => {
+                        Content.push({
+                            "ContentText": `${element.LinkedCTT}
+Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.StartOfCredits ? element.StartOfCredits : '-'} Crawl:${element.StartOfCrawl ? element.StartOfCrawl : '-'}`
+                        });
+                    });
+                    FeatureCount = aFeatureItems?.length;
 
-                var aRatingItems = aItems?.filter((item)=>{
-                    return item?.LinkedCTT?.toUpperCase().includes('RTG');
-                });
-                await aRatingItems?.forEach(element => {
-                    Content.push({"ContentText":`${element.LinkedCTT}
-Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:'-'} Crawl:${element.StartOfCrawl?element.StartOfCrawl:'-'}`});
-                });
-                RatingCount = aRatingItems?.length;
+                    var aRatingItems = aItems?.filter((item) => {
+                        return item?.LinkedCTT?.toUpperCase().includes('RTG');
+                    });
+                    await aRatingItems?.forEach(element => {
+                        Content.push({
+                            "ContentText": `${element.LinkedCTT}
+Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.StartOfCredits ? element.StartOfCredits : '-'} Crawl:${element.StartOfCrawl ? element.StartOfCrawl : '-'}`
+                        });
+                    });
+                    RatingCount = aRatingItems?.length;
 
-                var aTrailerItems = aItems?.filter((item)=>{
-                    return item?.LinkedCTT?.toUpperCase().includes('TRL');
-                });
-                await aTrailerItems?.forEach(element => {
-                    Content.push({"ContentText":`${element.LinkedCTT}
-Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.StartOfCredits?element.StartOfCredits:'-'} Crawl:${element.StartOfCrawl?element.StartOfCrawl:'-'}`});
-                });
-                TrailerCount = aTrailerItems?.length;
+                    var aTrailerItems = aItems?.filter((item) => {
+                        return item?.LinkedCTT?.toUpperCase().includes('TRL');
+                    });
+                    await aTrailerItems?.forEach(element => {
+                        Content.push({
+                            "ContentText": `${element.LinkedCTT}
+Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.StartOfCredits ? element.StartOfCredits : '-'} Crawl:${element.StartOfCrawl ? element.StartOfCrawl : '-'}`
+                        });
+                    });
+                    TrailerCount = aTrailerItems?.length;
 
                     var aTrailerItems = aItems?.filter((item) => {
                         return item?.LinkedCTT?.toUpperCase().includes('TRL');
@@ -1358,74 +1383,74 @@ Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.Start
                 var oFormObject = await deluxe_adsrestapi.get(query);
                 var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
                 var sMaterialDocument = req?.data?.Material;
-               
+
                 const formData = {
-                    Form: 
-                        {
-                            "GRHeaderNode": {
-                              "GoodsReceiptHeadlinePrint": sMaterialDocument,
-                              "Language": "EN",
-                              "Product" : sMaterialDocument,
-                              "MaterialDocument": sMaterialDocument,
-                              "MaterialDocumentHeaderText": "",
-                              "MaterialDocumentItem": sMaterialDocument,
-                              "MaterialDocumentYear": sMaterialDocument,
-                              "PrinterIsCapableBarCodes": sMaterialDocument,
-                              "ReferenceDocument": "",
-                              "GRMI": {
+                    Form:
+                    {
+                        "GRHeaderNode": {
+                            "GoodsReceiptHeadlinePrint": sMaterialDocument,
+                            "Language": "EN",
+                            "Product": sMaterialDocument,
+                            "MaterialDocument": sMaterialDocument,
+                            "MaterialDocumentHeaderText": "",
+                            "MaterialDocumentItem": sMaterialDocument,
+                            "MaterialDocumentYear": sMaterialDocument,
+                            "PrinterIsCapableBarCodes": sMaterialDocument,
+                            "ReferenceDocument": "",
+                            "GRMI": {
                                 "GRMatItemNode": [
-                                  {
-                                    "AccountAssignmentCategory":sMaterialDocument,
-                                    "AccountingDocumentCreationDate": sMaterialDocument,
-                                    "BaseUnit": "EA",
-                                    "Batch": "BSH",
-                                    "CostCenter": sMaterialDocument,
-                                    "CountryOfOrigin": sMaterialDocument,
-                                    "CountryOfOriginName": sMaterialDocument,
-                                    "DebitCreditCode": sMaterialDocument,
-                                    "DeliveryQuantityUnit": sMaterialDocument,
-                                    "DocumentItemText": sMaterialDocument,
-                                    "EntryUnit": "EA",
-                                    "Equipment": sMaterialDocument,
-                                    "FixedAsset": "",
-                                    "GoodsMovementRefDocType": "",
-                                    "GoodsMovementType": "",
-                                    "GoodsReceiptAcctAssgmt": "",
-                                    "GoodsReceiptAcctAssgmtText": "",
-                                    "GoodsReceiptPostingDate": "",
-                                    "GoodsReceiptQtyInOrderUnit": 1020.0,
-                                    "InternationalArticleNumber": "",
-                                    "InternationalArticleNumberCat": "",
-                                    "InventorySpecialStockType": "",
-                                    "InventoryStockType": "",
-                                    "ItemVolumeUnit": "",
-                                    "Language": "",
-                                    "MaintOrderOperationCounter": "",
-                                    "MaintOrderRoutingNumber": "",
-                                    "ManufactureDate": "02-02-2025",
-                                    "ManufactureMaterial": sMaterialDocument,
-                                    "ManufacturingOrder": "",
-                                    "MasterFixedAsset": "",
-                                    "Material": sMaterialDocument,
-                                    "MaterialDocument": sMaterialDocument,
-                                    "MaterialDocumentItem": sMaterialDocument,
-                                    "MaterialDocumentYear": "",
-                                    "MaterialGrossWeight": 13.0,
-                                    "MaterialName": sMaterialDocument,
-                                    "MaterialNetWeight": 12.0,
-                                    "MaterialSizeOrderDimensionDesc": "",
-                                    "MaterialVolume": 0.0,
-                                    "MaterialWeightUnit": "",
-                                    "NumberOfLabelsToBePrinted": "2",
-                                    "NumberOfSlipsToBePrinted": "1",
-                                    "OrderPriceUnit": "EA",
-                                    "OrderQuantityUnit": "1500",
-                                    "Plant": "AT21"
-                                  }
+                                    {
+                                        "AccountAssignmentCategory": sMaterialDocument,
+                                        "AccountingDocumentCreationDate": sMaterialDocument,
+                                        "BaseUnit": "EA",
+                                        "Batch": "BSH",
+                                        "CostCenter": sMaterialDocument,
+                                        "CountryOfOrigin": sMaterialDocument,
+                                        "CountryOfOriginName": sMaterialDocument,
+                                        "DebitCreditCode": sMaterialDocument,
+                                        "DeliveryQuantityUnit": sMaterialDocument,
+                                        "DocumentItemText": sMaterialDocument,
+                                        "EntryUnit": "EA",
+                                        "Equipment": sMaterialDocument,
+                                        "FixedAsset": "",
+                                        "GoodsMovementRefDocType": "",
+                                        "GoodsMovementType": "",
+                                        "GoodsReceiptAcctAssgmt": "",
+                                        "GoodsReceiptAcctAssgmtText": "",
+                                        "GoodsReceiptPostingDate": "",
+                                        "GoodsReceiptQtyInOrderUnit": 1020.0,
+                                        "InternationalArticleNumber": "",
+                                        "InternationalArticleNumberCat": "",
+                                        "InventorySpecialStockType": "",
+                                        "InventoryStockType": "",
+                                        "ItemVolumeUnit": "",
+                                        "Language": "",
+                                        "MaintOrderOperationCounter": "",
+                                        "MaintOrderRoutingNumber": "",
+                                        "ManufactureDate": "02-02-2025",
+                                        "ManufactureMaterial": sMaterialDocument,
+                                        "ManufacturingOrder": "",
+                                        "MasterFixedAsset": "",
+                                        "Material": sMaterialDocument,
+                                        "MaterialDocument": sMaterialDocument,
+                                        "MaterialDocumentItem": sMaterialDocument,
+                                        "MaterialDocumentYear": "",
+                                        "MaterialGrossWeight": 13.0,
+                                        "MaterialName": sMaterialDocument,
+                                        "MaterialNetWeight": 12.0,
+                                        "MaterialSizeOrderDimensionDesc": "",
+                                        "MaterialVolume": 0.0,
+                                        "MaterialWeightUnit": "",
+                                        "NumberOfLabelsToBePrinted": "2",
+                                        "NumberOfSlipsToBePrinted": "1",
+                                        "OrderPriceUnit": "EA",
+                                        "OrderQuantityUnit": "1500",
+                                        "Plant": "AT21"
+                                    }
                                 ]
-                              }
                             }
                         }
+                    }
                 };
 
                 // Convert JSON to XML (Ensure single root)
@@ -1466,7 +1491,7 @@ Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.Start
                 req.error(502, e)
             }
         });
-      
+
         return super.init();
     }
 
