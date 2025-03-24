@@ -1349,6 +1349,124 @@ Duration:${element.RunTime?element.RunTime:'-'} Start Of Credits:${element.Start
                 req.error(502, e)
             }
         });
+
+        this.on("formGR_LABEL", async (req, res) => {
+
+            try {
+                var form_name = req.data.form;
+                var query = `/v1/forms/${form_name}`;
+                var oFormObject = await deluxe_adsrestapi.get(query);
+                var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+                var sMaterialDocument = req?.data?.Material;
+               
+                const formData = {
+                    Form: 
+                        {
+                            "GRHeaderNode": {
+                              "GoodsReceiptHeadlinePrint": sMaterialDocument,
+                              "Language": "EN",
+                              "Product" : sMaterialDocument,
+                              "MaterialDocument": sMaterialDocument,
+                              "MaterialDocumentHeaderText": "",
+                              "MaterialDocumentItem": sMaterialDocument,
+                              "MaterialDocumentYear": sMaterialDocument,
+                              "PrinterIsCapableBarCodes": sMaterialDocument,
+                              "ReferenceDocument": "",
+                              "GRMI": {
+                                "GRMatItemNode": [
+                                  {
+                                    "AccountAssignmentCategory":sMaterialDocument,
+                                    "AccountingDocumentCreationDate": sMaterialDocument,
+                                    "BaseUnit": "EA",
+                                    "Batch": "BSH",
+                                    "CostCenter": sMaterialDocument,
+                                    "CountryOfOrigin": sMaterialDocument,
+                                    "CountryOfOriginName": sMaterialDocument,
+                                    "DebitCreditCode": sMaterialDocument,
+                                    "DeliveryQuantityUnit": sMaterialDocument,
+                                    "DocumentItemText": sMaterialDocument,
+                                    "EntryUnit": "EA",
+                                    "Equipment": sMaterialDocument,
+                                    "FixedAsset": "",
+                                    "GoodsMovementRefDocType": "",
+                                    "GoodsMovementType": "",
+                                    "GoodsReceiptAcctAssgmt": "",
+                                    "GoodsReceiptAcctAssgmtText": "",
+                                    "GoodsReceiptPostingDate": "",
+                                    "GoodsReceiptQtyInOrderUnit": 1020.0,
+                                    "InternationalArticleNumber": "",
+                                    "InternationalArticleNumberCat": "",
+                                    "InventorySpecialStockType": "",
+                                    "InventoryStockType": "",
+                                    "ItemVolumeUnit": "",
+                                    "Language": "",
+                                    "MaintOrderOperationCounter": "",
+                                    "MaintOrderRoutingNumber": "",
+                                    "ManufactureDate": "02-02-2025",
+                                    "ManufactureMaterial": sMaterialDocument,
+                                    "ManufacturingOrder": "",
+                                    "MasterFixedAsset": "",
+                                    "Material": sMaterialDocument,
+                                    "MaterialDocument": sMaterialDocument,
+                                    "MaterialDocumentItem": sMaterialDocument,
+                                    "MaterialDocumentYear": "",
+                                    "MaterialGrossWeight": 13.0,
+                                    "MaterialName": sMaterialDocument,
+                                    "MaterialNetWeight": 12.0,
+                                    "MaterialSizeOrderDimensionDesc": "",
+                                    "MaterialVolume": 0.0,
+                                    "MaterialWeightUnit": "",
+                                    "NumberOfLabelsToBePrinted": "2",
+                                    "NumberOfSlipsToBePrinted": "1",
+                                    "OrderPriceUnit": "EA",
+                                    "OrderQuantityUnit": "1500",
+                                    "Plant": "AT21"
+                                  }
+                                ]
+                              }
+                            }
+                        }
+                };
+
+                // Convert JSON to XML (Ensure single root)
+                const xmlData = xmljs.js2xml(formData, { compact: true, spaces: 4 });
+
+                // Encode XML to Base64
+                const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+
+                const headers = {
+                    "Content-Type": 'application/json',
+                    "accept": 'application/json',
+                };
+
+                // Print PDF code logic
+                var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+
+                const data = {
+                    "xdpTemplate": sXMLTemplate,
+                    "xmlData": base64EncodedXml,
+                    "formType": "print",
+                    "formLocale": "en_US",
+                    "taggedPdf": 1,
+                    "embedFont": 0,
+                    "changeNotAllowed": false,
+                    "printNotAllowed": false
+                };
+
+                var oPrintForm = await deluxe_adsrestapi.send({
+                    method: "POST",
+                    path: sDownloadPDFurl,
+                    data,
+                    headers
+                });
+
+                return oPrintForm.fileContent;
+            }
+            catch (e) {
+                req.error(502, e)
+            }
+        });
+      
         return super.init();
     }
 

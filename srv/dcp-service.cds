@@ -346,6 +346,9 @@ service BookingOrderService {
 
     action downloadFormADS(form: String,Product :String) returns LargeString;
 
+    action formGR_LABEL(form: String,Material :String) returns LargeString;
+    
+
     @readonly
     entity MaterialDocumentHeader as projection on api.MaterialDocumentHeader;
     entity ProductionOrder as projection on  api.ProductionOrder;

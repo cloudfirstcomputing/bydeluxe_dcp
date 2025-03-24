@@ -63,7 +63,36 @@ sap.ui.define([
             //         });
             //     }
             // }
-            // else
+            if (this.byId("selectFormName").getSelectedKey() === '1'){
+                var oSelecteditem;
+                    [oSelecteditem] = this.byId("docTable").getSelectedItems();
+                    var sForm = "YY1_MMIM_GR_LABEL_EN" ;
+                  
+                    var sMaterial = oSelecteditem.getBindingContext().getObject().MaterialDocument;
+                    var oData = {
+                        form:sForm,
+                        Material:sMaterial
+                    }
+                      var sSource = sServiceUrl + `formGR_LABEL`
+                    var that = this;
+                    var updateCall = $.ajax({
+                        url: sSource,
+                        type: "POST",
+                        data : JSON.stringify(oData),
+                        headers: {
+                            "Accept": "application/pdf",
+                            "Content-Type" :"application/json"
+                        },
+                        success: function (data) {
+                            that.onOpenPDF(data);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching PDF:", status, error);
+                            sap.m.MessageToast.show("Failed to load the form.");
+                        }
+                    });
+            }
+            else
             {
                 // var opdfViewer = new PDFViewer();
                     // this.getView().addDependent(opdfViewer);
