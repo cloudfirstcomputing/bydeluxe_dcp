@@ -56,7 +56,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         // });
         this.on("CREATE", StudioFeed ,async(req, next)=>{
             var oFeed = req.data;
-            await createStudioFeeds(req, [oFeed]);
+            var aResponse = await createStudioFeeds(req, [oFeed]);
+            
+            req.reply({
+                code: 201,
+                message: aResponse
+            });
         });
         this.on('MassUploadStudioFeed', async (req, res)=>{
             let excelData = {}
@@ -109,12 +114,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var aResults = await createStudioFeeds(req, aBookingFeeds);
                     req.reply({
                         code: 201,
-                        message: JSON.stringify(aResults)
+                        message: aResults
                     });
                 }
             } catch (error) {
                 return req.reject(400, error)
             }
+        });
+        this.on('createStudioFeeds', async (req, res) => {
+            var data = req.data?.StudioFeed;
+            var aResponse = await createStudioFeeds(req, data)
+            
+            req.reply({
+                code: 201,
+                message: aResponse
+            });
+
         });
         const createStudioFeeds = async (req, aData)=>{
             let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
@@ -157,11 +172,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "Error": failedEntries });
             return finalResult;
         };
-        this.on('createStudioFeeds', async (req, res) => {
-            var data = req.data?.StudioFeed;
-            await createStudioFeeds(req, data)
-
-        });
         const createSalesOrderUsingRules = async (req, oContentData)=>{
             if(oContentData?.Origin !== "F"){
                 var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {

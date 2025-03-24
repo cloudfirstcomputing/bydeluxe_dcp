@@ -21,7 +21,7 @@ Content-Type:application/json
     "ReleaseID":"75410",
     "OrderType":"K",
     "RecordType":"B",
-    "BookingType":"NO/U",
+    "BookingType":"U",
     "TheaterID":"THR000542304",
     "Circuit":"CRC000017175",
     "BookerName":"",
