@@ -12,9 +12,9 @@ Content-Type:application/json
     "EntityID":"SPC",
     "Studio":"Sony",
     "Title":"SPIDERMAN",
-    "CustomerReference":"SelfExplanatory",
+    "CustomerReference":"ROBINHOOD_I",
     "CreatedOn":"2025-02-28",
-    "Origin_OriginID": "P",
+    "Origin_OriginID": "F",
     "RequestedDelivDate":"2025-03-07",
     "SourceSystem":"SPIRITWORLD",
     "BookingID":"1977095",
@@ -66,4 +66,4 @@ POST {{server}}/odata/v4/booking-order/StudioFeed
 Authorization:Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS00ZTBjYTBmZWUyIiwidHlwIjoiSldUIiwiamlkIjogIlc0VDRGblM2Q3Q5NElma0FUWGtyUVlYMmhpS3FZMWI5UVFvT1dudjhEaGc9In0.eyJqdGkiOiI5OTJiOWQ4MjgwZWQ0OGY2YTUwNGJiNWQxMzhlNjliNCIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJ6ZG4iOiJkZXYtZGhpcG5lNXQifSwic3ViIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiXSwic2NvcGUiOlsidWFhLnJlc291cmNlIl0sImNsaWVudF9pZCI6InNiLWJ5ZGVsdXhlLURldiF0MzM3Mzk1IiwiY2lkIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhenAiOiJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJyZXZfc2lnIjoiY2ViNDQxYjMiLCJpYXQiOjE3NDI2NTE4MjYsImV4cCI6MTc0MjY5NTAyNiwiaXNzIjoiaHR0cHM6Ly9kZXYtZGhpcG5lNXQuYXV0aGVudGljYXRpb24udXMxMC5oYW5hLm9uZGVtYW5kLmNvbS9vYXV0aC90b2tlbiIsInppZCI6ImRiZGZkNDZiLTQxNDQtNDcyOS1hMDNjLThmODIwZmNjODlmZSIsImF1ZCI6WyJ1YWEiLCJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSJdfQ.HifmR4BpWIphhRhsV52kNaI3a1qsQfqF_TZMMAOUKTqHUbqZySJHC5vsU0_O4-kaHvAovD6-pT1iz79fjszb7X3TMPTIQlSA-7NfzV8-v9iBtR5xYJD1jsg3B9truI1z62jIWlZTb37ccNtMCjZNnGnokRHHI0oT3RB0CfvvygR8T5EoFoOB60yztX7g4P3_zsfgni1zbMYQd2N8SZ7KQbzre7OfFFmBaf6p9um0_oJl4tMqCnrSCVJN5HHJa7VXBPMx-8n_-9wwDn_IU5ft2tT03M8yKTDS31cdQ2PLyVuaqNl9_kDKshOuP3I3ts7mJgLJ5gPG6OMBLm4S5eOutQ
 Content-Type:application/json
 
-[{"BookingID":"2855787","SourceSystem":"SPIRITWORLD","EntityID":"SPR","Studio":"Sony","Title":"BAD BOYS: RIDE OR DIE","CustomerReference":"05:00:00","RequestedDelivDate":"2024-06-04","ReleaseID":"110218","OrderType":"K","BookingType":"NO","TheaterID":"THR000064272","Circuit":"CRC000004716","PlayStartDate":"2024-06-06","PlayEndDate":"2024-08-02","ShipmentIndicator":"Y","ScreeningIndicator":"N","DepotID":"","SoundID":"51","SubtitleType1":"XX","ShipPriority":2,"PrintQuality":"2D"}]
+[{"BookingID":"2855787","SourceSystem":"SPIRITWORLD","EntityID":"SPR","Studio":"Sony","Title":"BAD BOYS: RIDE OR DIE","CustomerReference":"ROBINHOOD_I","RequestedDelivDate":"2024-06-04","ReleaseID":"110218","OrderType":"K","BookingType":"NO","TheaterID":"THR000064272","Circuit":"CRC000004716","PlayStartDate":"2024-06-06","PlayEndDate":"2024-08-02","ShipmentIndicator":"Y","ScreeningIndicator":"N","DepotID":"","SoundID":"51","SubtitleType1":"XX","ShipPriority":2,"PrintQuality":"2D"}]
