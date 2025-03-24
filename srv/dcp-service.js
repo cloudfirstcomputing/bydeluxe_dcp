@@ -87,20 +87,31 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             element[fieldName.technicalName] = object[property]
                         }
                     }
+                    element.Origin_OriginID = "S";
                     if (!element.hasOwnProperty('SourceSystem')) {
                         error.Message = bundle.getText(`reqField`, ['Source System'])
-                        // _fillData(errorData, error)
                     }
                     else if (!element.hasOwnProperty('BookingID')) {
                         error.Message = bundle.getText(`reqField`, ['Booking ID'])
-                        // _fillData(errorData, error)
-                    }else {
+                    }
+                    else if (!element.hasOwnProperty('Studio')) {
+                        error.Message = bundle.getText(`reqField`, ['Studio'])
+                    }
+                    else if (!element.hasOwnProperty('Title')) {
+                        error.Message = bundle.getText(`reqField`, ['Title'])
+                    }
+                    else if (!element.hasOwnProperty('RequestedDelivDate')) {
+                        error.Message = bundle.getText(`reqField`, ['RequestedDelivDate'])
+                    }
+                    else if (!element.hasOwnProperty('OrderType')) {
+                        error.Message = bundle.getText(`reqField`, ['OrderType'])
+                    } 
+                    else{
                         aBookingFeeds.push(element)
                     }
                     if (!error.Message) {
                         // _fillData(uploadedData, element)
                     }
-                    element.Origin_OriginID = "S";
                 }
                 if (aBookingFeeds) {
                     var aResults = await createStudioFeeds(req, aBookingFeeds);
@@ -141,8 +152,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         recordsToBeUpdated.push(entry_Active);
                     }
                 }
-                await createSalesOrderUsingNormalizedRules(req, data[i]);
-                recordsToBeInserted.push(data[i]);
+                recordsToBeInserted.push(data[i]); //INSERT is always required
+                
+                // await createSalesOrderUsingNormalizedRules(req, data[i]);
+                
             }
             if (recordsToBeInserted.length) {
                 let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
@@ -162,6 +175,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "Success": successEntries });
             finalResult.push({ "UpdateSuccess": updateSuccessEntries });
             finalResult.push({ "Error": failedEntries });
+            finalResult.push({ "NoOfRecordsInserted": recordsToBeInserted.length - recordsToBeUpdated?.length });
+            finalResult.push({ "NoOfRecordsUpdated": recordsToBeUpdated.length });
             return finalResult;
         };
         const createSalesOrderUsingNormalizedRules = async (req, oContentData)=>{

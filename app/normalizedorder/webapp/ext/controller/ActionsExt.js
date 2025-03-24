@@ -665,33 +665,60 @@ sap.ui.define([
 
                             oContext.execute().then(function () {
                                 response = oContext.getBoundContext().getObject();
+                                if(response?.message){
+                                    var aResponse = response.message;
+                                    var iSuccessCount = 0, iErrorCount = 0, iUpdateCount = 0;
+                                    for(var i in aResponse){
+                                        if(aResponse[i].NoOfRecordsInserted){
+                                            iSuccessCount = aResponse[i].NoOfRecordsInserted;
+                                        };
+                                        if(aResponse[i].Error){
+                                            iErrorCount = aResponse[i].Error.length; 
+                                        };
+                                        if(aResponse[i].NoOfRecordsUpdated){
+                                            iUpdateCount = aResponse[i].NoOfRecordsUpdated; 
+                                        };
 
-                                if (response.acknowledgement === "error") {
-                                    MessageBox.error(uploadError, {
-                                        title: uploadErrorTitle,
-                                        actions: MessageBox.Action.OK,
-                                        emphasizedAction: MessageBox.Action.OK,
-                                        onClose: function (oAction) {
-                                            if (oAction === MessageBox.Action.OK) {
-                                                that.Obj.fieldCancel();
-                                                that.Obj.showErrorTable();
+                                    }
+                                    if(iErrorCount){
+                                        MessageBox.error(uploadError, {
+                                            title: uploadErrorTitle + iErrorCount+ ' entries',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
                                             }
-                                        }
-                                    });
-
-                                } else {
-                                    MessageBox.success(uploadSuccess + "\n\n" + uploadSuccessCount + " " + response.recordsUpdate, {
-                                        title: uploadSuccessTitle,
-                                        actions: MessageBox.Action.OK,
-                                        emphasizedAction: MessageBox.Action.OK,
-                                        onClose: function (oAction) {
-                                            if (oAction === MessageBox.Action.OK) {
-                                                that.Obj.fieldCancel();
+                                        });
+                                    }
+                                    if(iSuccessCount ){
+                                        MessageBox.success(uploadSuccess+"\n\nEntries Created:"+ iSuccessCount+"\nEntries Updated:"+iUpdateCount, {
+                                            title: "Upload has been completed successfully",
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
                                             }
-                                        }
-                                    });
-                                    sap.ui.getCore().byId("dialog").close();
-                                }
+                                        });                                        
+                                    }
+                                }   
+                                // else {
+                                //     MessageBox.success(uploadSuccess + "\n\n" + uploadSuccessCount + " " + response.recordsUpdate, {
+                                //         title: uploadSuccessTitle,
+                                //         actions: MessageBox.Action.OK,
+                                //         emphasizedAction: MessageBox.Action.OK,
+                                //         onClose: function (oAction) {
+                                //             if (oAction === MessageBox.Action.OK) {
+                                //                 that.Obj.fieldCancel();
+                                //             }
+                                //         }
+                                //     });
+                                //     sap.ui.getCore().byId("dialog").close();
+                                // }
+                                sap.ui.getCore().byId("dialog").close();
                                 batchModel.refresh();
                                 BusyIndicator.hide();
 
