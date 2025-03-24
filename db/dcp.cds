@@ -119,6 +119,7 @@ entity StudioFeed : cuid, managed {
     BookingID          : String                       @mandatory;
     SourceSystem       : String                       @mandatory;
     EntityID           : String                       @mandatory;
+    @readonly
     Origin             : Association to Origin        @mandatory;
     Studio             : String                       @mandatory;
     CustomerReference  : String;

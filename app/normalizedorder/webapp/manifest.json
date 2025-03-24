@@ -211,6 +211,9 @@
                     },
                     "DataField::Studio": {
                       "width": "auto"
+                    },
+                    "DataField::Origin_OriginID": {
+                      "width": "auto"
                     }
                   }
                 }

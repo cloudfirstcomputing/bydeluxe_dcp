@@ -71,6 +71,12 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : Origin_OriginID,
+            Label : '{i18n>Originoriginid}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : Version,
             Label : '{i18n>Version}',
             ![@UI.Importance] : #High,
@@ -180,11 +186,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : OrderID,
             Label : '{i18n>Orderid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Origin_OriginID,
-            Label : '{i18n>Originoriginid}',
         },
         {
             $Type : 'UI.DataField',

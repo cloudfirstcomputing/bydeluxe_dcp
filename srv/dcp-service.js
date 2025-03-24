@@ -47,6 +47,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oFeed.Origin_OriginID = "M";
             oFeed.Status_ID = "A";
         });
+        // this.on("SAVE", StudioFeed.drafts ,async(req, next)=>{
+        //     var oFeed = req.data;
+        //     oFeed.Version = 1;
+        //     oFeed.Origin_OriginID = "M";
+        //     oFeed.Status_ID = "A";
+        //     await createStudioFeeds(req, [oFeed]);
+        // });
         this.on("CREATE", StudioFeed ,async(req, next)=>{
             var oFeed = req.data;
             await createStudioFeeds(req, [oFeed]);
@@ -117,10 +124,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-                var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                if (entry_Active) {
-                    data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                    recordsToBeUpdated.push(entry_Active);
+                // if(data[i].Origin_OriginID === "M"){
+                //     hanatable = StudioFeed.drafts;
+                // }
+                if(data[i].BookingType === "U" || data[i].BookingType === "C" ){ //VERSION is updated only when BookingType is U or C
+                    var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                    if (entry_Active) {
+                        data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                        recordsToBeUpdated.push(entry_Active);
+                    }
                 }
                 // await createSalesOrderUsingRules(req, data[i]);
                 recordsToBeInserted.push(data[i]);
@@ -147,7 +159,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         this.on('createStudioFeeds', async (req, res) => {
             var data = req.data?.StudioFeed;
-            await createStudioFeeds(req, data, 'batch')
+            await createStudioFeeds(req, data)
 
         });
         const createSalesOrderUsingRules = async (req, oContentData)=>{
