@@ -420,7 +420,7 @@ const createBookingFeed = async (req, sContentIndicator, aData) => {
                             var sCustomerGroupFromS4 = oSoldToSalesData?.CustomerGroup;
                             var aPackages = distroSpecData.to_Package;
                             aPackages.sort(function (a, b) {
-                                return a.Priority < b.Priority;
+                                return a.Priority - b.Priority;
                             }); //SORT PACKAGES BASED ON PRIOIRTY       
                             var aPackageFiltered = aPackages;
                             var aPackageFiltered = aPackages.filter((item) => {
