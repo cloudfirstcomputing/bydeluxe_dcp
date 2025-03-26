@@ -142,9 +142,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-                // if(data[i].Origin_OriginID === "M"){
-                //     hanatable = StudioFeed.drafts;
-                // }
+                var aResult = await createSalesOrderUsingNormalizedRules(req, data[i]);
                 if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                     if (entry_Active) {
@@ -153,8 +151,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
                 recordsToBeInserted.push(data[i]); //INSERT is always required
-
-                // await createSalesOrderUsingNormalizedRules(req, data[i]);
 
             }
             if (recordsToBeInserted.length) {
@@ -181,65 +177,143 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         const createSalesOrderUsingNormalizedRules = async (req, oContentData) => {
             if (oContentData?.Origin_OriginID !== "F") {
-                var distroSpecData = await SELECT.one.from(DistroSpec_Local, (dist) => {
-                    dist.DistroSpecUUID,
-                        dist.DistroSpecID,
-                        // dist.ValidFrom,
-                        // dist.ValidTo,
-                        dist.Title_Product,
-                        // dist.KeyStartTime,
-                        // dist.KeyEndTime,
-                        dist.to_StudioKey((studio) => {
-                            studio.Studio_BusinessPartner,
-                                studio.KeyStartTime,
-                                studio.KeyEndTime,
-                                studio.InitialKeyDuration,
-                                studio.NextKeyDuration,
-                                studio.OffsetEPD,
-                                studio.AggregateKey,
-                                studio.ProcessKDMS,
-                                studio.ProcessScreeningKDMS,
-                                studio.MaxKDMSDuration,
-                                studio.StudioHoldOverRule,
-                                studio.SalesTerritory_SalesDistrict
-                        }),
-                        dist.to_Package((pkg) => {
-                            pkg.PackageUUID,
-                                pkg.PackageName,
-                                pkg.ValidFrom,
-                                pkg.ValidTo,
-                                pkg.ContentIndicator,
-                                pkg.DeliveryMethod1_ShippingCondition,
-                                pkg.DeliveryMethod2_ShippingCondition,
-                                pkg.DeliveryMethod3_ShippingCondition,
-                                pkg.DeliveryMethod4_ShippingCondition,
-                                pkg.DeliveryMethod5_ShippingCondition,
-                                pkg.DeliveryMethod6_ShippingCondition,
-                                pkg.DeliveryMethod7_ShippingCondition,
-                                pkg.DeliveryMethod8_ShippingCondition,
-                                pkg.DeliveryMethod9_ShippingCondition,
-                                pkg.DeliveryMethod10_ShippingCondition,
-                                pkg.Priority,
-                                pkg.to_DistRestriction((dist) => {
-                                    dist.Theater_BusinessPartner,
-                                        dist.Circuit_CustomerGroup,
-                                        dist.DistributionFilterCountry_code,
-                                        dist.DistributionFilterRegion_Country,
-                                        dist.DistributionFilterCity,
-                                        dist.DistributionFilterPostal
-                                }),
-                                pkg.to_DCPMaterial((dcpmat) => {
-                                    dcpmat.DCPMaterialUUID,
-                                        dcpmat.DCPMaterialNumber_Product
-                                    // dcpmat.PrintFormat
-                                });
-                        })
-                }).where({ DistroSpecUUID: to_DistroSpec_DistroSpecUUID });
+                var sTitle = oContentData.Title;
+                var sBuPa = oContentData.Studio;
+                var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
+                var Product = oProductDescFromS4?.Product;
+                if(Product){        
+                    var aDistroSpecData = await SELECT.from(DistroSpec_Local, (dist) => {
+                        dist.DistroSpecUUID,
+                            dist.DistroSpecID,
+                            dist.Title_Product,
+                            dist.to_StudioKey((studio) => {
+                                studio.StudioKeyUUID,
+                                studio.Studio_BusinessPartner,
+                                    studio.KeyStartTime,
+                                    studio.KeyEndTime,
+                                    studio.InitialKeyDuration,
+                                    studio.NextKeyDuration,
+                                    studio.OffsetEPD,
+                                    studio.AggregateKey,
+                                    studio.ProcessKDMS,
+                                    studio.ProcessScreeningKDMS,
+                                    studio.MaxKDMSDuration,
+                                    studio.StudioHoldOverRule,
+                                    studio.SalesTerritory_SalesDistrict
+                            }),
+                            dist.to_Package((pkg) => {
+                                pkg.PackageUUID,
+                                    pkg.PackageName,
+                                    pkg.ValidFrom,
+                                    pkg.ValidTo,
+                                    pkg.DeliveryMethod1_ShippingCondition,
+                                    pkg.DeliveryMethod2_ShippingCondition,
+                                    pkg.DeliveryMethod3_ShippingCondition,
+                                    pkg.DeliveryMethod4_ShippingCondition,
+                                    pkg.DeliveryMethod5_ShippingCondition,
+                                    pkg.DeliveryMethod6_ShippingCondition,
+                                    pkg.DeliveryMethod7_ShippingCondition,
+                                    pkg.DeliveryMethod8_ShippingCondition,
+                                    pkg.DeliveryMethod9_ShippingCondition,
+                                    pkg.DeliveryMethod10_ShippingCondition,
+                                    pkg.Priority
+                                    // pkg.to_DistRestriction((dist) => {
+                                    //     dist.Theater_BusinessPartner,
+                                    //         dist.Circuit_CustomerGroup,
+                                    //         dist.DistributionFilterCountry_code,
+                                    //         dist.DistributionFilterRegion_Country,
+                                    //         dist.DistributionFilterCity,
+                                    //         dist.DistributionFilterPostal
+                                    // }),
+                                    // pkg.to_DCPMaterial((dcpmat) => {
+                                    //     dcpmat.DCPMaterialUUID,
+                                    //         dcpmat.DCPMaterialNumber_Product
+                                    //     // dcpmat.PrintFormat
+                                    // });
+                            })
+                    }).where({ Title_Product: Product });
+                    
+                    if(sBuPa){
+                        var distroSpecData = aDistroSpecData?.find((dist) =>{
+                            return dist.to_StudioKey?.find((stud)=>{
+                                return stud.Studio_BusinessPartner === sBuPa;
+                            });
+                        });
+
+                    }
+                    else{
+
+                    }
+                }   
+                else{
+
+                } 
             }
             else {
                 var sCustomerRef = oContentData.CustomerReference;
-                var { to_DistroSpec_DistroSpecUUID, to_StudioKey_StudioKeyUUID } = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
+                if(sCustomerRef){
 
+                    var { to_DistroSpec_DistroSpecUUID, to_StudioKey_StudioKeyUUID } = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
+                    aDistroSpecData = await SELECT.from(DistroSpec_Local, (dist) => {
+                        dist.DistroSpecUUID,
+                            dist.DistroSpecID,
+                            dist.Title_Product,
+                            dist.to_StudioKey((studio) => {
+                                studio.StudioKeyUUID,
+                                studio.Studio_BusinessPartner,
+                                    studio.KeyStartTime,
+                                    studio.KeyEndTime,
+                                    studio.InitialKeyDuration,
+                                    studio.NextKeyDuration,
+                                    studio.OffsetEPD,
+                                    studio.AggregateKey,
+                                    studio.ProcessKDMS,
+                                    studio.ProcessScreeningKDMS,
+                                    studio.MaxKDMSDuration,
+                                    studio.StudioHoldOverRule,
+                                    studio.SalesTerritory_SalesDistrict
+                            }),
+                            dist.to_Package((pkg) => {
+                                pkg.PackageUUID,
+                                    pkg.PackageName,
+                                    pkg.ValidFrom,
+                                    pkg.ValidTo,
+                                    pkg.DeliveryMethod1_ShippingCondition,
+                                    pkg.DeliveryMethod2_ShippingCondition,
+                                    pkg.DeliveryMethod3_ShippingCondition,
+                                    pkg.DeliveryMethod4_ShippingCondition,
+                                    pkg.DeliveryMethod5_ShippingCondition,
+                                    pkg.DeliveryMethod6_ShippingCondition,
+                                    pkg.DeliveryMethod7_ShippingCondition,
+                                    pkg.DeliveryMethod8_ShippingCondition,
+                                    pkg.DeliveryMethod9_ShippingCondition,
+                                    pkg.DeliveryMethod10_ShippingCondition,
+                                    pkg.Priority
+                                    // pkg.to_DistRestriction((dist) => {
+                                    //     dist.Theater_BusinessPartner,
+                                    //         dist.Circuit_CustomerGroup,
+                                    //         dist.DistributionFilterCountry_code,
+                                    //         dist.DistributionFilterRegion_Country,
+                                    //         dist.DistributionFilterCity,
+                                    //         dist.DistributionFilterPostal
+                                    // }),
+                                    // pkg.to_DCPMaterial((dcpmat) => {
+                                    //     dcpmat.DCPMaterialUUID,
+                                    //         dcpmat.DCPMaterialNumber_Product
+                                    //     // dcpmat.PrintFormat
+                                    // });
+                            })
+                    }).where({ DistroSpecUUID: to_DistroSpec_DistroSpecUUID });
+    
+                    distroSpecData = aDistroSpecData?.find((dist) =>{
+                        return dist.to_StudioKey?.find((stud)=>{
+                            return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
+                        });
+                    });
+                }
+                else{
+
+                }
             }
         };
         this.on("createMaccs", async (req, res) => {
@@ -1301,7 +1375,11 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     TrailerCount = aTrailerItems?.length;
 
                     VersionDescription = oAssetVault?.VersionDescription;
-                    Title = oAssetVault?.Title;
+                    var Product = oAssetVault?.Title;
+                    if(Product){
+                        var oProdLongText = await s4h_products_Crt.run(SELECT.one.from(ProductBasicText).where({ Product: Product, Language: 'EN' }));
+                            Title = oProdLongText?.LongText;
+                    } 
                     TotalSize = oAssetVault?.AssetMapFileSize;
 
                     var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
