@@ -34,7 +34,24 @@ service BookingOrderService {
     entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
     entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
     entity S4H_BusinessPartnerapi as projection on api.BusinessPartners;
-    entity S4H_Country as projection on api.Country;
+    entity S4H_Country as projection on api.Country{        
+        
+        @Common.ValueList: {
+            Label: 'Country',
+            CollectionPath: 'S4H_Country',
+            Parameters: [
+                { $Type: 'Common.ValueListParameterInOut', LocalDataProperty: 'Country', ValueListProperty: 'Country' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryName' }
+            ]
+        }
+        Country,
+        
+        CountryThreeLetterISOCode,
+        CountryThreeDigitISOCode,
+        CountryCurrency,
+        
+        to_Text.CountryName as CountryName
+    };
     entity S4_Parameters as projection on S4_Param.YY1_PARAMETER{
         key ID,
         VariableName,

@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, ProductionOrder,
-            StudioFeed } = this.entities;
+            StudioFeed, BusinessPartner} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -23,7 +23,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
         var s4h_products_Crt = await cds.connect.to("API_PRODUCT_SRV");
         var s4h_material_read = await cds.connect.to("API_MATERIAL_DOCUMENT_SRV");
-        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");
+        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");        
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
@@ -1085,9 +1085,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return s4h_products_Crt.run(req.query);
         });
 
-        this.on(['READ'], MaterialDocumentHeader, async req => {
+        this.on(['READ'], MaterialDocumentHeader, async req => { //s4h_bp_vh
             return s4h_material_read.run(req.query);
-        });
+        });        
 
         this.on("createProduct", async (req) => {
             try {
@@ -1121,23 +1121,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 // Make a POST call to the external API              
                 //const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
-                // const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
-                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: 'test1' }).where({ Product: '5962', Language: 'EN' })); 
-                var sData =
-                {
-                    "LongText": "Testing"
-                }
-                var jData = JSON.stringify(sData);
-                const headers = {
-                    "Content-Type": 'application/json',
-                    "Accept": '*/*',
-                };
-                var oEdit = await s4h_products_Crt.send({
-                    method: "PATCH",
-                    path: "/A_ProductBasicText(Product='5962',Language='EN')", ///A_ProductBasicText(Product='{Product}',Language='{Language}')
-                    data : sData,
-                    headers:headers                        
-                });
+                const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
+                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' })); 
+                // var sData =
+                // {
+                //     "LongText": "Testing"
+                // }
+                // var jData = JSON.stringify(sData);
+                // const headers = {
+                //     "Content-Type": 'application/json',
+                //     "Accept": '*/*',
+                // };
+                // var oEdit = await s4h_products_Crt.send({
+                //     method: "PATCH",
+                //     path: "/A_ProductBasicText(Product='5962',Language='EN')", ///A_ProductBasicText(Product='{Product}',Language='{Language}')
+                //     data : sData,
+                //     headers:headers                        
+                // });
                 return "Succesfully Edited";
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);

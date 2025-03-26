@@ -27,9 +27,7 @@
                     <Input  id="lblEdit_inputOriginalShortTitle" 
                            value="{formModel>/ShortTitle}" 
                            change=".onValidateOriginalTitle" editable="true"/>
-
-                    <Label id="lblEditLanguageKey" text="Language Key"/>
-                    <Input id="inputEditLanguageKey" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+                    
                     <Label id="lblEditTitleTypey" text="Title Type"/>
                     <Select id="selectEditTitletype" selectedKey="{formModel>/TitleType}" editable="false">
                         <items>
@@ -47,10 +45,19 @@
                     </Select>
 
                     <Label id="lblEditRegionCode" text="Region Code"/>
-                    <Input id="inputEditRegionCode" value="{formModel>/RegionCode}" showValueHelp="true"/>
+                    <Input id="inputEditRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" suggestionItems="{/Countries}" showSuggestion="true">
+                        <suggestionItems>
+				            <core:ListItem text="{code}" additionalText="{descr}" />
+			            </suggestionItems>
+		            </Input>
 
                     <Label id="lblEditLanguageCode" text="Language Code"/>
-                    <Input id="inputEditLanguageCode" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+                    
+                    <Input id="inputEditLanguageCode" placeholder="Enter country" value="{formModel>/LanguageCode}" suggestionItems="{/Languages}" showSuggestion="true">
+                        <suggestionItems>
+				            <core:ListItem text="{code}" additionalText="{descr}" />
+			            </suggestionItems>
+		            </Input>
 
                     <Label id="lblEditReleaseDate" text="Release Date"/>
                     <DatePicker id="datePickerEditReleaseDate" value="{formModel>/ReleaseDate}"/>
