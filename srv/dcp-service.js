@@ -149,6 +149,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 if(oResponseStatus?.success){
                     data[i].SalesOrder = oResponseStatus?.success?.SalesOrder;
+                    data[i].Status_ID = "C";
                 }             
                 if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
@@ -197,7 +198,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                          })                       
                 });
             sContentIndicator = oContentData?.OrderType;   
-
             if (oContentData?.Origin_OriginID !== "F") {
                 var sTitle = oContentData.Title;
                 var sBuPa = oContentData.Studio;
@@ -237,6 +237,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sErrorMessage = "Customer reference is not available in the payload";
                 }
             }
+            var oStudioKeyData = distroSpecData.to_StudioKey?.[0];
+            
             var aCTTCPL = [];
 
             oPayLoad.SoldToParty = sSoldToCustomer;
@@ -409,7 +411,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     oPayLoad.to_Item = [];
                     if (
-                        (sContentIndicator === "C" && oStudioKeyData?.InferKeyContentOrder) ||
+                        (sContentIndicator === "C" && oContentData?.IncludeKey) ||
                         (sContentIndicator === "K")
                     ) {
                         var sStartDate = sContentIndicator === "K" ? oContentData.StartDate : oContentData.PlayStartDate;
@@ -492,7 +494,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         // }
                     }
 
-                    // var oStudioKeyData = distroSpecData.to_StudioKey?.find((stud) => { return stud.Studio_BusinessPartner === "1000011" });
 
                 }                          
             }
@@ -647,14 +648,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var sContentLanguage = oContentData.Language, sContentIndicator = oContentData?.OrderType;
             var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
             var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
-            aPackages = aPackages.filter((pkg)=>{
+            var oPackage = aPackages.find((pkg)=>{
                 var sDistValidFrom = pkg.ValidFrom;
                 var sDistValidTo = pkg.ValidTo;
                 sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                 sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                 return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo ;
             });                   
-            return aPackages?.[0];
+            return oPackage;
         };
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(), aInsertData = []; // Generate a unique ID

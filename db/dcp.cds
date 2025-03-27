@@ -306,7 +306,6 @@ entity BookingSalesorderItem : managed {
         ShippingType             : Association to one ShippingTypeMaster;
         SalesTerritory           : Association to one api.SalesDistricts;
 }
-
 entity BookingSalesorderPartner : managed {
     key SalesOrder      : String(10) @mandatory;
     key PartnerFunction : String(2);

@@ -27,9 +27,9 @@ Content-Type:application/json
     "BookerName":"",
     "RequestId":"",
     "OrderID":"9978865",
-    "PlayStartDate":"2025-03-07",
+    "PlayStartDate":"2025-01-25",
     "PlayStartTime":"00:00:00",
-    "PlayEndDate":"2025-03-20",
+    "PlayEndDate":"2025-02-20",
     "PlayEndTime":"00:00:00",
     "KeyDeliveryOnDate":"2025-03-07",
     "KeyStartDate":"2025-03-07",
@@ -61,8 +61,11 @@ Content-Type:application/json
 }
 
 ###
+FOR Content
 "PlayStartDate":"2025-01-25",
-
+For Key
+"PlayStartDate":"2025-03-07",
+"PlayEndDate":"2025-03-20",
 ###
 
 POST {{server}}/odata/v4/booking-order/StudioFeed
