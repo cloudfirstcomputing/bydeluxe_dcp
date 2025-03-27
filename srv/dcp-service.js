@@ -27,7 +27,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
-        var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20';
+        var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', sErrorMessage = "";
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
         var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
             SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
@@ -135,14 +135,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         });
         const createStudioFeeds = async (req, aData) => {
-            let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
-            hanatable = StudioFeed;
+            var recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], 
+            failedEntries = [], sErrorMessage = "", aResponseStatus = [],  hanatable = StudioFeed;
             var data = aData;
             for (var i in data) {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-                var aResult = await createSalesOrderUsingNormalizedRules(req, data[i]);
+                var oResponseStatus = await createSalesOrderUsingNormalizedRules(req, data[i]);
+                if(oResponseStatus?.error){
+                    data[i].ErrorMessage = oResponseStatus?.error?.errorMessage;
+                    data[i].Status_ID = "D";
+                }
+                if(oResponseStatus?.success){
+                    data[i].SalesOrder = oResponseStatus?.success?.SalesOrder;
+                }             
                 if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                     if (entry_Active) {
@@ -151,7 +158,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
                 recordsToBeInserted.push(data[i]); //INSERT is always required
-
             }
             if (recordsToBeInserted.length) {
                 let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
@@ -173,11 +179,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             finalResult.push({ "Error": failedEntries });
             finalResult.push({ "NoOfRecordsInserted": recordsToBeInserted.length - recordsToBeUpdated?.length });
             finalResult.push({ "NoOfRecordsUpdated": recordsToBeUpdated.length });
-            return finalResult;
+            oResponseStatus.finalResult = finalResult;
+            return oResponseStatus;
         };
         const createSalesOrderUsingNormalizedRules = async (req, oContentData) => {
-            var sErrorMessage, updateQuery = [], oPayLoad = {}, sContentIndicator,
-                aResponseStatus = [], hanaDBTable = dcpcontent;
+            var updateQuery = [], oPayLoad = {}, sContentIndicator, aResponseStatus = [], hanaDBTable = dcpcontent;
                 var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
                     dist('*'),
                         dist.to_StudioKey((studio) => { studio('*')}),
@@ -185,9 +191,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 pkg.to_DistRestriction((dist) => { dist('*') }),
                                 pkg.to_DCPMaterial((dcpmat) => { dcpmat('*') })
                         }),
-                        dist.to_KeyPackage((keyPkg)=>{ keyPkg('*') })                       
+                        dist.to_KeyPackage((keyPkg)=>{ keyPkg('*'),
+                            keyPkg.to_DistRestriction((dist) => { dist('*') }),
+                            keyPkg.to_CPLDetail((cpl) => { cpl('*') })
+                         })                       
                 });
-                sContentIndicator = oContentData?.OrderType;   
+            sContentIndicator = oContentData?.OrderType;   
 
             if (oContentData?.Origin_OriginID !== "F") {
                 var sTitle = oContentData.Title;
@@ -244,76 +253,38 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
             }
             else {
-
-                var sShipDate = oContentData.ShipDate;
-                if (sShipDate) {
-                    oPayLoad.RequestedDeliveryDate = `/Date(${new Date(sShipDate).getTime()})/`;
-                }
-                else {
-                    sErrorMessage = "Ship Date is not maintained";
-                    updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
-                }
+                // var sShipDate = oContentData.ShipDate;
+                // if (sShipDate) {
+                //     oPayLoad.RequestedDeliveryDate = `/Date(${new Date(sShipDate).getTime()})/`;
+                // }
+                // else {
+                //     sErrorMessage = "Ship Date is not maintained";
+                //     updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oContentData.BookingID }));
+                // }
                 oPayLoad.IncotermsClassification = "CPT";
                 oPayLoad.IncotermsLocation1 = "Destination";
 
-                var aDeliverySeqFromPackage = [];
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence1?distroSpecData.DeliverySequence1: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence2?distroSpecData.DeliverySequence2: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence3?distroSpecData.DeliverySequence3: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence4?distroSpecData.DeliverySequence4: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence5?distroSpecData.DeliverySequence5: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence6?distroSpecData.DeliverySequence6: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence7?distroSpecData.DeliverySequence7: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence8?distroSpecData.DeliverySequence8: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence9?distroSpecData.DeliverySequence9: "");
-                aDeliverySeqFromPackage.push(distroSpecData.DeliverySequence10?distroSpecData.DeliverySequence10: "");
-                var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
-                var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
+                var oPackage, oKeyPackage;
                 var aPackages = distroSpecData?.to_Package;
-                aPackages?.sort(function (a, b) {
-                    return a.Priority - b.Priority;
-                });
-                var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
-                var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
-                aPackages = aPackages.filter((pkg)=>{
-                    var sDistValidFrom = pkg.ValidFrom;
-                    var sDistValidTo = pkg.ValidTo;
-                    sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
-                    sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo ;
-                });
-                if (!aPackages) {
-                    sErrorMessage = `DistroSpec not in validity. Validity period is from ${distroSpecData.ValidFrom} to ${distroSpecData.ValidTo}`;
-                }
-                else 
-                {
-                    // aPackages.find((pkg)=>{
+                        
+                var aDeliverySeqFromDistHeader = [];
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence1?distroSpecData.DeliverySequence1: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence2?distroSpecData.DeliverySequence2: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence3?distroSpecData.DeliverySequence3: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence4?distroSpecData.DeliverySequence4: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence5?distroSpecData.DeliverySequence5: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence6?distroSpecData.DeliverySequence6: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence7?distroSpecData.DeliverySequence7: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence8?distroSpecData.DeliverySequence8: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence9?distroSpecData.DeliverySequence9: "");
+                aDeliverySeqFromDistHeader.push(distroSpecData.DeliverySequence10?distroSpecData.DeliverySequence10: "");
 
-                    // });
-                    for(var i in aPackages){
-                    var oPackage = aPackages[i];    
-                    var sTheaterID = oContentData.TheaterID, sShipTo = "";
-                    var sEntityID = oContentData.EntityID;
-                    var sBPCustomerNumber = "", sPYCustomer = "";
-                    oPayLoad.to_Partner = [];
-                    if (sEntityID) {
-                        if (sEntityID.toUpperCase() === "SPR") {
-                            sBPCustomerNumber = "1000055";
-                            sPYCustomer = "1000055";
-                        }
-                        else if (sEntityID.toUpperCase() === "SPRI") {
-                            sBPCustomerNumber = "1000050";
-                            sPYCustomer = "1000050";
-                        }
-                        else if (sEntityID.toUpperCase() === "SPC") {
-                            sBPCustomerNumber = "1000011";
-                            sPYCustomer = "1000011";
-                        }
 
-                        sShipTo = sBPCustomerNumber;
-                        // oPayLoad.to_Partner.push({ "PartnerFunction": "WE", "Customer": sBPCustomerNumber });
-                    }
-
+                var sTheaterID = oContentData.TheaterID, sShipTo = "";
+                var sEntityID = oContentData.EntityID;
+                var sBPCustomerNumber = "", sPYCustomer = "";
+                oPayLoad.to_Partner = [];
+                if(sTheaterID){ //FIDNING SHIP-TO
                     var oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
                     if (!oSoldToSalesData){
                         sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
@@ -337,237 +308,205 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     else {
                         sErrorMessage = "Partner function not available";
+                    }                   
+                }
+
+                if(sContentIndicator === 'C'){
+                    oPackage = await performPrioritySortAndValidityCheck(aPackages, oContentData, distroSpecData);
+                    if (!oPackage) {
+                        sErrorMessage = `DistroSpec not in validity range for Content Order`;
                     }
-
-                    var aShiptoDelMethodsFromS4 = [];
-                    if (sShipTo) {
-                        var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                        if (oShipToSalesData) { //IDENTIFYING SHIP-TO
-                            var oShipToSalesData = aShipToSalesData[0];
-                            oShipToSalesData?.YY1_DeliveryMethod1_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod1_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod2_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod2_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod3_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod3_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod4_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod4_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod5_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod5_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod6_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod6_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod7_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod7_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod8_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod9_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa) : '';
-                            oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';
-                        }
-                        else {
-                            sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
-                        }
-                    }
-                    if (aPackages) {
-                        var sCustomerGroupFromS4 = oSoldToSalesData?.CustomerGroup;
-                        var aPackages = distroSpecData.to_Package;
-                        aPackages.sort(function (a, b) {
-                            return a.Priority < b.Priority;
-                        }); //SORT PACKAGES BASED ON PRIOIRTY       
-                        var aPackageFiltered = aPackages;
-                        var aPackageFiltered = aPackages.filter((item) => {
-                            if (item.ValidFrom && item.ValidTo) {
-                                var dPackageValidFrom = new Date(item.ValidFrom.replace(/-/g, '/'));
-                                var dPackageValidTo = new Date(item.ValidTo.replace(/-/g, '/'));
-                                // var sPrimaryShipCondn = item.PrimaryDeliveryMethod_ShippingCondition;
-                                // var sSecondaryShipCondn = item.SecondaryDeliveryMethod_ShippingCondition;
-                                if (dPlayStartDate < dPackageValidFrom || dPlayEndDate > dPackageValidTo) {
-                                    return false;
-                                }
-                                // else 
-                                // if (item.ContentIndicator !== sContentIndicator) {
-                                //     return false;
+                    else { //These rules are applicable only for content           
+                        for(var j in aDeliverySeqFromDistHeader){
+                            var sDelSeq = aDeliverySeqFromDistHeader[j];
+                            if(sDelSeq){
+                                oPackage = aPackages.find((pkg)=>{
+                                    return 
+                                    pkg.DeliveryMethod1 === sDelSeq || pkg.DeliveryMethod2 === sDelSeq || 
+                                    pkg.DeliveryMethod3 === sDelSeq || pkg.DeliveryMethod4 === sDelSeq ||
+                                    pkg.DeliveryMethod5 === sDelSeq || pkg.DeliveryMethod6 === sDelSeq ||
+                                    pkg.DeliveryMethod7 === sDelSeq || pkg.DeliveryMethod8 === sDelSeq ||
+                                    pkg.DeliveryMethod9 === sDelSeq || pkg.DeliveryMethod10 === sDelSeq 
+                                });
+                                // if(aPackageFiltered){
+                                //     aPackageFiltered = [...aPackageFiltered, ...aPackages];
                                 // }
-                                else {
-                                    return true;
-                                }
-                                // else if(sCustomerGroupFromS4 === sPrimaryShipCondn || sCustomerGroupFromS4 === sSecondaryShipCondn){
-                                //     return true;
+                                // else{
+                                //     aPackageFiltered = [...aPackages];
                                 // }
-                            }
-                            else {//THE PACKAGE IS CONSIDERED EVEN IF NO VALIDITY PERIOD IS MAINTAINED
-                                if (sCustomerGroupFromS4 === item.DeliveryMethod1_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod2_ShippingCondition ||
-                                    sCustomerGroupFromS4 === item.DeliveryMethod3_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod4_ShippingCondition ||
-                                    sCustomerGroupFromS4 === item.DeliveryMethod5_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod6_ShippingCondition ||
-                                    sCustomerGroupFromS4 === item.DeliveryMethod7_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod8_ShippingCondition ||
-                                    sCustomerGroupFromS4 === item.DeliveryMethod9_ShippingCondition || sCustomerGroupFromS4 === item.DeliveryMethod10_ShippingCondition
-                                ) {
-                                    return true;
-                                }
-                                else {
-                                    return false
-                                }
-                            }
-                        });
-
-                        if (aPackageFiltered?.length) {
-                            var oBPPackage = aPackageFiltered.find((oPkg) => {
-
-                                return aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod1_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod2_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod3_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod4_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod5_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod6_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod7_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod8_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod9_ShippingCondition) ||
-                                    aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod10_ShippingCondition);
-
-                                // oPkg?.DeliveryMethod1_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod1_csa ||
-                                //     oPkg?.DeliveryMethod2_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod2_csa ||
-                                //     oPkg?.DeliveryMethod3_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod3_csa ||
-                                //     oPkg?.DeliveryMethod4_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod4_csa ||
-                                //     oPkg?.DeliveryMethod5_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod5_csa ||
-                                //     oPkg?.DeliveryMethod6_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod6_csa ||
-                                //     oPkg?.DeliveryMethod7_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod7_csa ||
-                                //     oPkg?.DeliveryMethod8_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod8_csa ||
-                                //     oPkg?.DeliveryMethod9_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod9_csa ||
-                                //     oPkg?.DeliveryMethod10_ShippingCondition === oShipToSalesData?.YY1_DeliveryMethod10_csa 
-                            });
-                            if (oBPPackage) {
-                                aPackageFiltered = [oBPPackage];
-                                // if (oBPPackage.PrimaryDeliveryMethod_ShippingCondition === "05" ||
-                                //     oBPPackage.PrimaryDeliveryMethod_ShippingCondition === "06" ||
-                                //     oBPPackage.PrimaryDeliveryMethod_ShippingCondition === "10" ||
-                                //     oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "05" ||
-                                //     oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "06" ||
-                                //     oBPPackage.SecondaryDeliveryMethod_ShippingCondition === "10" &&
-                                //     !oShipToSalesData?.YY1_DCDCFlag_csa
-                                // ) {
-                                //     sErrorMessage = `DCDC Capability not found.`;
-                                // }
-                            }
-                            else {
-                                sErrorMessage = `Theater Capability not found. Ship-To:${sShipTo}`;
-                            }
-                            var oStudioKeyData = distroSpecData.to_StudioKey?.find((stud) => { return stud.Studio_BusinessPartner === "1000011" });
-                            for (var i in aPackageFiltered) {
-                                var oFilteredPackage = aPackageFiltered[i];
-                                // var sPrDelMethod = oFilteredPackage.PrimaryDeliveryMethod_ShippingCondition;
-                                // var sSecDelMethod = oFilteredPackage.SecondaryDeliveryMethod_ShippingCondition;
-                                // var sDeliveryMethod = sPrDelMethod ? sPrDelMethod : sSecDelMethod;
-                                var sDeliveryMethod = oFilteredPackage.DeliveryMethod1_ShippingCondition ? oFilteredPackage.DeliveryMethod1_ShippingCondition :
-                                    oFilteredPackage.DeliveryMethod2_ShippingCondition ? oFilteredPackage.DeliveryMethod2_ShippingCondition :
-                                        oFilteredPackage.DeliveryMethod3_ShippingCondition ? oFilteredPackage.DeliveryMethod3_ShippingCondition : oFilteredPackage.DeliveryMethod4_ShippingCondition ?
-                                            oFilteredPackage.DeliveryMethod4_ShippingCondition : oFilteredPackage.DeliveryMethod5_ShippingCondition ? oFilteredPackage.DeliveryMethod5_ShippingCondition :
-                                                oFilteredPackage.DeliveryMethod6_ShippingCondition ? oFilteredPackage.DeliveryMethod6_ShippingCondition : oFilteredPackage.DeliveryMethod7_ShippingCondition ?
-                                                    oFilteredPackage.DeliveryMethod7_ShippingCondition : oFilteredPackage.DeliveryMethod8_ShippingCondition ? oFilteredPackage.DeliveryMethod8_ShippingCondition :
-                                                        oFilteredPackage.DeliveryMethod9_ShippingCondition ? oFilteredPackage.DeliveryMethod9_ShippingCondition : oFilteredPackage.DeliveryMethod10_ShippingCondition;
-                                var sShippingType = "";
-                                if (sDeliveryMethod) {
-                                    oPayLoad.ShippingCondition = sDeliveryMethod;
-                                    var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
-                                    sShippingType = oShippingTypeMapping.ShippingType;
-                                }
-                                oPayLoad.to_Item = [];
-                                if (
-                                    (sContentIndicator === "C" && oStudioKeyData?.InferKeyContentOrder) ||
-                                    (sContentIndicator === "K")
-                                ) {
-                                    var sStartDate = sContentIndicator === "K" ? oContentData.StartDate : oContentData.PlayStartDate;
-                                    var sStartTime = sContentIndicator === "K" ? oContentData.StartTime : distroSpecData.KeyStartTime;
-                                    var sEndDate = sContentIndicator === "K" ? oContentData.EndDate : oContentData.PlayEndDate;
-                                    var sEndTime = sContentIndicator === "K" ? oContentData.EndTime : distroSpecData.KeyEndTime;
-                                    var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(sStartDate);
-                                    var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(sEndDate);
-                                    var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
-                                    if (iDifferenceInHours > 24) {
-                                        var oEntry = {
-                                            "Material": aConfig?.find((e) => { return e.VariableName === 'Material_GT24' })?.VariableValue,
-                                            "RequestedQuantity": '1',
-                                            "RequestedQuantityISOUnit": "EA",
-                                            // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
-                                            "DeliveryPriority": `1`,
-                                            "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                            // "ShippingType": sShippingType
-                                            "ShippingType": "07"
-                                        };
-                                    }
-                                    else {
-                                        oEntry = {
-                                            "Material": aConfig?.find((e) => { return e.VariableName === 'Material_LT24' })?.VariableValue,
-                                            "RequestedQuantity": '1',
-                                            "RequestedQuantityISOUnit": "EA",
-                                            // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
-                                            "DeliveryPriority": `1`,
-                                            "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                            // "ShippingType": sShippingType
-                                            "ShippingType": "07"
-                                        };
-                                    }
-                                    oPayLoad.to_Item.push(oEntry);
-                                }
-                                if (oFilteredPackage?.to_DCPMaterial) {
-                                    for (var j in oFilteredPackage.to_DCPMaterial) {
-                                        var oMatRecord = oFilteredPackage.to_DCPMaterial[j];
-                                        var oEntry = {
-                                            "Material": oMatRecord.DCPMaterialNumber_Product,
-                                            "RequestedQuantity": '1',
-                                            "RequestedQuantityISOUnit": "EA",
-                                            // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
-                                            "DeliveryPriority": `1`,
-                                            "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                            // "ShippingType": sShippingType
-                                            "ShippingType": sContentIndicator === "C" ? sShippingType : "07"
-                                        };
-                                        var assetvault = await SELECT.one.from(AssetVault_Local)
-                                            .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
-                                            .where({
-                                                DCP: oMatRecord.DCPMaterialNumber_Product
-                                            })
-                                        if (assetvault?._Items?.length > 0) {
-                                            var sLinkedCTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`);
-                                            var sCPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`);
-                                            aCTTCPL.push({ "Product": oMatRecord.DCPMaterialNumber_Product, "LinkedCTT": sLinkedCTT, "CPLUUID": sCPLUUID })
-                                        }
-                                        oPayLoad.to_Item.push(oEntry);
-                                    }
-
-                                    var aDCPs = oFilteredPackage?.to_DCPMaterial.map((item) => { return item.DCPMaterialNumber_Product });
-                                }
-                                else {
-                                    sErrorMessage = "DCP Material not available";
-                                }
-                                var aDistRestrictions = oFilteredPackage?.to_DistRestriction;
-                                if (aDistRestrictions && aDistRestrictions.length) {
-                                    // var oDistRestriction = aDistRestrictions.find((dist) => {
-                                    //     return dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
-                                    //         ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
-                                    //         ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
-                                    //         ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
-                                    //         ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
-                                    // });
-                                    // if (!oDistRestriction) {
-                                    //     sErrorMessage = `No relevant Package IDs identified for restrictions. 
-                                    //     CustomerGroupFromS4:${sCustomerGroupFromS4}|
-                                    //     PartnerAddress(Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
-                                    // }
-                                }
-                                if (i == "0") { //Picking up only the 1st package
+                                if(oPackage){
                                     break;
                                 }
                             }
                         }
-                        else {
-                            sErrorMessage = "No suitable Package found in DistroSpec";
+            
+                        var aShiptoDelMethodsFromS4 = [];
+                        if (sShipTo) {
+                            var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                            if (oShipToSalesData) { //IDENTIFYING SHIP-TO
+                                oShipToSalesData?.YY1_DeliveryMethod1_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod1_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod2_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod2_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod3_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod3_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod4_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod4_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod5_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod5_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod6_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod6_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod7_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod7_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod8_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod9_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa) : '';
+                                oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';
+                            }
+                            else {
+                                sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
+                            }
                         }
-                    }
-                    else {
-                        sErrorMessage = "Package not maintained in DistroSpec";
-                    }
-                
+                        
+                        var oBPPackage = [oPackage].find((oPkg) => {
+                            return aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod1_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod2_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod3_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod4_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod5_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod6_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod7_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod8_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod9_ShippingCondition) ||
+                                aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod10_ShippingCondition);
+                        });
+                        if (!oBPPackage){
+                            sErrorMessage = `Theater Capability not found. Ship-To:${sShipTo}`;
+                        }                        
+                    
+                        
                     }
                 }
+                if(sContentIndicator === 'K'){ //FOR KEY
+                    var aKeyPackage = distroSpecData?.to_KeyPackage;
+                    oPackage = await performPrioritySortAndValidityCheck(aKeyPackage, oContentData, distroSpecData);
+                    if (!oPackage) {
+                        sErrorMessage = `DistroSpec not in validity range for Key Order`;
+                    }
+                }
+                if(!sErrorMessage){
+                    var oFilteredPackage = oPackage;
+                    if(sContentIndicator === 'C'){
+                        var sDeliveryMethod = oFilteredPackage.DeliveryMethod1_ShippingCondition ? oFilteredPackage.DeliveryMethod1_ShippingCondition :
+                        oFilteredPackage.DeliveryMethod2_ShippingCondition ? oFilteredPackage.DeliveryMethod2_ShippingCondition :
+                            oFilteredPackage.DeliveryMethod3_ShippingCondition ? oFilteredPackage.DeliveryMethod3_ShippingCondition : oFilteredPackage.DeliveryMethod4_ShippingCondition ?
+                                oFilteredPackage.DeliveryMethod4_ShippingCondition : oFilteredPackage.DeliveryMethod5_ShippingCondition ? oFilteredPackage.DeliveryMethod5_ShippingCondition :
+                                    oFilteredPackage.DeliveryMethod6_ShippingCondition ? oFilteredPackage.DeliveryMethod6_ShippingCondition : oFilteredPackage.DeliveryMethod7_ShippingCondition ?
+                                        oFilteredPackage.DeliveryMethod7_ShippingCondition : oFilteredPackage.DeliveryMethod8_ShippingCondition ? oFilteredPackage.DeliveryMethod8_ShippingCondition :
+                                            oFilteredPackage.DeliveryMethod9_ShippingCondition ? oFilteredPackage.DeliveryMethod9_ShippingCondition : oFilteredPackage.DeliveryMethod10_ShippingCondition;
+                    
+                    }
+                    else{
+                        sDeliveryMethod = "04";
+                    }
+                    var sShippingType = "";
+                    if (sDeliveryMethod) {
+                        oPayLoad.ShippingCondition = sDeliveryMethod;
+                        var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
+                        sShippingType = oShippingTypeMapping.ShippingType;
+                    }
+                    oPayLoad.to_Item = [];
+                    if (
+                        (sContentIndicator === "C" && oStudioKeyData?.InferKeyContentOrder) ||
+                        (sContentIndicator === "K")
+                    ) {
+                        var sStartDate = sContentIndicator === "K" ? oContentData.StartDate : oContentData.PlayStartDate;
+                        var sStartTime = sContentIndicator === "K" ? oContentData.StartTime : distroSpecData.KeyStartTime;
+                        var sEndDate = sContentIndicator === "K" ? oContentData.EndDate : oContentData.PlayEndDate;
+                        var sEndTime = sContentIndicator === "K" ? oContentData.EndTime : distroSpecData.KeyEndTime;
+                        var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(sStartDate);
+                        var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(sEndDate);
+                        var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
+                        if (iDifferenceInHours > 24) {
+                            var oEntry = {
+                                "Material": aConfig?.find((e) => { return e.VariableName === 'Material_GT24' })?.VariableValue,
+                                "RequestedQuantity": '1',
+                                "RequestedQuantityISOUnit": "EA",
+                                // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                "DeliveryPriority": `1`,
+                                "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                // "ShippingType": sShippingType
+                                "ShippingType": "07"
+                            };
+                        }
+                        else {
+                            oEntry = {
+                                "Material": aConfig?.find((e) => { return e.VariableName === 'Material_LT24' })?.VariableValue,
+                                "RequestedQuantity": '1',
+                                "RequestedQuantityISOUnit": "EA",
+                                // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                "DeliveryPriority": `1`,
+                                "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                // "ShippingType": sShippingType
+                                "ShippingType": "07"
+                            };
+                        }
+                        oPayLoad.to_Item.push(oEntry);
+                    }
+                    if (oFilteredPackage?.to_DCPMaterial) {
+                        for (var j in oFilteredPackage.to_DCPMaterial) {
+                            var oMatRecord = oFilteredPackage.to_DCPMaterial[j];
+                            var oEntry = {
+                                "Material": oMatRecord.DCPMaterialNumber_Product,
+                                "RequestedQuantity": '1',
+                                "RequestedQuantityISOUnit": "EA",
+                                // "DeliveryPriority": `${oFilteredPackage?.Priority}`,
+                                "DeliveryPriority": `1`,
+                                "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                // "ShippingType": sShippingType
+                                "ShippingType": sContentIndicator === "C" ? sShippingType : "07"
+                            };
+                            var assetvault = await SELECT.one.from(AssetVault_Local)
+                                .columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+                                .where({
+                                    DCP: oMatRecord.DCPMaterialNumber_Product
+                                })
+                            if (assetvault?._Items?.length > 0) {
+                                var sLinkedCTT = assetvault._Items.map(u => u.LinkedCTT).join(`\n`);
+                                var sCPLUUID = assetvault._Items.map(u => u.LinkedCPLUUID).join(`\n`);
+                                aCTTCPL.push({ "Product": oMatRecord.DCPMaterialNumber_Product, "LinkedCTT": sLinkedCTT, "CPLUUID": sCPLUUID })
+                            }
+                            oPayLoad.to_Item.push(oEntry);
+                        }
+
+                        var aDCPs = oFilteredPackage?.to_DCPMaterial.map((item) => { return item.DCPMaterialNumber_Product });
+                    }
+                    else {
+                        sErrorMessage = "DCP Material not available";
+                    }
+                    var aDistRestrictions = oFilteredPackage?.to_DistRestriction;
+                    if (aDistRestrictions && aDistRestrictions.length) {
+                        // var oDistRestriction = aDistRestrictions.find((dist) => {
+                        //     return dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
+                        //         ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
+                        //         ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
+                        //         ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
+                        //         ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
+                        // });
+                        // if (!oDistRestriction) {
+                        //     sErrorMessage = `No relevant Package IDs identified for restrictions. 
+                        //     CustomerGroupFromS4:${sCustomerGroupFromS4}|
+                        //     PartnerAddress(Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
+                        // }
+                    }
+
+                    // var oStudioKeyData = distroSpecData.to_StudioKey?.find((stud) => { return stud.Studio_BusinessPartner === "1000011" });
+
+                }                          
             }
-            var bPostingSuccess = false, sSalesOrder = "";
+            var bPostingSuccess = false, sSalesOrder = "", oResponseStatus = {};
             if (sErrorMessage) {
-                updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage, Status_ID: "D" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
-                aResponseStatus.push({
-                    "message": `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
-                    "status": "E"
-                });
+                // updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage, Status_ID: "D" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
+                // aResponseStatus.push({
+                //     "message": `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
+                //     "status": "E"
+                // });
+                oResponseStatus.error = {
+                    "message" : `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
+                    "errorMessage": sErrorMessage
+                }
             }
             else {
                 var postResult = await s4h_sohv2_Txn.send({
@@ -575,20 +514,29 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     path: '/A_SalesOrder',
                     data: oPayLoad
                 }).catch((err) => {
-                    updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
-                    aResponseStatus.push({
+                    // updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
+                    // aResponseStatus.push({
+                    //     "message": `| Booking ID: ${oContentData.BookingID}: ${err.message} |`,
+                    //     "status": "E"
+                    // });
+                    oResponseStatus.error = {
                         "message": `| Booking ID: ${oContentData.BookingID}: ${err.message} |`,
-                        "status": "E"
-                    });
+                        "errorMessage": err.message
+                    }
                 }).then((result) => {
                     if (result) {
                         bPostingSuccess = true;
                         sSalesOrder = result?.SalesOrder;
-                        updateQuery.push(UPDATE(hanaDBTable).set({ SalesOrder: result?.SalesOrder, Status_ID: "C", ErrorMessage: "" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
-                        aResponseStatus.push({
-                            "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
-                            "status": "S"
-                        });
+                        // updateQuery.push(UPDATE(hanaDBTable).set({ SalesOrder: result?.SalesOrder, Status_ID: "C", ErrorMessage: "" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
+                        // aResponseStatus.push({
+                        //     "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
+                        //     "status": "S"
+                        // });
+                        
+                    oResponseStatus.success = {
+                        "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
+                        "SalesOrder": sSalesOrder
+                    }
                     }
                 });
             }
@@ -690,11 +638,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
             }
-        
-            req.reply({
-                code: 201,
-                message: JSON.stringify(aResponseStatus)
+            return oResponseStatus;
+        };
+        const performPrioritySortAndValidityCheck = async (aPackages, oContentData, distroSpecData)=>{
+            aPackages?.sort(function (a, b) {
+                return a.Priority - b.Priority;
             });
+            var sContentLanguage = oContentData.Language, sContentIndicator = oContentData?.OrderType;
+            var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
+            var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
+            aPackages = aPackages.filter((pkg)=>{
+                var sDistValidFrom = pkg.ValidFrom;
+                var sDistValidTo = pkg.ValidTo;
+                sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
+                sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
+                return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo ;
+            });                   
+            return aPackages?.[0];
         };
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(), aInsertData = []; // Generate a unique ID

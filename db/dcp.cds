@@ -171,10 +171,14 @@ entity StudioFeed : cuid, managed {
     IsActive           : String(1)                    @readonly;
     Remediation        : String                       @readonly;
     Status             : Association to BookingStatus;
-    // Status             : String @readonly;
-    SalesOrder         : String                       @readonly;
+    SalesOrder         : String                       ;
     ErrorMessage       : String                       @readonly;
     Warnings           : String                       @readonly;
+
+    to_Item: Composition of many BookingSalesorderItem
+                                      on $self.SalesOrder = to_Item.SalesOrder    @readonly;
+    to_Partner                : Composition of many BookingSalesorderPartner
+                                      on $self.SalesOrder = to_Partner.SalesOrder @readonly;                                      
 }
 
 entity Origin {

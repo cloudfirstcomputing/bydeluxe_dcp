@@ -117,6 +117,15 @@
             "StudioFeedList",
             "StudioFeedObjectPage"
           ]
+        },
+        {
+          "name": "StudioFeed_to_ItemObjectPage",
+          "pattern": "StudioFeed({key})/to_Item({to_ItemKey}):?query:",
+          "target": [
+            "StudioFeedList",
+            "StudioFeedObjectPage",
+            "StudioFeed_to_ItemObjectPage"
+          ]
         }
       ],
       "targets": {
@@ -214,6 +223,10 @@
                     },
                     "DataField::Origin_OriginID": {
                       "width": "auto"
+                    },
+                    "DataField::ErrorMessage": {
+                      "width": "auto",
+                      "widthIncludingColumnHeader": true
                     }
                   }
                 }
@@ -232,11 +245,31 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/StudioFeed"
+              "contextPath": "/StudioFeed",
+              "navigation": {
+                "to_Item": {
+                  "detail": {
+                    "route": "StudioFeed_to_ItemObjectPage"
+                  }
+                }
+              }
             }
           },
           "controlAggregation": "midColumnPages",
           "contextPattern": "/StudioFeed({key})"
+        },
+        "StudioFeed_to_ItemObjectPage": {
+          "type": "Component",
+          "id": "StudioFeed_to_ItemObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "controlAggregation": "beginColumnPages",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/StudioFeed/to_Item"
+            }
+          },
+          "contextPattern": "/StudioFeed({key})/to_Item({to_ItemKey})"
         }
       }
     },
