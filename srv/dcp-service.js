@@ -143,13 +143,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
                 var oResponseStatus = await createSalesOrderUsingNormalizedRules(req, data[i]);
-                if(oResponseStatus?.error){
-                    data[i].ErrorMessage = oResponseStatus?.error?.errorMessage;
+                if(oResponseStatus?.error?.length){
+                    data[i].ErrorMessage = oResponseStatus?.error?.[0].errorMessage;
                     data[i].Status_ID = "D";
                 }
-                if(oResponseStatus?.success){
-                    data[i].SalesOrder = oResponseStatus?.success?.SalesOrder;
+                if(oResponseStatus?.success?.length){
+                    data[i].SalesOrder = oResponseStatus?.SalesOrder;
                     data[i].Status_ID = "C";
+                    data[i] = await updateItemsInPayload(req, data[i], oResponseStatus);
                 }             
                 if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
@@ -184,7 +185,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return oResponseStatus;
         };
         const createSalesOrderUsingNormalizedRules = async (req, oContentData) => {
-            var updateQuery = [], oPayLoad = {}, sContentIndicator, aResponseStatus = [], hanaDBTable = dcpcontent;
+            var updateQuery = [], oPayLoad = {}, sContentIndicator, oResponseStatus = {"error":[], "success": [], "warning": []}, hanaDBTable = dcpcontent;
                 var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
                     dist('*'),
                         dist.to_StudioKey((studio) => { studio('*')}),
@@ -238,7 +239,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
             }
             var oStudioKeyData = distroSpecData.to_StudioKey?.[0];
-            
+            oResponseStatus.distroSpecData = distroSpecData;
             var aCTTCPL = [];
 
             oPayLoad.SoldToParty = sSoldToCustomer;
@@ -390,6 +391,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 if(!sErrorMessage){
                     var oFilteredPackage = oPackage;
+                    oResponseStatus.package = oPackage;
                     if(sContentIndicator === 'C'){
                         var sDeliveryMethod = oFilteredPackage.DeliveryMethod1_ShippingCondition ? oFilteredPackage.DeliveryMethod1_ShippingCondition :
                         oFilteredPackage.DeliveryMethod2_ShippingCondition ? oFilteredPackage.DeliveryMethod2_ShippingCondition :
@@ -472,7 +474,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                             oPayLoad.to_Item.push(oEntry);
                         }
-
+                        oResponseStatus.aCTTCPL = aCTTCPL;
                         var aDCPs = oFilteredPackage?.to_DCPMaterial.map((item) => { return item.DCPMaterialNumber_Product });
                     }
                     else {
@@ -497,17 +499,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 }                          
             }
-            var bPostingSuccess = false, sSalesOrder = "", oResponseStatus = {};
+            var bPostingSuccess = false, sSalesOrder = "";
             if (sErrorMessage) {
-                // updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage, Status_ID: "D" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
-                // aResponseStatus.push({
-                //     "message": `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
-                //     "status": "E"
-                // });
-                oResponseStatus.error = {
+                oResponseStatus.error.push( {
                     "message" : `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
                     "errorMessage": sErrorMessage
-                }
+                })
             }
             else {
                 var postResult = await s4h_sohv2_Txn.send({
@@ -515,132 +512,109 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     path: '/A_SalesOrder',
                     data: oPayLoad
                 }).catch((err) => {
-                    // updateQuery.push(UPDATE(hanaDBTable).set({ ErrorMessage: err.message }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
-                    // aResponseStatus.push({
-                    //     "message": `| Booking ID: ${oContentData.BookingID}: ${err.message} |`,
-                    //     "status": "E"
-                    // });
-                    oResponseStatus.error = {
+                    oResponseStatus.error.push( {
                         "message": `| Booking ID: ${oContentData.BookingID}: ${err.message} |`,
                         "errorMessage": err.message
-                    }
+                    })
                 }).then((result) => {
                     if (result) {
                         bPostingSuccess = true;
                         sSalesOrder = result?.SalesOrder;
-                        // updateQuery.push(UPDATE(hanaDBTable).set({ SalesOrder: result?.SalesOrder, Status_ID: "C", ErrorMessage: "" }).where({ BookingID: oContentData.BookingID, IsActive: "Y" }));
-                        // aResponseStatus.push({
-                        //     "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
-                        //     "status": "S"
-                        // });
                         
-                    oResponseStatus.success = {
+                    oResponseStatus.success.push( {
                         "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
                         "SalesOrder": sSalesOrder
-                    }
+                    });
+                    oResponseStatus.SalesOrder = sSalesOrder;
                     }
                 });
             }
-            if (updateQuery.length) {
-                var updateResult = await Promise.all(updateQuery);
-                if (bPostingSuccess) {
-                    // var aSalesOrderData = await s4h_sohv2_Txn.run(SELECT.from(S4H_SOHeader_V2, (header) => {
-                    //     header`.*`,
-                    //         header.to_Item((item) => { }),
-                    //         header.to_Partner((partner) => { })
-                    // }).where({ SalesOrder: sSalesOrder }));  
-                    var aSalesOrderData = await s4h_sohv2_Txn.run(SELECT.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
-                    // var aSalesOrderData = await s4h_sohv2_Txn.get(`/A_SalesOrder?$filter=SalesOrder eq '${sSalesOrder}'&$expand=to_Item,to_Partner`);
-
-
-                    if (aSalesOrderData?.length) {
-                        var oSalesOrder = aSalesOrderData[0]; //IT IS ALWAYS 1 RECORD
-                        var oRecordsToBePosted = oContentData;
-                        oRecordsToBePosted.DistroSpecID = distroSpecData.DistroSpecID;
-                        // oRecordsToBePosted.DistroSpecPackageID = aPackageFiltered[0].PackageUUID;
-                        // oRecordsToBePosted.DistroSpecPackageName = aPackageFiltered[0].PackageName;
-                        var aSalesOrderItems = oSalesOrder.to_Item;
-                        oSalesOrder._Item = [];
-                        for (var item in aSalesOrderItems) {
-                            oSalesOrder._Item.push({}); //to_Item from to be mapped with _Item of lcoal CDS
-                            var oSalesOrderItem = aSalesOrderItems[item];
-                            oSalesOrder._Item[item]["Product"] = oSalesOrderItem.Material;
-                            var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oSalesOrderItem.Material });
-                            var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
-                            oSalesOrder._Item[item].LongText = sGoFilexTitleID;
-                            oSalesOrder._Item[item].ProductGroup = oSalesOrderItem.MaterialGroup;
-                            oSalesOrder._Item[item].Plant = oSalesOrderItem.ProductionPlant;
-                            oSalesOrder._Item[item].DistroSpecPackageID = aPackageFiltered[0].PackageUUID;
-                            oSalesOrder._Item[item].DistroSpecPackageName = aPackageFiltered[0].PackageName;
-                            if (oPayLoad?.ShippingCondition && oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) {
-                                await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, aResponseStatus, oSalesOrderItem, oContentData);
-                            }
-                            var oCTTCPL = aCTTCPL?.find((entry) => { return entry.Product === oSalesOrderItem.Material });
-                            if (oCTTCPL) {
-                                oSalesOrder._Item[item].CTT = oCTTCPL.LinkedCTT;
-                                oSalesOrder._Item[item].CPLUUID = oCTTCPL.CPLUUID;
-                                await updateItemTextForSalesOrder(req, "Z005", oCTTCPL.CPLUUID, aResponseStatus, oSalesOrderItem, oContentData);
-                                if (sContentIndicator === "K") {
-                                    await updateItemTextForSalesOrder(req, "0001", oCTTCPL.LinkedCTT, aResponseStatus, oSalesOrderItem, oContentData);
-                                }
-                            }
-                            // var aProjectIDs = await SELECT.columns(['ProjectID']).from(CplList_Local).where({ DCP: { "IN": aDCPs } });
-                            // for (var p in aProjectIDs) {
-                            //     var sProjectID = aProjectIDs[p].ProjectID;
-                            //     await updateItemTextForSalesOrder(req, "Z006", sProjectID, aResponseStatus, oSalesOrderItem, oContentData);
-                            // }
-                            var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
-                            if (oCplList) {
-                                await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, aResponseStatus, oSalesOrderItem, oContentData);
-                            }
-                            await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, aResponseStatus, oSalesOrderItem, oContentData);
-                            await updateItemTextForSalesOrder(req, "Z009", aPackageFiltered?.[0].PackageUUID, aResponseStatus, oSalesOrderItem, oContentData);
-                            await updateItemTextForSalesOrder(req, "Z010", aPackageFiltered?.[0].PackageName, aResponseStatus, oSalesOrderItem, oContentData);
-                            Object.assign(oSalesOrder._Item[item], oSalesOrderItem); //Assigining updated field name values back
-
-                            oSalesOrder._Item[item].ShippingType_ID = oSalesOrderItem.ShippingType;
-
-                            oSalesOrder._Item[item]["KeyStartTime"] = oStudioKeyData.KeyStartTime;
-                            oSalesOrder._Item[item]["KeyEndTime"] = oStudioKeyData.KeyEndTime;
-                            oSalesOrder._Item[item]["InitialKeyDuration"] = oStudioKeyData.InitialKeyDuration;
-                            oSalesOrder._Item[item]["NextKeyDuration"] = oStudioKeyData.NextKeyDuration;
-                            oSalesOrder._Item[item]["OffsetEPD"] = oStudioKeyData.OffsetEPD;
-                            oSalesOrder._Item[item]["InferKeyContentOrder"] = oStudioKeyData.InferKeyContentOrder;
-                            oSalesOrder._Item[item]["AggregateKey"] = oStudioKeyData.AggregateKey;
-                            oSalesOrder._Item[item]["ProcessKDMS"] = oStudioKeyData.ProcessKDMS;
-                            oSalesOrder._Item[item]["ProcessScreeningKDMS"] = oStudioKeyData.ProcessScreeningKDMS;
-                            oSalesOrder._Item[item]["MaxKDMSDuration"] = oStudioKeyData.MaxKDMSDuration;
-                            oSalesOrder._Item[item]["StudioHoldOverRule"] = oStudioKeyData.StudioHoldOverRule;
-                            oSalesOrder._Item[item]["SalesTerritory"] = oStudioKeyData.SalesTerritory_SalesDistrict;
-
-                            oSalesOrder._Item[item]["StartDate"] = sStartDate;
-                            oSalesOrder._Item[item]["StartTime"] = sStartTime;
-                            oSalesOrder._Item[item]["EndDate"] = sEndDate;
-                            oSalesOrder._Item[item]["EndTime"] = sEndTime;
-
-                            delete oSalesOrder._Item[item].ShippingType;
-                        } //ITERATING ITEM END
-                        oRecordsToBePosted._Partner = [];
-                        for (var part in oSalesOrder.to_Partner) {
-                            Object.assign(oRecordsToBePosted._Partner, oSalesOrder.to_Partner);
-                        }
-                        Object.assign(oRecordsToBePosted, oContentData);
-                        Object.assign(oRecordsToBePosted, oSalesOrder);
-                        if (oSalesOrder.RequestedDeliveryDate) {
-                            var iTime = parseInt(oSalesOrder.RequestedDeliveryDate.substring(6, oSalesOrder.RequestedDeliveryDate.length - 2));
-                            var sDate = new Date(iTime).toISOString().split("T")[0];
-                            oRecordsToBePosted.RequestedDeliveryDate = sDate;
-                        }
-                        await INSERT.into(BookingSalesOrder).entries(oRecordsToBePosted);
-                        aResponseStatus.push({
-                            "message": `| For Booking ID: ${oContentData.BookingID} - Sales Order: ${oSalesOrder?.SalesOrder}, Booking entry created |`,
-                            "status": "S"
-                        });
-                    }
-                }
-            }
+            oResponseStatus.payLoad = oPayLoad;
             return oResponseStatus;
         };
+        const updateItemsInPayload = async (req, oContentData, oResponseStatus, oPackage, oPayLoad, aCTTCPL)=>{     
+            var sSalesOrder = oContentData?.SalesOrder, sContentIndicator = oContentData.OrderType;    
+            var distroSpecData = oResponseStatus.distroSpecData, oPackage = oResponseStatus.package, 
+            oPayLoad = oResponseStatus.payLoad, aCTTCPL = oResponseStatus.aCTTCPL;
+
+            var oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));                
+            
+            // var oRecordsToBePosted = oContentData;
+            var oStudioKeyData = distroSpecData.to_StudioKey?.[0];
+            // oRecordsToBePosted.DistroSpecID = distroSpecData.DistroSpecID;
+            var aSalesOrderItems = oSalesOrder.to_Item;
+            oContentData["to_Item"] = [];
+            for (var i in aSalesOrderItems) {
+                oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of lcoal CDS
+                var oSalesOrderItem = aSalesOrderItems[i];
+                oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
+                var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oSalesOrderItem.Material });
+                var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
+                oContentData.to_Item[i].LongText = sGoFilexTitleID;
+                oContentData.to_Item[i].ProductGroup = oSalesOrderItem.MaterialGroup;
+                oContentData.to_Item[i].Plant = oSalesOrderItem.ProductionPlant;
+                oContentData.to_Item[i].DistroSpecPackageID = oPackage.PackageUUID;
+                oContentData.to_Item[i].DistroSpecPackageName = oPackage.PackageName;
+                if (oPayLoad?.ShippingCondition && oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) {
+                    await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
+                }
+                var oCTTCPL = aCTTCPL?.find((entry) => { return entry.Product === oSalesOrderItem.Material });
+                if (oCTTCPL) {
+                    oContentData.to_Item[i].CTT = oCTTCPL.LinkedCTT;
+                    oContentData.to_Item[i].CPLUUID = oCTTCPL.CPLUUID;
+                    await updateItemTextForSalesOrder(req, "Z005", oCTTCPL.CPLUUID, oResponseStatus, oSalesOrderItem, oContentData);
+                    if (sContentIndicator === "K") {
+                        await updateItemTextForSalesOrder(req, "0001", oCTTCPL.LinkedCTT, oResponseStatus, oSalesOrderItem, oContentData);
+                    }
+                }
+                var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
+                if (oCplList) {
+                    await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, oResponseStatus, oSalesOrderItem, oContentData);
+                }
+                await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
+                await updateItemTextForSalesOrder(req, "Z009", oPackage.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData);
+                await updateItemTextForSalesOrder(req, "Z010", oPackage.PackageName, oResponseStatus, oSalesOrderItem, oContentData);
+                Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
+
+                oContentData.to_Item[i].ShippingType_ID = oSalesOrderItem.ShippingType;
+
+                oContentData.to_Item[i]["KeyStartTime"] = oStudioKeyData.KeyStartTime;
+                oContentData.to_Item[i]["KeyEndTime"] = oStudioKeyData.KeyEndTime;
+                oContentData.to_Item[i]["InitialKeyDuration"] = oStudioKeyData.InitialKeyDuration;
+                oContentData.to_Item[i]["NextKeyDuration"] = oStudioKeyData.NextKeyDuration;
+                oContentData.to_Item[i]["OffsetEPD"] = oStudioKeyData.OffsetEPD;
+                oContentData.to_Item[i]["InferKeyContentOrder"] = oStudioKeyData.InferKeyContentOrder;
+                oContentData.to_Item[i]["AggregateKey"] = oStudioKeyData.AggregateKey;
+                oContentData.to_Item[i]["ProcessKDMS"] = oStudioKeyData.ProcessKDMS;
+                oContentData.to_Item[i]["ProcessScreeningKDMS"] = oStudioKeyData.ProcessScreeningKDMS;
+                oContentData.to_Item[i]["MaxKDMSDuration"] = oStudioKeyData.MaxKDMSDuration;
+                oContentData.to_Item[i]["StudioHoldOverRule"] = oStudioKeyData.StudioHoldOverRule;
+                oContentData.to_Item[i]["SalesTerritory"] = oStudioKeyData.SalesTerritory_SalesDistrict;
+
+                // oContentData.to_Item[i]["StartDate"] = sStartDate;
+                // oContentData.to_Item[i]["StartTime"] = sStartTime;
+                // oContentData.to_Item[i]["EndDate"] = sEndDate;
+                // oContentData.to_Item[i]["EndTime"] = sEndTime;
+
+                delete oContentData.to_Item[i].ShippingType;
+            } //ITERATING ITEM END
+            oContentData._Partner = [];
+            for (var part in oSalesOrder.to_Partner) {
+                Object.assign(oContentData._Partner, oSalesOrder.to_Partner);
+            }
+            // Object.assign(oRecordsToBePosted, oContentData);
+            if (oSalesOrder.RequestedDeliveryDate) {
+                var iTime = parseInt(oSalesOrder.RequestedDeliveryDate.substring(6, oSalesOrder.RequestedDeliveryDate.length - 2));
+                var sDate = new Date(iTime).toISOString().split("T")[0];
+                oContentData.RequestedDeliveryDate = sDate;
+            }
+            // await INSERT.into(BookingSalesOrder).entries(oRecordsToBePosted);
+            // aResponseStatus.push({
+            //     "message": `| For Booking ID: ${oContentData.BookingID} - Sales Order: ${oSalesOrder?.SalesOrder}, Booking entry created |`,
+            //     "status": "S"
+            // });
+            return oContentData;
+        }
         const performPrioritySortAndValidityCheck = async (aPackages, oContentData, distroSpecData)=>{
             aPackages?.sort(function (a, b) {
                 return a.Priority - b.Priority;
@@ -908,7 +882,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return s4h_production_order.run(req.query);
         });
 
-        const updateItemTextForSalesOrder = async (req, sType, sText, aResponseStatus, oSalesOrderItem, oContentData) => {
+        const updateItemTextForSalesOrder = async (req, sType, sText, oResponseStatus, oSalesOrderItem, oContentData) => {
             var oItemText =
             {
                 "SalesOrder": oSalesOrderItem.SalesOrder,
@@ -922,15 +896,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 path: `/SalesOrderItem/${oSalesOrderItem.SalesOrder}/${oSalesOrderItem.SalesOrderItem}/_ItemText`,
                 data: oItemText
             }).catch((err) => {
-                aResponseStatus.push({
+                oResponseStatus.warning.push({
                     "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}, ${sType} Item text creation failed with the error: ${err.message} `,
-                    "status": "W"
+                    "errorMessage": err.message
                 });
             }).then((result) => {
                 if (result) {
-                    aResponseStatus.push({
-                        "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}, ${sType} Item Text is created |`,
-                        "status": "S"
+                    oResponseStatus.success.push({
+                        "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}, ${sType} Item Text is created |`
                     });
                 }
             });
