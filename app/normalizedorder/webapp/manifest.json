@@ -98,7 +98,7 @@
       "config": {
         "flexibleColumnLayout": {
           "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
-          "defaultThreeColumnLayoutType": "ThreeColumnsMidExpanded"
+          "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
         },
         "routerClass": "sap.f.routing.Router"
       },
@@ -262,7 +262,7 @@
           "type": "Component",
           "id": "StudioFeed_to_ItemObjectPage",
           "name": "sap.fe.templates.ObjectPage",
-          "controlAggregation": "beginColumnPages",
+          "controlAggregation": "endColumnPages",
           "options": {
             "settings": {
               "navigation": {},

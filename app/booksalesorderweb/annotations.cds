@@ -369,448 +369,448 @@ annotate service.BookingSalesOrder with @(
 );
 
 annotate service.BookingSalesorderItem with @(
-    UI.LineItem #i18nItem : [
-        {
-            $Type : 'UI.DataField',
-            Value : SalesOrderItem,
-            Label : '{i18n>Salesorderitem}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Product,
-            Label : '{i18n>Product}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : LongText,
-            Label : '{i18n>Longtext}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ProductGroup,
-            Label : '{i18n>Productgroup}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : RequestedQuantity,
-            Label : '{i18n>Requestedquantity}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Plant,
-            Label : '{i18n>Plant}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ShippingPoint,
-            Label : '{i18n>Shippingpoint}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ShippingType_ID,
-            Label : '{i18n>Shippingtype}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CPLUUID,
-            Label : '{i18n>Cpluuid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CTT,
-            Label : '{i18n>CTT}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PricingReferenceMaterial,
-            Label : '{i18n>Pricereferncematerialproduct}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : AggregateKey,
-            Label : '{i18n>Aggregatekey}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : AuditoriumType,
-            Label : '{i18n>Auditoriumtype}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : BranchID,
-            Label : '{i18n>Branchid}'
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : DepotID,
-            Label : '{i18n>Depotid}'
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : FilmStock,
-            Label : '{i18n>Filmstock}'
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : InferKeyContentOrder,
-            Label : '{i18n>Inferkeycontentorder}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : InitialKeyDuration,
-            Label : '{i18n>Initialkeyduration}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Key_Content,
-            Label : '{i18n>Keycontent}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Language,
-            Label : '{i18n>Language}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : MaxKDMSDuration,
-            Label : '{i18n>Maxkdmsduration}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : NextKeyDuration,
-            Label : '{i18n>Nextkeyduration}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : OffsetEPD,
-            Label : '{i18n>Offsetepd}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayEndDate,
-            Label : '{i18n>Playenddate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayStartDate,
-            Label : '{i18n>Playstartdate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PrintFormat,
-            Label : '{i18n>Printformat}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PrintQuality,
-            Label : '{i18n>Printquality}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ProcessKDMS,
-            Label : '{i18n>Processkdms}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ProcessScreeningKDMS,
-            Label : '{i18n>Processscreeningkdms}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ReleaseHold,
-            Label : '{i18n>Releasehold}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : RequestedQuantityISOUnit,
-            Label : '{i18n>Requestedquantityisounit}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ScreeningIndicator,
-            Label : '{i18n>Screeningindicator}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ShipmentIndicator,
-            Label : '{i18n>Shipmentindicator}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ShipPriority,
-            Label : '{i18n>Shippriority}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SoundID,
-            Label : '{i18n>Soundid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : StudioHoldOverRule,
-            Label : '{i18n>Studioholdoverrule}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SubtitleType,
-            Label : '{i18n>Shippingtype}',
-        },
-    ],
-    UI.Facets : [
-        {
-            $Type : 'UI.ReferenceFacet',
-            Label : '{i18n>ItemDetails}',
-            ID : 'i18nItemDetails',
-            Target : '@UI.FieldGroup#i18nItemDetails',
-        },
-    ],
-    UI.FieldGroup #i18nItemDetails : {
-        $Type : 'UI.FieldGroupType',
-        Data : [
-            {
-                $Type : 'UI.DataField',
-                Value : SalesOrder,
-                Label : '{i18n>Salesorder}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DistroSpecPackageID,
-                Label : '{i18n>Distrospecpackageid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DistroSpecPackageName,
-                Label : '{i18n>Distrospecpackagename}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : AuditoriumType,
-                Label : '{i18n>Auditoriumtype}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : BranchID,
-                Label : '{i18n>Branchid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DepotID,
-                Label : '{i18n>Depotid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : FilmStock,
-                Label : '{i18n>Filmstock}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Key_Content,
-                Label : '{i18n>Keycontent}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Language,
-                Label : '{i18n>Language}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Plant,
-                Label : '{i18n>Plant}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayEndDate,
-                Label : '{i18n>Playenddate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayStartDate,
-                Label : '{i18n>Playstartdate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PrintFormat,
-                Label : '{i18n>Printformat}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PrintQuality,
-                Label : '{i18n>Printquality}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Product,
-                Label : '{i18n>Product}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : LongText,
-                Label : '{i18n>Longtext}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ProductGroup,
-                Label : '{i18n>Productgroup}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ReleaseHold,
-                Label : '{i18n>Releasehold}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : RequestedQuantity,
-                Label : '{i18n>Requestedquantity}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : RequestedQuantityISOUnit,
-                Label : '{i18n>Requestedquantityisounit}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ScreeningIndicator,
-                Label : '{i18n>Screeningindicator}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ShipmentIndicator,
-                Label : '{i18n>Shipmentindicator}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ShippingPoint,
-                Label : '{i18n>Shippingpoint}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ShippingType_ID,
-                Label : '{i18n>Shippingtype}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ShipPriority,
-                Label : '{i18n>Shippriority}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : SoundID,
-                Label : '{i18n>Soundid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : SubtitleType,
-                Label : '{i18n>Subtitletype}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : CPLUUID,
-                Label : '{i18n>Cpluuid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : CTT,
-                Label : '{i18n>CTT}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PricingReferenceMaterial,
-                Label : '{i18n>Pricereferncematerialproduct}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : AggregateKey,
-                Label : '{i18n>Aggregatekey}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : InferKeyContentOrder,
-                Label : '{i18n>Inferkeycontentorder}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : InitialKeyDuration,
-                Label : '{i18n>Initialkeyduration}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : KeyStartTime,
-                Label : '{i18n>Keystarttime}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : KeyEndTime,
-                Label : '{i18n>Keyendtime}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : StartDate,
-                Label : '{i18n>Startdate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : StartTime,
-                Label : '{i18n>Starttime}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : EndDate,
-                Label : '{i18n>Enddate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : EndTime,
-                Label : '{i18n>Endtime}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : MaxKDMSDuration,
-                Label : '{i18n>Maxkdmsduration}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : NextKeyDuration,
-                Label : '{i18n>Nextkeyduration}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : OffsetEPD,
-                Label : '{i18n>Offsetepd}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ProcessKDMS,
-                Label : '{i18n>Processkdms}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ProcessScreeningKDMS,
-                Label : '{i18n>Processscreeningkdms}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : StudioHoldOverRule,
-                Label : '{i18n>Studioholdoverrule}',
-            },
-        ],
-    },
-    UI.HeaderInfo : {
-        TypeName : '{i18n>SalesOrderItem}',
-        TypeNamePlural : '',
-        Title : {
-            $Type : 'UI.DataField',
-            Value : SalesOrderItem,
-        },
-    },
+    // UI.LineItem #i18nItem : [
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : SalesOrderItem,
+    //         Label : '{i18n>Salesorderitem}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : Product,
+    //         Label : '{i18n>Product}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : LongText,
+    //         Label : '{i18n>Longtext}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ProductGroup,
+    //         Label : '{i18n>Productgroup}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : RequestedQuantity,
+    //         Label : '{i18n>Requestedquantity}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : Plant,
+    //         Label : '{i18n>Plant}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ShippingPoint,
+    //         Label : '{i18n>Shippingpoint}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ShippingType_ID,
+    //         Label : '{i18n>Shippingtype}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : CPLUUID,
+    //         Label : '{i18n>Cpluuid}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : CTT,
+    //         Label : '{i18n>CTT}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : PricingReferenceMaterial,
+    //         Label : '{i18n>Pricereferncematerialproduct}',
+    //         ![@UI.Importance] : #High,
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : AggregateKey,
+    //         Label : '{i18n>Aggregatekey}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : AuditoriumType,
+    //         Label : '{i18n>Auditoriumtype}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : BranchID,
+    //         Label : '{i18n>Branchid}'
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : DepotID,
+    //         Label : '{i18n>Depotid}'
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : FilmStock,
+    //         Label : '{i18n>Filmstock}'
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : InferKeyContentOrder,
+    //         Label : '{i18n>Inferkeycontentorder}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : InitialKeyDuration,
+    //         Label : '{i18n>Initialkeyduration}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : Key_Content,
+    //         Label : '{i18n>Keycontent}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : Language,
+    //         Label : '{i18n>Language}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : MaxKDMSDuration,
+    //         Label : '{i18n>Maxkdmsduration}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : NextKeyDuration,
+    //         Label : '{i18n>Nextkeyduration}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : OffsetEPD,
+    //         Label : '{i18n>Offsetepd}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : PlayEndDate,
+    //         Label : '{i18n>Playenddate}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : PlayStartDate,
+    //         Label : '{i18n>Playstartdate}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : PrintFormat,
+    //         Label : '{i18n>Printformat}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : PrintQuality,
+    //         Label : '{i18n>Printquality}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ProcessKDMS,
+    //         Label : '{i18n>Processkdms}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ProcessScreeningKDMS,
+    //         Label : '{i18n>Processscreeningkdms}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ReleaseHold,
+    //         Label : '{i18n>Releasehold}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : RequestedQuantityISOUnit,
+    //         Label : '{i18n>Requestedquantityisounit}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ScreeningIndicator,
+    //         Label : '{i18n>Screeningindicator}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ShipmentIndicator,
+    //         Label : '{i18n>Shipmentindicator}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : ShipPriority,
+    //         Label : '{i18n>Shippriority}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : SoundID,
+    //         Label : '{i18n>Soundid}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : StudioHoldOverRule,
+    //         Label : '{i18n>Studioholdoverrule}',
+    //     },
+    //     {
+    //         $Type : 'UI.DataField',
+    //         Value : SubtitleType,
+    //         Label : '{i18n>Shippingtype}',
+    //     },
+    // ],
+    // UI.Facets : [
+    //     {
+    //         $Type : 'UI.ReferenceFacet',
+    //         Label : '{i18n>ItemDetails}',
+    //         ID : 'i18nItemDetails',
+    //         Target : '@UI.FieldGroup#i18nItemDetails',
+    //     },
+    // ],
+    // UI.FieldGroup #i18nItemDetails : {
+    //     $Type : 'UI.FieldGroupType',
+    //     Data : [
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : SalesOrder,
+    //             Label : '{i18n>Salesorder}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : DistroSpecPackageID,
+    //             Label : '{i18n>Distrospecpackageid}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : DistroSpecPackageName,
+    //             Label : '{i18n>Distrospecpackagename}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : AuditoriumType,
+    //             Label : '{i18n>Auditoriumtype}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : BranchID,
+    //             Label : '{i18n>Branchid}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : DepotID,
+    //             Label : '{i18n>Depotid}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : FilmStock,
+    //             Label : '{i18n>Filmstock}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : Key_Content,
+    //             Label : '{i18n>Keycontent}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : Language,
+    //             Label : '{i18n>Language}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : Plant,
+    //             Label : '{i18n>Plant}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : PlayEndDate,
+    //             Label : '{i18n>Playenddate}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : PlayStartDate,
+    //             Label : '{i18n>Playstartdate}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : PrintFormat,
+    //             Label : '{i18n>Printformat}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : PrintQuality,
+    //             Label : '{i18n>Printquality}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : Product,
+    //             Label : '{i18n>Product}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : LongText,
+    //             Label : '{i18n>Longtext}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ProductGroup,
+    //             Label : '{i18n>Productgroup}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ReleaseHold,
+    //             Label : '{i18n>Releasehold}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : RequestedQuantity,
+    //             Label : '{i18n>Requestedquantity}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : RequestedQuantityISOUnit,
+    //             Label : '{i18n>Requestedquantityisounit}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ScreeningIndicator,
+    //             Label : '{i18n>Screeningindicator}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ShipmentIndicator,
+    //             Label : '{i18n>Shipmentindicator}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ShippingPoint,
+    //             Label : '{i18n>Shippingpoint}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ShippingType_ID,
+    //             Label : '{i18n>Shippingtype}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ShipPriority,
+    //             Label : '{i18n>Shippriority}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : SoundID,
+    //             Label : '{i18n>Soundid}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : SubtitleType,
+    //             Label : '{i18n>Subtitletype}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : CPLUUID,
+    //             Label : '{i18n>Cpluuid}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : CTT,
+    //             Label : '{i18n>CTT}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : PricingReferenceMaterial,
+    //             Label : '{i18n>Pricereferncematerialproduct}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : AggregateKey,
+    //             Label : '{i18n>Aggregatekey}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : InferKeyContentOrder,
+    //             Label : '{i18n>Inferkeycontentorder}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : InitialKeyDuration,
+    //             Label : '{i18n>Initialkeyduration}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : KeyStartTime,
+    //             Label : '{i18n>Keystarttime}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : KeyEndTime,
+    //             Label : '{i18n>Keyendtime}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : StartDate,
+    //             Label : '{i18n>Startdate}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : StartTime,
+    //             Label : '{i18n>Starttime}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : EndDate,
+    //             Label : '{i18n>Enddate}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : EndTime,
+    //             Label : '{i18n>Endtime}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : MaxKDMSDuration,
+    //             Label : '{i18n>Maxkdmsduration}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : NextKeyDuration,
+    //             Label : '{i18n>Nextkeyduration}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : OffsetEPD,
+    //             Label : '{i18n>Offsetepd}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ProcessKDMS,
+    //             Label : '{i18n>Processkdms}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : ProcessScreeningKDMS,
+    //             Label : '{i18n>Processscreeningkdms}',
+    //         },
+    //         {
+    //             $Type : 'UI.DataField',
+    //             Value : StudioHoldOverRule,
+    //             Label : '{i18n>Studioholdoverrule}',
+    //         },
+    //     ],
+    // },
+    // UI.HeaderInfo : {
+    //     TypeName : '{i18n>SalesOrderItem}',
+    //     TypeNamePlural : '',
+    //     Title : {
+    //         $Type : 'UI.DataField',
+    //         Value : SalesOrderItem,
+    //     },
+    // },
 );
 
 annotate service.BookingSalesorderPartner with @(
