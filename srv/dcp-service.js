@@ -88,23 +88,34 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     element.Origin_OriginID = "S";
-                    if (!element.hasOwnProperty('SourceSystem')) {
-                        error.Message = bundle.getText(`reqField`, ['Source System'])
+
+                    var sValidationError = "";
+                    if (!element.SourceSystem){
+                        sValidationError = "Source System is mandatory\n";
                     }
-                    else if (!element.hasOwnProperty('BookingID')) {
-                        error.Message = bundle.getText(`reqField`, ['Booking ID'])
+                    if (!element.BookingID){
+                        sValidationError = sValidationError + "BookingID is mandatory.\n";
                     }
-                    else if (!element.hasOwnProperty('Studio')) {
-                        error.Message = bundle.getText(`reqField`, ['Studio'])
+                    if (!element.Studio){
+                        sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
-                    else if (!element.hasOwnProperty('Title')) {
-                        error.Message = bundle.getText(`reqField`, ['Title'])
+                    if (!element.Title){
+                        sValidationError = sValidationError + "Title is mandatory.\n";
                     }
-                    else if (!element.hasOwnProperty('RequestedDelivDate')) {
-                        error.Message = bundle.getText(`reqField`, ['RequestedDelivDate'])
+                    if (!element.RequestedDelivDate){
+                        sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
                     }
-                    else if (!element.hasOwnProperty('OrderType')) {
-                        error.Message = bundle.getText(`reqField`, ['OrderType'])
+                    if (!element.OrderType){
+                        sValidationError = sValidationError + "OrderType is mandatory.\n";
+                    }
+                    if (!element.PlayStartDate){
+                        sValidationError = sValidationError + "Play Start Date is mandatory.\n";
+                    }
+                    if (!element.PlayEndDate){
+                        sValidationError = sValidationError + "Play End Date is mandatory.\n";
+                    }
+                    if(sValidationError){
+                        return req.reject(400, sValidationError);
                     }
                     else {
                         aBookingFeeds.push(element)

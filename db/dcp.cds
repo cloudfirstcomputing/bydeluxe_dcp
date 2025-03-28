@@ -135,9 +135,9 @@ entity StudioFeed : cuid, managed {
     BookerName         : String;
     RequestId          : String;
     OrderID            : String;
-    PlayStartDate      : Date;
-    PlayStartTime      : Time;
-    PlayEndDate        : Date;
+    PlayStartDate      : Date @mandatory;
+    PlayStartTime      : Time ;
+    PlayEndDate        : Date @mandatory;
     PlayEndTime        : Time;
     KeyDeliveryOnDate  : Date;
     KeyStartDate       : Date;
@@ -177,8 +177,9 @@ entity StudioFeed : cuid, managed {
 
     to_Item: Composition of many BookingSalesorderItem
                                       on $self.SalesOrder = to_Item.SalesOrder    @readonly;
+    @readonly
     to_Partner                : Composition of many BookingSalesorderPartner
-                                      on $self.SalesOrder = to_Partner.SalesOrder @readonly;                                      
+                                      on $self.SalesOrder = to_Partner.SalesOrder;                                      
 }
 
 entity Origin {

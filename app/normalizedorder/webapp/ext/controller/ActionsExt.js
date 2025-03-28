@@ -723,7 +723,7 @@ sap.ui.define([
                                 BusyIndicator.hide();
 
                             }, function (oErr) {
-                                var errorCode = uploadFailed + " " + oErr.error.message;
+                                var errorCode = uploadFailed + "\n" + oErr.error.message;
                                 MessageBox.error(errorCode, {
                                     title: uploadErrorTitle,
                                     actions: MessageBox.Action.OK,
