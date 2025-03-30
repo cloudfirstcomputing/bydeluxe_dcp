@@ -679,7 +679,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                     }
-                }                          
+                                         
             }
             var bPostingSuccess = false, sSalesOrder = "";
             if (sErrorMessage) {
@@ -757,6 +757,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
                 await updateItemTextForSalesOrder(req, "Z009", oPackage.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData);
                 await updateItemTextForSalesOrder(req, "Z010", oPackage.PackageName, oResponseStatus, oSalesOrderItem, oContentData);
+                await updateItemTextForSalesOrder(req, "Z011", distroSpecData.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
                 Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
 
                 oContentData.to_Item[i].ShippingType_ID = oSalesOrderItem.ShippingType;
@@ -774,13 +775,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oContentData.to_Item[i]["StudioHoldOverRule"] = oStudioKeyData.StudioHoldOverRule;
                 oContentData.to_Item[i]["SalesTerritory"] = oStudioKeyData.SalesTerritory_SalesDistrict;
 
-                // oContentData.to_Item[i]["StartDate"] = sStartDate;
-                // oContentData.to_Item[i]["StartTime"] = sStartTime;
-                // oContentData.to_Item[i]["EndDate"] = sEndDate;
-                // oContentData.to_Item[i]["EndTime"] = sEndTime;
-
                 delete oContentData.to_Item[i].ShippingType;
             } //ITERATING ITEM END
+            var sStudio = oStudioKeyData?.Studio_BusinessPartner;
+            if(sStudio){               
+                var oBupa = await buspatx.run(SELECT.one.columns(['BusinessPartnerFullName']).from(BusinessPartner).where({ BusinessPartner: sStudio }));
+                var StudioName = oBupa?.BusinessPartnerFullName;
+                if(StudioName){ //RULE 9.8
+                    await updateItemTextForSalesOrder(req, "Z011", StudioName, oResponseStatus, oSalesOrderItem, oContentData);
+                }
+            }
             oContentData._Partner = [];
             for (var part in oSalesOrder.to_Partner) {
                 Object.assign(oContentData._Partner, oSalesOrder.to_Partner);
@@ -813,8 +817,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo ;
             });                   
             return oPackage;
-        };
-        
+        };       
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
             return s4h_bp_Txn.run(req.query);
         });
