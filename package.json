@@ -307,6 +307,15 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "Distrospec_SRV": {
+        "kind": "odata",
+        "model": "srv/external/Distrospec_SRV",
+        "credentials": {
+          "path": "/odata/v4/distribution",
+          "destination": "bydeluxe_Dest",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

@@ -34,7 +34,7 @@ service BookingOrderService {
     entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
     entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
     entity S4H_BusinessPartnerapi as projection on api.BusinessPartners;
-    entity S4H_BusinessPartnerAddress as projection on S4_BuisnessPartner.A_BPContactToAddress;
+    entity S4H_BusinessPartnerAddress as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
     entity S4H_Country as projection on api.Country{        
         
         @Common.ValueList: {
@@ -77,6 +77,7 @@ service BookingOrderService {
     entity BookingSalesOrder as projection on db.BookingSalesOrder;
     entity BookingSalesorderItem as projection on db.BookingSalesorderItem;
     entity CplList_Local as projection on distService.CplList;
+    entity DCPMaterialMapping as projection on distService.DCPMaterialMapping;
     action test(bookingIDs: array of String) returns String;
     
     entity BookingStatus as projection on db.BookingStatus;

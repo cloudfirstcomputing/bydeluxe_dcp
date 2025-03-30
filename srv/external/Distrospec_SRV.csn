@@ -1,0 +1,8416 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.7.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "Distrospec_SRV.DistributionDcp": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ProjectID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ProjectType": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "AssetMapID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AssetMapIDDescription": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "AnnotationText": {
+     "type": "cds.LargeString"
+    },
+    "ExternalReference": {
+     "type": "cds.LargeString"
+    },
+    "VolumeName": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "AssetMapFileSize": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "Title": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "KrakenTitleID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "VersionDescription": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "CreatedinSAP": {
+     "type": "cds.Boolean",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "DCP": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "EDeliveryApacTitleId": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "EDeliveryNoramTitleId": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "KencastID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "MaxCPLDuration": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "StartOfCredit": {
+     "type": "cds.LargeString"
+    },
+    "StartOfCrawl": {
+     "type": "cds.LargeString"
+    },
+    "DcpFormats": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "Resolution": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AspectRatio": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "PictureFormats": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AudioFormats": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AnyAtmos": {
+     "type": "cds.Integer"
+    },
+    "AnyCCAP": {
+     "type": "cds.Integer"
+    },
+    "AnyOCAP": {
+     "type": "cds.Integer"
+    },
+    "AnyHI": {
+     "type": "cds.Integer"
+    },
+    "AnyVI": {
+     "type": "cds.Integer"
+    },
+    "AnySLV": {
+     "type": "cds.Integer"
+    },
+    "PublishDaysBeforePlaydate": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SatelliteDistributionStartDate": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SatelliteDistributionEndDate": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "_Items": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.DistributionDcp__Items",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false
+  },
+  "Distrospec_SRV.DistributionDcpVH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ProjectID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Project",
+     "@Common.Text": {
+      "=": "AssetMapIDDescription"
+     },
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ProjectType": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "AssetMapID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AssetMapIDDescription": {
+     "type": "cds.String",
+     "length": 80,
+     "@Common.Label": "Description"
+    },
+    "AnnotationText": {
+     "type": "cds.LargeString"
+    },
+    "ExternalReference": {
+     "type": "cds.LargeString"
+    },
+    "VolumeName": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "AssetMapFileSize": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "Title": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "KrakenTitleID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "VersionDescription": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "CreatedinSAP": {
+     "type": "cds.Boolean",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "DCP": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "EDeliveryApacTitleId": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "EDeliveryNoramTitleId": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "KencastID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "MaxCPLDuration": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "StartOfCredit": {
+     "type": "cds.LargeString"
+    },
+    "StartOfCrawl": {
+     "type": "cds.LargeString"
+    },
+    "DcpFormats": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "Resolution": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AspectRatio": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "PictureFormats": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AudioFormats": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AnyAtmos": {
+     "type": "cds.Integer"
+    },
+    "AnyCCAP": {
+     "type": "cds.Integer"
+    },
+    "AnyOCAP": {
+     "type": "cds.Integer"
+    },
+    "AnyHI": {
+     "type": "cds.Integer"
+    },
+    "AnyVI": {
+     "type": "cds.Integer"
+    },
+    "AnySLV": {
+     "type": "cds.Integer"
+    },
+    "PublishDaysBeforePlaydate": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SatelliteDistributionStartDate": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SatelliteDistributionEndDate": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "_Items": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.DistributionDcpVH__Items",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    }
+   }
+  },
+  "Distrospec_SRV.CplList": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "DCP": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true
+    },
+    "LinkedCPLUUID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "CPL",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "LinkedCTT": {
+     "type": "cds.String",
+     "length": 80,
+     "@Common.Label": "CTT",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ProjectID": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "Download": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Download"
+    },
+    "Email": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Email"
+    }
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "LinkedCPLUUID"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "LinkedCTT"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Download"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Email"
+     }
+    }
+   ],
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.CustomerGroup": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "CustomerGroup": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.Label": "Customer Group"
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Common.Label": "Description",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Plants": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true
+    },
+    "PlantName": {
+     "type": "cds.String",
+     "length": 30
+    },
+    "CompanyCode": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "CompanyCodeName": {
+     "type": "cds.String",
+     "length": 25
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.ShippingType": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ShippingType": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.Label": "Shipping Type"
+    },
+    "ShippingTypeName": {
+     "type": "cds.String",
+     "length": 20,
+     "@Common.Label": "Shipping Type Name"
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.ProductGroup": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "MaterialGroup": {
+     "key": true,
+     "type": "cds.String",
+     "length": 9,
+     "notNull": true
+    },
+    "AuthorizationGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.ProductGroup1": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "AdditionalMaterialGroup1": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.Label": "Material Group"
+    },
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true
+    },
+    "AdditionalMaterialGroup1Name": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Material Group Desc."
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.StorageLocations": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true
+    },
+    "StorageLocation": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true
+    },
+    "StorageLocationName": {
+     "type": "cds.String",
+     "length": 16
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.SalesOrganizations": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SalesOrganization": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true
+    },
+    "SalesOrganizationCurrency": {
+     "type": "cds.String",
+     "length": 5
+    },
+    "CompanyCode": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "IntercompanyBillingCustomer": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.DistributionChannels": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "DistributionChannel": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Country": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Country": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true
+    },
+    "CountryCurrency": {
+     "type": "cds.String",
+     "length": 5
+    },
+    "IndexBasedCurrency": {
+     "type": "cds.String",
+     "length": 5
+    },
+    "HardCurrency": {
+     "type": "cds.String",
+     "length": 5
+    },
+    "TaxCalculationProcedure": {
+     "type": "cds.String",
+     "length": 6
+    },
+    "CountryThreeLetterISOCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "CountryThreeDigitISOCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Regions": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Country": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true
+    },
+    "Region": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true
+    },
+    "ProvincialTaxCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "RegionName": {
+     "type": "cds.String",
+     "length": 20
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Studios": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BusinessPartner": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Studio"
+    },
+    "BusinessPartnerType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "BusinessPartnerFullName": {
+     "type": "cds.String",
+     "length": 81,
+     "@Common.Label": "Studio Name"
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Theaters": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BusinessPartner": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Theater"
+    },
+    "BusinessPartnerType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "BusinessPartnerFullName": {
+     "type": "cds.String",
+     "length": 81,
+     "@Common.Label": "Theater Name"
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.ShippingConditions": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ShippingCondition": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.Label": "Shipping Condition"
+    },
+    "ShippingConditionName": {
+     "type": "cds.String",
+     "length": 20,
+     "@Common.Label": "Description"
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Products": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "CrossPlantStatus": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "CrossPlantStatusValidityDate": {
+     "type": "cds.Date"
+    },
+    "CreationDate": {
+     "type": "cds.Date"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDate": {
+     "type": "cds.Date"
+    },
+    "LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "IsMarkedForDeletion": {
+     "type": "cds.Boolean"
+    },
+    "ProductOldID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "GrossWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "PurchaseOrderQuantityUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "SourceOfSupply": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "WeightUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "NetWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "CountryOfOrigin": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "CompetitorID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ProductGroup": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "BaseUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ItemCategoryGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProductHierarchy": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "Division": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "VarblPurOrdUnitIsActive": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "VolumeUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "MaterialVolume": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "ANPCode": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "Brand": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProcurementRule": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date"
+    },
+    "LowLevelCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ProdNoInGenProdInPrepackProd": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialIdentifierAssgmtProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SizeOrDimensionText": {
+     "type": "cds.String",
+     "length": 32
+    },
+    "IndustryStandardName": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "ProductStandardID": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "InternationalArticleNumberCat": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "ProductIsConfigurable": {
+     "type": "cds.Boolean"
+    },
+    "IsBatchManagementRequired": {
+     "type": "cds.Boolean"
+    },
+    "ExternalProductGroup": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "CrossPlantConfigurableProduct": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialNoExplicitnessLevel": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ProductManufacturerNumber": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ManufacturerNumber": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ManufacturerPartProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "QltyMgmtInProcmtIsActive": {
+     "type": "cds.Boolean"
+    },
+    "IndustrySector": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ChangeNumber": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "MaterialRevisionLevel": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "HandlingIndicator": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseProductGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseStorageCondition": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "StandardHandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SerialNumberProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AdjustmentProfile": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "PreferredUnitOfMeasure": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "IsPilferable": {
+     "type": "cds.Boolean"
+    },
+    "IsRelevantForHzdsSubstances": {
+     "type": "cds.Boolean"
+    },
+    "QuarantinePeriod": {
+     "type": "cds.Decimal",
+     "precision": 3,
+     "scale": 0
+    },
+    "TimeUnitForQuarantinePeriod": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "QualityInspectionGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AuthorizationGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "DocumentIsCreatedByCAD": {
+     "type": "cds.Boolean"
+    },
+    "HandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "HasVariableTareWeight": {
+     "type": "cds.Boolean"
+    },
+    "MaximumPackagingLength": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingWidth": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingHeight": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "UnitForMaxPackagingDimensions": {
+     "type": "cds.String",
+     "length": 3
+    }
+   }
+  },
+  "Distrospec_SRV.DCPProducts": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Product"
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "CrossPlantStatus": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "CrossPlantStatusValidityDate": {
+     "type": "cds.Date"
+    },
+    "CreationDate": {
+     "type": "cds.Date"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDate": {
+     "type": "cds.Date"
+    },
+    "LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "IsMarkedForDeletion": {
+     "type": "cds.Boolean"
+    },
+    "ProductOldID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "GrossWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "PurchaseOrderQuantityUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "SourceOfSupply": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "WeightUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "NetWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "CountryOfOrigin": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "CompetitorID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ProductGroup": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "BaseUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ItemCategoryGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProductHierarchy": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "Division": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "VarblPurOrdUnitIsActive": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "VolumeUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "MaterialVolume": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "ANPCode": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "Brand": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProcurementRule": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date"
+    },
+    "LowLevelCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ProdNoInGenProdInPrepackProd": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialIdentifierAssgmtProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SizeOrDimensionText": {
+     "type": "cds.String",
+     "length": 32
+    },
+    "IndustryStandardName": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "ProductStandardID": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "InternationalArticleNumberCat": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "ProductIsConfigurable": {
+     "type": "cds.Boolean"
+    },
+    "IsBatchManagementRequired": {
+     "type": "cds.Boolean"
+    },
+    "ExternalProductGroup": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "CrossPlantConfigurableProduct": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialNoExplicitnessLevel": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ProductManufacturerNumber": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ManufacturerNumber": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ManufacturerPartProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "QltyMgmtInProcmtIsActive": {
+     "type": "cds.Boolean"
+    },
+    "IndustrySector": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ChangeNumber": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "MaterialRevisionLevel": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "HandlingIndicator": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseProductGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseStorageCondition": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "StandardHandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SerialNumberProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AdjustmentProfile": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "PreferredUnitOfMeasure": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "IsPilferable": {
+     "type": "cds.Boolean"
+    },
+    "IsRelevantForHzdsSubstances": {
+     "type": "cds.Boolean"
+    },
+    "QuarantinePeriod": {
+     "type": "cds.Decimal",
+     "precision": 3,
+     "scale": 0
+    },
+    "TimeUnitForQuarantinePeriod": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "QualityInspectionGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AuthorizationGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "DocumentIsCreatedByCAD": {
+     "type": "cds.Boolean"
+    },
+    "HandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "HasVariableTareWeight": {
+     "type": "cds.Boolean"
+    },
+    "MaximumPackagingLength": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingWidth": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingHeight": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "UnitForMaxPackagingDimensions": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.DCPMapProducts": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "CrossPlantStatus": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "CrossPlantStatusValidityDate": {
+     "type": "cds.Date"
+    },
+    "CreationDate": {
+     "type": "cds.Date"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDate": {
+     "type": "cds.Date"
+    },
+    "LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "IsMarkedForDeletion": {
+     "type": "cds.Boolean"
+    },
+    "ProductOldID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "GrossWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "PurchaseOrderQuantityUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "SourceOfSupply": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "WeightUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "NetWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "CountryOfOrigin": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "CompetitorID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ProductGroup": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "BaseUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ItemCategoryGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProductHierarchy": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "Division": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "VarblPurOrdUnitIsActive": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "VolumeUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "MaterialVolume": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "ANPCode": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "Brand": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProcurementRule": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date"
+    },
+    "LowLevelCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ProdNoInGenProdInPrepackProd": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialIdentifierAssgmtProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SizeOrDimensionText": {
+     "type": "cds.String",
+     "length": 32
+    },
+    "IndustryStandardName": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "ProductStandardID": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "InternationalArticleNumberCat": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "ProductIsConfigurable": {
+     "type": "cds.Boolean"
+    },
+    "IsBatchManagementRequired": {
+     "type": "cds.Boolean"
+    },
+    "ExternalProductGroup": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "CrossPlantConfigurableProduct": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialNoExplicitnessLevel": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ProductManufacturerNumber": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ManufacturerNumber": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ManufacturerPartProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "QltyMgmtInProcmtIsActive": {
+     "type": "cds.Boolean"
+    },
+    "IndustrySector": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ChangeNumber": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "MaterialRevisionLevel": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "HandlingIndicator": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseProductGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseStorageCondition": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "StandardHandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SerialNumberProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AdjustmentProfile": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "PreferredUnitOfMeasure": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "IsPilferable": {
+     "type": "cds.Boolean"
+    },
+    "IsRelevantForHzdsSubstances": {
+     "type": "cds.Boolean"
+    },
+    "QuarantinePeriod": {
+     "type": "cds.Decimal",
+     "precision": 3,
+     "scale": 0
+    },
+    "TimeUnitForQuarantinePeriod": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "QualityInspectionGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AuthorizationGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "DocumentIsCreatedByCAD": {
+     "type": "cds.Boolean"
+    },
+    "HandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "HasVariableTareWeight": {
+     "type": "cds.Boolean"
+    },
+    "MaximumPackagingLength": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingWidth": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingHeight": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "UnitForMaxPackagingDimensions": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Titles": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Title"
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "CrossPlantStatus": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "CrossPlantStatusValidityDate": {
+     "type": "cds.Date"
+    },
+    "CreationDate": {
+     "type": "cds.Date"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDate": {
+     "type": "cds.Date"
+    },
+    "LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "LastChangeDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "IsMarkedForDeletion": {
+     "type": "cds.Boolean"
+    },
+    "ProductOldID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "GrossWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "PurchaseOrderQuantityUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "SourceOfSupply": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "WeightUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "NetWeight": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "CountryOfOrigin": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "CompetitorID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ProductGroup": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "BaseUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ItemCategoryGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProductHierarchy": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "Division": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "VarblPurOrdUnitIsActive": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "VolumeUnit": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "MaterialVolume": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3
+    },
+    "ANPCode": {
+     "type": "cds.String",
+     "length": 9
+    },
+    "Brand": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "ProcurementRule": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date"
+    },
+    "LowLevelCode": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "ProdNoInGenProdInPrepackProd": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialIdentifierAssgmtProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SizeOrDimensionText": {
+     "type": "cds.String",
+     "length": 32
+    },
+    "IndustryStandardName": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "ProductStandardID": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "InternationalArticleNumberCat": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "ProductIsConfigurable": {
+     "type": "cds.Boolean"
+    },
+    "IsBatchManagementRequired": {
+     "type": "cds.Boolean"
+    },
+    "ExternalProductGroup": {
+     "type": "cds.String",
+     "length": 18
+    },
+    "CrossPlantConfigurableProduct": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SerialNoExplicitnessLevel": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ProductManufacturerNumber": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ManufacturerNumber": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "ManufacturerPartProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "QltyMgmtInProcmtIsActive": {
+     "type": "cds.Boolean"
+    },
+    "IndustrySector": {
+     "type": "cds.String",
+     "length": 1
+    },
+    "ChangeNumber": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "MaterialRevisionLevel": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "HandlingIndicator": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseProductGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "WarehouseStorageCondition": {
+     "type": "cds.String",
+     "length": 2
+    },
+    "StandardHandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "SerialNumberProfile": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AdjustmentProfile": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "PreferredUnitOfMeasure": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "IsPilferable": {
+     "type": "cds.Boolean"
+    },
+    "IsRelevantForHzdsSubstances": {
+     "type": "cds.Boolean"
+    },
+    "QuarantinePeriod": {
+     "type": "cds.Decimal",
+     "precision": 3,
+     "scale": 0
+    },
+    "TimeUnitForQuarantinePeriod": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "QualityInspectionGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "AuthorizationGroup": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "DocumentIsCreatedByCAD": {
+     "type": "cds.Boolean"
+    },
+    "HandlingUnitType": {
+     "type": "cds.String",
+     "length": 4
+    },
+    "HasVariableTareWeight": {
+     "type": "cds.Boolean"
+    },
+    "MaximumPackagingLength": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingWidth": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "MaximumPackagingHeight": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3
+    },
+    "UnitForMaxPackagingDimensions": {
+     "type": "cds.String",
+     "length": 3
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Common.Label": "Description",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.SalesDistricts": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SalesDistrict": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Common.Label": "Sales District"
+    },
+    "Name": {
+     "type": "cds.LargeString",
+     "@Common.Label": "Description",
+     "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.DeliveryPriority": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "DeliveryPriority": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.Label": "Delivery Priority"
+    },
+    "DeliveryPriorityDesc": {
+     "type": "cds.String",
+     "length": 30
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.CPLDetail": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "CPLUUID": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "CPL",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "CplList",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "CPLUUID"
+        },
+        "ValueListProperty": "LinkedCPLUUID"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "LinkedCTT"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "DCP"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "CTT": {
+     "type": "cds.LargeString",
+     "@Common.Label": "CTT",
+     "@Core.Computed": true
+    },
+    "Email": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Email",
+     "@Core.Computed": true
+    },
+    "Download": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Download",
+     "@Core.Computed": true
+    },
+    "to_KeyPackage": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.KeyPackage",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_KeyPackage_PackageUUID": {
+     "type": "cds.UUID"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.CPLDetail",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "setDownloadEmail": {
+     "kind": "action",
+     "params": {
+      "_it": {
+       "type": "$self"
+      },
+      "download": {
+       "type": "cds.Boolean"
+      },
+      "email": {
+       "type": "cds.Boolean"
+      }
+     },
+     "@Common.SideEffects": {
+      "$Type": "Common.SideEffectsType",
+      "TargetProperties": [
+       "_it/*"
+      ]
+     }
+    },
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.CPLDetail"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "CPLUUID"
+     }
+    },
+    "TypeName": "CPL Detail",
+    "TypeNamePlural": "CPL Details"
+   },
+   "@UI.FieldGroup#_CPLDetail": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "CPLUUID"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "CTT"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Email"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Download"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_CPLDetail",
+     "Label": "CPL Detail",
+     "Target": {
+      "=": "@UI.FieldGroup#_CPLDetail"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataFieldForAction",
+     "Action": "Distrospec_SRV.setDownloadEmail",
+     "Label": "Set Download/Email",
+     "@UI.Hidden": {
+      "$Ne": [
+       {
+        "$Path": "IsActiveEntity"
+       },
+       true
+      ]
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "CPLUUID"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "CTT"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Email"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Download"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.DistroSpec": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "createdAt": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Immutable": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Created On"
+    },
+    "createdBy": {
+     "type": "cds.String",
+     "length": 255,
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Immutable": true,
+     "@Core.Computed": true,
+     "doc": "User's unique ID",
+     "@Common.Label": "Created By"
+    },
+    "modifiedAt": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Changed On"
+    },
+    "modifiedBy": {
+     "type": "cds.String",
+     "length": 255,
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Computed": true,
+     "doc": "User's unique ID",
+     "@Common.Label": "Changed By"
+    },
+    "DistroSpecUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "DistroSpecID": {
+     "type": "cds.Integer",
+     "default": {
+      "val": 0
+     },
+     "@Common.Label": "Distribution Specification ID",
+     "@Core.Computed": true
+    },
+    "Name": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Name",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "Title": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Titles",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Title"
+    },
+    "Title_Product": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Title",
+     "@Common.Text": {
+      "=": "Title/Name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Titles",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Title_Product"
+        },
+        "ValueListProperty": "Product"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ReleaseDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Release Date"
+    },
+    "RepertoryDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Repertory Date"
+    },
+    "DeliverySequence1": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 1"
+    },
+    "DeliverySequence1_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 1",
+     "@Common.Text": {
+      "=": "DeliverySequence1/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence1_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence2": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 2"
+    },
+    "DeliverySequence2_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 2",
+     "@Common.Text": {
+      "=": "DeliverySequence2/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence2_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence3": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 3"
+    },
+    "DeliverySequence3_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 3",
+     "@Common.Text": {
+      "=": "DeliverySequence3/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence3_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence4": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 4"
+    },
+    "DeliverySequence4_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 4",
+     "@Common.Text": {
+      "=": "DeliverySequence4/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence4_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence5": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 5"
+    },
+    "DeliverySequence5_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 5",
+     "@Common.Text": {
+      "=": "DeliverySequence5/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence5_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence6": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 6"
+    },
+    "DeliverySequence6_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 6",
+     "@Common.Text": {
+      "=": "DeliverySequence6/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence6_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence7": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 7"
+    },
+    "DeliverySequence7_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 7",
+     "@Common.Text": {
+      "=": "DeliverySequence7/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence7_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence8": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 8"
+    },
+    "DeliverySequence8_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 8",
+     "@Common.Text": {
+      "=": "DeliverySequence8/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence8_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence9": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 9"
+    },
+    "DeliverySequence9_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 9",
+     "@Common.Text": {
+      "=": "DeliverySequence9/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence9_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliverySequence10": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Sequence 10"
+    },
+    "DeliverySequence10_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Sequence 10",
+     "@Common.Text": {
+      "=": "DeliverySequence10/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliverySequence10_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "FieldControl": {
+     "type": "cds.Integer",
+     "@odata.Type": "Edm.Byte",
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Inapplicable",
+       "Value": 0
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "ReadOnly",
+       "Value": 1
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Optional",
+       "Value": 3
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Mandatory",
+       "Value": 7
+      }
+     ]
+    },
+    "to_Package": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.Package",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_KeyPackage": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.KeyPackage",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_StudioKey": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.StudioKey",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DistroSpec"
+     }
+    },
+    "draftActivate": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DistroSpec"
+     }
+    },
+    "draftEdit": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "PreserveChanges": {
+       "type": "cds.Boolean"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DistroSpec"
+     }
+    }
+   },
+   "@Common.SemanticKey": [
+    "DistroSpecID"
+   ],
+   "@UI.SelectionPresentationVariant#table": {
+    "$Type": "UI.SelectionPresentationVariantType",
+    "PresentationVariant": {
+     "$Type": "UI.PresentationVariantType",
+     "Visualizations": [
+      "@UI.LineItem"
+     ],
+     "SortOrder": [
+      {
+       "$Type": "Common.SortOrderType",
+       "Property": {
+        "=": "DistroSpecID"
+       },
+       "Descending": false
+      }
+     ]
+    },
+    "SelectionVariant": {
+     "$Type": "UI.SelectionVariantType",
+     "SelectOptions": []
+    }
+   },
+   "@UI.SelectionFields": [
+    "Title_Product"
+   ],
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Title_Product"
+     }
+    },
+    "TypeName": "Distribution Specification",
+    "TypeNamePlural": "Distribution Specifications"
+   },
+   "@UI.FieldGroup#General": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistroSpecID"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Name"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Title_Product"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ReleaseDate"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "RepertoryDate"
+      }
+     }
+    ]
+   },
+   "@UI.FieldGroup#Delivery": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence1_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence2_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence3_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence4_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence5_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence6_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence7_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence8_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence9_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliverySequence10_ShippingCondition"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.CollectionFacet",
+     "ID": "PackageCollection",
+     "Label": "Package Information",
+     "Facets": [
+      {
+       "$Type": "UI.ReferenceFacet",
+       "ID": "General",
+       "Label": "General Information",
+       "Target": {
+        "=": "@UI.FieldGroup#General"
+       }
+      }
+     ]
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "Delivery",
+     "Label": "Delivery Sequences",
+     "Target": {
+      "=": "@UI.FieldGroup#Delivery"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "StudioKey",
+     "Label": "Studio Parameters",
+     "Target": {
+      "=": "to_StudioKey.@UI.LineItem"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "Package",
+     "Label": "Content Package",
+     "Target": {
+      "=": "to_Package.@UI.LineItem"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "KeyPackage",
+     "Label": "Key Package",
+     "Target": {
+      "=": "to_KeyPackage.@UI.LineItem"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistroSpecID"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Name"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Title_Product"
+     }
+    }
+   ],
+   "@Common.DraftRoot": {
+    "$Type": "Common.DraftRootType",
+    "ActivationAction": "Distrospec_SRV.draftActivate",
+    "EditAction": "Distrospec_SRV.draftEdit",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.DCPMaterials": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "DCPMaterialUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "DCPMaterialNumber": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPProducts",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "DCP Material"
+    },
+    "DCPMaterialNumber_Product": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "DCP Material",
+     "@Common.Text": {
+      "=": "DCPMaterialNumber/Name"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "DCPProducts",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DCPMaterialNumber_Product"
+        },
+        "ValueListProperty": "Product"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "PublishDateOffset": {
+     "type": "cds.Integer",
+     "@Common.Label": "PublishDateOffset",
+     "@Validation.Minimum": 0,
+     "@Validation.Maximum": 999
+    },
+    "CTT": {
+     "type": "cds.LargeString",
+     "@Common.Label": "CTT",
+     "@UI.MultiLineText": true,
+     "@Core.Computed": true
+    },
+    "CPLUUID": {
+     "type": "cds.LargeString",
+     "@Common.Label": "CPL",
+     "@UI.MultiLineText": true,
+     "@Core.Computed": true
+    },
+    "RevealPublishGlobalDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Reveal Publish Global Date"
+    },
+    "RevealPublishGlobalTime": {
+     "type": "cds.Time",
+     "@Common.Label": "Reveal Publish Global Time"
+    },
+    "RevealPublishLocalDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Reveal Publish Local Date"
+    },
+    "RevealPublishLocalTime": {
+     "type": "cds.Time",
+     "@Common.Label": "Reveal Publish Local Time"
+    },
+    "SatelliteFlightStartDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Satellite Flight Start Date"
+    },
+    "SatelliteFlightStartTime": {
+     "type": "cds.Time",
+     "@Common.Label": "Satellite Flight Start Time"
+    },
+    "SatelliteFlightEndDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Satellite Flight End Date"
+    },
+    "SatelliteFlightEndTime": {
+     "type": "cds.Time",
+     "@Common.Label": "Satellite Flight End Time"
+    },
+    "to_Package": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Package",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_Package_PackageUUID": {
+     "type": "cds.UUID"
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "to_DCPDetail": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.CplList",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterials",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterials"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DCPMaterialNumber_Product"
+     }
+    },
+    "TypeName": "DCP Material",
+    "TypeNamePlural": "DCP Materials"
+   },
+   "@UI.FieldGroup#_DCPMaterial": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DCPMaterialNumber_Product"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PublishDateOffset"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "RevealPublishGlobalDate"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "RevealPublishGlobalTime"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "RevealPublishLocalDate"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "RevealPublishLocalTime"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "SatelliteFlightStartDate"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "SatelliteFlightStartTime"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "SatelliteFlightEndDate"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "SatelliteFlightEndTime"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_DCPMaterial",
+     "Label": "DCP Material",
+     "Target": {
+      "=": "@UI.FieldGroup#_DCPMaterial"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "DCPDetail",
+     "Label": "DCP Detail",
+     "@UI.Hidden": {
+      "$Ne": [
+       {
+        "$Path": "IsActiveEntity"
+       },
+       true
+      ]
+     },
+     "Target": {
+      "=": "to_DCPDetail.@UI.LineItem"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DCPMaterialNumber_Product"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.Parameters": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability1": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability2": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability3": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability4": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability5": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability6": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability7": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability8": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability9": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.PlayBackCapability10": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SAP_UUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "SAP_CreatedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_CreatedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_CreatedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "SAP_LastChangedDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "SAP_LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12
+    },
+    "SAP_LastChangedByUser_Text": {
+     "type": "cds.String",
+     "length": 80
+    },
+    "ID": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "VariableName": {
+     "type": "cds.String",
+     "length": 50
+    },
+    "VariableValue": {
+     "type": "cds.String",
+     "length": 50
+    }
+   }
+  },
+  "Distrospec_SRV.DCPMaterialConfig": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@UI.Hidden": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "createdAt": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Immutable": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Created On"
+    },
+    "createdBy": {
+     "type": "cds.String",
+     "length": 255,
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Immutable": true,
+     "@Core.Computed": true,
+     "doc": "User's unique ID",
+     "@Common.Label": "Created By"
+    },
+    "modifiedAt": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Changed On"
+    },
+    "modifiedBy": {
+     "type": "cds.String",
+     "length": 255,
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Computed": true,
+     "doc": "User's unique ID",
+     "@Common.Label": "Changed By"
+    },
+    "ProjectID": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistributionDcp",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Project"
+    },
+    "ProjectID_ProjectID": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Project",
+     "@Common.Text": {
+      "=": "ProjectID/AssetMapIDDescription"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "DistributionDcpVH",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "ProjectID_ProjectID"
+        },
+        "ValueListProperty": "ProjectID"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "AssetMapIDDescription"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "to_SalesDelivery": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Label": "Product Sales Org"
+    },
+    "to_Plant": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.DCPMaterialConfig_to_Plant",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Label": "Plant"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterialConfig",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialConfig"
+     }
+    },
+    "draftActivate": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialConfig"
+     }
+    },
+    "draftEdit": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "PreserveChanges": {
+       "type": "cds.Boolean"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialConfig"
+     }
+    },
+    "createDCPMaterial": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.Products"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProjectID_ProjectID"
+     }
+    },
+    "TypeName": "DCP Material",
+    "TypeNamePlural": "DCP Materials"
+   },
+   "@UI.FieldGroup#GeneratedGroup": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ProjectID_ProjectID"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "GeneratedFacet1",
+     "Label": "General Information",
+     "Target": {
+      "=": "@UI.FieldGroup#GeneratedGroup"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "to_Plant",
+     "Target": {
+      "=": "to_Plant.@UI.LineItem"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "to_SalesDelivery",
+     "Target": {
+      "=": "to_SalesDelivery.@UI.LineItem"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProjectID_ProjectID"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    }
+   ],
+   "@Common.DraftRoot": {
+    "$Type": "Common.DraftRootType",
+    "ActivationAction": "Distrospec_SRV.draftActivate",
+    "EditAction": "Distrospec_SRV.draftEdit",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.DCPMaterialMapping": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "createdAt": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Immutable": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Created On"
+    },
+    "createdBy": {
+     "type": "cds.String",
+     "length": 255,
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Immutable": true,
+     "@Core.Computed": true,
+     "doc": "User's unique ID",
+     "@Common.Label": "Created By"
+    },
+    "modifiedAt": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Changed On"
+    },
+    "modifiedBy": {
+     "type": "cds.String",
+     "length": 255,
+     "@UI.HiddenFilter": true,
+     "@UI.ExcludeFromNavigationContext": true,
+     "@Core.Computed": true,
+     "doc": "User's unique ID",
+     "@Common.Label": "Changed By"
+    },
+    "ShippingType": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Shipping Type",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingType",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "ShippingType"
+        },
+        "ValueListProperty": "ShippingType"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingTypeName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "Variable": {
+     "type": "cds.String",
+     "length": 200,
+     "@Common.Label": "Variable"
+    },
+    "Material": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Material",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "DCPMapProducts",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Material"
+        },
+        "ValueListProperty": "Product"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "MaterialGroup": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.Label": "Material Group",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ProductGroup1",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "MaterialGroup"
+        },
+        "ValueListProperty": "AdditionalMaterialGroup1"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "AdditionalMaterialGroup1Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterialMapping",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialMapping"
+     }
+    },
+    "draftActivate": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialMapping"
+     }
+    },
+    "draftEdit": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "PreserveChanges": {
+       "type": "cds.Boolean"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialMapping"
+     }
+    }
+   },
+   "@UI.SelectionFields": [
+    "Material",
+    "MaterialGroup",
+    "ShippingType"
+   ],
+   "@UI.FieldGroup#GeneratedGroup": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ShippingType"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Variable"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Material"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "MaterialGroup"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "GeneratedFacet1",
+     "Label": "General Information",
+     "Target": {
+      "=": "@UI.FieldGroup#GeneratedGroup"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ShippingType"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Variable"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Material"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "MaterialGroup"
+     }
+    }
+   ],
+   "@Common.DraftRoot": {
+    "$Type": "Common.DraftRootType",
+    "ActivationAction": "Distrospec_SRV.draftActivate",
+    "EditAction": "Distrospec_SRV.draftEdit",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.Package": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "PackageUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "PackageName": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Package Name",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "Priority": {
+     "type": "cds.Integer",
+     "@Common.Label": "Package Priority",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     },
+     "@Validation.Minimum": 0,
+     "@Validation.Maximum": 99
+    },
+    "IncludeKey": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Include Key"
+    },
+    "ValidFrom": {
+     "type": "cds.Date",
+     "@Common.Label": "Valid From",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ValidTo": {
+     "type": "cds.Date",
+     "@Common.Label": "Valid To",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "DeliveryMethod1": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 1"
+    },
+    "DeliveryMethod1_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 1",
+     "@Common.Text": {
+      "=": "DeliveryMethod1/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod1_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod2": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 2"
+    },
+    "DeliveryMethod2_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 2",
+     "@Common.Text": {
+      "=": "DeliveryMethod2/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod2_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod3": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 3"
+    },
+    "DeliveryMethod3_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 3",
+     "@Common.Text": {
+      "=": "DeliveryMethod3/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod3_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod4": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 4"
+    },
+    "DeliveryMethod4_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 4",
+     "@Common.Text": {
+      "=": "DeliveryMethod4/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod4_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod5": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 5"
+    },
+    "DeliveryMethod5_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 5",
+     "@Common.Text": {
+      "=": "DeliveryMethod5/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod5_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod6": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 6"
+    },
+    "DeliveryMethod6_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 6",
+     "@Common.Text": {
+      "=": "DeliveryMethod6/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod6_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod7": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 7"
+    },
+    "DeliveryMethod7_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 7",
+     "@Common.Text": {
+      "=": "DeliveryMethod7/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod7_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod8": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 8"
+    },
+    "DeliveryMethod8_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 8",
+     "@Common.Text": {
+      "=": "DeliveryMethod8/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod8_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod9": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 9"
+    },
+    "DeliveryMethod9_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 9",
+     "@Common.Text": {
+      "=": "DeliveryMethod9/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod9_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DeliveryMethod10": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.ShippingConditions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Delivery Method 10"
+    },
+    "DeliveryMethod10_ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Delivery Method 10",
+     "@Common.Text": {
+      "=": "DeliveryMethod10/ShippingConditionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "ShippingConditions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DeliveryMethod10_ShippingCondition"
+        },
+        "ValueListProperty": "ShippingCondition"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "ShippingConditionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "to_DCPMaterial": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.DCPMaterials",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_DistRestriction": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.DistRestrictions",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Package",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.Package"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "PackageName"
+     }
+    },
+    "TypeName": "Content Package",
+    "TypeNamePlural": "Packages"
+   },
+   "@UI.FieldGroup#_Package": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PackageName"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Priority"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "IncludeKey"
+      }
+     }
+    ]
+   },
+   "@UI.FieldGroup#_PackageValidityDate": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ValidFrom"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ValidTo"
+      }
+     }
+    ]
+   },
+   "@UI.FieldGroup#_PackageDeliveryethod": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod1_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod2_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod3_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod4_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod5_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod6_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod7_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod8_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod9_ShippingCondition"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DeliveryMethod10_ShippingCondition"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.CollectionFacet",
+     "ID": "PackageCollection",
+     "Label": "Package Information",
+     "Facets": [
+      {
+       "$Type": "UI.ReferenceFacet",
+       "ID": "_Package",
+       "Label": "General Information",
+       "Target": {
+        "=": "@UI.FieldGroup#_Package"
+       }
+      },
+      {
+       "$Type": "UI.ReferenceFacet",
+       "ID": "_PackageValidityDate",
+       "Label": "Package Validity Date",
+       "Target": {
+        "=": "@UI.FieldGroup#_PackageValidityDate"
+       }
+      }
+     ]
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_PackageDeliveryethod",
+     "Label": "Delivery Preferences",
+     "Target": {
+      "=": "@UI.FieldGroup#_PackageDeliveryethod"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_PackageFilter",
+     "Label": "Distribution Restriction",
+     "Target": {
+      "=": "to_DistRestriction.@UI.LineItem"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "DCPMaterial",
+     "Label": "DCP Material",
+     "Target": {
+      "=": "to_DCPMaterial.@UI.LineItem"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "PackageName"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Priority"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "IncludeKey"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.KeyPackage": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "PackageUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "PackageName": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Package Name",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "Priority": {
+     "type": "cds.Integer",
+     "@Common.Label": "Package Priority",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     },
+     "@Validation.Minimum": 0,
+     "@Validation.Maximum": 99
+    },
+    "ValidFrom": {
+     "type": "cds.Date",
+     "@Common.Label": "Valid From",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ValidTo": {
+     "type": "cds.Date",
+     "@Common.Label": "Valid To",
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "IncludeContent": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Include Content"
+    },
+    "to_CPLDetail": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.CPLDetail",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_DistRestriction": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.KeyDistRestrictions",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.KeyPackage",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.KeyPackage"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "PackageName"
+     }
+    },
+    "TypeName": "Key Package",
+    "TypeNamePlural": "Key Packages"
+   },
+   "@UI.FieldGroup#_KeyPackage": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PackageName"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Priority"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "IncludeContent"
+      }
+     }
+    ]
+   },
+   "@UI.FieldGroup#_KeyPackageValidityDate": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ValidFrom"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ValidTo"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.CollectionFacet",
+     "ID": "KeyPackageCollection",
+     "Label": "Package Information",
+     "Facets": [
+      {
+       "$Type": "UI.ReferenceFacet",
+       "ID": "_KeyPackage",
+       "Label": "General Information",
+       "Target": {
+        "=": "@UI.FieldGroup#_KeyPackage"
+       }
+      },
+      {
+       "$Type": "UI.ReferenceFacet",
+       "ID": "_KeyPackageValidityDate",
+       "Label": "Package Validity Date",
+       "Target": {
+        "=": "@UI.FieldGroup#_KeyPackageValidityDate"
+       }
+      }
+     ]
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_KeyPackageFilter",
+     "Label": "Distribution Restriction",
+     "Target": {
+      "=": "to_DistRestriction.@UI.LineItem"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "CPLDetail",
+     "Label": "CPL Detail",
+     "Target": {
+      "=": "to_CPLDetail.@UI.LineItem"
+     }
+    }
+   ],
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "PackageName"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Priority"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "IncludeContent"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.StudioKey": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "StudioKeyUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "Studio": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Studios",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Studio"
+    },
+    "Studio_BusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.Label": "Studio",
+     "@Common.Text": {
+      "=": "Studio/BusinessPartnerFullName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Studios",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Studio_BusinessPartner"
+        },
+        "ValueListProperty": "BusinessPartner"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "BusinessPartnerFullName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "KeyStartTime": {
+     "type": "cds.Time",
+     "@Common.Label": "Key Start Time"
+    },
+    "KeyEndTime": {
+     "type": "cds.Time",
+     "@Common.Label": "Key End Time"
+    },
+    "InitialKeyDuration": {
+     "type": "cds.Integer",
+     "@Common.Label": "Initial Key Duration (Days)"
+    },
+    "NextKeyDuration": {
+     "type": "cds.Integer",
+     "@Common.Label": "Next Key Duration (Days)"
+    },
+    "OffsetBPD": {
+     "type": "cds.Integer",
+     "@Common.Label": "Offset from BPD (Hours)"
+    },
+    "OffsetEPD": {
+     "type": "cds.Integer",
+     "@Common.Label": "Offset from EPD (Hours)"
+    },
+    "AggregateKey": {
+     "type": "cds.Boolean",
+     "@Common.Label": "Aggregate Key"
+    },
+    "ProcessKDMS": {
+     "type": "cds.Integer",
+     "@Common.Label": "Process KDMS Within (Hours)"
+    },
+    "ProcessScreeningKDMS": {
+     "type": "cds.Integer",
+     "@Common.Label": "Process Screening KDMS Within (Hours)"
+    },
+    "MaxKDMSDuration": {
+     "type": "cds.Integer",
+     "@Common.Label": "Max KDMS Duration (Days)"
+    },
+    "StudioHoldOverRule": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.Label": "Studio Hold Over Rule"
+    },
+    "SalesTerritory": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.SalesDistricts",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Sales Territory"
+    },
+    "SalesTerritory_SalesDistrict": {
+     "type": "cds.String",
+     "length": 6,
+     "@Common.Label": "Sales Territory",
+     "@Common.Text": {
+      "=": "SalesTerritory/Name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "SalesDistricts",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "SalesTerritory_SalesDistrict"
+        },
+        "ValueListProperty": "SalesDistrict"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "to_CustomerRef": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.CustomerRef",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.StudioKey",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.StudioKey"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Studio_BusinessPartner"
+     }
+    },
+    "TypeName": "Studio",
+    "TypeNamePlural": "Studio"
+   },
+   "@UI.FieldGroup#StudioKey": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Studio_BusinessPartner"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "KeyStartTime"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "KeyEndTime"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "InitialKeyDuration"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "NextKeyDuration"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "OffsetBPD"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "OffsetEPD"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "AggregateKey"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ProcessKDMS"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ProcessScreeningKDMS"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "MaxKDMSDuration"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "StudioHoldOverRule"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "SalesTerritory_SalesDistrict"
+      }
+     }
+    ]
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Studio_BusinessPartner"
+     }
+    }
+   ],
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "StudioKey1",
+     "Label": "Studio Parameters",
+     "Target": {
+      "=": "@UI.FieldGroup#StudioKey"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "CustRef",
+     "Label": "Customer Reference",
+     "Target": {
+      "=": "to_CustomerRef.@UI.LineItem"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.DistRestrictions": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "Theater": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Theaters",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Theater"
+    },
+    "Theater_BusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.Label": "Theater",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Theaters",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Theater_BusinessPartner"
+        },
+        "ValueListProperty": "BusinessPartner"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "BusinessPartnerFullName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "Circuit": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.CustomerGroup",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Circuit"
+    },
+    "Circuit_CustomerGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Circuit",
+     "@Common.Text": {
+      "=": "Circuit/Name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "CustomerGroup",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Circuit_CustomerGroup"
+        },
+        "ValueListProperty": "CustomerGroup"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DistributionFilterRegion": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Regions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Region"
+    },
+    "DistributionFilterRegion_Country": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Region",
+     "@Common.Text": {
+      "=": "DistributionFilterRegion/RegionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Regions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterIn",
+        "LocalDataProperty": {
+         "=": "DistributionFilterCountry_code"
+        },
+        "ValueListProperty": "Country"
+       },
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterRegion_Region"
+        },
+        "ValueListProperty": "Region"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "RegionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DistributionFilterRegion_Region": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Region",
+     "@Common.Text": {
+      "=": "DistributionFilterRegion/RegionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Regions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterIn",
+        "LocalDataProperty": {
+         "=": "DistributionFilterCountry_code"
+        },
+        "ValueListProperty": "Country"
+       },
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterRegion_Region"
+        },
+        "ValueListProperty": "Region"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "RegionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DistributionFilterCountry": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Countries",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Country",
+     "doc": "Country/region code as specified by ISO 3166-1"
+    },
+    "DistributionFilterCountry_code": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Country",
+     "@Common.Text": {
+      "=": "DistributionFilterCountry/name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "Label": "Country",
+      "CollectionPath": "Countries",
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterCountry_code"
+        },
+        "ValueListProperty": "code"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "name"
+       }
+      ]
+     },
+     "doc": "Country/region code as specified by ISO 3166-1"
+    },
+    "DistributionFilterCity": {
+     "type": "cds.LargeString",
+     "@Common.Label": "City"
+    },
+    "DistributionFilterPostal": {
+     "type": "cds.LargeString",
+     "@Common.Label": "Postal"
+    },
+    "DistributionFilterLanguage": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Languages",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Language",
+     "doc": "Language code as specified by ISO 639-1"
+    },
+    "DistributionFilterLanguage_code": {
+     "type": "cds.String",
+     "length": 14,
+     "@Common.Label": "Language",
+     "@Common.Text": {
+      "=": "DistributionFilterLanguage/name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "Label": "Language",
+      "CollectionPath": "Languages",
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterLanguage_code"
+        },
+        "ValueListProperty": "code"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "name"
+       }
+      ]
+     },
+     "doc": "Language code as specified by ISO 639-1"
+    },
+    "PlayBackCapability1": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 1",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability1",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability1"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability2": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 2",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability2",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability2"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability3": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 3",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability3",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability3"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability4": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 4",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability4",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability4"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability5": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 5",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability5",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability5"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability6": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 6",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability6",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability6"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability7": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 7",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability7",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability7"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability8": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 8",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability8",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability8"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability9": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 9",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability9",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability9"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability10": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 10",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability10",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability10"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "TrailMixSub": {
+     "type": "cds.String",
+     "length": 1,
+     "@Common.Label": "Trail Mix Subscription",
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Monthly",
+       "Value": "M"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Weekly",
+       "Value": "W"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "NA",
+       "Value": "0"
+      }
+     ]
+    },
+    "OrderType": {
+     "type": "cds.String",
+     "length": 1,
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Content",
+       "Value": "C"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Keys",
+       "Value": "K"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Both",
+       "Value": "B"
+      }
+     ]
+    },
+    "to_Package": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Package",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_Package_PackageUUID": {
+     "type": "cds.UUID"
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistRestrictions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DistRestrictions"
+     }
+    }
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterCountry_code"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterRegion_Region"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterCity"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterPostal"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Circuit_CustomerGroup"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Theater_BusinessPartner"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterLanguage_code"
+     }
+    }
+   ],
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "TypeName": "Distribution Restriction",
+    "TypeNamePlural": "Distribution Restrictions"
+   },
+   "@UI.FieldGroup#_PlayBackCapabilities": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability1"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability2"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability3"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability4"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability5"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability6"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability7"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability8"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability9"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability10"
+      }
+     }
+    ]
+   },
+   "@UI.FieldGroup#_DistRestriction": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterCountry_code"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterRegion_Region"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterCity"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterPostal"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Circuit_CustomerGroup"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Theater_BusinessPartner"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterLanguage_code"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "TrailMixSub"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_DistRest",
+     "Label": "Distribution Restriction",
+     "Target": {
+      "=": "@UI.FieldGroup#_DistRestriction"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_DistRestPlay",
+     "Label": "PlayBack Capabilities",
+     "Target": {
+      "=": "@UI.FieldGroup#_PlayBackCapabilities"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.KeyDistRestrictions": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "Theater": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Theaters",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Theater"
+    },
+    "Theater_BusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.Label": "Theater",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Theaters",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Theater_BusinessPartner"
+        },
+        "ValueListProperty": "BusinessPartner"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "BusinessPartnerFullName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "Circuit": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.CustomerGroup",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Circuit"
+    },
+    "Circuit_CustomerGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "@Common.Label": "Circuit",
+     "@Common.Text": {
+      "=": "Circuit/Name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "CustomerGroup",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Circuit_CustomerGroup"
+        },
+        "ValueListProperty": "CustomerGroup"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DistributionFilterRegion": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Regions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Region"
+    },
+    "DistributionFilterRegion_Country": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Region",
+     "@Common.Text": {
+      "=": "DistributionFilterRegion/RegionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Regions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterIn",
+        "LocalDataProperty": {
+         "=": "DistributionFilterCountry_code"
+        },
+        "ValueListProperty": "Country"
+       },
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterRegion_Region"
+        },
+        "ValueListProperty": "Region"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "RegionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DistributionFilterRegion_Region": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Region",
+     "@Common.Text": {
+      "=": "DistributionFilterRegion/RegionName"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Regions",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterIn",
+        "LocalDataProperty": {
+         "=": "DistributionFilterCountry_code"
+        },
+        "ValueListProperty": "Country"
+       },
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterRegion_Region"
+        },
+        "ValueListProperty": "Region"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "RegionName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "DistributionFilterCountry": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Countries",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Country",
+     "doc": "Country/region code as specified by ISO 3166-1"
+    },
+    "DistributionFilterCountry_code": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Country",
+     "@Common.Text": {
+      "=": "DistributionFilterCountry/name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "Label": "Country",
+      "CollectionPath": "Countries",
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterCountry_code"
+        },
+        "ValueListProperty": "code"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "name"
+       }
+      ]
+     },
+     "doc": "Country/region code as specified by ISO 3166-1"
+    },
+    "DistributionFilterCity": {
+     "type": "cds.LargeString",
+     "@Common.Label": "City"
+    },
+    "DistributionFilterPostal": {
+     "type": "cds.LargeString",
+     "@Common.Label": "Postal"
+    },
+    "DistributionFilterLanguage": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Languages",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Language",
+     "doc": "Language code as specified by ISO 639-1"
+    },
+    "DistributionFilterLanguage_code": {
+     "type": "cds.String",
+     "length": 14,
+     "@Common.Label": "Language",
+     "@Common.Text": {
+      "=": "DistributionFilterLanguage/name"
+     },
+     "@Common.Text.@UI.TextArrangement": {
+      "#": "TextOnly"
+     },
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "Label": "Language",
+      "CollectionPath": "Languages",
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "DistributionFilterLanguage_code"
+        },
+        "ValueListProperty": "code"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "name"
+       }
+      ]
+     },
+     "doc": "Language code as specified by ISO 639-1"
+    },
+    "PlayBackCapability1": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 1",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability1",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability1"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability2": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 2",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability2",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability2"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability3": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 3",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability3",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability3"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability4": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 4",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability4",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability4"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability5": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 5",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability5",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability5"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability6": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 6",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability6",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability6"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability7": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 7",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability7",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability7"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability8": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 8",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability8",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability8"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability9": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 9",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability9",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability9"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "PlayBackCapability10": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "PlayBack Capability 10",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "PlayBackCapability10",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "PlayBackCapability10"
+        },
+        "ValueListProperty": "VariableValue"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false
+    },
+    "TrailMixSub": {
+     "type": "cds.String",
+     "length": 1,
+     "@Common.Label": "Trail Mix Subscription",
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Monthly",
+       "Value": "M"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Weekly",
+       "Value": "W"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "NA",
+       "Value": "0"
+      }
+     ]
+    },
+    "OrderType": {
+     "type": "cds.String",
+     "length": 1,
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Content",
+       "Value": "C"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Keys",
+       "Value": "K"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Both",
+       "Value": "B"
+      }
+     ]
+    },
+    "to_KeyPackage": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.KeyPackage",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_KeyPackage_PackageUUID": {
+     "type": "cds.UUID"
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.KeyDistRestrictions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.KeyDistRestrictions"
+     }
+    }
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterCountry_code"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterRegion_Region"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterCity"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterPostal"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Circuit_CustomerGroup"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Theater_BusinessPartner"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "DistributionFilterLanguage_code"
+     }
+    }
+   ],
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "TypeName": "Distribution Restriction",
+    "TypeNamePlural": "Distribution Restrictions"
+   },
+   "@UI.FieldGroup#_PlayBackCapabilities": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability1"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability2"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability3"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability4"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability5"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability6"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability7"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability8"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability9"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "PlayBackCapability10"
+      }
+     }
+    ]
+   },
+   "@UI.FieldGroup#_DistRestriction": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterCountry_code"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterRegion_Region"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterCity"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterPostal"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Circuit_CustomerGroup"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Theater_BusinessPartner"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "DistributionFilterLanguage_code"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "TrailMixSub"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_KeyDistRest",
+     "Label": "Distribution Restriction",
+     "Target": {
+      "=": "@UI.FieldGroup#_DistRestriction"
+     }
+    },
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "_KeyDistRestPlay",
+     "Label": "PlayBack Capabilities",
+     "Target": {
+      "=": "@UI.FieldGroup#_PlayBackCapabilities"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.CustomerRef": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "CustomerReference": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Customer Reference"
+    },
+    "to_StudioKey": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.StudioKey",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_StudioKey_StudioKeyUUID": {
+     "type": "cds.UUID"
+    },
+    "to_DistroSpec": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistroSpec",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "to_DistroSpec_DistroSpecUUID": {
+     "type": "cds.UUID"
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.CustomerRef",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.CustomerRef"
+     }
+    }
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "CustomerReference"
+     }
+    }
+   ],
+   "@UI.FieldGroup#CustomerReference": {
+    "$Type": "UI.FieldGroupType",
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "CustomerReference"
+      }
+     }
+    ]
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "CustomerReference"
+     }
+    },
+    "TypeName": "Customer Reference",
+    "TypeNamePlural": "Customer Reference"
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "CustRef1",
+     "Target": {
+      "=": "@UI.FieldGroup#CustomerReference"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.Countries": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "name": {
+     "type": "cds.String",
+     "length": 255,
+     "@Common.Label": "Name"
+    },
+    "descr": {
+     "type": "cds.String",
+     "length": 1000,
+     "@Common.Label": "Description"
+    },
+    "code": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.Text": {
+      "=": "name"
+     },
+     "@Common.Label": "Country/Region Code"
+    },
+    "texts": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.Countries_texts",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "localized": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Countries_texts",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@UI.Identification": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "name"
+     }
+    }
+   ]
+  },
+  "Distrospec_SRV.Languages": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "name": {
+     "type": "cds.String",
+     "length": 255,
+     "@Common.Label": "Name"
+    },
+    "descr": {
+     "type": "cds.String",
+     "length": 1000,
+     "@Common.Label": "Description"
+    },
+    "code": {
+     "key": true,
+     "type": "cds.String",
+     "length": 14,
+     "notNull": true,
+     "@Common.Text": {
+      "=": "name"
+     },
+     "@Common.Label": "Language Code"
+    },
+    "texts": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.Languages_texts",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "localized": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Languages_texts",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@UI.Identification": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "name"
+     }
+    }
+   ]
+  },
+  "Distrospec_SRV.DraftAdministrativeData": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "DraftUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@UI.Hidden": true,
+     "@Common.Label": "Draft (Technical ID)",
+     "@Core.ComputedDefaultValue": true
+    },
+    "CreationDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@Common.Label": "Draft Created On"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 256,
+     "@Common.Label": "Draft Created By"
+    },
+    "DraftIsCreatedByMe": {
+     "type": "cds.Boolean",
+     "@UI.Hidden": true,
+     "@Common.Label": "Draft Created By Me"
+    },
+    "LastChangeDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@Common.Label": "Draft Last Changed On"
+    },
+    "LastChangedByUser": {
+     "type": "cds.String",
+     "length": 256,
+     "@Common.Label": "Draft Last Changed By"
+    },
+    "InProcessByUser": {
+     "type": "cds.String",
+     "length": 256,
+     "@Common.Label": "Draft In Process By"
+    },
+    "DraftIsProcessedByMe": {
+     "type": "cds.Boolean",
+     "@UI.Hidden": true,
+     "@Common.Label": "Draft In Process By Me"
+    }
+   },
+   "@Common.Label": "Draft Administrative Data"
+  },
+  "Distrospec_SRV.DistributionDcp__Items": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "up_": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistributionDcp",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "up__ProjectID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true
+    },
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "DcpProjectID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ProjectTypeID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AssetMapUUID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ContentKind": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "DCDMFlag": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "LinkedDCP": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "LinkedCPLUUID": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "LinkedCTT": {
+     "type": "cds.String",
+     "length": 80,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "VersionDescription": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "DistributionSize": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "RunTime": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "StartOfCredits": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "StartOfCrawl": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "DKDMS3location": {
+     "type": "cds.LargeString"
+    },
+    "CPLS3location": {
+     "type": "cds.LargeString"
+    },
+    "AtmosFlag": {
+     "type": "cds.Integer"
+    },
+    "ClosedCaptionsFlag": {
+     "type": "cds.Integer"
+    },
+    "SignLanguageVideoFlag": {
+     "type": "cds.Integer"
+    },
+    "DcpFormatType": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SoundFormat": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "DcpResolution": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "AspectRatio": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "PictureFormat": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "KDMFlag": {
+     "type": "cds.Boolean"
+    },
+    "Email": {
+     "type": "cds.Boolean"
+    },
+    "Download": {
+     "type": "cds.Boolean"
+    }
+   }
+  },
+  "Distrospec_SRV.DistributionDcpVH__Items": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "up_": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistributionDcpVH",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "up__ProjectID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true
+    },
+    "ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true,
+     "@Core.ComputedDefaultValue": true
+    },
+    "DcpProjectID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ProjectTypeID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "AssetMapUUID": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "ContentKind": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "DCDMFlag": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "LinkedDCP": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "LinkedCPLUUID": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "LinkedCTT": {
+     "type": "cds.String",
+     "length": 80,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "VersionDescription": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "DistributionSize": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "RunTime": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "StartOfCredits": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "StartOfCrawl": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "DKDMS3location": {
+     "type": "cds.LargeString"
+    },
+    "CPLS3location": {
+     "type": "cds.LargeString"
+    },
+    "AtmosFlag": {
+     "type": "cds.Integer"
+    },
+    "ClosedCaptionsFlag": {
+     "type": "cds.Integer"
+    },
+    "SignLanguageVideoFlag": {
+     "type": "cds.Integer"
+    },
+    "DcpFormatType": {
+     "type": "cds.String",
+     "length": 40
+    },
+    "SoundFormat": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "DcpResolution": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "AspectRatio": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "PictureFormat": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "KDMFlag": {
+     "type": "cds.Boolean"
+    },
+    "Email": {
+     "type": "cds.Boolean"
+    },
+    "Download": {
+     "type": "cds.Boolean"
+    }
+   }
+  },
+  "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "up_": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterialConfig",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "up__ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true
+    },
+    "ProductSalesOrg": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.SalesOrganizations",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Product Sales Org"
+    },
+    "ProductSalesOrg_SalesOrganization": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.Label": "Product Sales Org",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "SalesOrganizations",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "ProductSalesOrg_SalesOrganization"
+        },
+        "ValueListProperty": "SalesOrganization"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "ProductDistributionChnl": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DistributionChannels",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Product Distribution Chnl"
+    },
+    "ProductDistributionChnl_DistributionChannel": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.Label": "Product Distribution Chnl",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "DistributionChannels",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "ProductDistributionChnl_DistributionChannel"
+        },
+        "ValueListProperty": "DistributionChannel"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Name"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProductSalesOrg_SalesOrganization"
+     }
+    },
+    "Description": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProductDistributionChnl_DistributionChannel"
+     }
+    },
+    "TypeName": "Sales Org.",
+    "TypeNamePlural": "Sales Org."
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProductSalesOrg_SalesOrganization"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProductDistributionChnl_DistributionChannel"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "up__ID"
+     },
+     "@UI.Hidden": true
+    }
+   ],
+   "@UI.FieldGroup#SalesDeliveryMain": {
+    "$Type": "UI.FieldGroupType",
+    "Label": {},
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ProductSalesOrg_SalesOrganization"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ProductDistributionChnl_DistributionChannel"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "GeneratedFacet1",
+     "Label": "General Information",
+     "Target": {
+      "=": "@UI.FieldGroup#SalesDeliveryMain"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.DCPMaterialConfig_to_Plant": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "up_": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterialConfig",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "up__ID": {
+     "key": true,
+     "type": "cds.UUID",
+     "notNull": true
+    },
+    "Plant": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Plants",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Plant"
+    },
+    "Plant_Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.Label": "Plant",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "Plants",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "Plant_Plant"
+        },
+        "ValueListProperty": "Plant"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "PlantName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "StorageLocation": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.StorageLocations",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Storage Location"
+    },
+    "StorageLocation_Plant": {
+     "type": "cds.String",
+     "length": 4,
+     "@Common.Label": "Storage Location",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "StorageLocations",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterIn",
+        "LocalDataProperty": {
+         "=": "Plant_Plant"
+        },
+        "ValueListProperty": "Plant"
+       },
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "StorageLocation_StorageLocation"
+        },
+        "ValueListProperty": "StorageLocation"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "StorageLocationName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "StorageLocation_StorageLocation": {
+     "type": "cds.String",
+     "length": 4,
+     "@Common.Label": "Storage Location",
+     "@Common.ValueList": {
+      "$Type": "Common.ValueListType",
+      "CollectionPath": "StorageLocations",
+      "SearchSupported": false,
+      "Parameters": [
+       {
+        "$Type": "Common.ValueListParameterIn",
+        "LocalDataProperty": {
+         "=": "Plant_Plant"
+        },
+        "ValueListProperty": "Plant"
+       },
+       {
+        "$Type": "Common.ValueListParameterInOut",
+        "LocalDataProperty": {
+         "=": "StorageLocation_StorageLocation"
+        },
+        "ValueListProperty": "StorageLocation"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "StorageLocationName"
+       }
+      ]
+     },
+     "@Common.ValueListWithFixedValues": false,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     }
+    },
+    "IsActiveEntity": {
+     "key": true,
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": true
+     },
+     "@UI.Hidden": true
+    },
+    "HasActiveEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "HasDraftEntity": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "default": {
+      "val": false
+     },
+     "@UI.Hidden": true
+    },
+    "DraftAdministrativeData": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DraftAdministrativeData",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@UI.Hidden": true
+    },
+    "SiblingEntity": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.DCPMaterialConfig_to_Plant",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "actions": {
+    "draftPrepare": {
+     "kind": "action",
+     "params": {
+      "in": {
+       "type": "$self"
+      },
+      "SideEffectsQualifier": {
+       "type": "cds.LargeString"
+      }
+     },
+     "returns": {
+      "type": "Distrospec_SRV.DCPMaterialConfig_to_Plant"
+     }
+    }
+   },
+   "@UI.HeaderInfo": {
+    "$Type": "UI.HeaderInfoType",
+    "Title": {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Plant_Plant"
+     }
+    },
+    "TypeName": "Plant",
+    "TypeNamePlural": "Plants"
+   },
+   "@UI.LineItem": [
+    {
+     "$Type": "UI.DataField",
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     },
+     "Value": {
+      "=": "Plant_Plant"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "StorageLocation_StorageLocation"
+     },
+     "@HTML5.CssDefaults": {
+      "$Type": "HTML5.CssDefaultsType",
+      "width": "auto"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "up__ID"
+     },
+     "@UI.Hidden": true
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "StorageLocation_Plant"
+     },
+     "@UI.Hidden": true
+    }
+   ],
+   "@UI.FieldGroup#PlantMain": {
+    "$Type": "UI.FieldGroupType",
+    "Label": {},
+    "Data": [
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Plant_Plant"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "StorageLocation_StorageLocation"
+      }
+     }
+    ]
+   },
+   "@UI.Facets": [
+    {
+     "$Type": "UI.ReferenceFacet",
+     "ID": "GeneratedFacet1",
+     "Label": "General Information",
+     "Target": {
+      "=": "@UI.FieldGroup#PlantMain"
+     }
+    }
+   ],
+   "@Common.DraftNode": {
+    "$Type": "Common.DraftNodeType",
+    "PreparationAction": "Distrospec_SRV.draftPrepare"
+   }
+  },
+  "Distrospec_SRV.Countries_texts": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "locale": {
+     "key": true,
+     "type": "cds.String",
+     "length": 14,
+     "notNull": true,
+     "@Common.Label": "Language Code"
+    },
+    "name": {
+     "type": "cds.String",
+     "length": 255,
+     "@Common.Label": "Name"
+    },
+    "descr": {
+     "type": "cds.String",
+     "length": 1000,
+     "@Common.Label": "Description"
+    },
+    "code": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.Text": {
+      "=": "name"
+     },
+     "@Common.Label": "Country/Region Code"
+    }
+   }
+  },
+  "Distrospec_SRV.Languages_texts": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "locale": {
+     "key": true,
+     "type": "cds.String",
+     "length": 14,
+     "notNull": true,
+     "@Common.Label": "Language Code"
+    },
+    "name": {
+     "type": "cds.String",
+     "length": 255,
+     "@Common.Label": "Name"
+    },
+    "descr": {
+     "type": "cds.String",
+     "length": 1000,
+     "@Common.Label": "Description"
+    },
+    "code": {
+     "key": true,
+     "type": "cds.String",
+     "length": 14,
+     "notNull": true,
+     "@Common.Text": {
+      "=": "name"
+     },
+     "@Common.Label": "Language Code"
+    }
+   }
+  },
+  "Distrospec_SRV": {
+   "kind": "service",
+   "@cds.external": true
+  }
+ }
+}
