@@ -316,6 +316,17 @@
           "destination": "bydeluxe_Dest",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_SALESPARAMETERS_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_SALESPARAMETERS_CDS_0001",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_SALESPARAMETERS_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

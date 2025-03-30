@@ -781,7 +781,6 @@ sap.ui.define([
         handleRemediate: function (oEvent) {
             var that = this;
             var oView = this.getEditFlow().getView();
-            oView.setModel(new JSONModel({ "plantSelected": "", "shipTypeSelected": "", "salesOrder": "", "bookingID": "" }), "dialogModel");
             var oResourceBundle = oView.getModel("i18n").getResourceBundle();
             var ref = this;
             let aSelectedItems = this.editFlow.getView().byId("normalizedorder::StudioFeedList--fe::table::StudioFeed::LineItem-innerTable").getSelectedItems();
@@ -795,10 +794,11 @@ sap.ui.define([
                 return;
             }
             var oEntry = aSelectedItems[0].getBindingContext().getObject();
+            oView.setModel(new JSONModel(oEntry), "viewModel");
             if (!oEntry?.SalesOrder) {
                 MessageBox.error("Invalid Selection", {
                     title: "Error",
-                    details: "Remediation is already done for the selection",
+                    details: "Sales Order not available for the selected entry",
                     contentWidth: "auto",
                     styleClass: sResponsivePaddingClasses
                 });
@@ -814,128 +814,84 @@ sap.ui.define([
                 return;
             }
             else {
-                oView.getModel("dialogModel").setProperty("/salesOrder", oEntry?.SalesOrder)
-                oView.getModel("dialogModel").setProperty("/bookingID", oEntry?.BookingID)
-                // Code to open fragment dialog
-                if (!this._remediateDialog) {
-                    this._remediateDialog = Fragment.load({
-                        name: "normalizedorder.ext.fragments.Remediation",
-                        controller: {
+                MessageBox.confirm(oResourceBundle.getText("confirmSORemediation"), {
+                    title: oResourceBundle.getText("confirmSORemediationTitle"),
+                    actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                    emphasizedAction: MessageBox.Action.OK,
+                    onClose: function (oAction) {
+                        if (oAction === MessageBox.Action.OK) {
+                            BusyIndicator.show();
+                            var oModel = this.getModel();
+                            var oViewModel = this.getEditFlow().getView().getModel("viewModel");
+                            var oActionODataContextBinding = oModel.bindContext("/remediateSalesOrder(...)");
+                            oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/BookingID"));
+                            oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/SalesOrder"));
+                            // oActionODataContextBinding.setParameter("oInput", {
+                            //     "bookingID": oViewModel?.getProperty("/BookingID"),
+                            //     "salesOrder": oViewModel?.getProperty("/SalesOrder")
+                            // });
+                            BusyIndicator.show();
+                            oActionODataContextBinding.execute().then(
+                                function (param) {
+                                    BusyIndicator.hide();
+                                    var oActionContext = oActionODataContextBinding.getBoundContext();
 
-                            // Code to generate confirmation dialog for upload
-                            handleRefSalesorderCreation: function () {
-                                that.obj = this;
-                                MessageBox.confirm(oResourceBundle.getText("confirmSORemediation"), {
-                                    title: oResourceBundle.getText("confirmSORemediationTitle"),
-                                    actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
-                                    emphasizedAction: MessageBox.Action.OK,
-                                    onClose: function (oAction) {
-                                        if (oAction === MessageBox.Action.OK) {
+                                    if (oActionContext.getObject()?.value?.message) {
+                                        let aMessages = JSON.parse(oActionContext.getObject()?.value?.message);
+                                        if (aMessages?.length) {
+                                            let aErrors = aMessages.filter((entry) => { return entry.status === "E" });
+                                            let aWarnings = aMessages.filter((entry) => { return entry.status === "W" });
+                                            let aSuccess = aMessages.filter((entry) => { return entry.status === "S" });
 
-                                            // BusyIndicator.show();
-                                            var oModel = that.obj.getModel();
-                                            var oViewModel = that.obj.getModel("dialogModel");
-                                            var sDeliveryDate = oViewModel?.getProperty("/deliveryDateSelected")?.toISOString()?.split("T")[0];
-                                            var oActionODataContextBinding = oModel.bindContext("/remediateContentSalesOrder(...)");
-                                            // oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/bookingID"));
-                                            // oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/salesOrder"));
-                                            // oActionODataContextBinding.setParameter("plant", oViewModel?.getProperty("/plantSelected"));
-                                            // oActionODataContextBinding.setParameter("shippingType", oViewModel?.getProperty("/shipTypeSelected"));
-                                            // oActionODataContextBinding.setParameter("shippingPoint", oViewModel?.getProperty("/shipPointSelected"));
-                                            // oActionODataContextBinding.setParameter("deliveryDate", sDeliveryDate);
-                                            oActionODataContextBinding.setParameter("oInput", {
-                                                "bookingID": oViewModel?.getProperty("/bookingID"),
-                                                "salesOrder": oViewModel?.getProperty("/salesOrder"),
-                                                "plant": oViewModel?.getProperty("/plantSelected"),
-                                                "shipTypeSelected": oViewModel?.getProperty("/shipTypeSelected"),
-                                                "shipPointSelected": oViewModel?.getProperty("/shipPointSelected"),
-                                                "deliveryDate": sDeliveryDate
-                                            });
-                                            sap.ui.getCore().byId('refSalesOrderDialog').setBusy(true);
-                                            oActionODataContextBinding.execute().then(
-                                                function (param) {
-                                                    var oActionContext = oActionODataContextBinding.getBoundContext();
-
-                                                    if (oActionContext.getObject()?.value?.message) {
-                                                        let aMessages = JSON.parse(oActionContext.getObject()?.value?.message);
-                                                        if (aMessages?.length) {
-                                                            let aErrors = aMessages.filter((entry) => { return entry.status === "E" });
-                                                            let aWarnings = aMessages.filter((entry) => { return entry.status === "W" });
-                                                            let aSuccess = aMessages.filter((entry) => { return entry.status === "S" });
-
-                                                            if (aErrors?.length) {
-                                                                MessageBox.error("Action failed", {
-                                                                    title: "Error",
-                                                                    details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
-                                                                    contentWidth: "auto",
-                                                                    styleClass: sResponsivePaddingClasses
-                                                                });
-                                                            }
-                                                            else if (aWarnings?.length) {
-                                                                MessageBox.warning("Action has been completed with warning", {
-                                                                    title: "Warning",
-                                                                    details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
-                                                                    contentWidth: "auto",
-                                                                    styleClass: sResponsivePaddingClasses
-                                                                });
-                                                            }
-                                                            else if (aSuccess?.length) {
-                                                                MessageBox.success("Action has been completed successfully", {
-                                                                    title: "Success",
-                                                                    details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
-                                                                    contentWidth: "auto",
-                                                                    styleClass: sResponsivePaddingClasses
-                                                                });
-                                                            }
-                                                            else {
-                                                                MessageBox.alert("No response received", {
-                                                                    title: "Alert",
-                                                                    contentWidth: "auto",
-                                                                    styleClass: sResponsivePaddingClasses
-                                                                });
-                                                            }
-                                                        }
-                                                    }
-                                                    oModel.refresh();
-                                                    sap.ui.getCore().byId('refSalesOrderDialog').setBusy(false);
-                                                    sap.ui.getCore().byId('refSalesOrderDialog').close();
-                                                }.bind(that.obj)
-                                            ).catch(
-                                                (err, param2) => {
-                                                    MessageBox.error("Error occured", {
-                                                        title: "Error",
-                                                        details: err,
-                                                        contentWidth: "auto",
-                                                        styleClass: sResponsivePaddingClasses
-                                                    });
-                                                    sap.ui.getCore().byId('refSalesOrderDialog').setBusy(false);
-                                                }
-                                            );
-
-
+                                            if (aErrors?.length) {
+                                                MessageBox.error("Action failed", {
+                                                    title: "Error",
+                                                    details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                                    contentWidth: "auto",
+                                                    styleClass: sResponsivePaddingClasses
+                                                });
+                                            }
+                                            else if (aWarnings?.length) {
+                                                MessageBox.warning("Action has been completed with warning", {
+                                                    title: "Warning",
+                                                    details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                                    contentWidth: "auto",
+                                                    styleClass: sResponsivePaddingClasses
+                                                });
+                                            }
+                                            else if (aSuccess?.length) {
+                                                MessageBox.success("Action has been completed successfully", {
+                                                    title: "Success",
+                                                    details: JSON.stringify(aMessages.map((entry) => { return entry.message })),
+                                                    contentWidth: "auto",
+                                                    styleClass: sResponsivePaddingClasses
+                                                });
+                                            }
+                                            else {
+                                                MessageBox.alert("No response received", {
+                                                    title: "Alert",
+                                                    contentWidth: "auto",
+                                                    styleClass: sResponsivePaddingClasses
+                                                });
+                                            }
                                         }
-                                        // else if (oAction === MessageBox.Action.CANCEL) {
-
-                                        // }
                                     }
-                                });
-                            }.bind(oView),
-
-                            // Code to call CAP action and pass the file in binary format
-                            confirmRefSalesOrderCreate: function () { },
-                            onCloseBtnPress: function (oEvent) {
-                                oEvent.getSource().getParent().close();
-                            },
+                                    oModel.refresh();
+                                    BusyIndicator.hide();
+                                }
+                            ).catch(
+                                (err, param2) => {
+                                    MessageBox.error("Error occured", {
+                                        title: "Error",
+                                        details: err,
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                    BusyIndicator.hide();
+                                }
+                            );
                         }
-                    }).then(function (oDialog) {
-                        // Code to add controls to opened dialog
-                        oView.addDependent(oDialog);
-                        return oDialog;
-                    });
-                }
-                this._remediateDialog.then(function (oDialog) {
-                    // Code to open the dialog
-                    oDialog.open();
+                    }.bind(this)
                 });
             }
 

@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, ProductionOrder,
-            StudioFeed, BusinessPartner} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -25,14 +25,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_material_read = await cds.connect.to("API_MATERIAL_DOCUMENT_SRV");
         var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");        
         var distrospec_Txn = await cds.connect.to("Distrospec_SRV");
+        var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
-        var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', sErrorMessage = "";
+        var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
-        var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
-            SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
-            DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
-            Division = aConfig?.find((e) => { return e.VariableName === 'Division_SPIRITWORLD' })?.VariableValue;
+        var oSalesParameterConfig;
+        // var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
+        //     SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
+        //     DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
+        //     Division = aConfig?.find((e) => { return e.VariableName === 'Division_SPIRITWORLD' })?.VariableValue;
         this.before("SAVE", StudioFeed.drafts, async (req) => {
             var oFeed = req.data;
             oFeed.Version = 1;
@@ -148,24 +150,120 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
 
         });
+        this.on('remediateSalesOrder', async (req, res)=>{ //RULE 11
+            var oInput = req.data;
+            var sBookingID = oInput?.bookingID, sSalesOrder = oInput?.salesOrder,
+                oContentData, sMaterialGroup, aResponseStatus = [], hanaDBTable = StudioFeed;
+
+            if (sBookingID) {
+                oContentData = await SELECT.one.from(hanaDBTable).where({ BookingID: sBookingID, IsActive: "Y" });
+            }
+            else if (sSalesOrder) {
+                oContentData = SELECT.one.from(hanaDBTable).where({ SalesOrder: sSalesOrder, IsActive: "Y" });
+            }
+            else {
+                req.reject(501, "Booking ID / Sales order not available for processing");
+            }
+            if (!oContentData) {
+                req.reject(501, "Selected entry not available");
+            }
+            else if (!oContentData.SalesOrder) {
+                req.reject(501, "Please Select an entry where Sales Order is available for remediation");
+            }
+            else if (oContentData.ReferenceSDDocument) {
+                req.reject(501, "Remediation is already done for the selection");
+            }
+            var oSalesorderItem_PayLoad = {};
+            var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder }));
+            if (!aSalesOrderItem?.length) {
+                aResponseStatus.push({
+                    "message": `| No items available for remediation in Sales Order: ${sSalesOrder} |`,
+                    "status": "E"
+                });
+            }
+            else {
+                var bContentOrderPresent = false;
+                for (var i in aSalesOrderItem) {
+                    var oSalesOrderItem = aSalesOrderItem[i];
+                    if(oSalesOrderItem?.MaterialGroup === "Z003"){ //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
+                        continue;
+                    }
+                    bContentOrderPresent = true;
+                    oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
+                    oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
+                    oSalesorderItem_PayLoad["RequestedDeliveryDate"] = new Date();
+                    oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
+                    oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
+                    // oSalesorderItem_PayLoad["ShippingPoint"] = oSalesOrderItem.ShippingPoint;
+                    oSalesorderItem_PayLoad["ShippingType"] = oSalesOrderItem.ShippingType;
+                    // oSalesorderItem_PayLoad["ShippingType"] = sShipType ? sShipType : oSalesOrderItem.ShippingType;
+                    // oSalesorderItem_PayLoad["ShippingPoint"] = sShipPoint ? sShipPoint : oSalesOrderItem.ShippingPoint;
+                    oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
+                    oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
+                    oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
+
+                    // var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
+                    //         sShippingType = oShippingTypeMapping.ShippingType;
+                    await s4h_sohv2_Txn.send({
+                        method: 'POST',
+                        path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
+                        data: oSalesorderItem_PayLoad
+                    }).catch((err) => {
+                        aResponseStatus.push({
+                            "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
+                            "status": "E"
+                        });
+                    }).then(async (result) => {
+                        if (result) {
+                            await UPDATE(hanaDBTable).set({ Remediation: `${result?.SalesOrderItem}` }).where({ BookingID: oContentData.BookingID })
+                            aResponseStatus.push({
+                                "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
+                                "status": "S"
+                            });
+                        }
+                    });
+                }
+                if(!bContentOrderPresent){
+                    aResponseStatus.push({
+                        "message": `| Remediation not possible for Key Order ${sSalesOrder} |`,
+                        "status": "E"
+                    });
+                }
+            }
+            req.reply({
+                code: 201,
+                message: JSON.stringify(aResponseStatus)
+            });
+        });
         const createStudioFeeds = async (req, aData) => {
             var recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], 
             failedEntries = [], sErrorMessage = "", aResponseStatus = [],  hanatable = StudioFeed;
             var data = aData;
-            for (var i in data) {
+            for (var i=0; i< data.length; i++) {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-                var oResponseStatus = await createSalesOrderUsingNormalizedRules(req, data[i]);
+                let sEntityID = data[i].EntityID, sBupa = data[i].Studio;
+                oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({EntityID: sEntityID, StudioBP: sBupa}));
+                sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization, 
+                DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
+                if(!oSalesParameterConfig){
+                    data[i].ErrorMessage = `For the record ${(i+1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
+                    data[i].Status_ID = "D";
+                }
+                else{
+                    var oResponseStatus = await createSalesOrderUsingNormalizedRules(req, data[i]);
+                    if(oResponseStatus?.success?.length){
+                        data[i].SalesOrder = oResponseStatus?.SalesOrder;
+                        data[i].Status_ID = "C";
+                        data[i] = await updateNormalizedOrderItemsAndText(req, data[i], oResponseStatus);
+                    } 
+                }               
                 if(oResponseStatus?.error?.length){
                     data[i].ErrorMessage = oResponseStatus?.error?.[0].errorMessage;
                     data[i].Status_ID = "D";
-                }
-                if(oResponseStatus?.success?.length){
-                    data[i].SalesOrder = oResponseStatus?.SalesOrder;
-                    data[i].Status_ID = "C";
-                    data[i] = await updateNormalizedOrderItemsAndText(req, data[i], oResponseStatus);
-                }             
+                } 
+                       
                 if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                     if (entry_Active) {
@@ -558,7 +656,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
                             sShippingType = oShippingTypeMapping.ShippingType;
     
-                            if(sShippingType){
+                            if(!sShippingType){
                                 sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sDeliveryMethod}`;
                             }
                         }
@@ -728,8 +826,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aSalesOrderItems = oSalesOrder.to_Item;
             oContentData["to_Item"] = [];
             for (var i in aSalesOrderItems) {
-                oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of lcoal CDS
                 var oSalesOrderItem = aSalesOrderItems[i];
+                var oLocalItem = await SELECT.one.from(BookingSalesorderItem).where({SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem.SalesOrderItem});
+                if(oLocalItem){ //Skip if Item already exists in Normalized SO Item
+                    continue;
+                }
+                oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of local CDS
                 oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
                 var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oSalesOrderItem.Material });
                 var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
@@ -779,7 +881,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             } //ITERATING ITEM END
             var sStudio = oStudioKeyData?.Studio_BusinessPartner;
             if(sStudio){               
-                var oBupa = await buspatx.run(SELECT.one.columns(['BusinessPartnerFullName']).from(BusinessPartner).where({ BusinessPartner: sStudio }));
+                var oBupa = await s4h_bp_Txn.run(SELECT.one.columns(['BusinessPartnerFullName']).from(S4H_BuisnessPartner).where({ BusinessPartner: sStudio }));
                 var StudioName = oBupa?.BusinessPartnerFullName;
                 if(StudioName){ //RULE 9.8
                     await updateItemTextForSalesOrder(req, "Z011", StudioName, oResponseStatus, oSalesOrderItem, oContentData);
@@ -817,10 +919,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo ;
             });                   
             return oPackage;
-        };       
+        };   
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
             return s4h_bp_Txn.run(req.query);
-        });
+        });       
+        this.on(['READ'], S4_SalesParameter, async (req) => {
+            return s4h_salesparam_Txn.run(req.query);
+        });        
         this.on(['READ'], DCPMaterialMapping, async (req)=>{
             return distrospec_Txn.run(req.query);
         });
@@ -973,91 +1078,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], S4_Parameters, async (req) => {
             return s4h_param_Txn.run(req.query);
         });
-        this.on("remediateContentSalesOrder", async (req, res) => {
-            await remediateSalesOrder(req, "C");
-        });
-        this.on("remediateKeySalesOrder", async (req, res) => {
-            await remediateSalesOrder(req, "K");
-        });
-        const remediateSalesOrder = async (req, sContentIndicator) => {
-            var oInput = req.data?.oInput;
-            // var sBookingID = req.data?.bookingID, sSalesOrder = req.data?.salesOrder, sPlant = req.data?.plant,
-            //     sShipType = req.data?.shipTypeSelected, sShipPoint = req.data?.shipPointSelected, oContentData, sMaterialGroup,
-            //     sShippingCondition = req.data?.shippingCondition, sDeliveryDate = req.data?.deliveryDate, aResponseStatus = [], hanaDBTable;
-            var sBookingID = oInput?.bookingID, sSalesOrder = oInput?.salesOrder, sPlant = oInput?.plant,
-                sShipType = oInput?.shipTypeSelected, sShipPoint = oInput?.shipPointSelected, oContentData, sMaterialGroup,
-                sShippingCondition = oInput?.shippingCondition, sDeliveryDate = oInput?.deliveryDate, aResponseStatus = [], hanaDBTable;
-
-            hanaDBTable = sContentIndicator === "C" ? dcpcontent : dcpkey;
-            sMaterialGroup = sContentIndicator === "C" ? "Z003" : "Z004";
-            if (sBookingID) {
-                oContentData = await SELECT.one.from(hanaDBTable).where({ BookingID: sBookingID, IsActive: "Y" });
-            }
-            else if (sSalesOrder) {
-                oContentData = SELECT.one.from(hanaDBTable).where({ SalesOrder: sSalesOrder, IsActive: "Y" });
-            }
-            else {
-                req.reject(501, "Booking ID / Sales order not available for processing");
-            }
-            if (!oContentData) {
-                req.reject(501, "Selected entry not available");
-            }
-            else if (!oContentData.SalesOrder) {
-                req.reject(501, "Please Select an entry where Sales Order is available for remediation");
-            }
-            else if (oContentData.ReferenceSDDocument) {
-                req.reject(501, "Remediation is already done for the selection");
-            }
-            var oSalesorderItem_PayLoad = {};
-            var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder, MaterialGroup: sMaterialGroup }));
-            if (!aSalesOrderItem?.length) {
-                aResponseStatus.push({
-                    "message": `| No items available for remediation in Sales Order: ${sSalesOrder} |`,
-                    "status": "E"
-                });
-            }
-            else {
-                for (var i in aSalesOrderItem) {
-                    var oSalesOrderItem = aSalesOrderItem[i];
-                    oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
-                    oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
-                    oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
-                    oSalesorderItem_PayLoad["ProductionPlant"] = sPlant;
-                    // oSalesorderItem_PayLoad["ShippingPoint"] = oSalesOrderItem.ShippingPoint;
-                    // oSalesorderItem_PayLoad["ShippingType"] = oSalesOrderItem.ShippingType;
-
-                    oSalesorderItem_PayLoad["ShippingType"] = sShipType ? sShipType : oSalesOrderItem.ShippingType;
-                    oSalesorderItem_PayLoad["ShippingPoint"] = sShipPoint ? sShipPoint : oSalesOrderItem.ShippingPoint;
-                    oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
-                    oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
-                    oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                    await s4h_sohv2_Txn.send({
-                        method: 'POST',
-                        path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
-                        data: oSalesorderItem_PayLoad
-                    }).catch((err) => {
-                        aResponseStatus.push({
-                            "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
-                            "status": "E"
-                        });
-                    }).then(async (result) => {
-                        if (result) {
-                            await UPDATE(hanaDBTable).set({ ReferenceSDDocument: `${result?.SalesOrderItem}` }).where({ BookingID: oContentData.BookingID })
-                            aResponseStatus.push({
-                                "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
-                                "status": "S"
-                            });
-                        }
-                    });
-                }
-
-            }
-
-            req.reply({
-                code: 201,
-                message: JSON.stringify(aResponseStatus)
-            });
-        };
 
         this.on(['READ'], S4_Plants, req => {
             return s4h_planttx.run(req.query);
@@ -1381,7 +1401,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     var sBupa = distroSpecData?.to_StudioKey?.[0]?.Studio_BusinessPartner;
 
                     if (sBupa) {
-                        var oBupa = await buspatx.run(SELECT.one.columns(['BusinessPartnerFullName']).from(BusinessPartner).where({ BusinessPartner: sBupa }));
+                        var oBupa = await s4h_bp_Txn.run(SELECT.one.columns(['BusinessPartnerFullName']).from(S4H_BuisnessPartner).where({ BusinessPartner: sBupa }));
                         Studio = oBupa?.BusinessPartnerFullName;
                     }
                 }

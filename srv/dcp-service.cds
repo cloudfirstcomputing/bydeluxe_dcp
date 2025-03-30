@@ -5,6 +5,7 @@ using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
 using {DistributionService as distService} from './dist-service';
 using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
 using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
+using {YY1_SALESPARAMETERS_CDS_0001 as S4_Sales_Param} from './external/YY1_SALESPARAMETERS_CDS_0001';
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
 using api from '../db/common';
 
@@ -17,16 +18,14 @@ service BookingOrderService {
     entity dcpkey                as projection on db.dcpkey;
     action createKey(Records : array of dcpkey)                                                                                                   returns String;
     action postKeyToSAP(bookingIDs : array of String)                                                                                             returns String;
-    action remediateContentSalesOrder(oInput: RemediateType) returns String;
-    action remediateKeySalesOrder(oInput: RemediateType) returns String;
     action MassUploadBookingFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
-    // action remediateContentSalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String) returns String;
-    // action remediateKeySalesOrder(bookingID : String, salesOrder : String, plant : String, shipTypeSelected : String, shipPointSelected : String, deliveryDate : String)     returns String;
     // action reconcileKey(bookingIDs: array of  String) returns String;
     entity StudioFeed as projection on db.StudioFeed;
     annotate StudioFeed with @odata.draft.enabled;
+
     action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
+    action remediateSalesOrder(bookingID : String, salesOrder : String) returns String;
     
     entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner   as projection on S4_BuisnessPartner.A_BusinessPartner;
@@ -58,6 +57,7 @@ service BookingOrderService {
         VariableName,
         VariableValue
     };
+    entity S4_SalesParameter as projection on S4_Sales_Param.YY1_SALESPARAMETERS;
     type FieldMap           : many {
         technicalName : String;
         excelColumn   : String;
@@ -91,8 +91,6 @@ service BookingOrderService {
        shipPointSelected : String;
        deliveryDate : Date 
     }
-    annotate dcpcontent with @odata.draft.enabled;
-    annotate dcpkey with @odata.draft.enabled;
 
     entity Maccs_Dchub           as projection on db.Maccs_Dchub;
     action createMaccs(Request : array of Maccs_Dchub)                                                                                            returns String;
