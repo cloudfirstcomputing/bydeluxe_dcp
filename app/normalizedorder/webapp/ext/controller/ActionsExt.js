@@ -646,7 +646,7 @@ sap.ui.define([
 
                         // Code to upload the excelsheet data
                         callUploadAction: function (data, filename) {
-                            BusyIndicator.show();
+                            oView.setBusy(true);
                             that.Obj = this;
                             var response;
 
@@ -664,25 +664,15 @@ sap.ui.define([
                             oContext.setParameter("fieldNames", that.fieldNamesCAPM);
 
                             oContext.execute().then(function () {
+                                sap.ui.getCore().byId("dialog").close();
                                 response = oContext.getBoundContext().getObject();
                                 if(response?.message){
-                                    var aResponse = response.message;
-                                    var iSuccessCount = 0, iErrorCount = 0, iUpdateCount = 0;
-                                    for(var i in aResponse){
-                                        if(aResponse[i].NoOfRecordsInserted){
-                                            iSuccessCount = aResponse[i].NoOfRecordsInserted;
-                                        };
-                                        if(aResponse[i].Error){
-                                            iErrorCount = aResponse[i].Error.length; 
-                                        };
-                                        if(aResponse[i].NoOfRecordsUpdated){
-                                            iUpdateCount = aResponse[i].NoOfRecordsUpdated; 
-                                        };
-
-                                    }
-                                    if(iErrorCount){
-                                        MessageBox.error(uploadError, {
-                                            title: uploadErrorTitle + iErrorCount+ ' entries',
+                                    var oResponse = response.message;
+                                   var aSuccess = oResponse.success,  aError = oResponse.error,  aWarning = oResponse.warning; 
+                                    if(aError?.length){
+                                        MessageBox.error('Click the below link for more details', {
+                                            details: JSON.stringify(aError),
+                                            title: 'Errors occured',
                                             actions: MessageBox.Action.OK,
                                             emphasizedAction: MessageBox.Action.OK,
                                             onClose: function (oAction) {
@@ -692,9 +682,23 @@ sap.ui.define([
                                             }
                                         });
                                     }
-                                    if(iSuccessCount ){
-                                        MessageBox.success(uploadSuccess+"\n\nEntries Created:"+ iSuccessCount+"\nEntries Updated:"+iUpdateCount, {
-                                            title: "Upload has been completed successfully",
+                                    if(aWarning?.length){
+                                        MessageBox.warning('Click the below link for more details', {
+                                            details: JSON.stringify(aWarning),
+                                            title: 'Warnings occured',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    if(aSuccess?.length ){
+                                        MessageBox.success('Click the below link for more details', {
+                                            details: JSON.stringify(aSuccess),
+                                            title: 'Following operations have been executed successfully',
                                             actions: MessageBox.Action.OK,
                                             emphasizedAction: MessageBox.Action.OK,
                                             onClose: function (oAction) {
@@ -704,23 +708,10 @@ sap.ui.define([
                                             }
                                         });                                        
                                     }
-                                }   
-                                // else {
-                                //     MessageBox.success(uploadSuccess + "\n\n" + uploadSuccessCount + " " + response.recordsUpdate, {
-                                //         title: uploadSuccessTitle,
-                                //         actions: MessageBox.Action.OK,
-                                //         emphasizedAction: MessageBox.Action.OK,
-                                //         onClose: function (oAction) {
-                                //             if (oAction === MessageBox.Action.OK) {
-                                //                 that.Obj.fieldCancel();
-                                //             }
-                                //         }
-                                //     });
-                                //     sap.ui.getCore().byId("dialog").close();
-                                // }
-                                sap.ui.getCore().byId("dialog").close();
+                                    
                                 batchModel.refresh();
-                                BusyIndicator.hide();
+                                oView.setBusy(false);
+                                }  
 
                             }, function (oErr) {
                                 var errorCode = uploadFailed + "\n" + oErr.error.message;
@@ -735,7 +726,7 @@ sap.ui.define([
                                     }
                                 });
                                 batchModel.refresh();
-                                BusyIndicator.hide();
+                                oView.setBusy(false);
                             });
                         },
 

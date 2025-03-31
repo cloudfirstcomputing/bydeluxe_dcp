@@ -247,9 +247,50 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({EntityID: sEntityID, StudioBP: sBupa}));
                 sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization, 
                 DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
+
                 if(!oSalesParameterConfig){
                     data[i].ErrorMessage = `For the record ${(i+1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
+                    data[i].Status_ID = "D";                    
+                    oResponseStatus.error.push( {
+                        "message" : `| ${data[i].ErrorMessage} |`,
+                        "errorMessage": data[i].ErrorMessage
+                    });
+                }
+                else if(!sSoldToCustomer){
+                    data[i].ErrorMessage = `For the record ${(i+1)}, SoldToCustomer not maintained`;
                     data[i].Status_ID = "D";
+                    
+                    oResponseStatus.error.push( {
+                        "message" : `| ${data[i].ErrorMessage} |`,
+                        "errorMessage": data[i].ErrorMessage
+                    });
+                }
+                else if(!SalesOrganization){
+                    data[i].ErrorMessage = `For the record ${(i+1)}, SalesOrganization not maintained`;
+                    data[i].Status_ID = "D";
+                    
+                    oResponseStatus.error.push( {
+                        "message" : `| ${data[i].ErrorMessage} |`,
+                        "errorMessage": data[i].ErrorMessage
+                    });
+                }
+                else if(!DistributionChannel){
+                    data[i].ErrorMessage = `For the record ${(i+1)}, DistributionChannel not maintained`;
+                    data[i].Status_ID = "D";
+                    
+                    oResponseStatus.error.push( {
+                        "message" : `| ${data[i].ErrorMessage} |`,
+                        "errorMessage": data[i].ErrorMessage
+                    });
+                }
+                else if(!Division){
+                    data[i].ErrorMessage = `For the record ${(i+1)}, Division not maintained`;
+                    data[i].Status_ID = "D";
+                    
+                    oResponseStatus.error.push( {
+                        "message" : `| ${data[i].ErrorMessage} |`,
+                        "errorMessage": data[i].ErrorMessage
+                    });
                 }
                 else{
                     var oResponseStatus = await createSalesOrderUsingNormalizedRules(req, data[i]);
@@ -257,11 +298,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         data[i].SalesOrder = oResponseStatus?.SalesOrder;
                         data[i].Status_ID = "C";
                         data[i] = await updateNormalizedOrderItemsAndText(req, data[i], oResponseStatus);
+                    }               
+                    if(oResponseStatus?.error?.length){
+                        data[i].ErrorMessage = oResponseStatus?.error?.[0].errorMessage;
+                        data[i].Status_ID = "D";
                     } 
-                }               
-                if(oResponseStatus?.error?.length){
-                    data[i].ErrorMessage = oResponseStatus?.error?.[0].errorMessage;
-                    data[i].Status_ID = "D";
                 } 
                        
                 if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
