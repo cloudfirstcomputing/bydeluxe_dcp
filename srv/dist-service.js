@@ -131,11 +131,11 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         })
 
                         break;
-                    case "DeliverySequence1_ShippingCondition" || "DeliverySequence2_ShippingCondition" ||
-                        "DeliverySequence3_ShippingCondition" || "DeliverySequence7_ShippingCondition" ||
-                        "DeliverySequence4_ShippingCondition" || "DeliverySequence8_ShippingCondition" ||
-                        "DeliverySequence5_ShippingCondition" || "DeliverySequence9_ShippingCondition" ||
-                        "DeliverySequence6_ShippingCondition" || "DeliverySequence10_ShippingCondition":
+                    case "DeliverySequence1_ShippingCondition": case "DeliverySequence2_ShippingCondition":
+                    case "DeliverySequence3_ShippingCondition": case "DeliverySequence7_ShippingCondition":
+                    case "DeliverySequence4_ShippingCondition": case "DeliverySequence8_ShippingCondition":
+                    case "DeliverySequence5_ShippingCondition": case "DeliverySequence9_ShippingCondition":
+                    case "DeliverySequence6_ShippingCondition": case "DeliverySequence10_ShippingCondition":
                         records = await sctx.run(SELECT.from(ShippingConditions).where({ ShippingCondition: ids }))
                         break;
                     default:
