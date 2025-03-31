@@ -856,7 +856,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return oResponseStatus;
         };
         const updateNormalizedOrderItemsAndText = async (req, oContentData, oResponseStatus)=> {     
-            var sSalesOrder = oContentData?.SalesOrder, sContentIndicator = oContentData.OrderType;    
+            var sSalesOrder = oResponseStatus?.SalesOrder, sContentIndicator = oContentData.OrderType;    
             var distroSpecData = oResponseStatus?.distroSpecData, oPackage = oResponseStatus.package, 
             oPayLoad = oResponseStatus.payLoad, aCTTCPL = oResponseStatus.aCTTCPL;
 
