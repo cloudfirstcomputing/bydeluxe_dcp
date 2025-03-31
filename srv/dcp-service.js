@@ -30,7 +30,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
-        var oSalesParameterConfig;
+        var oSalesParameterConfig, oResponseStatus = {"error":[], "success": [], "warning": []};
         // var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
         //     SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
         //     DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
@@ -236,8 +236,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
         });
         const createStudioFeeds = async (req, aData) => {
-            var recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], 
-            failedEntries = [], sErrorMessage = "", aResponseStatus = [],  hanatable = StudioFeed;
+            var recordsToBeInserted = [], recordsToBeUpdated = [], successEntries = [], updateSuccessEntries = [], 
+            failedEntries = [], sErrorMessage = "",  hanatable = StudioFeed, oResponseStatus = {"error":[], "success": [], "warning": []};
             var data = aData;
             for (var i=0; i< data.length; i++) {
                 data[i].Status_ID = "A";
@@ -293,15 +293,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else{
-                    var oResponseStatus = await createSalesOrderUsingNormalizedRules(req, data[i]);
-                    if(oResponseStatus?.success?.length){
-                        data[i].SalesOrder = oResponseStatus?.SalesOrder;
+                    var oLocalResponse = await createSalesOrderUsingNormalizedRules(req, data[i]);
+                    if(oLocalResponse?.success?.length && !oLocalResponse?.error?.length){
+                        data[i] = await updateNormalizedOrderItemsAndText(req, data[i], oLocalResponse);
+                    }      
+                    if(oLocalResponse?.success?.length){
+                        oResponseStatus?.success?.push(...oLocalResponse?.success);
+                        data[i].SalesOrder = oLocalResponse?.SalesOrder;
                         data[i].Status_ID = "C";
-                        data[i] = await updateNormalizedOrderItemsAndText(req, data[i], oResponseStatus);
-                    }               
-                    if(oResponseStatus?.error?.length){
-                        data[i].ErrorMessage = oResponseStatus?.error?.[0].errorMessage;
+                    }         
+                    if(oLocalResponse?.error?.length){
+                        oResponseStatus?.error?.push(...oLocalResponse?.error);
+                        data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
                         data[i].Status_ID = "D";
+                    }               
+                    if(oLocalResponse?.warning?.length){
+                        oResponseStatus?.warning?.push(...oLocalResponse?.warning);
                     } 
                 } 
                        
@@ -329,16 +336,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     updateSuccessEntries.push(updateResult);
                 }
             }
-            finalResult.push({ "Success": successEntries });
-            finalResult.push({ "UpdateSuccess": updateSuccessEntries });
-            finalResult.push({ "Error": failedEntries });
-            finalResult.push({ "NoOfRecordsInserted": recordsToBeInserted.length - recordsToBeUpdated?.length });
-            finalResult.push({ "NoOfRecordsUpdated": recordsToBeUpdated.length });
-            oResponseStatus.finalResult = finalResult;
             return oResponseStatus;
         };
         const createSalesOrderUsingNormalizedRules = async (req, oContentData) => {
-            var updateQuery = [], oPayLoad = {}, sContentIndicator, oResponseStatus = {"error":[], "success": [], "warning": []}, hanaDBTable = dcpcontent;
+            var updateQuery = [], oPayLoad = {}, sContentIndicator, hanaDBTable = dcpcontent;
                 var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
                     dist('*'),
                         dist.to_StudioKey((studio) => { studio('*')}),
@@ -391,7 +392,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sErrorMessage = "Customer reference is not available in the payload";
                 }
             }
-            var oStudioKeyData = distroSpecData.to_StudioKey?.[0];
+            var oStudioKeyData = distroSpecData?.to_StudioKey?.[0];
             var aDistRestrictions = oFilteredPackage?.to_DistRestriction;
             oResponseStatus.distroSpecData = distroSpecData;
             var aCTTCPL = [];
@@ -856,13 +857,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         const updateNormalizedOrderItemsAndText = async (req, oContentData, oResponseStatus)=> {     
             var sSalesOrder = oContentData?.SalesOrder, sContentIndicator = oContentData.OrderType;    
-            var distroSpecData = oResponseStatus.distroSpecData, oPackage = oResponseStatus.package, 
+            var distroSpecData = oResponseStatus?.distroSpecData, oPackage = oResponseStatus.package, 
             oPayLoad = oResponseStatus.payLoad, aCTTCPL = oResponseStatus.aCTTCPL;
 
             var oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));                
             
             // var oRecordsToBePosted = oContentData;
-            var oStudioKeyData = distroSpecData.to_StudioKey?.[0];
+            var oStudioKeyData = distroSpecData?.to_StudioKey?.[0];
             // oRecordsToBePosted.DistroSpecID = distroSpecData.DistroSpecID;
             var aSalesOrderItems = oSalesOrder.to_Item;
             oContentData["to_Item"] = [];
@@ -888,37 +889,39 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 if (oCTTCPL) {
                     oContentData.to_Item[i].CTT = oCTTCPL.LinkedCTT;
                     oContentData.to_Item[i].CPLUUID = oCTTCPL.CPLUUID;
-                    await updateItemTextForSalesOrder(req, "Z005", oCTTCPL.CPLUUID, oResponseStatus, oSalesOrderItem, oContentData);
+                    await updateItemTextForSalesOrder(req, "Z005", oCTTCPL?.CPLUUID, oResponseStatus, oSalesOrderItem, oContentData);
                     if (sContentIndicator === "K") {
-                        await updateItemTextForSalesOrder(req, "0001", oCTTCPL.LinkedCTT, oResponseStatus, oSalesOrderItem, oContentData);
+                        await updateItemTextForSalesOrder(req, "0001", oCTTCPL?.LinkedCTT, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
                 var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
                 if (oCplList) {
                     await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, oResponseStatus, oSalesOrderItem, oContentData);
                 }
-                await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
-                await updateItemTextForSalesOrder(req, "Z009", oPackage.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData);
-                await updateItemTextForSalesOrder(req, "Z010", oPackage.PackageName, oResponseStatus, oSalesOrderItem, oContentData);
-                await updateItemTextForSalesOrder(req, "Z011", distroSpecData.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
+                if(distroSpecData){
+                    await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData?.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
+                    await updateItemTextForSalesOrder(req, "Z011", distroSpecData?.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
+                }
+                await updateItemTextForSalesOrder(req, "Z009", oPackage?.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData);
+                await updateItemTextForSalesOrder(req, "Z010", oPackage?.PackageName, oResponseStatus, oSalesOrderItem, oContentData);
                 Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
 
                 oContentData.to_Item[i].ShippingType_ID = oSalesOrderItem.ShippingType;
 
-                oContentData.to_Item[i]["KeyStartTime"] = oStudioKeyData.KeyStartTime;
-                oContentData.to_Item[i]["KeyEndTime"] = oStudioKeyData.KeyEndTime;
-                oContentData.to_Item[i]["InitialKeyDuration"] = oStudioKeyData.InitialKeyDuration;
-                oContentData.to_Item[i]["NextKeyDuration"] = oStudioKeyData.NextKeyDuration;
-                oContentData.to_Item[i]["OffsetEPD"] = oStudioKeyData.OffsetEPD;
-                oContentData.to_Item[i]["InferKeyContentOrder"] = oStudioKeyData.InferKeyContentOrder;
-                oContentData.to_Item[i]["AggregateKey"] = oStudioKeyData.AggregateKey;
-                oContentData.to_Item[i]["ProcessKDMS"] = oStudioKeyData.ProcessKDMS;
-                oContentData.to_Item[i]["ProcessScreeningKDMS"] = oStudioKeyData.ProcessScreeningKDMS;
-                oContentData.to_Item[i]["MaxKDMSDuration"] = oStudioKeyData.MaxKDMSDuration;
-                oContentData.to_Item[i]["StudioHoldOverRule"] = oStudioKeyData.StudioHoldOverRule;
-                oContentData.to_Item[i]["SalesTerritory"] = oStudioKeyData.SalesTerritory_SalesDistrict;
+                oContentData.to_Item[i]["KeyStartTime"] = oStudioKeyData?.KeyStartTime;
+                oContentData.to_Item[i]["KeyEndTime"] = oStudioKeyData?.KeyEndTime;
+                oContentData.to_Item[i]["InitialKeyDuration"] = oStudioKeyData?.InitialKeyDuration;
+                oContentData.to_Item[i]["NextKeyDuration"] = oStudioKeyData?.NextKeyDuration;
+                oContentData.to_Item[i]["OffsetEPD"] = oStudioKeyData?.OffsetEPD;
+                oContentData.to_Item[i]["InferKeyContentOrder"] = oStudioKeyData?.InferKeyContentOrder;
+                oContentData.to_Item[i]["AggregateKey"] = oStudioKeyData?.AggregateKey;
+                oContentData.to_Item[i]["ProcessKDMS"] = oStudioKeyData?.ProcessKDMS;
+                oContentData.to_Item[i]["ProcessScreeningKDMS"] = oStudioKeyData?.ProcessScreeningKDMS;
+                oContentData.to_Item[i]["MaxKDMSDuration"] = oStudioKeyData?.MaxKDMSDuration;
+                oContentData.to_Item[i]["StudioHoldOverRule"] = oStudioKeyData?.StudioHoldOverRule;
+                oContentData.to_Item[i]["SalesTerritory"] = oStudioKeyData?.SalesTerritory_SalesDistrict;
 
-                delete oContentData.to_Item[i].ShippingType;
+                delete oContentData.to_Item[i]?.ShippingType;
             } //ITERATING ITEM END
             var sStudio = oStudioKeyData?.Studio_BusinessPartner;
             if(sStudio){               
