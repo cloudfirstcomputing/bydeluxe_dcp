@@ -3,9 +3,87 @@
 
 ###
 POST {{server}}/odata/v4/booking-order/createStudioFeeds
-Authorization:Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS00ZTBjYTBmZWUyIiwidHlwIjoiSldUIiwiamlkIjogIkN1RWFVQTJ2cnFuUmtQdHVnaWZ6clcwTE1ENXZhZjAwNUZoOTl4emFMUEE9In0.eyJqdGkiOiI2NTQ2OWVjZTIwMjI0MDQ2YWU3OTYwYzQ0NDYyMDEwNCIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJ6ZG4iOiJkZXYtZGhpcG5lNXQifSwic3ViIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiXSwic2NvcGUiOlsidWFhLnJlc291cmNlIl0sImNsaWVudF9pZCI6InNiLWJ5ZGVsdXhlLURldiF0MzM3Mzk1IiwiY2lkIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhenAiOiJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJyZXZfc2lnIjoiY2ViNDQxYjMiLCJpYXQiOjE3NDMxODMxNTQsImV4cCI6MTc0MzIyNjM1NCwiaXNzIjoiaHR0cHM6Ly9kZXYtZGhpcG5lNXQuYXV0aGVudGljYXRpb24udXMxMC5oYW5hLm9uZGVtYW5kLmNvbS9vYXV0aC90b2tlbiIsInppZCI6ImRiZGZkNDZiLTQxNDQtNDcyOS1hMDNjLThmODIwZmNjODlmZSIsImF1ZCI6WyJ1YWEiLCJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSJdfQ.G2wZWZHD7MHLAjP0KE2e4Qgil66JiiicRivMDub3X_QKK2jwU5H85zuTVOBAVaUmRPGSTQUd_QaLmv_Dgf5ncJiMO-nIjYXGElEW0lRAdPjfrxZAe-LYGu8LXRMbS9R_mbwRt5V6NPvdVqp003HuF02ba-hPPic8scubY4RKrg8lKUZ_ww6mN347JqgBCUIontYvr5gzToX4skEjRPlkC-gA7z67_8sLz-hR0igjlLpXT3gqc6ME5xFRqeYANzhtWQvuY9Eu2gnx5v0Kjjb-5iNcsZ0bFqLsAqbiI70O8AkxQCziAI7nXC7yHEY8jOr24cEdsRSKw_bjsEz2dBCiyg
+Authorization:Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS00ZTBjYTBmZWUyIiwidHlwIjoiSldUIiwiamlkIjogInp1dVpwSE5UNkIzZFUvMDlqbkt2MXVOQ2FFTW9WLzJvUE9tR0E5VDd0T289In0.eyJqdGkiOiIzZDEwNjc0YjUxZmY0MTYzOWNiMWUwN2YwY2QzMzE4ZCIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJ6ZG4iOiJkZXYtZGhpcG5lNXQifSwic3ViIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiXSwic2NvcGUiOlsidWFhLnJlc291cmNlIl0sImNsaWVudF9pZCI6InNiLWJ5ZGVsdXhlLURldiF0MzM3Mzk1IiwiY2lkIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhenAiOiJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJyZXZfc2lnIjoiY2ViNDQxYjMiLCJpYXQiOjE3NDM1MTM0NzAsImV4cCI6MTc0MzU1NjY3MCwiaXNzIjoiaHR0cHM6Ly9kZXYtZGhpcG5lNXQuYXV0aGVudGljYXRpb24udXMxMC5oYW5hLm9uZGVtYW5kLmNvbS9vYXV0aC90b2tlbiIsInppZCI6ImRiZGZkNDZiLTQxNDQtNDcyOS1hMDNjLThmODIwZmNjODlmZSIsImF1ZCI6WyJ1YWEiLCJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSJdfQ.jfqD4tgeT-MtLAZDsGYN_QVxHP2aAsKyg_tb0-fdSUWCLa5SQlow4ZZKH_m5eZtPgqxwpzVsyo3gKHdLyvxxqC_gh4jJlvx0PNSLEtuct3pmzf48RHgnvTxUhsrSuCTg5u3NRB4VxKbvUeF4bxG65ARjMf3spReF4O-6Jo4F-_OCCi356iWOHiw-Y__qjnBTGSfZ41qYKDPECdUYBm47-rjV6jkc2s45N1LVto0n9a5F1KRp6bxnd-3R3uEzraW9OO_-s5vZ4gMSNnwTfPVZgLvGvq1v8Svwp8IEmeUkqFVwyyBNBEYcLH14ANa_r0jBn5m5ThW6u1r8oxVPOScbcQ
 Content-Type:application/json
 
+{
+
+  "StudioFeed": [
+
+    {
+
+      "BookingID": "2944176",
+
+      "SourceSystem": "SPIRITWORLD",
+
+      "Origin_OriginID": "F",
+
+      "EntityID": "SPC",
+
+      "Studio": "1000011",
+
+      "Title": "2477",
+
+      "CustomerReference": "2372561c-06eb-02e4-e063-0100007f59d",
+
+      "CreatedOn": "2025-02-04",
+
+      "RequestedDelivDate": "2025-02-14",
+
+      "ReleaseID": "2477",
+
+      "OrderType": "C",
+
+      "RecordType": "B",
+
+      "BookingType": "NO",
+
+      "TheaterID": "THR000542304",
+
+      "Circuit": "CRC000000281",
+
+      "OrderID": "29223787",
+
+      "PlayStartDate": "2025-02-14",
+
+      "PlayEndDate": "2025-02-15",
+
+      "HFR": "N",
+
+      "ShipmentIndicator": "Y",
+
+      "ScreeningIndicator": "N",
+
+      "DepotID": "5",
+
+      "SoundID": "51HIN",
+
+      "Language": "ENG",
+
+      "SubtitleType1": "E",
+
+      "PrintFormat": "SAT",
+
+      "ShipPriority": "2",
+
+      "PrintQuality": "2D",
+
+      "ApprovedScreens": "",
+
+      "CTTs": "PaddingtonPeru_FTR_S_EN-EN-CCAP_OV_51-HI-VI_4K_SPE_20241218_EKN_SMPTE_OV",
+
+      "CountryCode": "US",
+
+      "ScreenID": ""
+
+    }
+
+  ]
+
+}
+
+
+###
 {
   "StudioFeed":[
     {

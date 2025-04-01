@@ -116,18 +116,18 @@ entity dcpkey : managed {
 }
 
 entity StudioFeed : cuid, managed {
-    BookingID          : String                       @mandatory;
-    SourceSystem       : String                       @mandatory;
-    EntityID           : String                       @mandatory;
-    Origin             : Association to Origin        @mandatory;
-    // Origin             : String        @mandatory;
-    Studio             : String                       @mandatory;
+    BookingID          : String                       ;
+    SourceSystem       : String                       ;
+    EntityID           : String                       ;
+    Origin             : Association to Origin        ;
+    // Origin             : String        ;
+    Studio             : String                       ;
     CustomerReference  : String;
-    Title              : String                       @mandatory;
+    Title              : String                       ;
     CreatedOn          : Date;
-    RequestedDelivDate : Date                         @mandatory;
+    RequestedDelivDate : Date                         ;
     ReleaseID          : String;
-    OrderType          : String                       @mandatory;
+    OrderType          : String                       ;
     RecordType         : String;
     BookingType        : String;
     TheaterID          : String;
@@ -135,9 +135,9 @@ entity StudioFeed : cuid, managed {
     BookerName         : String;
     RequestId          : String;
     OrderID            : String;
-    PlayStartDate      : Date @mandatory;
+    PlayStartDate      : Date ;
     PlayStartTime      : Time ;
-    PlayEndDate        : Date @mandatory;
+    PlayEndDate        : Date ;
     PlayEndTime        : Time;
     KeyDeliveryOnDate  : Date;
     KeyStartDate       : Date;
@@ -167,6 +167,7 @@ entity StudioFeed : cuid, managed {
     CancelOrder        : String;
     DeliveryType       : String;
     //Common custom fields
+    RemediationCounter : Integer                      @readonly;
     Version            : Integer                      @readonly;
     IsActive           : String(1)                    @readonly;
     Remediation        : String                       @readonly;
