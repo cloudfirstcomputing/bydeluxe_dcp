@@ -885,7 +885,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oContentData.to_Item[i].Plant = oSalesOrderItem.ProductionPlant;
                 oContentData.to_Item[i].DistroSpecPackageID = oContentPackage.PackageUUID;
                 oContentData.to_Item[i].DistroSpecPackageName = oContentPackage.PackageName;
-                if (oPayLoad?.ShippingCondition && oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) { //RULE 5.2 
+                if (oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) { //RULE 5.2 
                     await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
                 }
                 // if (oAssetvault?._Items?.length > 0) {
@@ -914,21 +914,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     for(var c in aKeyPkgCPL){
                         if(aKeyPkgCPL[c]?.CPLUUID){
                             aKeyPkgCPLUUID.push(aKeyPkgCPL[c]?.CPLUUID);
-                            const assetvault = await SELECT.one.from(CplList).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID })
+                            const assetvault = await SELECT.one.from(CplList_Local).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID })
                             aKeyPkgCTT.push(assetvault?.LinkedCTT)
                         }
                     }
                     if (aKeyPkgCTT?.length) { //RULE 9.1
-                        sKeyPkgCTTs = aKeyPkgCTT?.map(u?u:false).join(`,`);  
+                        sKeyPkgCTTs = aKeyPkgCTT?.map((u)=>{return u?u:false}).join(`,`);  
                         await updateItemTextForSalesOrder(req, "Z003", sKeyPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                     if (aKeyPkgCPLUUID?.length) { //RULE 9.2
-                        sKeyPkgCPLUUIDs = aKeyPkgCPLUUID?.map(u?u:false).join(`,`);  
+                        sKeyPkgCPLUUIDs = aKeyPkgCPLUUID?.map((u)=>{return u?u:false}).join(`,`);  
                         await updateItemTextForSalesOrder(req, "Z005", sKeyPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
                 else{ //Content Order item
-                    // await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
+                    if(oAssetvault?.KrakenTitleID){ //RULE 9.3
+                        await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
+                    }
                     for(var c in aContentPkgCPL){
                         if(aContentPkgCPL[c]?.CPLUUID){
                             aContentPkgCPLUUID.push(aContentPkgCPL[c]?.CPLUUID);
@@ -937,16 +939,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     if (aContentPkgCTT?.length) { //RULE 9.1
-                        sContentPkgCTTs = aContentPkgCTT?.map(u?u:false).join(`,`);  
+                        sContentPkgCTTs = aContentPkgCTT?.map((u)=>{return u?u:false}).join(`,`);  
                         await updateItemTextForSalesOrder(req, "Z003", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                     if (aContentPkgCPLUUID?.length) { //RULE 9.2
-                        sContentPkgCPLUUIDs = aContentPkgCPLUUID?.map(u?u:false).join(`,`); 
+                        sContentPkgCPLUUIDs = aContentPkgCPLUUID?.map((u)=>{return u?u:false}).join(`,`); 
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData); 
                     }
                 }
                 if(distroSpecData){ //RULE 9.4, 9.7
-                    await updateItemTextForSalesOrder(req, "Z008", distroSpecData?.DistroSpecID, oResponseStatus, oSalesOrderItem, oContentData);
+                    await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData?.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
                     await updateItemTextForSalesOrder(req, "Z011", distroSpecData?.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
                 }
                 await updateItemTextForSalesOrder(req, "Z009", oContentPackage?.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.5
