@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Products"
+		title="Business Partner"
 		items="{/S4H_BusinessPartnerapi}"
 		search="_handleValueHelpSearch"
 		confirm="_handleValueHelpClose"

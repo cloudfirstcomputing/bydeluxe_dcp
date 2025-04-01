@@ -155,6 +155,7 @@ sap.ui.define([
                                 oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString().split("T")[0];
                             }
                             oData.TitleType = "Local"; // Setting Title Type to Local
+                            oData.MaterialMasterTitleID = oData.MaterialMasterTitleID.toString(); //Conversion
                             var updateCall = $.ajax({
                                 url: `${oModel.sServiceUrl}Titles`,
                                 type: "POST",
@@ -180,26 +181,87 @@ sap.ui.define([
                     var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
                     var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
                     var sTitleType = oFormModel.getData().TitleType;
+                    var oModel = oView.getModel();
                     if (!sTitleType || sTitleType === "Local") {
                         MessageToast.show("Select a Parent Item to Create Local Title!");
                         return;
                     }
+                    //Check If local ID is existing
+                    var updateCall = $.ajax({
+                        url: `${oModel.sServiceUrl}Titles?$filter=MaterialMasterTitleID eq ${oFormModel.oData.MaterialMasterTitleID}`,
+                        type: "GET",
+                        contentType: "application/json",
+                        success: function (data) {
+                            let existingIds = data.value
+                                .map(item => item.LocalTitleId)
+                                .filter(id => id) // Remove empty values
+                                .map(id => parseInt(id, 10)); // Convert to number
+                    
+                            let newLocalId;
+                            if (existingIds.length > 0) {
+                                // Get the highest LocalTitleId and increment by 1
+                                newLocalId = String(Math.max(...existingIds) + 1).padStart(2, "0");
+                            } else {
+                                // If no LocalTitleId exists, set to "01"
+                                newLocalId = "01";
+                            }
+                    
+                            console.log("New LocalTitleId:", newLocalId);
+                            oFormModel.oData.LocalTitleId = newLocalId;
+                            oView.setModel(oFormModel, "formModel");
+                            oView.addDependent(oDialog);
+                            oDialog.open(); //First time opening
+                            // Use newLocalId to update or create a new entry
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Fetch failed:", status, error, xhr.responseText);
+                        }
+                    });
+                    //IF local ID is existing increment by +1
+                    //If no Local ID its 01
 
                     // Set the model to the view
-                    oView.setModel(oFormModel, "formModel");
-                    oView.addDependent(oDialog);
-                    oDialog.open();
+                    
                 });
             } else {
                 var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
                 var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
                 var sTitleType = oFormModel.getData().TitleType;
+                var oModel = oView.getModel();
                 if (!sTitleType || sTitleType === "Local") {
                     MessageToast.show("Select a Parent Item to Create Local Title!");
                     return;
                 }
-                oView.setModel(oFormModel, "formModel");
-                this._oDialogL.open();
+                var updateCall = $.ajax({
+                    url: `${oModel.sServiceUrl}Titles?$filter=MaterialMasterTitleID eq ${oFormModel.oData.MaterialMasterTitleID}`,
+                    type: "GET",
+                    contentType: "application/json",
+                    success: function (data) {
+                        let existingIds = data.value
+                            .map(item => item.LocalTitleId)
+                            .filter(id => id) // Remove empty values
+                            .map(id => parseInt(id, 10)); // Convert to number
+                
+                        let newLocalId;
+                        if (existingIds.length > 0) {
+                            // Get the highest LocalTitleId and increment by 1
+                            newLocalId = String(Math.max(...existingIds) + 1).padStart(2, "0");
+                        } else {
+                            // If no LocalTitleId exists, set to "01"
+                            newLocalId = "01";
+                        }
+                
+                        console.log("New LocalTitleId:", newLocalId);
+                        oFormModel.oData.LocalTitleId = newLocalId;
+                        oView.setModel(oFormModel, "formModel");
+                        oView.addDependent(that._oDialogL);
+                        that._oDialogL.open(); //First time opening
+                        // Use newLocalId to update or create a new entry
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Fetch failed:", status, error, xhr.responseText);
+                    }
+                });
             }
         },
 

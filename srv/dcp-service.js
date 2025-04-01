@@ -1295,17 +1295,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], S4H_BusinessPartnerapi, async req => { //s4h_bp_vh
             return s4h_bp_vh.run(req.query);
         });
-        this.before('CREATE', 'Titles', async (req) => {
-            const lastEntry = await SELECT.one.from('Titles').orderBy('LocalTitleId desc');
+        // this.before('CREATE', 'Titles', async (req) => {
+        //     const lastEntry = await SELECT.one.from('Titles').orderBy('LocalTitleId desc');
             
-            let newId = 'LT-0001'; // Default if no previous records
-            if (lastEntry && lastEntry.LocalTitleId) {
-                let lastNumber = parseInt(lastEntry.LocalTitleId.replace('LT-', ''), 10);
-                newId = `LT-${String(lastNumber + 1).padStart(4, '0')}`;
-            }
+        //     let newId = 'LT-0001'; // Default if no previous records
+        //     if (lastEntry && lastEntry.LocalTitleId) {
+        //         let lastNumber = parseInt(lastEntry.LocalTitleId.replace('LT-', ''), 10);
+        //         newId = `LT-${String(lastNumber + 1).padStart(4, '0')}`;
+        //     }
         
-            req.data.LocalTitleId = newId;
-        });   
+        //     req.data.LocalTitleId = newId;
+        // });   
 
         this.on("createProduct", async (req) => {
             try {

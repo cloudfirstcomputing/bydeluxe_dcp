@@ -19,7 +19,7 @@
                     <Label id="localCreate_lblOriginalTitleName" text="Local ID"/>
                     <Input required="true" id="localCreate_inputOriginalTitleName" 
                            value="{formModel>/LocalTitleId}" 
-                            editable="true"/>
+                            editable="false"/>
                     <Label id="localCreate_lblOriginalRegionalTitle" text="Regional Title"/>
                     <Input  id="localCreate_inputOriginalRegionalTitle" 
                            value="{formModel>/RegionalTitleName}" 
