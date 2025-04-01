@@ -12,7 +12,7 @@ entity DistributionDcp {
         Title                          : String(40);
         KrakenTitleID                  : String(40);
         // Rating                : String(40);
-        VersionDescription             : String(40);
+        VersionDescription             : String(100);
         CreatedinSAP                   : Boolean    @mandatory;
         DCP                            : String(40);
         EDeliveryApacTitleId           : String(40);
