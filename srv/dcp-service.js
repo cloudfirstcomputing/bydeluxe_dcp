@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem,S4H_BusinessPartnerapi} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -28,6 +28,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");        
         var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");     
 
+        var s4h_prodGroup =  await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
@@ -978,7 +979,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });        
         this.on(['READ'], DCPMaterialMapping, async (req)=>{
             return distrospec_Txn.run(req.query);
-        });
+        });       
+        this.on(['READ'], S4_ProductGroupText, async (req)=>{
+            return s4h_prodGroup.run(req.query);
+        });        
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(), aInsertData = []; // Generate a unique ID
             try {

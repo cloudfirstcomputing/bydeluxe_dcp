@@ -7,6 +7,7 @@ using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
 using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
 using {YY1_SALESPARAMETERS_CDS_0001 as S4_Sales_Param} from './external/YY1_SALESPARAMETERS_CDS_0001';
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
+using {API_PRODUCTGROUP_SRV as S4_prodGroup} from '../srv/external/API_PRODUCTGROUP_SRV.csn';
 using api from '../db/common';
 
 service BookingOrderService {
@@ -72,6 +73,7 @@ service BookingOrderService {
     entity S4_ShippingConditions as projection on api.ShippingConditions;
     entity S4_ShippingType_VH as projection on api.ShippingType_VH;
     entity S4_ShippingPoint_VH as projection on api.ShippingPoint_VH;
+    entity S4_ProductGroupText as projection on S4_prodGroup.A_ProductGroupText; 
     entity DistroSpec_Local as projection on DistroSpec;
     entity AssetVault_Local as projection on AssetVault;
     entity BookingSalesOrder as projection on db.BookingSalesOrder;
