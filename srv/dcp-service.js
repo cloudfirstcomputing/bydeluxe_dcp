@@ -61,21 +61,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
         });
         this.on('MassUploadStudioFeed', async (req, res) => {
-            let excelData = {}
-            let uploadedData = []
-            let errorData = []
-            let aBookingFeeds = [];
-
-            let workbook = XLSX.read(req.data.fileData, {
-                type: 'binary'
-            })
-            sErrorMessage = ""; //Resetting error message
-            workbook.SheetNames.forEach(sheetName => {
-                excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
-            })
-            if (req.data.fieldNames.length === 0) req.reject(400, 'reqfieldNames')
-            if (excelData.length === 0) req.reject(400, 'emptySheet')
             try {
+                let excelData = {}
+                let uploadedData = []
+                let errorData = []
+                let aBookingFeeds = [];
+    
+                let workbook = XLSX.read(req.data.fileData, {
+                    type: 'binary'
+                })
+                sErrorMessage = ""; //Resetting error message
+                workbook.SheetNames.forEach(sheetName => {
+                    excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
+                })
+                if (req.data.fieldNames.length === 0) req.reject(400, 'reqfieldNames')
+                if (excelData.length === 0) req.reject(400, 'emptySheet')
                 for (let index = 0; index < excelData.length; index++) {
                     let object = excelData[index]
                     let row = object.__rowNum__ + 1
@@ -155,7 +155,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
             }
             catch(e){
-                req.reject(400, e?.message);
+                req.reject(400, e);
             }
         });
         this.on('remediateSalesOrder', async (req, res)=>{ //RULE 11
