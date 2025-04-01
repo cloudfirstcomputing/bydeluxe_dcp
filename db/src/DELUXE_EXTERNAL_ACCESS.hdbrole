@@ -55,6 +55,12 @@
                 "type":"TABLE", 
                 "privileges":[ "SELECT" ], 
                 "privileges_with_grant_option":[] 
+            },
+            { 
+                "name":"DCP_DB_TITLEV", 
+                "type":"VIEW", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
             }                          
         ]
     }
