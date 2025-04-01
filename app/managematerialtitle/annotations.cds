@@ -33,7 +33,7 @@ annotate service.TitleV with @(
         { $Type : 'UI.DataField', Value : StudioTitleId, Label : 'Studio Title Id' },
         { $Type : 'UI.DataField', Value : StudioDistributor, Label : 'Studio/Distributor' },
         { $Type : 'UI.DataField', Value : ID, Label : 'ID' }
-    ],
+    ],   
 
     // Define Field Group for Object Page Details
     UI.FieldGroup #GeneralInfo : {
@@ -70,4 +70,9 @@ annotate service.TitleV with @(
             Target : '@UI.FieldGroup#GeneralInfo'
         }
     ]
+);
+
+annotate service.TitleV.MaterialMasterTitleID with @(
+    Common.Text : '',
+    UI.TextArrangement : #TextOnly
 );

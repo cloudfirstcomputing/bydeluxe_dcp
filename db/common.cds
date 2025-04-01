@@ -30,7 +30,12 @@ context api {
                 BusinessPartnerType,
                 BusinessPartnerFullName
         }
-
+     entity BusinessPartnersV1       as
+        projection on bupa.A_BusinessPartner {
+            key BusinessPartner,
+                BusinessPartnerType,
+                BusinessPartnerFullName
+        }
     entity Products               as projection on product.A_Product;
     entity ProductGroup           as projection on prdgrp.A_ProductGroup;
     entity ProductGroup1          as projection on prdgrp1.YY1_AdditionalMaterialGrp1;

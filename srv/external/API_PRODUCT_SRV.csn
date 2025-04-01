@@ -471,6 +471,17 @@
      "@sap.quickinfo": "Unit of Measure for Maximum Packing Length/Width/Height",
      "@sap.semantics": "unit-of-measure"
     },
+    "YY1_matcust_PRD": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Customer Number"
+    },
+    "YY1_CustomerDes_PRD": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.label": "Customer Description"
+    },
     "to_Description": {
      "type": "cds.Association",
      "target": "API_PRODUCT_SRV.A_ProductDescription",
@@ -853,8 +864,7 @@
      "type": "cds.String",
      "length": 4,
      "@sap.display.format": "UpperCase",
-     "@sap.label": "Storage Location",
-     "@sap.quickinfo": "Issue Storage Location"
+     "@sap.label": "Storage Location"
     },
     "ProfileCode": {
      "type": "cds.String",
@@ -1660,8 +1670,7 @@
      "type": "cds.String",
      "length": 4,
      "@sap.display.format": "UpperCase",
-     "@sap.label": "Storage Location",
-     "@sap.quickinfo": "Issue Storage Location"
+     "@sap.label": "Storage Location"
     }
    }
   },
@@ -1777,7 +1786,7 @@
      "length": 4,
      "@sap.display.format": "UpperCase",
      "@sap.label": "Target QM System",
-     "@sap.quickinfo": "Required QM System for Supplier"
+     "@sap.quickinfo": "Target QM System for Supplier"
     },
     "RecrrgInspIntervalTimeInDays": {
      "type": "cds.Decimal",
@@ -3807,8 +3816,7 @@
      "type": "cds.String",
      "length": 4,
      "@sap.display.format": "UpperCase",
-     "@sap.label": "Storage Location",
-     "@sap.quickinfo": "Issue Storage Location"
+     "@sap.label": "Storage Location"
     },
     "BaseUnit": {
      "type": "cds.String",

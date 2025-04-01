@@ -136,7 +136,7 @@
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
-                      "text": "{@i18n>createTileMain}" 
+                      "text": "{@i18n>createTileMain}"
                     },
                     "extActionLocalC": {
                       "press": "com.dlx.managematerialtitle.ext.extActionLocalC.extActionLocalC.fnAddLocalTitle",
@@ -176,6 +176,15 @@
               "editableHeaderContent": false,
               "contextPath": "/TitleV"
             }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ListReport.ListReportController": {
+            "controllerName": "com.dlx.managematerialtitle.ext.controller.Listreport"
           }
         }
       }

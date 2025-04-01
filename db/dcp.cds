@@ -553,7 +553,7 @@ entity Contacts {
 
 entity Titles : cuid, managed {
     key MaterialMasterTitleID : Integer     @Common.Label: 'Material Master Title ID';
-    key LocalTitleId          : String      @Common.Label: 'Local Title ID';
+    key LocalTitleId          : String      @Common.Label: 'Local Title ID' @default:cuid;
     key RegionCode            : String(4)   @Common.Label: 'Region Code';
         OriginalTitleName     : String(240) @Common.Label: 'Original Title Name';
         TitleType             : String(10)  @Common.Label: 'Title Type';

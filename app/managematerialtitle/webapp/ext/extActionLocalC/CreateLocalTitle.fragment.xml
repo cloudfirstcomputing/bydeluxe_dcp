@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<core:FragmentDefinition
+<core:FragmentDefinition    
     xmlns:core="sap.ui.core"
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
@@ -20,14 +20,18 @@
                     <Input required="true" id="localCreate_inputOriginalTitleName" 
                            value="{formModel>/LocalTitleId}" 
                             editable="true"/>
-                    <Label id="localCreate_lblOriginalRegionalTitle" text="Regional Title Name"/>
+                    <Label id="localCreate_lblOriginalRegionalTitle" text="Regional Title"/>
                     <Input  id="localCreate_inputOriginalRegionalTitle" 
                            value="{formModel>/RegionalTitleName}" 
                            change=".onValidateOriginalTitle" editable="true"/>
-                    <Label id="localCreate_lblOriginalShortTitle" text="Short Title Name"/>
+                    <Label id="localCreate_lblOriginalShortTitle" text="Short Title"/>
                     <Input  id="localCreate_inputOriginalShortTitle" 
                            value="{formModel>/ShortTitle}" 
                            change=".onValidateOriginalTitle" editable="true"/>
+                    <Label id="localCreate_lblOriginalSecurityTitle" text="Security Title"/>
+                    <Input  id="localCreate_inputOriginalSecurityTitle" 
+                           value="{formModel>/SecurityTitle}" 
+                           editable="true"/>
 
                     <Label id="localCreate_lblTitleType" text="Title Type"/>
                     <Select id="localCreate_selectEditTitletypeC" selectedKey="Local" editable="false">
@@ -46,10 +50,18 @@
                     </Select>
 
                     <Label id="localCreate_lblRegionCode" text="Region Code"/>
-                    <Input id="localCreate_inputRegionCode" value="{formModel>/RegionCode}" showValueHelp="true"/>
+                    <Input id="localCreate_inputRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" showValueHelp="true" valueHelpRequest="handleValueHelprc">
+                        <suggestionItems>
+				            <core:ListItem text="{code}" additionalText="{descr}" />
+			            </suggestionItems>
+		            </Input>
 
                     <Label id="localCreate_lblLanguageCode1" text="Language Code"/>
-                    <Input id="localCreate_inputLanguageCode" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+                    <Input id="localCreate_inputLanguageCode" placeholder="Enter Language" value="{formModel>/LanguageCode}" showValueHelp="true" valueHelpRequest="handleValueHelplg">
+                        <suggestionItems>
+				            <core:ListItem text="{code}" additionalText="{descr}" />
+			            </suggestionItems>
+		            </Input>
 
                     <Label id="localCreate_lblReleaseDate1" text="Release Date"/>
                     <DatePicker id="localCreate_datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
@@ -78,7 +90,7 @@
                     <Input id="localCreate_inputStudioTitleId" value="{formModel>/StudioTitleId}"/>
 
                     <Label id="localCreate_lblStudioDistributor1" text="Studio/Distributor"/>
-                    <Input id="localCreate_inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true"/>
+                    <Input id="localCreate_inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true" valueHelpRequest="handleValueHelp"/>
                 </f:content>
             </f:SimpleForm>
         </VBox>

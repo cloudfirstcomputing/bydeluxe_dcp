@@ -32,7 +32,7 @@ service BookingOrderService {
     entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
     entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
     entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
-    entity S4H_BusinessPartnerapi as projection on api.BusinessPartners;
+    entity S4H_BusinessPartnerapi as projection on api.BusinessPartnersV1;
     entity S4H_BusinessPartnerAddress as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
     entity S4H_Country as projection on api.Country{        
         
@@ -314,6 +314,8 @@ service BookingOrderService {
             ProductManufacturerNumber,
             CreationDate,
             IsMarkedForDeletion,
+            YY1_CustomerDes_PRD,
+            YY1_matcust_PRD,
             to_ProductBasicText : redirected to ProductBasicText,
             to_Description  : redirected to ProductDescription      
     };

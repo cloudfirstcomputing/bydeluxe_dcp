@@ -44,7 +44,20 @@ sap.ui.define([
                             type: "DELETE",
                             contentType: "application/json",
                             success: function () {
-                                MessageToast.show("Title deleted successfully.");
+                                var updateCall = $.ajax({
+                                    url: `${oModel.sServiceUrl}deleteProduct`, // Call the action instead of the entity
+                                    type: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({ input: sMaterialMasterTitleID }), // Pass data under `input`
+                                    success: function (response) {
+                                        MessageToast.show("Title deleted successfully.");
+                                        oView.getModel().refresh();                                        
+                                    }.bind(this),
+                                    error: function (xhr, status, error) {
+                                        console.error("Product delete failed:", status, error, xhr.responseText);
+                                    }
+                                });
+                               
                                 oModel.refresh();  // Refresh model to update UI                                
                             }.bind(that),
                             error: function (xhr, status, error) {

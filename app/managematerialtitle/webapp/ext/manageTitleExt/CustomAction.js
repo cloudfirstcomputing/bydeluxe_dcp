@@ -6,8 +6,10 @@ sap.ui.define([
     "sap/ui/core/BusyIndicator",
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
-    "sap/ui/export/library"
-], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary) {
+    "sap/ui/export/library",
+    'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator',
+], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary, Filter, FilterOperator) {
     "use strict";
 
     return {
@@ -24,6 +26,120 @@ sap.ui.define([
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.manageTitleExt.CreateTitle",
                     controller: {
+                        handleValueHelp : function (oEvent) {                            
+                            this._sInputId = oEvent.getSource().getId();
+                    
+                            // create value help dialog
+                            if (!this._pValueHelpDialog) {
+                                this._pValueHelpDialog = Fragment.load({
+                                    id: oView.getId(),
+                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialog",  
+                                    controller: this
+                                }).then(function(oValueHelpDialog){
+                                    oView.addDependent(oValueHelpDialog);
+                                    return oValueHelpDialog;
+                                });
+                            }
+                    
+                            // open value help dialog
+                            this._pValueHelpDialog.then(function(oValueHelpDialog){
+                                oValueHelpDialog.open();
+                            });
+                        },
+                    
+                        _handleValueHelpSearch : function (oEvent) {
+                            var sValue = oEvent.getParameter("value");
+                            var oFilter = new Filter(
+                                "BusinessPartnerFullName",
+                                FilterOperator.Contains, sValue
+                            );
+                            oEvent.getSource().getBinding("items").filter([oFilter]);
+                        },
+                    
+                        _handleValueHelpClose : function (oEvent) {
+                            var oSelectedItem = oEvent.getParameter("selectedItem");
+                            if (oSelectedItem) {
+                                var productInput = oView.byId(this._sInputId);
+                                productInput.setValue(oSelectedItem.getTitle());
+                            }
+                            oEvent.getSource().getBinding("items").filter([]);
+                        },
+                        handleValueHelplg : function (oEvent) {                            
+                            this._sInputId = oEvent.getSource().getId();
+                    
+                            // create value help dialog
+                            if (!this._qValueHelpDialog) {
+                                this._qValueHelpDialog = Fragment.load({
+                                    id: oView.getId(),
+                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialogLg",  
+                                    controller: this
+                                }).then(function(oValueHelpDialog){
+                                    oView.addDependent(oValueHelpDialog);
+                                    return oValueHelpDialog;
+                                });
+                            }
+                    
+                            // open value help dialog
+                            this._qValueHelpDialog.then(function(oValueHelpDialog){
+                                oValueHelpDialog.open();
+                            });
+                        },
+                    
+                        _handleValueHelpSearchlg : function (oEvent) {
+                            var sValue = oEvent.getParameter("value");
+                            var oFilter = new Filter(
+                                "name",
+                                FilterOperator.Contains, sValue
+                            );
+                            oEvent.getSource().getBinding("items").filter([oFilter]);
+                        },
+                    
+                        _handleValueHelpCloselg : function (oEvent) {
+                            var oSelectedItem = oEvent.getParameter("selectedItem");
+                            if (oSelectedItem) {
+                                var productInput = oView.byId(this._sInputId);
+                                productInput.setValue(oSelectedItem.getTitle());
+                            }
+                            oEvent.getSource().getBinding("items").filter([]);
+                        },
+                        handleValueHelprc : function (oEvent) {                            
+                            this._sInputId = oEvent.getSource().getId();
+                    
+                            // create value help dialog
+                            if (!this._rValueHelpDialog) {
+                                this._rValueHelpDialog = Fragment.load({
+                                    id: oView.getId(),
+                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialogRc",  
+                                    controller: this
+                                }).then(function(oValueHelpDialog){
+                                    oView.addDependent(oValueHelpDialog);
+                                    return oValueHelpDialog;
+                                });
+                            }
+                    
+                            // open value help dialog
+                            this._rValueHelpDialog.then(function(oValueHelpDialog){
+                                oValueHelpDialog.open();
+                            });
+                        },
+                    
+                        _handleValueHelpSearchlg : function (oEvent) {
+                            var sValue = oEvent.getParameter("value");
+                            var oFilter = new Filter(
+                                "name",
+                                FilterOperator.Contains, sValue
+                            );
+                            oEvent.getSource().getBinding("items").filter([oFilter]);
+                        },
+                    
+                        _handleValueHelpCloselg : function (oEvent) {
+                            var oSelectedItem = oEvent.getParameter("selectedItem");
+                            if (oSelectedItem) {
+                                var productInput = oView.byId(this._sInputId);
+                                productInput.setValue(oSelectedItem.getTitle());
+                            }
+                            oEvent.getSource().getBinding("items").filter([]);
+                        },
                         onCancelCreate: function () {
                             if (this._oDialogC) {
                                 this._oDialogC.close();
@@ -155,6 +271,35 @@ sap.ui.define([
                     oDialog.open();
                 });
             } else {
+                var oFormModel = new sap.ui.model.json.JSONModel({
+                    MaterialMasterTitleID: "",
+                    LocalTitleId: "", // This should be ignored while Creating
+                    RegionCode: "",
+                    OriginalTitleName: "",
+                    TitleType: "Parent",
+                    TitleCategory: "Z007",
+                    RegionalTitleName: "",
+                    ShortTitle: "",
+                    SecurityTitle: "",
+                    LanguageCode: "EN",
+                    ReleaseDate: null,
+                    RepertoryDate: null,
+                    Format: "2D",
+                    ReleaseSize: "",
+                    Ratings: "",
+                    ReelCountEstimated: null,
+                    AssetVaultTitleId: "",
+                    ImdbId: "",
+                    StudioTitleId: "",
+                    StudioDistributor: "",
+                    Ratings_Ass: [],
+                    ExternalTitleIDs_Ass: []
+                    //IDType: "",
+                    //IDValue: ""
+                });
+
+                // Set the model to the view
+                oView.setModel(oFormModel, "formModel");                
                 this._oDialogC.open();
             }
 

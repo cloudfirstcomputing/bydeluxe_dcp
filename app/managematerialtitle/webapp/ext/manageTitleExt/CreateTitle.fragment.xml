@@ -1,4 +1,4 @@
-<core:FragmentDefinition
+<core:FragmentDefinition    
     xmlns:core="sap.ui.core"
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
@@ -28,7 +28,7 @@
                     <Input required="true" id="inputOriginalTitleName" value="{formModel>/OriginalTitleName}" change=".onValidateOriginalTitle"/>                    
 
                     <Label id="lblTitleType" text="Title Type"/>
-                    <Select id="selectEditTitletypeC" selectedKey="{formModel>/TitleType}">
+                    <Select id="selectEditTitletypeC" selectedKey="{formModel>/TitleType}" editable="false">
                         <items>
                             <core:Item id="itemEditTitleType2C" key="Parent" text="Parent"/>
                             <core:Item id="itemEditTitleType1C" key="Local" text="Local"/>                            
@@ -44,10 +44,18 @@
                     </Select>
 
                     <Label id="lblRegionCode" text="Region Code"/>
-                    <Input id="inputRegionCode" value="{formModel>/RegionCode}" showValueHelp="true"/>
+                    <Input id="inputRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" showValueHelp="true" valueHelpRequest="handleValueHelprc">
+                        <suggestionItems>
+				            <core:ListItem text="{code}" additionalText="{descr}" />
+			            </suggestionItems>
+		            </Input>
 
                     <Label id="lblLanguageCode1" text="Language Code"/>
-                    <Input id="inputLanguageCode" value="{formModel>/LanguageCode}" showValueHelp="true"/>
+                    <Input id="inputLanguageCode" placeholder="Enter Language" value="{formModel>/LanguageCode}"  showValueHelp="true" valueHelpRequest="handleValueHelplg">
+                        <suggestionItems>
+				            <core:ListItem text="{code}" additionalText="{descr}" />
+			            </suggestionItems>
+		            </Input>
 
                     <Label id="lblReleaseDate1" text="Release Date"/>
                     <DatePicker id="datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
@@ -76,7 +84,7 @@
                     <Input id="inputStudioTitleId" value="{formModel>/StudioTitleId}"/>
 
                     <Label id="lblStudioDistributor1" text="Studio/Distributor"/>
-                    <Input id="inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true"/>
+                    <Input id="inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true" valueHelpRequest="handleValueHelp"/>
                 </f:content>
             </f:SimpleForm>
         </VBox>

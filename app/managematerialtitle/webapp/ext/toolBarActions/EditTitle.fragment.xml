@@ -45,7 +45,7 @@
                     </Select>
 
                     <Label id="lblEditRegionCode" text="Region Code"/>
-                    <Input id="inputEditRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" suggestionItems="{/Countries}" showSuggestion="true">
+                    <Input id="inputEditRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" showValueHelp="true" valueHelpRequest="handleValueHelprc">
                         <suggestionItems>
 				            <core:ListItem text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
@@ -53,12 +53,11 @@
 
                     <Label id="lblEditLanguageCode" text="Language Code"/>
                     
-                    <Input id="inputEditLanguageCode" placeholder="Enter country" value="{formModel>/LanguageCode}" suggestionItems="{/Languages}" showSuggestion="true">
+                    <Input id="inputEditLanguageCode" placeholder="Enter Language" value="{formModel>/LanguageCode}" showValueHelp="true" valueHelpRequest="handleValueHelplg">
                         <suggestionItems>
 				            <core:ListItem text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
 		            </Input>
-
                     <Label id="lblEditReleaseDate" text="Release Date"/>
                     <DatePicker id="datePickerEditReleaseDate" value="{formModel>/ReleaseDate}"/>
 
@@ -86,7 +85,7 @@
                     <Input id="inputEditStudioTitleId" value="{formModel>/StudioTitleId}"/>
 
                     <Label id="lblEditStudioDistributor" text="Studio/Distributor"/>
-                    <Input id="inputEditStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true"/>
+                    <Input id="inputEditStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true" valueHelpRequest="handleValueHelp"/>
                 </f:content>
             </f:SimpleForm>
         </VBox>

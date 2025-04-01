@@ -185,12 +185,13 @@ sap.ui.define([
 
             var oStartDate = oStartDatePicker.getDateValue();
             if (oStartDate) {
-                var oEndDate = new Date(oStartDate);
-                oEndDate.setDate(oEndDate.getDate() + 7); // Add 7 days
-
-                oEndDatePicker.setDateValue(oEndDate);
-                //oDocKeyInput.setEnabled(false);
-            }
+                oEndDatePicker.setDateValue("null");
+                oEndDatePicker.setEnabled(true);
+                oDocKeyInput.setEnabled(false);
+                } 
+            else {
+               oDocKeyInput.setEnabled(true);
+    }
         },
         onSearch1: function () {
             var that = this;

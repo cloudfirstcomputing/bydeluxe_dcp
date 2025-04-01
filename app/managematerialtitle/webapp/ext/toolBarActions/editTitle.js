@@ -25,6 +25,120 @@ sap.ui.define([
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.toolBarActions.EditTitle",
                     controller: {
+                        handleValueHelp : function (oEvent) {                            
+                            this._sInputId = oEvent.getSource().getId();
+                    
+                            // create value help dialog
+                            if (!this._aValueHelpDialog) {
+                                this._aValueHelpDialog = Fragment.load({
+                                    id: oView.getId(),
+                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialog",  
+                                    controller: this
+                                }).then(function(oValueHelpDialog){
+                                    oView.addDependent(oValueHelpDialog);
+                                    return oValueHelpDialog;
+                                });
+                            }
+                    
+                            // open value help dialog
+                            this._aValueHelpDialog.then(function(oValueHelpDialog){
+                                oValueHelpDialog.open();
+                            });
+                        },
+                    
+                        _handleValueHelpSearch : function (oEvent) {
+                            var sValue = oEvent.getParameter("value");
+                            var oFilter = new Filter(
+                                "BusinessPartnerFullName",
+                                FilterOperator.Contains, sValue
+                            );
+                            oEvent.getSource().getBinding("items").filter([oFilter]);
+                        },
+                    
+                        _handleValueHelpClose : function (oEvent) {
+                            var oSelectedItem = oEvent.getParameter("selectedItem");
+                            if (oSelectedItem) {
+                                var productInput = oView.byId(this._sInputId);
+                                productInput.setValue(oSelectedItem.getTitle());
+                            }
+                            oEvent.getSource().getBinding("items").filter([]);
+                        },
+                        handleValueHelplg : function (oEvent) {                            
+                            this._sInputId = oEvent.getSource().getId();
+                    
+                            // create value help dialog
+                            if (!this._bValueHelpDialog) {
+                                this._bValueHelpDialog = Fragment.load({
+                                    id: oView.getId(),
+                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialogLg",  
+                                    controller: this
+                                }).then(function(oValueHelpDialog){
+                                    oView.addDependent(oValueHelpDialog);
+                                    return oValueHelpDialog;
+                                });
+                            }
+                    
+                            // open value help dialog
+                            this._bValueHelpDialog.then(function(oValueHelpDialog){
+                                oValueHelpDialog.open();
+                            });
+                        },
+                    
+                        _handleValueHelpSearchlg : function (oEvent) {
+                            var sValue = oEvent.getParameter("value");
+                            var oFilter = new Filter(
+                                "name",
+                                FilterOperator.Contains, sValue
+                            );
+                            oEvent.getSource().getBinding("items").filter([oFilter]);
+                        },
+                    
+                        _handleValueHelpCloselg : function (oEvent) {
+                            var oSelectedItem = oEvent.getParameter("selectedItem");
+                            if (oSelectedItem) {
+                                var productInput = oView.byId(this._sInputId);
+                                productInput.setValue(oSelectedItem.getTitle());
+                            }
+                            oEvent.getSource().getBinding("items").filter([]);
+                        },
+                        handleValueHelprc : function (oEvent) {                            
+                            this._sInputId = oEvent.getSource().getId();
+                    
+                            // create value help dialog
+                            if (!this._cValueHelpDialog) {
+                                this._cValueHelpDialog = Fragment.load({
+                                    id: oView.getId(),
+                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialogRc",  
+                                    controller: this
+                                }).then(function(oValueHelpDialog){
+                                    oView.addDependent(oValueHelpDialog);
+                                    return oValueHelpDialog;
+                                });
+                            }
+                    
+                            // open value help dialog
+                            this._cValueHelpDialog.then(function(oValueHelpDialog){
+                                oValueHelpDialog.open();
+                            });
+                        },
+                    
+                        _handleValueHelpSearchlg : function (oEvent) {
+                            var sValue = oEvent.getParameter("value");
+                            var oFilter = new Filter(
+                                "name",
+                                FilterOperator.Contains, sValue
+                            );
+                            oEvent.getSource().getBinding("items").filter([oFilter]);
+                        },
+                    
+                        _handleValueHelpCloselg : function (oEvent) {
+                            var oSelectedItem = oEvent.getParameter("selectedItem");
+                            if (oSelectedItem) {
+                                var productInput = oView.byId(this._sInputId);
+                                productInput.setValue(oSelectedItem.getTitle());
+                            }
+                            oEvent.getSource().getBinding("items").filter([]);
+                        },
                         onCancelEdit: function () {
                             if (this._oDialogE) {
                                 this._oDialogE.close();

@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem,S4H_BusinessPartnerapi} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -23,9 +23,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
         var s4h_products_Crt = await cds.connect.to("API_PRODUCT_SRV");
         var s4h_material_read = await cds.connect.to("API_MATERIAL_DOCUMENT_SRV");
-        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");        
+        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");   
         var distrospec_Txn = await cds.connect.to("Distrospec_SRV");
-        var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");
+        var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");        
+        var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");     
+
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
@@ -1224,7 +1226,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         this.on(['READ'], MaterialDocumentHeader, async req => { //s4h_bp_vh
             return s4h_material_read.run(req.query);
-        });        
+        });  
+        
+        this.on(['READ'], S4H_BusinessPartnerapi, async req => { //s4h_bp_vh
+            return s4h_bp_vh.run(req.query);
+        });
+        this.before('CREATE', 'Titles', async (req) => {
+            const lastEntry = await SELECT.one.from('Titles').orderBy('LocalTitleId desc');
+            
+            let newId = 'LT-0001'; // Default if no previous records
+            if (lastEntry && lastEntry.LocalTitleId) {
+                let lastNumber = parseInt(lastEntry.LocalTitleId.replace('LT-', ''), 10);
+                newId = `LT-${String(lastNumber + 1).padStart(4, '0')}`;
+            }
+        
+            req.data.LocalTitleId = newId;
+        });   
 
         this.on("createProduct", async (req) => {
             try {
@@ -1241,12 +1258,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         this.on("deleteProduct", async (req) => {
             try {
-                const input = req.data.input; // Extract input data from request
+                const input = req.data.input.toString(); // Extract input data from request
 
                 // Make a POST call to the external API              
-                const response = await s4h_products_Crt.run(UPDATE(Products).set({ IsMarkedForDeletion: true }).where({ Product: input.Product }))
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({ IsMarkedForDeletion: true }).where({ Product: input }))
 
-                return "Succesfully Deleted";
+                //return "Succesfully Deleted";
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);
             }
@@ -1528,7 +1545,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "MaterialDocumentHeaderText": "",
                             "MaterialDocumentItem": sMaterialDocument,
                             "MaterialDocumentYear": sMaterialDocument,
-                            "PrinterIsCapableBarCodes": sMaterialDocument,
+                            "PrinterIsCapableBarCodes": sMaterialDocument, //this is the barcode text
                             "ReferenceDocument": "",
                             "GRMI": {
                                 "GRMatItemNode": [
