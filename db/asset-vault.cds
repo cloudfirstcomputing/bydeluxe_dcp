@@ -44,8 +44,8 @@ entity DistributionDcp {
                                                  DCDMFlag              : String(10);
                                                  LinkedDCP             : String(40);
                                                  LinkedCPLUUID         : String(40) @mandatory;
-                                                 LinkedCTT             : String(80) @mandatory;
-                                                 VersionDescription    : String(40);
+                                                 LinkedCTT             : String(500) @mandatory;
+                                                 VersionDescription    : String(100);
                                                  DistributionSize      : String(40);
                                                  RunTime               : String(10);
                                                  StartOfCredits        : String(10);
