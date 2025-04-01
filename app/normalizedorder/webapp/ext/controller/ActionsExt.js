@@ -795,15 +795,15 @@ sap.ui.define([
                 });
                 return;
             }
-            else if (oEntry?.Remediation) {
-                MessageBox.error("Invalid Selection", {
-                    title: "Error",
-                    details: "Remediation is already done for the selection",
-                    contentWidth: "auto",
-                    styleClass: sResponsivePaddingClasses
-                });
-                return;
-            }
+            // else if (oEntry?.Remediation) {
+            //     MessageBox.error("Invalid Selection", {
+            //         title: "Error",
+            //         details: "Remediation is already done for the selection",
+            //         contentWidth: "auto",
+            //         styleClass: sResponsivePaddingClasses
+            //     });
+            //     return;
+            // }
             else {
                 MessageBox.confirm(oResourceBundle.getText("confirmSORemediation"), {
                     title: oResourceBundle.getText("confirmSORemediationTitle"),

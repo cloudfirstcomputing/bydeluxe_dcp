@@ -61,7 +61,19 @@ annotate BookingOrderService.StudioFeed with @(
         {
             $Type : 'UI.DataField',
             Value : Remediation,
-            Label : 'Remediation',
+            Label : '{i18n>Remediation}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : DeliveryMethod,
+            Label : '{i18n>DeliveryMethod}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RemediationCounter,
+            Label : '{i18n>RemediationCounter}',
             ![@UI.Importance] : #High,
         },
         {
@@ -535,6 +547,16 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : DeliveryMethod,
+                Label : '{i18n>DeliveryMethod}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : RemediationCounter,
+                Label : '{i18n>RemediationCounter}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : RequestId,
                 Label : '{i18n>Requestid}',
             },
@@ -592,6 +614,16 @@ annotate BookingOrderService.StudioFeed with @(
                 $Type : 'UI.DataField',
                 Value : Warnings,
                 Label : '{i18n>Warnings}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : DeliveryMethod,
+                Label : 'DeliveryMethod',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : RemediationCounter,
+                Label : 'RemediationCounter',
             },
         ],
     },

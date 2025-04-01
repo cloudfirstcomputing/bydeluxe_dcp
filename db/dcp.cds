@@ -166,8 +166,9 @@ entity StudioFeed : cuid, managed {
     ContentType        : String;
     CancelOrder        : String;
     DeliveryType       : String;
-    //Common custom fields
+    //Common custom fields    
     RemediationCounter : Integer                      @readonly;
+    DeliveryMethod: String @readonly;
     Version            : Integer                      @readonly;
     IsActive           : String(1)                    @readonly;
     Remediation        : String                       @readonly;
@@ -306,7 +307,7 @@ entity BookingSalesorderItem : managed {
         KeyStartTime             : Time;
         KeyEndTime               : Time;
         ShippingType             : Association to one ShippingTypeMaster;
-        SalesTerritory           : Association to one api.SalesDistricts;
+        SalesTerritory           : Association to one api.SalesDistricts;  
 }
 @readonly
 entity BookingSalesorderPartner : managed {
