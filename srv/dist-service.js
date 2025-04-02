@@ -372,7 +372,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         this.on(['READ'], DCPProducts, async req => {
-            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z003' })))
+            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductType: 'ZDCP' })))
             return data.map(item => {
                 return { Product: item.Product, Name: item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription }
             })
@@ -381,7 +381,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         this.on(['READ'], DCPMapProducts, async req => {
             const data1 = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z003' })))
             const data2 = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z004' })))
-            const data = [...data1,...data2]
+            const data = [...data1, ...data2]
             return data.map(item => {
                 return { Product: item.Product, Name: item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription }
             })

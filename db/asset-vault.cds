@@ -18,7 +18,7 @@ entity DistributionDcp {
         EDeliveryApacTitleId           : String(40);
         EDeliveryNoramTitleId          : String(40);
         KencastID                      : String(40);
-        MaxCPLDuration                 : String(10);
+        MaxCPLDuration                 : String(12);
         StartOfCredit                  : String;
         StartOfCrawl                   : String;
         DcpFormats                     : String(80);
@@ -43,7 +43,7 @@ entity DistributionDcp {
                                                  ContentKind           : String(40);
                                                  DCDMFlag              : String(10);
                                                  LinkedDCP             : String(40);
-                                                 LinkedCPLUUID         : String(40) @mandatory;
+                                                 LinkedCPLUUID         : String(40)  @mandatory;
                                                  LinkedCTT             : String(500) @mandatory;
                                                  VersionDescription    : String(100);
                                                  DistributionSize      : String(40);
