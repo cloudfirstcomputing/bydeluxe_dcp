@@ -18,7 +18,15 @@ sap.ui.define([
 
             // Code to get i18n resource bundle
             var oResourceBundle = oView.getModel("i18n").getResourceBundle();
-
+            let aSelectedItems = this.editFlow.getView().byId("normalizedorder::StudioFeedList--fe::table::StudioFeed::LineItem-innerTable").getSelectedItems();
+            if(aSelectedItems?.length){
+                MessageBox.error(`Clear selection of entries before upload`, {
+                    title: "Error",
+                    contentWidth: "auto",
+                    styleClass: sResponsivePaddingClasses
+                });
+                return;
+            }
             // Code to get Excelsheet fields
             that.uploadFile = [{
                 "width": "11rem",
@@ -887,9 +895,99 @@ sap.ui.define([
             }
 
         },
-        handleReconcile: function() {
-            MessageToast.show("Custom handler invoked.");
-        }
+        handleReconcile: function () {
+            let aData = [];
+            let aSelectedItems = this.editFlow.getView().byId("normalizedorder::StudioFeedList--fe::table::StudioFeed::LineItem-innerTable").getSelectedItems();
+            for (var i in aSelectedItems) {
+                var oEntry = aSelectedItems[i].getBindingContext().getObject();
+                if (!oEntry) {
+                    MessageBox.error(`No entries selected for reconciliation. Please make a selection and proceed`, {
+                        title: "Error",
+                        contentWidth: "auto",
+                        styleClass: sResponsivePaddingClasses
+                    });
+                    aData = [];
+                    break;
+                }
+                else if (oEntry?.SalesOrder || !oEntry.ErrorMessage) {
+                    MessageBox.error(`Reconciliation can be done only for failed entries`, {
+                        title: "Error",
+                        contentWidth: "auto",
+                        styleClass: sResponsivePaddingClasses
+                    });
+                    aData = [];
+                    break;
+                }
+                else if (!oEntry?.BookingID) {
+                    MessageBox.error(`Retry after selecting Booking ID from table settings`, {
+                        title: "Error",
+                        contentWidth: "auto",
+                        styleClass: sResponsivePaddingClasses
+                    });
+                    aData = [];
+                    break;
+                }
+                else {
+                    aData.push(oEntry.BookingID);
+                }
+            }
+            if (aData?.length) {
+                var oModel = this.getModel();
+                var oActionODataContextBinding = oModel.bindContext("/reconcileStudioFeed(...)");
+                oActionODataContextBinding.setParameter("aBookingID", aData);
+                BusyIndicator.show();
+                oActionODataContextBinding.execute().then(
+                    function (param) {
+                        var oActionContext = oActionODataContextBinding.getBoundContext();
+
+                        if (oActionContext.getObject()?.value?.message) {
+                            let oMessages = oActionContext.getObject()?.value?.message;
+                            
+                            let aErrors = oMessages.error;
+                            let aWarnings = oMessages.warning;
+                            let aSuccess = oMessages.success;
+
+                            if (aErrors?.length) {
+                                MessageBox.error("Action failed", {
+                                    title: "Error",
+                                    details: JSON.stringify((aErrors.map((entry) => { return entry.message }))),
+                                    contentWidth: "auto",
+                                    styleClass: sResponsivePaddingClasses
+                                });
+                            }
+                            if (aWarnings?.length) {
+                                MessageBox.warning("Action has been completed with warning", {
+                                    title: "Warning",
+                                    details: JSON.stringify((aWarnings.map((entry) => { return entry.message }))),
+                                    contentWidth: "auto",
+                                    styleClass: sResponsivePaddingClasses
+                                });
+                            }
+                            if (aSuccess?.length) {
+                                MessageBox.success("Action has been completed successfully", {
+                                    title: "Success",
+                                    details: JSON.stringify((aSuccess.map((entry) => { return entry.message }))),
+                                    contentWidth: "auto",
+                                    styleClass: sResponsivePaddingClasses
+                                });
+                            }                        
+                        }
+                        BusyIndicator.hide();
+                        oModel.refresh();
+                    }.bind(this)
+                ).catch(
+                    (err, param2) => {
+                        BusyIndicator.hide();
+                        MessageBox.error("Error occured", {
+                            title: "Error",
+                            details: err,
+                            contentWidth: "auto",
+                            styleClass: sResponsivePaddingClasses
+                        });
+                    }
+                );
+            }
+        },
         
     };
 });

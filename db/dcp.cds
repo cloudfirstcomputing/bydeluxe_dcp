@@ -166,11 +166,12 @@ entity StudioFeed : cuid, managed {
     ContentType        : String;
     CancelOrder        : String;
     DeliveryType       : String;
+    
     //Common custom fields    
     RemediationCounter : Integer                      @readonly;
-    DeliveryMethod: String @readonly;
+    DeliveryMethod: String                            @readonly;
     Version            : Integer                      @readonly;
-    IsActive           : String(1)                    @readonly;
+    IsActive           : String(1)                    ;
     Remediation        : String                       @readonly;
     Status             : Association to BookingStatus;
     SalesOrder         : String                       ;

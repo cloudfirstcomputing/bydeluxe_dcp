@@ -27,6 +27,7 @@ service BookingOrderService {
     action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
     action remediateSalesOrder(bookingID : String, salesOrder : String) returns String;
+    action reconcileStudioFeed(aBookingID: array of String) returns String;
     
     entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner   as projection on S4_BuisnessPartner.A_BusinessPartner;

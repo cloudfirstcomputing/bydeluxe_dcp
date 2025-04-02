@@ -143,6 +143,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return req.reject(400, error)
             }
         });
+        this.on('reconcileStudioFeed', async (req, res)=>{
+            var aBookingID = req.data?.aBookingID;
+            var aFeeds = await SELECT.from(StudioFeed).where({BookingID: {"IN": aBookingID }, IsActive: 'Y'});
+            aFeeds = aFeeds?.map((feed)=>{
+                feed.BookingType = 'C';
+                return feed
+            });
+            var aResponse = await createStudioFeeds(req, aFeeds, true);
+            req.reply({
+                code: 201,
+                message: aResponse
+            });
+        });
         this.on('createStudioFeeds', async (req, res) => {
             try{
                 var data = req.data?.StudioFeed;
@@ -182,11 +195,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return;
             }
             else if (!oContentData.DeliveryMethod) {
-                req.reject(501, "Initial Delivery method was not captured while setting up the payload");
+                req.reject(501, "Initial Delivery method was not captured for this entry, hence cannot be remediated");
                 return;
             }
             else if(!oContentData.RemediationCounter){
-                req.reject(501, "Remediation details were not captured while setting up Payload ");
+                req.reject(501, "Remediation counterfor this entry, hence cannot be remediated");
                 return;
             }
             var aRemediatedDeliveryMethods = oContentData.DeliveryMethod?.split(","), iRemediationCounter = oContentData.RemediationCounter;
@@ -240,12 +253,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
                     for(var j in aDeliverySeqFromDistHeader){
                         var sDelSeq = aDeliverySeqFromDistHeader[j];
-                        if(sDelSeq === '03' || sDelSeq === '10'){ //RULE 11.2
-                            req.reject(400, 
-                                `Remediation is completed for this as the delivery sequence has reached till shipping condition: ${sDelSeq}`);
-                                return;
-                        }
-                        else if(sDelSeq){
+                        // if(sDelSeq === '03' || sDelSeq === '10'){ //RULE 11.2
+                        //     req.reject(400, 
+                        //         `Remediation is completed for the selected entry as the delivery sequence has reached till shipping condition: ${sDelSeq}`);
+                        //         return;
+                        // }
+                        // else 
+                        if(sDelSeq){
                             oContentPackages = aContentPackages.find((pkg)=>{
                                 return (
                                 pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq || 
@@ -301,7 +315,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             oContentData.DeliveryMethod = oContentData.DeliveryMethod + ", "+sDeliveryMethod;
                             oContentData.RemediationCounter = iRemediationCounter + 1;
                             oContentData.Remediation = oContentData.Remediation? (oContentData.Remediation + ', ' + result?.SalesOrderItem):result?.SalesOrderItem; 
-                            await UPDATE(hanaDBTable).set({ Remediation: `${oContentData.Remediation}`, DeliveryMethod: oContentData.DeliveryMethod, RemediationCounter: oContentData.RemediationCounter }).where({ BookingID: oContentData.BookingID })
+                            let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oContentData.Remediation}`, DeliveryMethod: oContentData.DeliveryMethod, RemediationCounter: oContentData.RemediationCounter }).where({ BookingID: oContentData.BookingID, IsActive: 'Y' })
+                            
+                            var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem})
+                            let oNewBTPItem = {};
+                            if(oBTPItem){
+                                oNewBTPItem = oBTPItem;
+                            }
+                            oNewBTPItem.SalesOrder = result?.SalesOrder;
+                            oNewBTPItem.SalesOrderItem = result?.SalesOrderItem;
+                            oNewBTPItem.Product = result?.Material;
+                            oNewBTPItem.ShippingPoint= result?.ShippingPoint;
+                            oNewBTPItem.ProductGroup=result?.MaterialGroup;
+                            oNewBTPItem.ShippingType_ID= result?.ShippingType;
+                            
+                            let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
                             aResponseStatus.push({
                                 "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
                                 "status": "S"
@@ -316,7 +344,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
         });
 
-        const createStudioFeeds = async (req, aData) => {
+        const createStudioFeeds = async (req, aData,  bReconcile) => {
             var recordsToBeInserted = [], recordsToBeUpdated = [], successEntries = [], updateSuccessEntries = [], 
             failedEntries = [], sErrorMessage = "",  hanatable = StudioFeed, oResponseStatus = {"error":[], "success": [], "warning": []};
             var data = aData;
@@ -393,30 +421,39 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if(oLocalResponse?.warning?.length){
                         oResponseStatus?.warning?.push(...oLocalResponse?.warning);
                     } 
-                } 
-                       
-                if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
-                    var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                    if (entry_Active) {
-                        data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                        recordsToBeUpdated.push(entry_Active);
-                    }
                 }
-                recordsToBeInserted.push(data[i]); //INSERT is always required
+                if(bReconcile){
+                    var sID = data[i].ID;
+                    await UPDATE(hanatable).set({ ErrorMessage: data[i].ErrorMessage, SalesOrder:data[i].SalesOrder  }).where({
+                        ID: sID
+                    });
+                } 
+                else{                      
+                    if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
+                        var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                        if (entry_Active) {
+                            data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                            recordsToBeUpdated.push(entry_Active);
+                        }
+                    }
+                    recordsToBeInserted.push(data[i]); //INSERT is always required
+                }
             }
-            if (recordsToBeInserted.length) {
-                let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
-                successEntries.push(recordsToBeInserted);
-                successEntries.push(insertResult);
-            }
-            for (var i in recordsToBeUpdated) {
-                let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
-                    BookingID: recordsToBeUpdated[i].BookingID,
-                    createdAt: recordsToBeUpdated[i].createdAt
-                });
-                if (updateResult) {
-                    updateSuccessEntries.push(recordsToBeUpdated[i]);
-                    updateSuccessEntries.push(updateResult);
+            if(!bReconcile){
+                if (recordsToBeInserted.length) {
+                    let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
+                    successEntries.push(recordsToBeInserted);
+                    successEntries.push(insertResult);
+                }
+                for (var i in recordsToBeUpdated) {
+                    let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
+                        BookingID: recordsToBeUpdated[i].BookingID,
+                        createdAt: recordsToBeUpdated[i].createdAt
+                    });
+                    if (updateResult) {
+                        updateSuccessEntries.push(recordsToBeUpdated[i]);
+                        updateSuccessEntries.push(updateResult);
+                    }
                 }
             }
             return oResponseStatus;
