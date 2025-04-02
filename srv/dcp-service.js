@@ -560,24 +560,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         
                             var aShiptoDelMethodsFromS4 = [], DCDCFlag, TrailMix;
                             if (oShipToSalesData) { //4.1 =>Del Method check with BuPa
-                                DCDCFlag = oShipToSalesData?.YY1_DCDCFlag_csa;
-                                if(DCDCFlag){ //4.2 =>DCDC check for Del Method
-                                    var dcdcFound = aDeliveryMethodsFromPackage.find((delMeth)=>{
-                                        return (delMeth === '05' || delMeth === '06' || delMeth === '10')
-                                    });
-                                }
-                                var ODistRest = aContentPackageDistRestrictions?.find((rest)=>{
-                                    rest.TrailMixSub !== null
-                                }); 
-                                if(DCDCFlag && !dcdcFound){
-                                    sErrorMessage = `DCDC Capability Not found`; 
-                                }
-                                TrailMix = oShipToSalesData?.YY1_TrailMixSubscrib_csa;
-                                // if(!sErrorMessage){
-                                //     if(ODistRest?.TrailMixSub !== TrailMix){ //4.5=> TrailMixSubscrib check
-                                //         sErrorMessage = ` TrailMix Subscription ${TrailMixSub} not matching with Restriction maintained`;
-                                //     }
+                                // DCDCFlag = oShipToSalesData?.YY1_DCDCFlag_csa;
+                                // if(DCDCFlag){ //4.2 =>DCDC check for Del Method
+                                //     var dcdcFound = aDeliveryMethodsFromPackage.find((delMeth)=>{
+                                //         return (delMeth === '05' || delMeth === '06' || delMeth === '10')
+                                //     });
                                 // }
+                                // var ODistRest = aContentPackageDistRestrictions?.find((rest)=>{
+                                //     rest.TrailMixSub !== null
+                                // }); 
+                                // if(DCDCFlag && !dcdcFound){
+                                //     sErrorMessage = `DCDC Capability Not found`; 
+                                // }
+                                // TrailMix = oShipToSalesData?.YY1_TrailMixSubscrib_csa;
+                                // // if(!sErrorMessage){
+                                // //     if(ODistRest?.TrailMixSub !== TrailMix){ //4.5=> TrailMixSubscrib check
+                                // //         sErrorMessage = ` TrailMix Subscription ${TrailMixSub} not matching with Restriction maintained`;
+                                // //     }
+                                // // }
                                 oShipToSalesData?.YY1_DeliveryMethod1_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod1_csa) : '';
                                 oShipToSalesData?.YY1_DeliveryMethod2_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod2_csa) : '';
                                 oShipToSalesData?.YY1_DeliveryMethod3_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod3_csa) : '';
@@ -589,38 +589,38 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oShipToSalesData?.YY1_DeliveryMethod9_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa) : '';
                                 oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';                        
 
-                                var oPBC, pbcPresent = false ;
-                                for(var d in aContentPackageDistRestrictions){
-                                    var aPBC = [];
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability1);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability2);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability3);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability4);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability5);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability6);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability7);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability8);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability9);
-                                    aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability10);
+                                // var oPBC, pbcPresent = false ;
+                                // for(var d in aContentPackageDistRestrictions){
+                                //     var aPBC = [];
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability1);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability2);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability3);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability4);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability5);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability6);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability7);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability8);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability9);
+                                //     aPBC.push(aContentPackageDistRestrictions[d].PlayBackCapability10);
 
-                                    oPBC = aPBC.find((pbc)=>{
-                                        if(pbc){
-                                            pbcPresent = true;
-                                            return (pbc === oShipToSalesData?.YY1_SpecialAttribute1_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute2_csa ||
-                                                pbc === oShipToSalesData?.YY1_SpecialAttribute3_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute4_csa ||
-                                                pbc === oShipToSalesData?.YY1_SpecialAttribute5_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute6_csa ||
-                                                pbc === oShipToSalesData?.YY1_SpecialAttribute7_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute8_csa ||
-                                                pbc === oShipToSalesData?.YY1_SpecialAttribute9_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute10_csa
-                                            );
-                                        }
-                                    });
-                                    if(oPBC){
-                                        break;
-                                    }
-                                }
-                                if(pbcPresent && !oPBC){
-                                    sErrorMessage = `No Playback Capability match found`;
-                                }
+                                //     oPBC = aPBC.find((pbc)=>{
+                                //         if(pbc){
+                                //             pbcPresent = true;
+                                //             return (pbc === oShipToSalesData?.YY1_SpecialAttribute1_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute2_csa ||
+                                //                 pbc === oShipToSalesData?.YY1_SpecialAttribute3_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute4_csa ||
+                                //                 pbc === oShipToSalesData?.YY1_SpecialAttribute5_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute6_csa ||
+                                //                 pbc === oShipToSalesData?.YY1_SpecialAttribute7_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute8_csa ||
+                                //                 pbc === oShipToSalesData?.YY1_SpecialAttribute9_csa || pbc === oShipToSalesData?.YY1_SpecialAttribute10_csa
+                                //             );
+                                //         }
+                                //     });
+                                //     if(oPBC){
+                                //         break;
+                                //     }
+                                // }
+                                // if(pbcPresent && !oPBC){
+                                //     sErrorMessage = `No Playback Capability match found`;
+                                // }
                             }
                             else {
                                 sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
@@ -649,7 +649,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }   
                     }
                 }
-                if(sContentIndicator === 'K' || oContentPackages.IncludeKey){ //FOR KEY
+                if(sContentIndicator === 'K' || oContentPackages?.IncludeKey){ //FOR KEY
                     var aKeyPackage = distroSpecData?.to_KeyPackage;
                     aKeyPackage = await performPrioritySortAndValidityCheck(aKeyPackage, oContentData, distroSpecData);
                     if (!aKeyPackage?.length) {
@@ -885,7 +885,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     dist.to_StudioKey((studio) => { studio('*')}),
                     dist.to_Package((pkg) => { pkg('*'),
                             pkg.to_DistRestriction((dist) => { dist('*') }),
-                            pkg.to_DCPMaterial((dcpmat) => { dcpmat('*') })
+                            pkg.to_DCPMaterial((dcpmat) => { dcpmat('*'), 
+                                dcpmat.to_DCPDetail((dcpdet)=> {dcpdet('*')})})
                     }),
                     dist.to_KeyPackage((keyPkg)=>{ keyPkg('*'),
                         keyPkg.to_DistRestriction((dist) => { dist('*') }),
@@ -1006,7 +1007,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 //     await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, oResponseStatus, oSalesOrderItem, oContentData);
                 // }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
-                var aContentPkgCPL = oContentPackage?.to_DCPMaterial?.find((dcp)=>{return dcp.DCPMaterialNumber_Product === oSalesOrderItem.Material}), 
+                // var aContentPkgCPL = oContentPackage?.to_DCPMaterial?.find((dcp)=>{return dcp.DCPMaterialNumber_Product === oSalesOrderItem.Material}), 
+                var aContentPkgCPL = oContentPackage?.to_DCPMaterial,
                 aContentPkgCTT = [], sContentPkgCTTs, aContentPkgCPLUUID = [], sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
 
                 if(sShippingType === '07'){ //Key Order Item
@@ -1030,19 +1032,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if(oAssetvault?.KrakenTitleID){ //RULE 9.3
                         await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
                     }
+                    var aFinalCPLs = [], aFinalCTTs = [];
                     for(var c in aContentPkgCPL){
-                        if(aContentPkgCPL[c]?.CPLUUID){
-                            aContentPkgCPLUUID.push(aContentPkgCPL[c]?.CPLUUID);
-                            const assetvault = await SELECT.one.from(CplList).where({ LinkedCPLUUID: aContentPkgCPL[c]?.CPLUUID })
-                            aContentPkgCTT.push(assetvault?.LinkedCTT)
+                        var aDCPDet = aContentPkgCPL[c];
+                        var aLinkedCPLUUIDs = aContentPkgCPL[c]?.to_DCPDetail?.map((item)=>{return item.LinkedCPLUUID});
+                        var aCTTs = aContentPkgCPL[c]?.to_DCPDetail?.map((item)=>{return item.LinkedCTT});
+
+                        if(aLinkedCPLUUIDs?.length){
+                            aFinalCPLs = aFinalCPLs?.length?[...aFinalCPLs,...aLinkedCPLUUIDs]: [...aLinkedCPLUUIDs];
                         }
+                        if(aCTTs?.length){
+                            aFinalCTTs = aFinalCTTs?.length?[...aFinalCTTs,...aLinkedCPLUUIDs]: [...aLinkedCPLUUIDs];
+                        }
+                        // if(aContentPkgCPL[c]?.LinkedCTT){
+                        //     aContentPkgCTT.push(aContentPkgCPL[c]?.LinkedCTT);
+                        // }
                     }
-                    if (aContentPkgCTT?.length) { //RULE 9.1
-                        sContentPkgCTTs = aContentPkgCTT?.map((u)=>{return u?u:false}).join(`,`);  
+                    if (aFinalCTTs?.length) { //RULE 9.1
+                        sContentPkgCTTs = aFinalCTTs?.map((u)=>{return u?u:false}).join(`,`);  
                         await updateItemTextForSalesOrder(req, "Z003", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
-                    if (aContentPkgCPLUUID?.length) { //RULE 9.2
-                        sContentPkgCPLUUIDs = aContentPkgCPLUUID?.map((u)=>{return u?u:false}).join(`,`); 
+                    if (aFinalCPLs?.length) { //RULE 9.2
+                        sContentPkgCPLUUIDs = aFinalCPLs?.map((u)=>{return u?u:false}).join(`,`); 
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData); 
                     }
                 }
@@ -1310,13 +1321,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data: oItemText
             }).catch((err) => {
                 oResponseStatus.warning.push({
-                    "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}, ${sType} Item text creation failed with the error: ${err.message} `,
+                    "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, ${sType} Item text creation failed with the error: ${err.message} `,
                     "errorMessage": err.message
                 });
             }).then((result) => {
                 if (result) {
                     oResponseStatus.success.push({
-                        "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}, ${sType} Item Text is created |`
+                        "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, ${sType} Item Text is created |`
                     });
                 }
             });
