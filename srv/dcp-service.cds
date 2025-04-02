@@ -371,7 +371,22 @@ service BookingOrderService {
     
 
     @readonly
-    entity MaterialDocumentHeader as projection on api.MaterialDocumentHeader;
+    entity MaterialDocumentHeader as projection on api.MaterialDocumentHeader{
+       key MaterialDocumentYear,
+       key MaterialDocument,
+           PostingDate,
+           MaterialDocumentHeaderText,
+        to_MaterialDocumentItem: redirected to MaterialDocumentItem,
+    };
+
+    entity MaterialDocumentItem as projection on api.MaterialDocumentItem{
+            key MaterialDocumentYear,
+            key MaterialDocument,
+            key MaterialDocumentItem,
+                Material,
+                Plant
+
+    }
     entity ProductionOrder as projection on  api.ProductionOrder;
     
     
