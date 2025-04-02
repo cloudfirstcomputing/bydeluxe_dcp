@@ -1648,6 +1648,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
                 var sMaterialDocument = req?.data?.Material;
 
+                const productData = await s4h_products_Crt.run(
+                    SELECT`ProductDescription, ProductManufacturerNumber`
+                        .from(Products)
+                        .where({ Product: sMaterialDocument })
+                );
+
                 const formData = {
                     Form:
                     {

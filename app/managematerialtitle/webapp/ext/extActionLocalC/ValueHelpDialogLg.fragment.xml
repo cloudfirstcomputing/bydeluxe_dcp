@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Products"
+		title="Language"
 		items="{/Languages}"
 		search="_handleValueHelpSearchlg"
 		confirm="_handleValueHelpCloselg"
