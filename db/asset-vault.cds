@@ -47,9 +47,9 @@ entity DistributionDcp {
                                                  LinkedCTT             : String(500) @mandatory;
                                                  VersionDescription    : String(100);
                                                  DistributionSize      : String(40);
-                                                 RunTime               : String(10);
-                                                 StartOfCredits        : String(10);
-                                                 StartOfCrawl          : String(10);
+                                                 RunTime               : String(12);
+                                                 StartOfCredits        : String(12);
+                                                 StartOfCrawl          : String(12);
                                                  DKDMS3location        : String;
                                                  CPLS3location         : String;
                                                  AtmosFlag             : Integer;
