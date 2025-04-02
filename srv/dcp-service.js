@@ -501,7 +501,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
                             if (sBPCustomerNumber) {
                                 sShipTo = sBPCustomerNumber;
-                                // oPayLoad.to_Partner.push({ "PartnerFunction": aConfig?.find((e) => { return e.VariableName === 'PartnerFunc_SPIRITWORLD' })?.VariableValue, "Customer": sBPCustomerNumber });
+                                oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
                             }
                             else {
                                 sShipTo = "";
