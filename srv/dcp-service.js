@@ -1799,6 +1799,55 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
             }
         });
 
+        this.on("createContent", async (req, res) => {
+            var aResult = await createBookingFeed(req, "C");
+            return aResult;
+        });
+        this.on("createKey", async (req, res) => {
+            var aResult = await createBookingFeed(req, "K");
+            return aResult;
+        });
+        const createBookingFeed = async (req, sContentIndicator, aData) => {
+            if (aData) {
+                var data = aData;
+            }
+            else {
+                data = req?.data?.Records;
+            }
+        
+            let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
+            hanatable = sContentIndicator === "C" ? dcpcontent : dcpkey;
+        
+            for (var i in data) {
+                data[i].Status_ID = "A";
+                data[i].IsActive = "Y";
+                data[i].Version = 1;
+        
+                var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                if (entry_Active) {
+                    data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                    recordsToBeUpdated.push(entry_Active);
+                }
+                recordsToBeInserted.push(data[i]);
+            }
+            if (recordsToBeInserted.length) {
+                let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
+                successEntries.push(recordsToBeInserted);
+                successEntries.push(insertResult);
+            }
+            for (var i in recordsToBeUpdated) {
+                let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
+                    BookingID: recordsToBeUpdated[i].BookingID,
+                    createdAt: recordsToBeUpdated[i].createdAt
+                });
+                updateSuccessEntries.push(recordsToBeUpdated[i]);
+                updateSuccessEntries.push(updateResult);
+            }
+            finalResult.push({ "Success": successEntries });
+            finalResult.push({ "UpdateSuccess": updateSuccessEntries });
+            finalResult.push({ "Error": failedEntries });
+            return finalResult;
+        };
         return super.init();
     }
 

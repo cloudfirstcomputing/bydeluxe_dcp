@@ -23,7 +23,6 @@ service BookingOrderService {
     // action reconcileKey(bookingIDs: array of  String) returns String;
     entity StudioFeed as projection on db.StudioFeed;
     annotate StudioFeed with @odata.draft.enabled;
-
     action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
     action remediateSalesOrder(bookingID : String, salesOrder : String) returns String;
