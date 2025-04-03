@@ -376,6 +376,7 @@ service BookingOrderService {
        key MaterialDocument,
            PostingDate,
            MaterialDocumentHeaderText,
+           InventoryTransactionType,
         to_MaterialDocumentItem: redirected to MaterialDocumentItem,
     };
 

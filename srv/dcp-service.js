@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -23,17 +23,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_param_Txn = await cds.connect.to("YY1_PARAMETER_CDS_0001");
         var s4h_products_Crt = await cds.connect.to("API_PRODUCT_SRV");
         var s4h_material_read = await cds.connect.to("API_MATERIAL_DOCUMENT_SRV");
-        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");   
+        var s4h_production_order = await cds.connect.to("API_PRODUCTION_ORDER_2_SRV");
         var distrospec_Txn = await cds.connect.to("Distrospec_SRV");
-        var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");        
-        var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");     
+        var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");
+        var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");
 
-        var s4h_prodGroup =  await cds.connect.to("API_PRODUCTGROUP_SRV");
+        var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
-        var oSalesParameterConfig, oResponseStatus = {"error":[], "success": [], "warning": []};
+        var oSalesParameterConfig, oResponseStatus = { "error": [], "success": [], "warning": [] };
         // var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
         //     SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
         //     DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
@@ -61,12 +61,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
         });
         this.on('MassUploadStudioFeed', async (req, res) => {
-        try {
+            try {
                 let excelData = {}
                 let uploadedData = []
                 let errorData = []
                 let aBookingFeeds = [];
-    
+
                 let workbook = XLSX.read(req.data.fileData, {
                     type: 'binary'
                 })
@@ -95,34 +95,34 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     element.Origin_OriginID = "S";
 
                     var sValidationError = "";
-                    if (!element.SourceSystem){
+                    if (!element.SourceSystem) {
                         sValidationError = "Source System is mandatory\n";
                     }
-                    if (!element.BookingID){
+                    if (!element.BookingID) {
                         sValidationError = sValidationError + "BookingID is mandatory.\n";
                     }
-                    if (!element.Studio){
+                    if (!element.Studio) {
                         sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
-                    if (!element.Title){
+                    if (!element.Title) {
                         sValidationError = sValidationError + "Title is mandatory.\n";
                     }
-                    if (!element.RequestedDelivDate){
+                    if (!element.RequestedDelivDate) {
                         sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
                     }
-                    if (!element.OrderType){
+                    if (!element.OrderType) {
                         sValidationError = sValidationError + "OrderType is mandatory.\n";
                     }
-                    if (!element.PlayStartDate){
+                    if (!element.PlayStartDate) {
                         sValidationError = sValidationError + "Play Start Date is mandatory.\n";
                     }
-                    if (!element.PlayEndDate){
+                    if (!element.PlayEndDate) {
                         sValidationError = sValidationError + "Play End Date is mandatory.\n";
                     }
-                    if (!element.TheaterID){
+                    if (!element.TheaterID) {
                         sValidationError = sValidationError + "Theater ID is mandatory.\n";
                     }
-                    if(sValidationError){
+                    if (sValidationError) {
                         return req.reject(400, sValidationError);
                     }
                     else {
@@ -143,10 +143,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return req.reject(400, error)
             }
         });
-        this.on('reconcileStudioFeed', async (req, res)=>{
+        this.on('reconcileStudioFeed', async (req, res) => {
             var aBookingID = req.data?.aBookingID;
-            var aFeeds = await SELECT.from(StudioFeed).where({BookingID: {"IN": aBookingID }, IsActive: 'Y'});
-            aFeeds = aFeeds?.map((feed)=>{
+            var aFeeds = await SELECT.from(StudioFeed).where({ BookingID: { "IN": aBookingID }, IsActive: 'Y' });
+            aFeeds = aFeeds?.map((feed) => {
                 feed.BookingType = 'C';
                 return feed
             });
@@ -157,21 +157,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
         });
         this.on('createStudioFeeds', async (req, res) => {
-            try{
+            try {
                 var data = req.data?.StudioFeed;
                 var aResponse = await createStudioFeeds(req, data)
-    
+
                 req.reply({
                     code: 201,
                     message: aResponse
                 });
 
             }
-            catch(e){
+            catch (e) {
                 req.reject(400, e);
             }
         });
-        this.on('remediateSalesOrder', async (req, res)=>{ //RULE 11
+        this.on('remediateSalesOrder', async (req, res) => { //RULE 11
             var oInput = req.data;
             var sBookingID = oInput?.bookingID, sSalesOrder = oInput?.salesOrder,
                 oContentData, sMaterialGroup, aResponseStatus = [], hanaDBTable = StudioFeed;
@@ -198,7 +198,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.reject(501, "Initial Delivery method was not captured for this entry, hence cannot be remediated");
                 return;
             }
-            else if(!oContentData.RemediationCounter){
+            else if (!oContentData.RemediationCounter) {
                 req.reject(501, "Remediation counterfor this entry, hence cannot be remediated");
                 return;
             }
@@ -212,36 +212,36 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     "status": "E"
                 });
             }
-            var aNonKeyItems = aSalesOrderItem?.filter((s4Item)=>{
+            var aNonKeyItems = aSalesOrderItem?.filter((s4Item) => {
                 return (s4Item.MaterialGroup !== 'Z003' && s4Item.ItemBillingBlockReason !== '03' && s4Item.DeliveryPriority !== '04');
             });
-            if(!aNonKeyItems?.length){ //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
+            if (!aNonKeyItems?.length) { //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
                 req.reject(501, `Remediation cannot be done for Sales Order: ${sSalesOrder} as all items are key entries`);
                 return;
             }
             else {
                 var aDeliverySeqFromDistHeader = [];
-                var distroSpecData = await getDistroSpecData(req, oContentData, aDeliverySeqFromDistHeader);   
-                aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader?.filter((sDelSeq)=>{
+                var distroSpecData = await getDistroSpecData(req, oContentData, aDeliverySeqFromDistHeader);
+                aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader?.filter((sDelSeq) => {
                     return sDelSeq !== ''
                 }); //Removing blank entries
                 var aContentPackages = distroSpecData?.to_Package, oContentPackages;
-                aContentPackages = await performPrioritySortAndValidityCheck(aContentPackages, oContentData, distroSpecData);              
+                aContentPackages = await performPrioritySortAndValidityCheck(aContentPackages, oContentData, distroSpecData);
                 // var aContentPackageDistRestrictions;
                 if (!aContentPackages?.length) {
-                    req.reject(400, 
+                    req.reject(400,
                         `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order ${sBookingID}`);
-                        return;
-                } 
-                if(aDeliverySeqFromDistHeader?.length <= iRemediationCounter){
-                    req.reject(400, 
-                        `Remediation is not possible any more as all ${iRemediationCounter} Delivery methods are utilized for remediation`);
-                        return;
+                    return;
                 }
-                for(var i in aRemediatedDeliveryMethods){ //Removing the Delivery methods which are already remediated
-                    aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader.filter((seq)=>{
-                        return seq !== aRemediatedDeliveryMethods[i] ;
-                        }
+                if (aDeliverySeqFromDistHeader?.length <= iRemediationCounter) {
+                    req.reject(400,
+                        `Remediation is not possible any more as all ${iRemediationCounter} Delivery methods are utilized for remediation`);
+                    return;
+                }
+                for (var i in aRemediatedDeliveryMethods) { //Removing the Delivery methods which are already remediated
+                    aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader.filter((seq) => {
+                        return seq !== aRemediatedDeliveryMethods[i];
+                    }
                     );
                 }
                 for (var i in aNonKeyItems) {
@@ -249,9 +249,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
                     // var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({SalesOrder: oSalesOrderItem.SalesOrder, Product: oSalesOrderItem.Material}); 
                     //     // SalesOrderItem: oSalesOrderItem.SalesOrderItem});
-                    
+
                     var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
-                    for(var j in aDeliverySeqFromDistHeader){
+                    for (var j in aDeliverySeqFromDistHeader) {
                         var sDelSeq = aDeliverySeqFromDistHeader[j];
                         // if(sDelSeq === '03' || sDelSeq === '10'){ //RULE 11.2
                         //     req.reject(400, 
@@ -259,16 +259,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         //         return;
                         // }
                         // else 
-                        if(sDelSeq){
-                            oContentPackages = aContentPackages.find((pkg)=>{
+                        if (sDelSeq) {
+                            oContentPackages = aContentPackages.find((pkg) => {
                                 return (
-                                pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq || 
-                                pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
-                                pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
-                                pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
-                                pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq )
+                                    pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
                             });
-                            if(oContentPackages){                                   
+                            if (oContentPackages) {
                                 oFilteredContentPackage = oContentPackages;
                                 aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction;
                                 sDeliveryMethod = sDelSeq;
@@ -276,19 +276,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                     }
-                    if(!oFilteredContentPackage){ 
-                        req.reject(400,  `No suitable package found for remediation`);
+                    if (!oFilteredContentPackage) {
+                        req.reject(400, `No suitable package found for remediation`);
                         return;
-                    }   
+                    }
                     oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
                     oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
                     oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
                     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                    
+
                     // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
-                    
+
                     oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
                         "SalesOrder": sSalesOrder,
                         "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
@@ -296,8 +296,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }];
                     var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
                     var sShippingType = oShippingTypeMapping.ShippingType;
-                    if(!sShippingType){
-                        req.reject(400,  `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
+                    if (!sShippingType) {
+                        req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
                         return;
                     }
                     oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
@@ -312,23 +312,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         });
                     }).then(async (result) => {
                         if (result) {
-                            oContentData.DeliveryMethod = oContentData.DeliveryMethod + ", "+sDeliveryMethod;
+                            oContentData.DeliveryMethod = oContentData.DeliveryMethod + ", " + sDeliveryMethod;
                             oContentData.RemediationCounter = iRemediationCounter + 1;
-                            oContentData.Remediation = oContentData.Remediation? (oContentData.Remediation + ', ' + result?.SalesOrderItem):result?.SalesOrderItem; 
+                            oContentData.Remediation = oContentData.Remediation ? (oContentData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
                             let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oContentData.Remediation}`, DeliveryMethod: oContentData.DeliveryMethod, RemediationCounter: oContentData.RemediationCounter }).where({ BookingID: oContentData.BookingID, IsActive: 'Y' })
-                            
-                            var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem})
+
+                            var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
                             let oNewBTPItem = {};
-                            if(oBTPItem){
+                            if (oBTPItem) {
                                 oNewBTPItem = oBTPItem;
                             }
                             oNewBTPItem.SalesOrder = result?.SalesOrder;
                             oNewBTPItem.SalesOrderItem = result?.SalesOrderItem;
                             oNewBTPItem.Product = result?.Material;
-                            oNewBTPItem.ShippingPoint= result?.ShippingPoint;
-                            oNewBTPItem.ProductGroup=result?.MaterialGroup;
-                            oNewBTPItem.ShippingType_ID= result?.ShippingType;
-                            
+                            oNewBTPItem.ShippingPoint = result?.ShippingPoint;
+                            oNewBTPItem.ProductGroup = result?.MaterialGroup;
+                            oNewBTPItem.ShippingType_ID = result?.ShippingType;
+
                             let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
                             aResponseStatus.push({
                                 "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
@@ -353,83 +353,83 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
                 let sEntityID = data[i].EntityID, sBupa = data[i].Studio;
-                oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({EntityID: sEntityID, StudioBP: sBupa}));
-                sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization, 
-                DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
+                oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
+                sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
+                    DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
 
-                if(!oSalesParameterConfig){
-                    data[i].ErrorMessage = `For the record ${(i+1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
-                    data[i].Status_ID = "D";                    
-                    oResponseStatus.error.push( {
-                        "message" : `| ${data[i].ErrorMessage} |`,
-                        "errorMessage": data[i].ErrorMessage
-                    });
-                }
-                else if(!sSoldToCustomer){
-                    data[i].ErrorMessage = `For the record ${(i+1)}, SoldToCustomer not maintained`;
+                if (!oSalesParameterConfig) {
+                    data[i].ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
                     data[i].Status_ID = "D";
-                    
-                    oResponseStatus.error.push( {
-                        "message" : `| ${data[i].ErrorMessage} |`,
+                    oResponseStatus.error.push({
+                        "message": `| ${data[i].ErrorMessage} |`,
                         "errorMessage": data[i].ErrorMessage
                     });
                 }
-                else if(!SalesOrganization){
-                    data[i].ErrorMessage = `For the record ${(i+1)}, SalesOrganization not maintained`;
+                else if (!sSoldToCustomer) {
+                    data[i].ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
                     data[i].Status_ID = "D";
-                    
-                    oResponseStatus.error.push( {
-                        "message" : `| ${data[i].ErrorMessage} |`,
+
+                    oResponseStatus.error.push({
+                        "message": `| ${data[i].ErrorMessage} |`,
                         "errorMessage": data[i].ErrorMessage
                     });
                 }
-                else if(!DistributionChannel){
-                    data[i].ErrorMessage = `For the record ${(i+1)}, DistributionChannel not maintained`;
+                else if (!SalesOrganization) {
+                    data[i].ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
                     data[i].Status_ID = "D";
-                    
-                    oResponseStatus.error.push( {
-                        "message" : `| ${data[i].ErrorMessage} |`,
+
+                    oResponseStatus.error.push({
+                        "message": `| ${data[i].ErrorMessage} |`,
                         "errorMessage": data[i].ErrorMessage
                     });
                 }
-                else if(!Division){
-                    data[i].ErrorMessage = `For the record ${(i+1)}, Division not maintained`;
+                else if (!DistributionChannel) {
+                    data[i].ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
                     data[i].Status_ID = "D";
-                    
-                    oResponseStatus.error.push( {
-                        "message" : `| ${data[i].ErrorMessage} |`,
+
+                    oResponseStatus.error.push({
+                        "message": `| ${data[i].ErrorMessage} |`,
                         "errorMessage": data[i].ErrorMessage
                     });
                 }
-                else{
+                else if (!Division) {
+                    data[i].ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
+                    data[i].Status_ID = "D";
+
+                    oResponseStatus.error.push({
+                        "message": `| ${data[i].ErrorMessage} |`,
+                        "errorMessage": data[i].ErrorMessage
+                    });
+                }
+                else {
                     var oLocalResponse = await createS4SalesOrderWithItemsUsingNormalizedRules(req, data[i]);
-                    if(oLocalResponse?.success?.length && !oLocalResponse?.error?.length){
+                    if (oLocalResponse?.success?.length && !oLocalResponse?.error?.length) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
-                    }      
-                    if(oLocalResponse?.success?.length){
+                    }
+                    if (oLocalResponse?.success?.length) {
                         oResponseStatus?.success?.push(...oLocalResponse?.success);
                         data[i].SalesOrder = oLocalResponse?.SalesOrder;
                         data[i].DeliveryMethod = oLocalResponse?.DeliveryMethod;
                         data[i].RemediationCounter = 1;
                         data[i].Status_ID = "C";
-                    }         
-                    if(oLocalResponse?.error?.length){
+                    }
+                    if (oLocalResponse?.error?.length) {
                         oResponseStatus?.error?.push(...oLocalResponse?.error);
                         data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
                         data[i].Status_ID = "D";
-                    }               
-                    if(oLocalResponse?.warning?.length){
+                    }
+                    if (oLocalResponse?.warning?.length) {
                         oResponseStatus?.warning?.push(...oLocalResponse?.warning);
                     }
                     oLocalResponse = {} ;
                 }
-                if(bReconcile){
+                if (bReconcile) {
                     var sID = data[i].ID;
-                    await UPDATE(hanatable).set({ ErrorMessage: data[i].ErrorMessage, SalesOrder:data[i].SalesOrder  }).where({
+                    await UPDATE(hanatable).set({ ErrorMessage: data[i].ErrorMessage, SalesOrder: data[i].SalesOrder }).where({
                         ID: sID
                     });
-                } 
-                else{                      
+                }
+                else {
                     if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
@@ -440,7 +440,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     recordsToBeInserted.push(data[i]); //INSERT is always required
                 }
             }
-            if(!bReconcile){
+            if (!bReconcile) {
                 if (recordsToBeInserted.length) {
                     let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
                     successEntries.push(recordsToBeInserted);
@@ -460,8 +460,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return oResponseStatus;
         };
         const createS4SalesOrderWithItemsUsingNormalizedRules = async (req, oContentData) => {
-            var updateQuery = [], oPayLoad = {}, sContentIndicator, hanaDBTable = StudioFeed, 
-            sContentIndicator = oContentData?.OrderType, aDeliverySeqFromDistHeader = [];
+            var updateQuery = [], oPayLoad = {}, sContentIndicator, hanaDBTable = StudioFeed,
+                sContentIndicator = oContentData?.OrderType, aDeliverySeqFromDistHeader = [];
             var distroSpecData = await getDistroSpecData(req, oContentData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions;
             oResponseStatus = {"error":[], "success": [], "warning": []};//Resetting oResponseStatus
@@ -490,9 +490,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 var sEntityID = oContentData.EntityID;
                 var sBPCustomerNumber = "", sPYCustomer = "", sCustomerGroupFromS4 = "";
                 oPayLoad.to_Partner = [];
-                if(sTheaterID){ //FIDNING SHIP-TO
-                    var oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));                    
-                    if (!oSoldToSalesData){
+                if (sTheaterID) { //FIDNING SHIP-TO
+                    var oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                    if (!oSoldToSalesData) {
                         sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
                     }
                     if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
@@ -514,50 +514,50 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     else {
                         sErrorMessage = "Partner function not available";
-                    }                   
+                    }
                 }
 
                 if (sShipTo) {
                     var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                    sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;                   
+                    sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;
                 }
-                if(sContentIndicator === 'C'){
+                if (sContentIndicator === 'C') {
                     aContentPackages = await performPrioritySortAndValidityCheck(aContentPackages, oContentData, distroSpecData);
                     if (!aContentPackages?.length) {
                         sErrorMessage = `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order`;
                     }
                     else { //These rules are applicable only for content           
-                        for(var j in aDeliverySeqFromDistHeader){
+                        for (var j in aDeliverySeqFromDistHeader) {
                             var sDelSeq = aDeliverySeqFromDistHeader[j];
-                            if(sDelSeq){
-                                oContentPackages = aContentPackages.find((pkg)=>{
+                            if (sDelSeq) {
+                                oContentPackages = aContentPackages.find((pkg) => {
                                     return (
-                                    pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq || 
-                                    pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq )
+                                        pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
+                                        pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
+                                        pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
+                                        pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
+                                        pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
                                 });
-                                if(oContentPackages){                                   
+                                if (oContentPackages) {
                                     var oFilteredContentPackage = oContentPackages;
                                     aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction
                                     break;
                                 }
                             }
                         }
-                        if(oContentPackages){ // RULE 2.2 => Delivery Method check for Key
+                        if (oContentPackages) { // RULE 2.2 => Delivery Method check for Key
                             var aDeliveryMethodsFromPackage = [];
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod1_ShippingCondition?oContentPackages.DeliveryMethod1_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod2_ShippingCondition?oContentPackages.DeliveryMethod2_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod3_ShippingCondition?oContentPackages.DeliveryMethod3_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod4_ShippingCondition?oContentPackages.DeliveryMethod4_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod5_ShippingCondition?oContentPackages.DeliveryMethod5_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod6_ShippingCondition?oContentPackages.DeliveryMethod6_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod7_ShippingCondition?oContentPackages.DeliveryMethod7_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod8_ShippingCondition?oContentPackages.DeliveryMethod8_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod9_ShippingCondition?oContentPackages.DeliveryMethod9_ShippingCondition: "");
-                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod10_ShippingCondition?oContentPackages.DeliveryMethod10_ShippingCondition: "");
-                        
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod1_ShippingCondition ? oContentPackages.DeliveryMethod1_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod2_ShippingCondition ? oContentPackages.DeliveryMethod2_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod3_ShippingCondition ? oContentPackages.DeliveryMethod3_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod4_ShippingCondition ? oContentPackages.DeliveryMethod4_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod5_ShippingCondition ? oContentPackages.DeliveryMethod5_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod6_ShippingCondition ? oContentPackages.DeliveryMethod6_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod7_ShippingCondition ? oContentPackages.DeliveryMethod7_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod8_ShippingCondition ? oContentPackages.DeliveryMethod8_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod9_ShippingCondition ? oContentPackages.DeliveryMethod9_ShippingCondition : "");
+                            aDeliveryMethodsFromPackage.push(oContentPackages.DeliveryMethod10_ShippingCondition ? oContentPackages.DeliveryMethod10_ShippingCondition : "");
+
                             var aShiptoDelMethodsFromS4 = [], DCDCFlag, TrailMix;
                             if (oShipToSalesData) { //4.1 =>Del Method check with BuPa
                                 // DCDCFlag = oShipToSalesData?.YY1_DCDCFlag_csa;
@@ -587,7 +587,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oShipToSalesData?.YY1_DeliveryMethod7_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod7_csa) : '';
                                 oShipToSalesData?.YY1_DeliveryMethod8_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa) : '';
                                 oShipToSalesData?.YY1_DeliveryMethod9_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa) : '';
-                                oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';                        
+                                oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';
 
                                 // var oPBC, pbcPresent = false ;
                                 // for(var d in aContentPackageDistRestrictions){
@@ -624,12 +624,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                             else {
                                 sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
-                            } 
-                        } 
-                        else{
+                            }
+                        }
+                        else {
                             sErrorMessage = `No Package matches found for the delivery method`;
                         }
-                        if(!sErrorMessage){                                
+                        if (!sErrorMessage) {
                             var oBPPackage = [oContentPackages].find((oPkg) => {
                                 return aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod1_ShippingCondition) ||
                                     aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod2_ShippingCondition) ||
@@ -642,11 +642,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod9_ShippingCondition) ||
                                     aShiptoDelMethodsFromS4.find((item) => item === oPkg?.DeliveryMethod10_ShippingCondition);
                             });
-                            if (!oBPPackage){
+                            if (!oBPPackage) {
                                 sErrorMessage = `Theater Capability not found. Ship-To:${sShipTo}`;
                             }
                             oContentPackages = oBPPackage;
-                        }   
+                        }
                     }
                 }
                 if(sContentIndicator === 'K' || oContentPackages?.IncludeKey){ //FOR KEY
@@ -655,41 +655,41 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!aKeyPackage?.length) {
                         sErrorMessage = `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Key Order`;
                     }
-                    else{
+                    else {
                         oKeyPackage = aKeyPackage[0];
                         oResponseStatus.KeyPackage = oKeyPackage;
                     }
-                }   
+                }
                 //RULE 2.2 and 3.2 (Common for both Content and Key)   - START          
-                var aCircuits = aContentPackageDistRestrictions?.filter((rest)=>{
+                var aCircuits = aContentPackageDistRestrictions?.filter((rest) => {
                     return rest.Circuit_CustomerGroup?.length > 0;
                 });
-                var aCountry = aContentPackageDistRestrictions?.filter((rest)=>{
+                var aCountry = aContentPackageDistRestrictions?.filter((rest) => {
                     return rest.DistributionFilterCountry_code?.length > 0;
                 });
-                var aRegion = aContentPackageDistRestrictions?.filter((rest)=>{
+                var aRegion = aContentPackageDistRestrictions?.filter((rest) => {
                     return rest.DistributionFilterRegion_Countr?.length > 0;
                 });
-                var aCity = aContentPackageDistRestrictions?.filter((rest)=>{
+                var aCity = aContentPackageDistRestrictions?.filter((rest) => {
                     return rest.DistributionFilterCity?.length > 0;
                 });
-                var aPostalCode = aContentPackageDistRestrictions?.filter((rest)=>{
+                var aPostalCode = aContentPackageDistRestrictions?.filter((rest) => {
                     return rest.DistributionFilterPostal?.length > 0;
                 });
-                var aLanguage = aContentPackageDistRestrictions?.filter((rest)=>{
+                var aLanguage = aContentPackageDistRestrictions?.filter((rest) => {
                     return rest.DistributionFilterLanguage_code?.length > 0;
                 });
                 if (aContentPackageDistRestrictions && aContentPackageDistRestrictions.length) {
-                    var oDist = aContentPackageDistRestrictions.find((dist)=>{
-                        return dist.Theater_BusinessPartner || dist.Circuit_CustomerGroup || dist.DistributionFilterLanguage_code || 
-                                dist.DistributionFilterCountry_code || dist.DistributionFilterRegion_Country || dist.DistributionFilterCity || 
-                                dist.DistributionFilterPostal
+                    var oDist = aContentPackageDistRestrictions.find((dist) => {
+                        return dist.Theater_BusinessPartner || dist.Circuit_CustomerGroup || dist.DistributionFilterLanguage_code ||
+                            dist.DistributionFilterCountry_code || dist.DistributionFilterRegion_Country || dist.DistributionFilterCity ||
+                            dist.DistributionFilterPostal
                     });
-                    if(oDist){
-                        var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({BusinessPartner: sBuPa}); //GETTING ADDRESS DATA FROM S4
+                    if (oDist) {
+                        var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
                         var oDistRestriction = aContentPackageDistRestrictions.find((dist) => {
                             return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
-                            ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code)? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
+                                ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code) ? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
                                 ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
                                 ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
                                 ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
@@ -700,22 +700,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             sErrorMessage = `No relevant Package IDs identified for restrictions. 
                             CustomerGroupFromS4:${sCustomerGroupFromS4}|
                             PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
-                        }                      
-                    } 
+                        }
+                    }
                 }
                 //RULE 2.2 and 3.2 (Common for both Content and Key)   - END
-                if(!sErrorMessage){
+                if (!sErrorMessage) {
                     oResponseStatus.package = oContentPackages;
-        
+
                     var sDeliveryMethod, sShippingType;
-                    if(sContentIndicator === 'C'){ //RULE 2.2 => Getting Delivery Method for Content 
+                    if (sContentIndicator === 'C') { //RULE 2.2 => Getting Delivery Method for Content 
                         sDeliveryMethod = oFilteredContentPackage.DeliveryMethod1_ShippingCondition ? oFilteredContentPackage.DeliveryMethod1_ShippingCondition :
-                        oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
-                            oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
-                                oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
-                                    oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
-                                        oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
-                                            oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
+                            oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
+                                oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
+                                    oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
+                                        oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
+                                            oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
+                                                oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
 
                         //RULE 7.1 => Shipping Type for Content
                         if (sDeliveryMethod) {
@@ -724,19 +724,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
                             sShippingType = oShippingTypeMapping.ShippingType;
 
-                            if(!sShippingType){
+                            if (!sShippingType) {
                                 sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sDeliveryMethod}`;
                             }
                         }
-                        else{
+                        else {
                             sErrorMessage = `Delivery Method could not be determined for Content`;
-                        } 
+                        }
                     }
-                    else{
+                    else {
                         sDeliveryMethod = "04"; //Rule 3.3 => Delivery Method for Key is Fixed
                         sShippingType = '07'; //RULE 7.2 => Shipping Type for KEY
                     }
-                    if(!sErrorMessage){
+                    if (!sErrorMessage) {
                         var sStartDate = oContentData.PlayStartDate;
                         var sStartTime = oContentData.PlayStartTime;
                         var sEndDate = oContentData.PlayEndDate;
@@ -748,13 +748,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var RepertoryDate = distroSpecData?.RepertoryDate;
 
                         oPayLoad.to_Item = [];
-                        var sLongText;                      
-                        if((oFilteredContentPackage || oKeyPackage?.IncludeContent) && 
-                        sShippingType == '03' || sShippingType === '06' || sShippingType === '12'){  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
+                        var sLongText;
+                        if ((oFilteredContentPackage || oKeyPackage?.IncludeContent) &&
+                            sShippingType == '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             if (oFilteredContentPackage?.to_DCPMaterial) {
                                 for (var j in oFilteredContentPackage.to_DCPMaterial) {
                                     var oMatRecord = oFilteredContentPackage.to_DCPMaterial[j];
-                                    if(sDeliveryMethod === '02'){ //RULE 5.2 => LongText for GoFilex TitleID NORAM to pass in Items
+                                    if (sDeliveryMethod === '02') { //RULE 5.2 => LongText for GoFilex TitleID NORAM to pass in Items
                                         var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oMatRecord.DCPMaterialNumber_Product });
                                         var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                                         sLongText = sGoFilexTitleID;
@@ -776,8 +776,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             else {
                                 sErrorMessage = "DCP Material not available";
                             }
-                        } 
-                        else{ // RULE 5.1, 6.1 => Common for Content and Key
+                        }
+                        else { // RULE 5.1, 6.1 => Common for Content and Key
                             var sMode;
                             if (iDifferenceInHours > 24) {
                                 sMode = 'Release';
@@ -785,8 +785,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             else {
                                 sMode = 'PreRelease';
                             }
-                            if(oFilteredContentPackage){ //Applicable only for Content
-                                var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ShippingType: sShippingType, Variable: sMode});
+                            if (oFilteredContentPackage) { //Applicable only for Content
+                                var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -798,10 +798,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "ShippingType": sShippingType
                                 });
                             }
-                            if(oKeyPackage){ //This indicates IncludeKey is checked
+                            if (oKeyPackage) { //This indicates IncludeKey is checked
                                 // sDeliveryMethod = "04"; //Rule 3.3 => Delivery Method for Key is Fixed
                                 // sShippingType = '07'; //RULE 7.2 => Shipping Type for KEY
-                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ShippingType: '07', Variable: sMode}); //RULE 7.2 => Shipping Type for KEY
+                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: '07', Variable: sMode }); //RULE 7.2 => Shipping Type for KEY
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -814,9 +814,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 });
                             }
 
-                            if(ReleaseDate && dStartDate > ReleaseDate){
+                            if (ReleaseDate && dStartDate > ReleaseDate) {
                                 sMode = 'PostBreak';
-                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ShippingType: sShippingType, Variable: sMode});                               
+                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -828,9 +828,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "ShippingType": sShippingType
                                 });
                             }
-                            if(RepertoryDate){
+                            if (RepertoryDate) {
                                 sMode = 'Repertory';
-                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ShippingType: sShippingType, Variable: sMode});
+                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -840,16 +840,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "DeliveryPriority": `1`,
                                     "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                     "ShippingType": sShippingType
-                                });   
-                            }      
+                                });
+                            }
                         }
                     }
-                }                                         
+                }
             }
             var sSalesOrder = "";
             if (sErrorMessage) {
-                oResponseStatus.error.push( {
-                    "message" : `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
+                oResponseStatus.error.push({
+                    "message": `| Booking ID: ${oContentData.BookingID}: ${sErrorMessage} |`,
                     "errorMessage": sErrorMessage
                 })
             }
@@ -859,18 +859,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     path: '/A_SalesOrder',
                     data: oPayLoad
                 }).catch((err) => {
-                    oResponseStatus.error.push( {
+                    oResponseStatus.error.push({
                         "message": `| Booking ID: ${oContentData.BookingID}: ${err.message} |`,
                         "errorMessage": err.message
                     })
                 }).then((result) => {
                     if (result) {
-                        sSalesOrder = result?.SalesOrder;    
-                    oResponseStatus.success.push( {
-                        "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
-                        "SalesOrder": sSalesOrder
-                    });
-                    oResponseStatus.SalesOrder = sSalesOrder;
+                        sSalesOrder = result?.SalesOrder;
+                        oResponseStatus.success.push({
+                            "message": `| Booking ID: ${oContentData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
+                            "SalesOrder": sSalesOrder
+                        });
+                        oResponseStatus.SalesOrder = sSalesOrder;
                     }
                 });
             }
@@ -878,65 +878,67 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.FilteredPackage = oFilteredContentPackage;
             return oResponseStatus;
         };
-        const getDistroSpecData = async(req, oContentData, aDeliverySeqFromDistHeader)=>{
+        const getDistroSpecData = async (req, oContentData, aDeliverySeqFromDistHeader) => {
             let distroSpecData;
             var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
                 dist('*'),
-                    dist.to_StudioKey((studio) => { studio('*')}),
-                    dist.to_Package((pkg) => { pkg('*'),
+                    dist.to_StudioKey((studio) => { studio('*') }),
+                    dist.to_Package((pkg) => {
+                        pkg('*'),
                             pkg.to_DistRestriction((dist) => { dist('*') }),
                             pkg.to_DCPMaterial((dcpmat) => { dcpmat('*'), 
                                 dcpmat.to_DCPDetail((dcpdet)=> {dcpdet('*')})})
                     }),
-                    dist.to_KeyPackage((keyPkg)=>{ keyPkg('*'),
-                        keyPkg.to_DistRestriction((dist) => { dist('*') }),
-                        keyPkg.to_CPLDetail((cpl) => { cpl('*') })
-                     })                       
+                    dist.to_KeyPackage((keyPkg) => {
+                        keyPkg('*'),
+                            keyPkg.to_DistRestriction((dist) => { dist('*') }),
+                            keyPkg.to_CPLDetail((cpl) => { cpl('*') })
+                    })
             });
             var sTitle = oContentData.Title;
-            var sBuPa = oContentData.Studio;  
+            var sBuPa = oContentData.Studio;
             if (oContentData?.Origin_OriginID !== "F") {
                 var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
                 var Product = oProductDescFromS4?.Product;
-                if(Product){        
+                if (Product) {
                     oDistroQuery.SELECT.where = [{ ref: ["Title_Product"] }, "=", { val: Product }];
-                    var aDistroSpecData = await oDistroQuery;                    
-                    if(sBuPa){
-                        distroSpecData = aDistroSpecData?.find((dist) =>{
-                            return dist.to_StudioKey?.find((stud)=>{
+                    var aDistroSpecData = await oDistroQuery;
+                    if (sBuPa) {
+                        distroSpecData = aDistroSpecData?.find((dist) => {
+                            return dist.to_StudioKey?.find((stud) => {
                                 return stud.Studio_BusinessPartner === sBuPa;
                             });
                         });
                     }
-                    else{
+                    else {
                         sErrorMessage = `Studio not present in the payload`;
                     }
-                }   
-                else{
+                }
+                else {
                     sErrorMessage = `Product not found for the title: ${sTitle}`;
-                } 
+                }
             }
             else {
                 var sCustomerRef = oContentData.CustomerReference;
-                if(sCustomerRef){
+                if (sCustomerRef) {
                     var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
-                    var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID, 
-                        to_StudioKey_StudioKeyUUID  = oCustomerRef?.to_StudioKey_StudioKeyUUID;
-                    if(oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID){
-                        
+                    var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
+                        to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
+                    if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {
+
                         oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
-                        aDistroSpecData = await oDistroQuery;     
-                        distroSpecData = aDistroSpecData?.find((dist) =>{
-                            return dist.to_StudioKey?.find((stud)=>{
+                        aDistroSpecData = await oDistroQuery;
+                        distroSpecData = aDistroSpecData?.find((dist) => {
+                            return dist.to_StudioKey?.find((stud) => {
                                 return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
                             });
                         });
                     }
-                    else{
+                    else {
                         sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
                     }
                 }
-                else{
+                else {
                     sErrorMessage = "Customer reference is not available in the payload";
                 }
             } 
@@ -954,12 +956,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }      
             return distroSpecData;           
         }
-        const updateBTPSOItemsAndS4Texts = async (req, oContentData, oResponseStatus)=> {     
-            var sSalesOrder = oResponseStatus?.SalesOrder, sContentIndicator = oContentData?.OrderType;    
-            var distroSpecData = oResponseStatus?.distroSpecData, aCTTCPL = [], oContentPackage = oResponseStatus?.package, 
-            oPayLoad = oResponseStatus?.payLoad, oKeyPackage = oResponseStatus?.KeyPackage;
-            var oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));                
-            
+        const updateBTPSOItemsAndS4Texts = async (req, oContentData, oResponseStatus) => {
+            var sSalesOrder = oResponseStatus?.SalesOrder, sContentIndicator = oContentData?.OrderType;
+            var distroSpecData = oResponseStatus?.distroSpecData, aCTTCPL = [], oContentPackage = oResponseStatus?.package,
+                oPayLoad = oResponseStatus?.payLoad, oKeyPackage = oResponseStatus?.KeyPackage;
+            var oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
+
             // var oRecordsToBePosted = oContentData;
             var oStudioKeyData = distroSpecData?.to_StudioKey?.[0];
             // oRecordsToBePosted.DistroSpecID = distroSpecData?.DistroSpecID;
@@ -977,7 +979,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of local CDS
                 oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
                 var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
-                where({ DCP: oSalesOrderItem.Material });
+                    where({ DCP: oSalesOrderItem.Material });
 
                 var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                 oContentData.to_Item[i].LongText = sGoFilexTitleID;
@@ -1011,25 +1013,25 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 var aContentPkgCPL = oContentPackage?.to_DCPMaterial,
                 aContentPkgCTT = [], sContentPkgCTTs, aContentPkgCPLUUID = [], sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
 
-                if(sShippingType === '07'){ //Key Order Item
-                    for(var c in aKeyPkgCPL){
-                        if(aKeyPkgCPL[c]?.CPLUUID){
+                if (sShippingType === '07') { //Key Order Item
+                    for (var c in aKeyPkgCPL) {
+                        if (aKeyPkgCPL[c]?.CPLUUID) {
                             aKeyPkgCPLUUID.push(aKeyPkgCPL[c]?.CPLUUID);
                             const assetvault = await SELECT.one.from(CplList_Local).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID })
                             aKeyPkgCTT.push(assetvault?.LinkedCTT)
                         }
                     }
                     if (aKeyPkgCTT?.length) { //RULE 9.1
-                        sKeyPkgCTTs = aKeyPkgCTT?.map((u)=>{return u?u:false}).join(`,`);  
+                        sKeyPkgCTTs = aKeyPkgCTT?.map((u) => { return u ? u : false }).join(`,`);
                         await updateItemTextForSalesOrder(req, "Z003", sKeyPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                     if (aKeyPkgCPLUUID?.length) { //RULE 9.2
-                        sKeyPkgCPLUUIDs = aKeyPkgCPLUUID?.map((u)=>{return u?u:false}).join(`,`);  
+                        sKeyPkgCPLUUIDs = aKeyPkgCPLUUID?.map((u) => { return u ? u : false }).join(`,`);
                         await updateItemTextForSalesOrder(req, "Z005", sKeyPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
-                else{ //Content Order item
-                    if(oAssetvault?.KrakenTitleID){ //RULE 9.3
+                else { //Content Order item
+                    if (oAssetvault?.KrakenTitleID) { //RULE 9.3
                         await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
                     }
                     var aFinalCPLs = [], aFinalCTTs = [];
@@ -1057,23 +1059,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData); 
                     }
                 }
-                if(distroSpecData){ //RULE 9.4, 9.7
+                if (distroSpecData) { //RULE 9.4, 9.7
                     await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData?.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
                     await updateItemTextForSalesOrder(req, "Z011", distroSpecData?.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
                 }
                 await updateItemTextForSalesOrder(req, "Z009", oContentPackage?.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.5
                 await updateItemTextForSalesOrder(req, "Z010", oContentPackage?.PackageName, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.6
-                if(sStudio){ //RULE 9.8              
+                if (sStudio) { //RULE 9.8              
                     var oBupa = await s4h_bp_Txn.run(SELECT.one.columns(['BusinessPartnerFullName']).from(S4H_BuisnessPartner).where({ BusinessPartner: sStudio }));
                     var StudioName = oBupa?.BusinessPartnerFullName;
-                    if(StudioName){ //RULE 9.8
-                        await updateItemTextForSalesOrder(req, "Z012", StudioName, oResponseStatus, oSalesOrderItem, oContentData); 
+                    if (StudioName) { //RULE 9.8
+                        await updateItemTextForSalesOrder(req, "Z012", StudioName, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
-                if(oSalesOrderItem?.AdditionalMaterialGroup1 && oContentPackage?.PackageName){ //RULE 9.9
-                    var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN'}));
-                    if(oProdGroup){
-                        await updateItemTextForSalesOrder(req, "Z002", `${oContentPackage?.PackageName} ${oProdGroup?.MaterialGroupName}`, oResponseStatus, oSalesOrderItem, oContentData); 
+                if (oSalesOrderItem?.AdditionalMaterialGroup1 && oContentPackage?.PackageName) { //RULE 9.9
+                    var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
+                    if (oProdGroup) {
+                        await updateItemTextForSalesOrder(req, "Z002", `${oContentPackage?.PackageName} ${oProdGroup?.MaterialGroupName}`, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
                 Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
@@ -1112,34 +1114,34 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             // });
             return oContentData;
         };
-        const performPrioritySortAndValidityCheck = async (aPackages, oContentData, distroSpecData)=>{
+        const performPrioritySortAndValidityCheck = async (aPackages, oContentData, distroSpecData) => {
             aPackages?.sort(function (a, b) {
                 return a.Priority - b.Priority;
             });
             var sContentLanguage = oContentData.Language, sContentIndicator = oContentData?.OrderType;
             var dPlayStartDate = new Date(oContentData.PlayStartDate.replace(/-/g, '/'));
             var dPlayEndDate = new Date(oContentData.PlayEndDate.replace(/-/g, '/'));
-            var aPackage = aPackages.filter((pkg)=>{
+            var aPackage = aPackages.filter((pkg) => {
                 var sDistValidFrom = pkg.ValidFrom;
                 var sDistValidTo = pkg.ValidTo;
                 sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                 sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo ;
-            });                   
+                return dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo;
+            });
             return aPackage;
-        };   
+        };
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
             return s4h_bp_Txn.run(req.query);
-        });       
+        });
         this.on(['READ'], S4_SalesParameter, async (req) => {
             return s4h_salesparam_Txn.run(req.query);
-        });        
-        this.on(['READ'], DCPMaterialMapping, async (req)=>{
+        });
+        this.on(['READ'], DCPMaterialMapping, async (req) => {
             return distrospec_Txn.run(req.query);
-        });       
-        this.on(['READ'], S4_ProductGroupText, async (req)=>{
+        });
+        this.on(['READ'], S4_ProductGroupText, async (req) => {
             return s4h_prodGroup.run(req.query);
-        });        
+        });
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(), aInsertData = []; // Generate a unique ID
             try {
@@ -1387,20 +1389,20 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         this.on(['READ'], MaterialDocumentHeader, async req => { //s4h_bp_vh
             return s4h_material_read.run(req.query);
-        });  
-        
+        });
+
         this.on(['READ'], S4H_BusinessPartnerapi, async req => { //s4h_bp_vh
             return s4h_bp_vh.run(req.query);
         });
         // this.before('CREATE', 'Titles', async (req) => {
         //     const lastEntry = await SELECT.one.from('Titles').orderBy('LocalTitleId desc');
-            
+
         //     let newId = 'LT-0001'; // Default if no previous records
         //     if (lastEntry && lastEntry.LocalTitleId) {
         //         let lastNumber = parseInt(lastEntry.LocalTitleId.replace('LT-', ''), 10);
         //         newId = `LT-${String(lastNumber + 1).padStart(4, '0')}`;
         //     }
-        
+
         //     req.data.LocalTitleId = newId;
         // });   
 
@@ -1437,7 +1439,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 // Make a POST call to the external API              
                 //const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
                 const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
-                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' })); 
+                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
                 // var sData =
                 // {
                 //     "LongText": "Testing"
@@ -1609,10 +1611,10 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
                     VersionDescription = oAssetVault?.VersionDescription;
                     var Product = oAssetVault?.Title;
-                    if(Product){
+                    if (Product) {
                         var oProdLongText = await s4h_products_Crt.run(SELECT.one.from(ProductBasicText).where({ Product: Product, Language: 'EN' }));
-                            Title = oProdLongText?.LongText;
-                    } 
+                        Title = oProdLongText?.LongText;
+                    }
                     TotalSize = oAssetVault?.AssetMapFileSize;
 
                     var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
@@ -1695,80 +1697,189 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
                 var sMaterialDocument = req?.data?.Material;
 
-                const productData = await s4h_products_Crt.run(
-                    SELECT`ProductDescription, ProductManufacturerNumber`
-                        .from(Products)
-                        .where({ Product: sMaterialDocument })
+                // Fetch the selected Material Document with expanded MaterialDocumentItems
+                const materialDocument = await s4h_material_read.run(
+                    SELECT.from(MaterialDocumentHeader, (header) => {
+                        header.to_MaterialDocumentItem();
+                    }).where({ MaterialDocument: sMaterialDocument })
                 );
 
+                // If no document found, return empty response
+                if (!materialDocument.length) {
+                    console.log("No material document found for", sMaterialDocument);
+                    return;
+                }
+
+                // Extract unique materials from the selected document
+                const materialSet = new Set();
+                materialDocument[0].to_MaterialDocumentItem.forEach((item) => {
+                    materialSet.add(item.Material);
+                });
+
+                const materialsArray = Array.from(materialSet);
+
+                // Fetch product details for the extracted materials, including extra fields
+                const productData = await s4h_products_Crt.run(
+                    SELECT`ProductDescription, ProductManufacturerNumber, YY1_CustomerDes_PRD, YY1_matcust_PRD, Product`
+                        .from(Products)
+                        .where({ Product: materialsArray })
+                );
+
+                // Create a mapping of materials to their product details
+                const productMap = {};
+                productData.forEach((product) => {
+                    productMap[product.Product] = {
+                        ProductDescription: product.ProductDescription,
+                        ProductManufacturerNumber: product.ProductManufacturerNumber,
+                        YY1_CustomerDes_PRD: product.YY1_CustomerDes_PRD,
+                        YY1_matcust_PRD: product.YY1_matcust_PRD
+                    };
+                });
+
+                // Construct GRMatItemNode array with mapped product details
+                const GRMatItemNode = materialDocument[0].to_MaterialDocumentItem.map((item) => ({
+                    AccountAssignmentCategory: sMaterialDocument,
+                    AccountingDocumentCreationDate: sMaterialDocument,
+                    BaseUnit: "EA",
+                    Batch: "BSH",
+                    CostCenter: sMaterialDocument,
+                    CountryOfOrigin: sMaterialDocument,
+                    CountryOfOriginName: sMaterialDocument,
+                    DebitCreditCode: sMaterialDocument,
+                    DeliveryQuantityUnit: sMaterialDocument,
+                    DocumentItemText: productMap[item.Material]?.ProductDescription || "Unknown Material",
+                    EntryUnit: "EA",
+                    Equipment: sMaterialDocument,
+                    FixedAsset: "",
+                    GoodsMovementRefDocType: "",
+                    GoodsMovementType: "",
+                    GoodsReceiptAcctAssgmt: "",
+                    GoodsReceiptAcctAssgmtText: "",
+                    GoodsReceiptPostingDate: "",
+                    GoodsReceiptQtyInOrderUnit: 1020.0,
+                    InternationalArticleNumber: "",
+                    InternationalArticleNumberCat: "",
+                    InventorySpecialStockType: "",
+                    InventoryStockType: "",
+                    ItemVolumeUnit: "",
+                    Language: "",
+                    MaintOrderOperationCounter: "",
+                    MaintOrderRoutingNumber: "",
+                    ManufactureDate: "02-02-2025",
+                    ManufactureMaterial: item.Material,
+                    ManufacturingOrder: "",
+                    MasterFixedAsset: "",
+                    Material: item.Material,
+                    MaterialDocument: item.MaterialDocument,
+                    MaterialDocumentItem: item.MaterialDocumentItem,
+                    MaterialDocumentYear: item.MaterialDocumentYear,
+                    MaterialGrossWeight: 13.0,
+                    MaterialName: productMap[item.Material]?.ProductDescription || "Unknown Material",
+                    MaterialNetWeight: 12.0,
+                    MaterialSizeOrderDimensionDesc: "",
+                    MaterialVolume: 0.0,
+                    MaterialWeightUnit: "",
+                    NumberOfLabelsToBePrinted: "2",
+                    NumberOfSlipsToBePrinted: "1",
+                    OrderPriceUnit: "EA",
+                    OrderQuantityUnit: "1500",
+                    Plant: "AT21",
+                    // ProductDescription: productMap[item.Material]?.ProductDescription || "",
+                    // ProductManufacturerNumber: productMap[item.Material]?.ProductManufacturerNumber || "",
+                    // YY1_CustomerDes_PRD: productMap[item.Material]?.YY1_CustomerDes_PRD || "",
+                    // YY1_matcust_PRD: productMap[item.Material]?.YY1_matcust_PRD || ""
+                }));
+
+                // Construct final formData object
                 const formData = {
-                    Form:
-                    {
-                        "GRHeaderNode": {
-                            "GoodsReceiptHeadlinePrint": sMaterialDocument,
-                            "Language": "EN",
-                            "Product": sMaterialDocument,
-                            "MaterialDocument": sMaterialDocument,
-                            "MaterialDocumentHeaderText": "",
-                            "MaterialDocumentItem": sMaterialDocument,
-                            "MaterialDocumentYear": sMaterialDocument,
-                            "PrinterIsCapableBarCodes": sMaterialDocument, //this is the barcode text
-                            "ReferenceDocument": "",
-                            "GRMI": {
-                                "GRMatItemNode": [
-                                    {
-                                        "AccountAssignmentCategory": sMaterialDocument,
-                                        "AccountingDocumentCreationDate": sMaterialDocument,
-                                        "BaseUnit": "EA",
-                                        "Batch": "BSH",
-                                        "CostCenter": sMaterialDocument,
-                                        "CountryOfOrigin": sMaterialDocument,
-                                        "CountryOfOriginName": sMaterialDocument,
-                                        "DebitCreditCode": sMaterialDocument,
-                                        "DeliveryQuantityUnit": sMaterialDocument,
-                                        "DocumentItemText": sMaterialDocument,
-                                        "EntryUnit": "EA",
-                                        "Equipment": sMaterialDocument,
-                                        "FixedAsset": "",
-                                        "GoodsMovementRefDocType": "",
-                                        "GoodsMovementType": "",
-                                        "GoodsReceiptAcctAssgmt": "",
-                                        "GoodsReceiptAcctAssgmtText": "",
-                                        "GoodsReceiptPostingDate": "",
-                                        "GoodsReceiptQtyInOrderUnit": 1020.0,
-                                        "InternationalArticleNumber": "",
-                                        "InternationalArticleNumberCat": "",
-                                        "InventorySpecialStockType": "",
-                                        "InventoryStockType": "",
-                                        "ItemVolumeUnit": "",
-                                        "Language": "",
-                                        "MaintOrderOperationCounter": "",
-                                        "MaintOrderRoutingNumber": "",
-                                        "ManufactureDate": "02-02-2025",
-                                        "ManufactureMaterial": sMaterialDocument,
-                                        "ManufacturingOrder": "",
-                                        "MasterFixedAsset": "",
-                                        "Material": sMaterialDocument,
-                                        "MaterialDocument": sMaterialDocument,
-                                        "MaterialDocumentItem": sMaterialDocument,
-                                        "MaterialDocumentYear": "",
-                                        "MaterialGrossWeight": 13.0,
-                                        "MaterialName": sMaterialDocument,
-                                        "MaterialNetWeight": 12.0,
-                                        "MaterialSizeOrderDimensionDesc": "",
-                                        "MaterialVolume": 0.0,
-                                        "MaterialWeightUnit": "",
-                                        "NumberOfLabelsToBePrinted": "2",
-                                        "NumberOfSlipsToBePrinted": "1",
-                                        "OrderPriceUnit": "EA",
-                                        "OrderQuantityUnit": "1500",
-                                        "Plant": "AT21"
-                                    }
-                                ]
+                    Form: {
+                        GRHeaderNode: {
+                            GoodsReceiptHeadlinePrint: sMaterialDocument,
+                            Language: "EN",
+                            Product: sMaterialDocument,
+                            MaterialDocument: sMaterialDocument,
+                            MaterialDocumentHeaderText: "",
+                            MaterialDocumentItem: sMaterialDocument,
+                            MaterialDocumentYear: sMaterialDocument,
+                            PrinterIsCapableBarCodes: sMaterialDocument, // Barcode text
+                            ReferenceDocument: "",
+                            GRMI: {
+                                GRMatItemNode
                             }
                         }
                     }
                 };
+
+                console.log(JSON.stringify(formData, null, 2));
+
+                // const formData = {
+                //     Form:
+                //     {
+                //         "GRHeaderNode": {
+                //             "GoodsReceiptHeadlinePrint": sMaterialDocument,
+                //             "Language": "EN",
+                //             "Product": sMaterialDocument,
+                //             "MaterialDocument": sMaterialDocument,
+                //             "MaterialDocumentHeaderText": "",
+                //             "MaterialDocumentItem": sMaterialDocument,
+                //             "MaterialDocumentYear": sMaterialDocument,
+                //             "PrinterIsCapableBarCodes": sMaterialDocument, //this is the barcode text
+                //             "ReferenceDocument": "",
+                //             "GRMI": {
+                //                 "GRMatItemNode": [
+                //                     {
+                //                         "AccountAssignmentCategory": sMaterialDocument,
+                //                         "AccountingDocumentCreationDate": sMaterialDocument,
+                //                         "BaseUnit": "EA",
+                //                         "Batch": "BSH",
+                //                         "CostCenter": sMaterialDocument,
+                //                         "CountryOfOrigin": sMaterialDocument,
+                //                         "CountryOfOriginName": sMaterialDocument,
+                //                         "DebitCreditCode": sMaterialDocument,
+                //                         "DeliveryQuantityUnit": sMaterialDocument,
+                //                         "DocumentItemText": sMaterialDocument,
+                //                         "EntryUnit": "EA",
+                //                         "Equipment": sMaterialDocument,
+                //                         "FixedAsset": "",
+                //                         "GoodsMovementRefDocType": "",
+                //                         "GoodsMovementType": "",
+                //                         "GoodsReceiptAcctAssgmt": "",
+                //                         "GoodsReceiptAcctAssgmtText": "",
+                //                         "GoodsReceiptPostingDate": "",
+                //                         "GoodsReceiptQtyInOrderUnit": 1020.0,
+                //                         "InternationalArticleNumber": "",
+                //                         "InternationalArticleNumberCat": "",
+                //                         "InventorySpecialStockType": "",
+                //                         "InventoryStockType": "",
+                //                         "ItemVolumeUnit": "",
+                //                         "Language": "",
+                //                         "MaintOrderOperationCounter": "",
+                //                         "MaintOrderRoutingNumber": "",
+                //                         "ManufactureDate": "02-02-2025",
+                //                         "ManufactureMaterial": sMaterialDocument,
+                //                         "ManufacturingOrder": "",
+                //                         "MasterFixedAsset": "",
+                //                         "Material": sMaterialDocument,
+                //                         "MaterialDocument": sMaterialDocument,
+                //                         "MaterialDocumentItem": sMaterialDocument,
+                //                         "MaterialDocumentYear": "",
+                //                         "MaterialGrossWeight": 13.0,
+                //                         "MaterialName": sMaterialDocument,
+                //                         "MaterialNetWeight": 12.0,
+                //                         "MaterialSizeOrderDimensionDesc": "",
+                //                         "MaterialVolume": 0.0,
+                //                         "MaterialWeightUnit": "",
+                //                         "NumberOfLabelsToBePrinted": "2",
+                //                         "NumberOfSlipsToBePrinted": "1",
+                //                         "OrderPriceUnit": "EA",
+                //                         "OrderQuantityUnit": "1500",
+                //                         "Plant": "AT21"
+                //                     }
+                //                 ]
+                //             }
+                //         }
+                //     }
+                // };
 
                 // Convert JSON to XML (Ensure single root)
                 const xmlData = xmljs.js2xml(formData, { compact: true, spaces: 4 });
@@ -1824,15 +1935,15 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
             else {
                 data = req?.data?.Records;
             }
-        
+
             let recordsToBeInserted = [], recordsToBeUpdated = [], finalResult = [], successEntries = [], updateSuccessEntries = [], failedEntries = [], hanatable = dcpcontent;
             hanatable = sContentIndicator === "C" ? dcpcontent : dcpkey;
-        
+
             for (var i in data) {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-        
+
                 var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                 if (entry_Active) {
                     data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
