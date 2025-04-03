@@ -1722,8 +1722,13 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
                 // Fetch product details for the extracted materials, including extra fields
                 const productData = await s4h_products_Crt.run(
-                    SELECT`ProductDescription, ProductManufacturerNumber, YY1_CustomerDes_PRD, YY1_matcust_PRD, Product`
-                        .from(Products)
+                    SELECT.from(Products,(product)=>{
+                            product.ProductManufacturerNumber, 
+                            product.YY1_CustomerDes_PRD,
+                            product.YY1_matcust_PRD, 
+                            product.Product,
+                            product.to_Description();
+                        })
                         .where({ Product: materialsArray })
                 );
 
@@ -1803,7 +1808,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             MaterialDocumentHeaderText: "",
                             MaterialDocumentItem: sMaterialDocument,
                             MaterialDocumentYear: sMaterialDocument,
-                            PrinterIsCapableBarCodes: sMaterialDocument, // Barcode text
+                            PrinterIsCapableBarCodes: productData[0]?.ProductManufacturerNumber == ''? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
                             ReferenceDocument: "",
                             GRMI: {
                                 GRMatItemNode
