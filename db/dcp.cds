@@ -315,7 +315,14 @@ entity BookingSalesorderPartner : managed {
     key SalesOrder      : String(10) @mandatory;
     key PartnerFunction : String(2);
         Customer        : String(10);
-
+        PartnerFunctionInternalCode: String(2);
+        Supplier: String(10);
+        Personnel: String(8);
+        ContactPerson: String(10);
+        WorkAssignmentExternalID: String(100);
+        ReferenceBusinessPartner: String(10);
+        AddressID: String(10);
+        VATRegistration: String(20);
 }
 
 entity ShippingConditionTypeMapping {
