@@ -987,8 +987,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oContentData.to_Item[i].LongText = sGoFilexTitleID;
                 oContentData.to_Item[i].ProductGroup = oSalesOrderItem.MaterialGroup;
                 oContentData.to_Item[i].Plant = oSalesOrderItem.ProductionPlant;
-                oContentData.to_Item[i].DistroSpecPackageID = oContentPackage.PackageUUID;
-                oContentData.to_Item[i].DistroSpecPackageName = oContentPackage.PackageName;
                 if (oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) { //RULE 5.2 
                     await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
                 }
@@ -1011,11 +1009,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 //     await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, oResponseStatus, oSalesOrderItem, oContentData);
                 // }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
-                // var aContentPkgCPL = oContentPackage?.to_DCPMaterial?.find((dcp)=>{return dcp.DCPMaterialNumber_Product === oSalesOrderItem.Material}), 
                 var aContentPkgCPL = oContentPackage?.to_DCPMaterial,
                 aContentPkgCTT = [], sContentPkgCTTs, aContentPkgCPLUUID = [], sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
 
+                var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
+                    sPackageUUID = oKeyPackage?.PackageUUID;
+                    sPackageName = oKeyPackage?.PackageName;
+                    oContentData.to_Item[i].DistroSpecPackageID = oKeyPackage?.PackageUUID;
+                    oContentData.to_Item[i].DistroSpecPackageName = oKeyPackage?.PackageName;
                     for (var c in aKeyPkgCPL) {
                         if (aKeyPkgCPL[c]?.CPLUUID) {
                             aKeyPkgCPLUUID.push(aKeyPkgCPL[c]?.CPLUUID);
@@ -1033,6 +1035,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
                 else { //Content Order item
+                    sPackageUUID = oContentPackage?.PackageUUID;
+                    sPackageName = oContentPackage?.PackageName;
+                    oContentData.to_Item[i].DistroSpecPackageID = oContentPackage?.PackageUUID;
+                    oContentData.to_Item[i].DistroSpecPackageName = oContentPackage?.PackageName;
                     if (oAssetvault?.KrakenTitleID) { //RULE 9.3
                         await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
                     }
@@ -1065,8 +1071,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData?.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
                     await updateItemTextForSalesOrder(req, "Z011", distroSpecData?.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
                 }
-                await updateItemTextForSalesOrder(req, "Z009", oContentPackage?.PackageUUID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.5
-                await updateItemTextForSalesOrder(req, "Z010", oContentPackage?.PackageName, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.6
+                await updateItemTextForSalesOrder(req, "Z009", sPackageUUID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.5
+                await updateItemTextForSalesOrder(req, "Z010", sPackageName, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.6
                 if (sStudio) { //RULE 9.8              
                     var oBupa = await s4h_bp_Txn.run(SELECT.one.columns(['BusinessPartnerFullName']).from(S4H_BuisnessPartner).where({ BusinessPartner: sStudio }));
                     var StudioName = oBupa?.BusinessPartnerFullName;
@@ -1074,10 +1080,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         await updateItemTextForSalesOrder(req, "Z012", StudioName, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
-                if (oSalesOrderItem?.AdditionalMaterialGroup1 && oContentPackage?.PackageName) { //RULE 9.9
+                if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9
                     var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
                     if (oProdGroup) {
-                        await updateItemTextForSalesOrder(req, "Z002", `${oContentPackage?.PackageName} ${oProdGroup?.MaterialGroupName}`, oResponseStatus, oSalesOrderItem, oContentData);
+                        await updateItemTextForSalesOrder(req, "Z002", `${sPackageName} ${oProdGroup?.MaterialGroupName}`, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
                 Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
