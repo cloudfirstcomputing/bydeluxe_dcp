@@ -380,14 +380,16 @@ service BookingOrderService {
         to_MaterialDocumentItem: redirected to MaterialDocumentItem,
     };
 
-    entity MaterialDocumentItem as projection on api.MaterialDocumentItem{
+    entity MaterialDocumentItem  as projection on api.MaterialDocumentItem {
             key MaterialDocumentYear,
             key MaterialDocument,
             key MaterialDocumentItem,
                 Material,
                 Plant
+                
 
-    }
+        };
+
     entity ProductionOrder as projection on  api.ProductionOrder;
     
     
