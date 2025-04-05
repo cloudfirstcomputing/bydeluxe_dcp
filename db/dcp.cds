@@ -587,7 +587,7 @@ entity Titles : cuid, managed {
                                     on ExternalTitleIDs_Ass.Title = $self;
         Ratings_Ass           : Composition of many Ratings
                                     on Ratings_Ass.Title = $self;
-}
+} //check
 
 entity ExternalTitleIDs : cuid, managed {
     IDType  : String(20);
