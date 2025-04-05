@@ -581,6 +581,7 @@ entity Titles : cuid, managed {
         AssetVaultTitleId     : String(50)  @Common.Label: 'Asset Vault Title ID';
         ImdbId                : String(50)  @Common.Label: 'IMDB ID';
         StudioTitleId         : String(50)  @Common.Label: 'Studio Title ID';
+        GofilexTitleId        : String(50)  @Common.Label: 'Gofilex Title Id';
         StudioDistributor     : String(20)  @Common.Label: 'Studio Distributor';
         ExternalTitleIDs_Ass  : Composition of many ExternalTitleIDs
                                     on ExternalTitleIDs_Ass.Title = $self;

@@ -195,15 +195,18 @@ sap.ui.define([
                             let existingIds = data.value
                                 .map(item => item.LocalTitleId)
                                 .filter(id => id) // Remove empty values
-                                .map(id => parseInt(id, 10)); // Convert to number
+                                .map(id => parseInt(id.split('-')[1], 10)); // Convert to number  // Split and extract the numeric part
+                                
                     
                             let newLocalId;
+                            let parentTitleId = oFormModel.oData.MaterialMasterTitleID;
                             if (existingIds.length > 0) {
                                 // Get the highest LocalTitleId and increment by 1
-                                newLocalId = String(Math.max(...existingIds) + 1).padStart(2, "0");
+                                let maxId = Math.max(...existingIds);
+                                newLocalId = `${parentTitleId}-${String(maxId + 1).padStart(4, "0")}`;
                             } else {
                                 // If no LocalTitleId exists, set to "01"
-                                newLocalId = "01";
+                                newLocalId = `${parentTitleId}-0001`    ;
                             }
                     
                             console.log("New LocalTitleId:", newLocalId);
@@ -240,22 +243,24 @@ sap.ui.define([
                         let existingIds = data.value
                             .map(item => item.LocalTitleId)
                             .filter(id => id) // Remove empty values
-                            .map(id => parseInt(id, 10)); // Convert to number
+                            .map(id => parseInt(id.split('-')[1], 10)); // Convert to number
                 
                         let newLocalId;
+                        let parentTitleId = oFormModel.oData.MaterialMasterTitleID;
                         if (existingIds.length > 0) {
                             // Get the highest LocalTitleId and increment by 1
-                            newLocalId = String(Math.max(...existingIds) + 1).padStart(2, "0");
+                            let maxId = Math.max(...existingIds);
+                            newLocalId = `${parentTitleId}-${String(maxId + 1).padStart(4, "0")}`;
                         } else {
                             // If no LocalTitleId exists, set to "01"
-                            newLocalId = "01";
+                            newLocalId = `${parentTitleId}-0001`;
                         }
                 
                         console.log("New LocalTitleId:", newLocalId);
                         oFormModel.oData.LocalTitleId = newLocalId;
                         oView.setModel(oFormModel, "formModel");
                         oView.addDependent(that._oDialogL);
-                        that._oDialogL.open(); //First time opening
+                        that._oDialogL.open(); //Second time opening
                         // Use newLocalId to update or create a new entry
                     },
                     error: function (xhr, status, error) {
