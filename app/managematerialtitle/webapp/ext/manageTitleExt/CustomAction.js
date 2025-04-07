@@ -288,7 +288,7 @@ sap.ui.define([
                     ReleaseSize: "",
                     Ratings: "",
                     ReelCountEstimated: null,
-                    AssetVaultTitleId: "",
+                    AssetVaultTitleId: "", 
                     ImdbId: "",
                     StudioTitleId: "",
                     StudioDistributor: "",

@@ -46,14 +46,14 @@
                     <Label id="lblRegionCode" text="Region Code"/>
                     <Input id="inputRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" showValueHelp="true" valueHelpRequest="handleValueHelprc">
                         <suggestionItems>
-				            <core:ListItem text="{code}" additionalText="{descr}" />
+				            <core:ListItem id="_IDGenListItem1" text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
 		            </Input>
 
                     <Label id="lblLanguageCode1" text="Language Code"/>
                     <Input id="inputLanguageCode" placeholder="Enter Language" value="{formModel>/LanguageCode}"  showValueHelp="true" valueHelpRequest="handleValueHelplg">
                         <suggestionItems>
-				            <core:ListItem text="{code}" additionalText="{descr}" />
+				            <core:ListItem id="_IDGenListItem" text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
 		            </Input>
 
