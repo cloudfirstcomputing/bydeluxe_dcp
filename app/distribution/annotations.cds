@@ -77,8 +77,8 @@ annotate service.DistroSpec with {
         Text           : DeliverySequence10.ShippingConditionName,
         TextArrangement: #TextOnly,
     };
-    ReleaseDate @Common: {Label: '{i18n>ReleaseDate}', };
-    RepertoryDate @Common: {Label: '{i18n>RepertoryDate}', };
+    ReleaseDate        @Common: {Label: '{i18n>ReleaseDate}', };
+    RepertoryDate      @Common: {Label: '{i18n>RepertoryDate}', };
 };
 
 annotate service.StudioKey with {
@@ -169,11 +169,11 @@ annotate service.Package with {
 };
 
 annotate service.KeyPackage with {
-    PackageName      @Common: {Label: '{i18n>PackageName}', };
-    Priority         @Common: {Label: '{i18n>Priority}', };
-    IncludeContent   @Common: {Label: '{i18n>IncludeContent}', };
-    ValidFrom        @Common: {Label: '{i18n>ValidFrom}', };
-    ValidTo          @Common: {Label: '{i18n>ValidTo}', };
+    PackageName    @Common: {Label: '{i18n>PackageName}', };
+    Priority       @Common: {Label: '{i18n>Priority}', };
+    IncludeContent @Common: {Label: '{i18n>IncludeContent}', };
+    ValidFrom      @Common: {Label: '{i18n>ValidFrom}', };
+    ValidTo        @Common: {Label: '{i18n>ValidTo}', };
 };
 
 annotate service.DistRestrictions with {
@@ -211,6 +211,7 @@ annotate service.DistRestrictions with {
     PlayBackCapability9        @Common: {Label: '{i18n>PlayBackCapability9}', };
     PlayBackCapability10       @Common: {Label: '{i18n>PlayBackCapability10}', };
     TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
+    OrderType                  @Common: {Label: '{i18n>OrderType}', };
 };
 
 annotate service.KeyDistRestrictions with {
@@ -248,6 +249,7 @@ annotate service.KeyDistRestrictions with {
     PlayBackCapability9        @Common: {Label: '{i18n>PlayBackCapability9}', };
     PlayBackCapability10       @Common: {Label: '{i18n>PlayBackCapability10}', };
     TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
+    OrderType                  @Common: {Label: '{i18n>OrderType}', };
 };
 
 annotate service.CPLDetail with {
@@ -278,6 +280,7 @@ annotate service.DCPMaterials with {
 annotate service.CplList with {
     LinkedCTT     @Common: {Label: '{i18n>CTT}'};
     LinkedCPLUUID @Common: {Label: '{i18n>CPL}'};
+    AssetMapUUID  @Common: {Label: '{i18n>AssetMapUUID}'};
     Email         @Common: {Label: '{i18n>Email}'};
     Download      @Common: {Label: '{i18n>Download}'};
 };
@@ -708,7 +711,7 @@ annotate service.Package with @(
 );
 
 annotate service.KeyPackage with @(
-    UI.HeaderInfo                           : {
+    UI.HeaderInfo                         : {
         Title         : {
             $Type: 'UI.DataField',
             Value: PackageName,
@@ -716,7 +719,7 @@ annotate service.KeyPackage with @(
         TypeName      : '{i18n>KeyPackage}',
         TypeNamePlural: '{i18n>KeyPackages}',
     },
-    UI.FieldGroup #_KeyPackage              : {
+    UI.FieldGroup #_KeyPackage            : {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -733,7 +736,7 @@ annotate service.KeyPackage with @(
             },
         ],
     },
-    UI.FieldGroup #_KeyPackageValidityDate  : {
+    UI.FieldGroup #_KeyPackageValidityDate: {
         $Type: 'UI.FieldGroupType',
         Data : [
             {
@@ -746,7 +749,7 @@ annotate service.KeyPackage with @(
             },
         ],
     },
-    UI.Facets                               : [
+    UI.Facets                             : [
         {
             $Type : 'UI.CollectionFacet',
             ID    : 'KeyPackageCollection',
@@ -779,7 +782,7 @@ annotate service.KeyPackage with @(
             Target: 'to_CPLDetail/@UI.LineItem',
         },
     ],
-    UI.LineItem                             : [
+    UI.LineItem                           : [
         {
             $Type: 'UI.DataField',
             Value: PackageName,
@@ -909,6 +912,10 @@ annotate service.DistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: TrailMixSub,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: OrderType,
             },
         ]
     },
@@ -1042,6 +1049,10 @@ annotate service.KeyDistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: TrailMixSub,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: OrderType,
             },
         ]
     },
@@ -1229,6 +1240,10 @@ annotate service.CplList with @(UI.LineItem: [
     {
         $Type: 'UI.DataField',
         Value: LinkedCTT,
+    },
+    {
+        $Type: 'UI.DataField',
+        Value: AssetMapUUID,
     },
     {
         $Type: 'UI.DataField',

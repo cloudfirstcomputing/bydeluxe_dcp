@@ -23,6 +23,7 @@ service DistributionService {
             key DCP,
             key a.LinkedCPLUUID,
                 a.LinkedCTT,
+                a.AssetMapUUID,
                 b.ProjectID,
                 a.Download,
                 a.Email
