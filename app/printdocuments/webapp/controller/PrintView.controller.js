@@ -68,10 +68,14 @@ sap.ui.define([
                     [oSelecteditem] = this.byId("docTable").getSelectedItems();
                     var sForm = "YY1_MMIM_GR_LABEL_EN" ;
                   
-                    var sMaterial = oSelecteditem.getBindingContext().getObject().MaterialDocument;
+                    var oMaterialDoc = oSelecteditem.getBindingContext().getObject();
                     var oData = {
                         form:sForm,
-                        Material:sMaterial
+                        Material:{
+                            MaterialDocumentYear: oMaterialDoc.MaterialDocumentYear,
+                            MaterialDocument : oMaterialDoc.MaterialDocument,
+                            MaterialDocumentItem :oMaterialDoc.MaterialDocumentItem
+                        }
                     }
                       var sSource = sServiceUrl + `formGR_LABEL`
                     var that = this;
@@ -208,6 +212,13 @@ sap.ui.define([
                 //     this.byId("docTable2").getBinding("items").filter(null, null, null);
                 // }
             }
+            else if(this.byId("selectFormName").getSelectedKey() === '1'){
+                var sKey = this.byId("documentKey").getValue();
+                if(sKey){
+                    aFilters.push(new Filter("MaterialDocument", FilterOperator.EQ, sKey))
+                    // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
+                }
+            }
             else{
                 // sSuffix = "MaterialDocumentHeader"
                 var sKey = this.byId("documentKey").getValue();
@@ -232,7 +243,13 @@ sap.ui.define([
                 
             }
 
-            this.byId("docTable2").getBinding("items").filter(aFilters);
+            if(this.byId("selectFormName").getSelectedKey() === '1'){
+                this.byId("docTable").getBinding("items").filter(aFilters);
+            }
+            else{
+                this.byId("docTable2").getBinding("items").filter(aFilters);
+            }
+            
             // else{
             //     this.byId("docTable2").getBinding("items").filter(null, null, null);
             // }

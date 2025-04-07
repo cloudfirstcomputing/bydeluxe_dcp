@@ -367,7 +367,13 @@ service BookingOrderService {
 
     action downloadFormADS(form: String,Product :String) returns LargeString;
 
-    action formGR_LABEL(form: String,Material :String) returns LargeString;
+    type MaterialDocItemType{
+         MaterialDocumentYear: String (4);
+         MaterialDocument : String (10);
+         MaterialDocumentItem :String (4);
+    }
+
+    action formGR_LABEL(form: String,Material :MaterialDocItemType) returns LargeString;
     
 
     @readonly
@@ -385,8 +391,8 @@ service BookingOrderService {
             key MaterialDocument,
             key MaterialDocumentItem,
                 Material,
-                Plant
-                
+                Plant  ,
+                to_MaterialDocumentHeader: redirected to MaterialDocumentHeader,            
 
         };
 

@@ -63,37 +63,50 @@
 			</f:header>
 			<f:content>
 			<VBox>
-				 <Table id="docTable" mode="MultiSelect" items="{path:'/MaterialDocumentHeader',sorter: { path: 'PostingDate', descending: true}}" visible="{viewModel>/visibleTable1}" growingScrollToLoad="true" growing="true" growingThreshold="10">
-                <headerToolbar>
-                    <Toolbar>
-                        <Title text="Documents"/>
-						 <ToolbarSpacer/>
-						<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>
-                    </Toolbar>
-                </headerToolbar>
+					<Table id="docTable" mode="MultiSelect" items="{path:'/MaterialDocumentItem', sorter: { path: 'to_MaterialDocumentHeader/PostingDate', descending: true}}" visible="{viewModel>/visibleTable1}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+						<headerToolbar>
+							<Toolbar>
+								<Title text="Documents"/>
+								<ToolbarSpacer/>
+								<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>
+							</Toolbar>
+						</headerToolbar>
 
-                <columns>                    
-                    <Column>
-                        <Text text="Document Number"/>
-                    </Column>
-                    <Column>
-                        <Text text="Document Type"/>
-                    </Column>
-                    <Column>
-                        <Text text="Document Date"/>
-                    </Column>
-                </columns>
+						<columns>
+							<Column>
+								<Text text="Document Number"/>
+							</Column>
+							<Column>
+								<Text text="Document Items No"/>
+							</Column>
+							<Column>
+								<Text text="Material"/>
+							</Column>
+							<Column>
+								<Text text="Plant"/>
+							</Column>
+							<Column>
+								<Text text="Document Type"/>
+							</Column>
+							<Column>
+								<Text text="Document Date"/>
+							</Column>
+						</columns>
 
-                <items>
-                    <ColumnListItem type="Active" press="onPrint">
-                        <cells>                            
-                            <Text text="{MaterialDocument}"/>
-                            <Text text="{InventoryTransactionType}"/>
-                            <Text text="{PostingDate}"/>
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
+						<items>
+							<ColumnListItem type="Active" press="onPrint">
+								<cells>
+									<Text text="{MaterialDocument}"/>
+									<Text text="{MaterialDocumentItem}"/>
+									<Text text="{Material}"/>
+									<Text text="{Plant}"/>
+									<Text text="{to_MaterialDocumentHeader/InventoryTransactionType}"/>
+									<Text text="{to_MaterialDocumentHeader/PostingDate}"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+
 			<Table id="docTable2" mode="MultiSelect" items="{path:'/Products',sorter: { path: 'CreationDate', descending: true}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
                 <headerToolbar>
                     <Toolbar>
