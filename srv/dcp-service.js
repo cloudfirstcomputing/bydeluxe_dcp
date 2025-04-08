@@ -1631,7 +1631,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         var oProdLongText = await s4h_products_Crt.run(SELECT.one.from(ProductBasicText).where({ Product: Product, Language: 'EN' }));
                         Title = oProdLongText?.LongText;
                     }
-                    var convertedBytes = convertBytes(oAssetVault?.AssetMapFileSize);
+                    var convertedBytes = await convertBytes(oAssetVault?.AssetMapFileSize);
                     TotalSize = convertedBytes;
 
                     var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
