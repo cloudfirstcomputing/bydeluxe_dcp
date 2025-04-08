@@ -1029,10 +1029,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     if (aKeyPkgCTT?.length) { //RULE 9.1
                         sKeyPkgCTTs = aKeyPkgCTT?.map((u) => { return u ? u : false }).join(`,`);
+                        oContentData.to_Item[i].CTT = sKeyPkgCTTs;
                         await updateItemTextForSalesOrder(req, "Z003", sKeyPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                     if (aKeyPkgCPLUUID?.length) { //RULE 9.2
                         sKeyPkgCPLUUIDs = aKeyPkgCPLUUID?.map((u) => { return u ? u : false }).join(`,`);
+                        oContentData.to_Item[i].CPLUUID = sKeyPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sKeyPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
@@ -1062,10 +1064,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     if (aFinalCTTs?.length) { //RULE 9.1
                         sContentPkgCTTs = aFinalCTTs?.map((u) => { return u ? u : false }).join(`,`);
+                        oContentData.to_Item[i].CTT = sContentPkgCTTs;
                         await updateItemTextForSalesOrder(req, "Z003", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                     if (aFinalCPLs?.length) { //RULE 9.2
                         sContentPkgCPLUUIDs = aFinalCPLs?.map((u) => { return u ? u : false }).join(`,`);
+                        oContentData.to_Item[i].CPLUUID = sContentPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
