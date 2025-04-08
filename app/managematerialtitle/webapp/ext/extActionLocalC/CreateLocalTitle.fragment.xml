@@ -74,8 +74,13 @@
                         </items>
                     </Select>
 
-                    <Label id="localCreate_lblReleaseSize1" text="Release Size"/>
-                    <Input id="localCreate_inputReleaseSize" value="{formModel>/ReleaseSize}"/>
+                    <Label id="lblReleaseSize" text="Release Size"/>
+                    <Select id="selectReleaseSize" selectedKey="{formModel>/ReleaseSize}">
+                        <items>
+                            <core:Item id="itemReleaseSize1" key="Wide" text="Wide"/>
+                            <core:Item id="itemReleaseSize2" key="Tentpole" text="Tentpole"/>
+                        </items>
+                    </Select>
 
                     <Label id="localCreate_lblRatings1" text="Ratings"/>
                     <Input id="localCreate_inputRatings" value="{formModel>/Ratings}"/>
@@ -88,6 +93,9 @@
 
                     <Label id="localCreate_lblStudioTitleId1" text="Studio Title Id"/>
                     <Input id="localCreate_inputStudioTitleId" value="{formModel>/StudioTitleId}"/>
+
+                    <Label id="localCreate_lblGofilexTitleId" text="Gofilex Title Id"/>
+                    <Input id="localCreate_inputGofilexTitleId" value="{formModel>/GofilexTitleId}" />
 
                     <Label id="localCreate_lblStudioDistributor1" text="Studio/Distributor"/>
                     <Input id="localCreate_inputStudioDistributor" value="{formModel>/StudioDistributor}" showValueHelp="true" valueHelpRequest="handleValueHelp"/>

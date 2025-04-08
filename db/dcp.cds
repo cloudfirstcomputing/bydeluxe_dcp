@@ -646,6 +646,7 @@ define view TitleV as
             Titles.ImdbId,
             Titles.StudioTitleId,
             Titles.StudioDistributor,
+            Titles.GofilexTitleId, 
             RatingsConcat.RatingCode,
             ExternalTitleIDs.IDType,
             ExternalTitleIDs.IDValue

@@ -44,7 +44,7 @@
                     </Select>
 
                     <Label id="lblRegionCode" text="Region Code"/>
-                    <Input id="inputRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" showValueHelp="true" valueHelpRequest="handleValueHelprc">
+                     <Input id="inputRegionCode" placeholder="Enter country" value="{formModel>/RegionCode}" showValueHelp="true" valueHelpRequest="handleValueHelprc">
                         <suggestionItems>
 				            <core:ListItem id="_IDGenListItem1" text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
@@ -69,13 +69,21 @@
                     </Select>
 
                     <Label id="lblReleaseSize1" text="Release Size"/>
-                    <Input id="inputReleaseSize" value="{formModel>/ReleaseSize}"/>
+                    <Select id="selectReleaseSize1" selectedKey="{formModel>/ReleaseSize}">
+                        <items>
+                            <core:Item id="itemReleaseSize01" key="Wide" text="Wide"/>
+                            <core:Item id="itemReleaseSize02" key="Tentpole" text="Tentpole"/>
+                        </items>
+                    </Select>
 
                     <Label id="lblRatings1" text="Ratings"/>
                     <Input id="inputRatings" value="{formModel>/Ratings}"/>
 
                     <Label id="lblAssetVaultTitleId1" text="Asset Vault Title Id"/>
                     <Input id="inputAssetVaultTitleId" value="{formModel>/AssetVaultTitleId}"/>
+
+                    <Label id="lblGofilexTitleId" text="Gofilex Title Id"/>
+                    <Input id="inputGofilexTitleId" value="{formModel>/GofilexTitleId}"/>
 
                     <Label id="lblImdbId1" text="IMDB ID"/>
                     <Input id="inputImdbId" value="{formModel>/ImdbId}"/>
