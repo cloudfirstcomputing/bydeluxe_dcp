@@ -1627,7 +1627,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         var oProdLongText = await s4h_products_Crt.run(SELECT.one.from(ProductBasicText).where({ Product: Product, Language: 'EN' }));
                         Title = oProdLongText?.LongText;
                     }
-                    TotalSize = oAssetVault?.AssetMapFileSize;
+                    var convertedBytes = convertBytes(oAssetVault?.AssetMapFileSize);
+                    TotalSize = convertedBytes;
 
                     var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
                         dist.DistroSpecUUID,
@@ -1993,6 +1994,25 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
             finalResult.push({ "Error": failedEntries });
             return finalResult;
         };
+
+        async function convertBytes(bytes) {
+          
+            if (isNaN(bytes) || bytes < 0) {
+              return 'Invalid Value';
+            }
+          
+            if (bytes === 0) {
+              return "0 Bytes";
+            }
+          
+            var k = 1024;
+            var sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"];
+            var i = Math.floor(Math.log(bytes) / Math.log(k));
+            var value = bytes / Math.pow(k, i);
+            var result = value.toFixed(2) + " " + sizes[i];
+          
+            return result;
+          }
         return super.init();
     }
 
