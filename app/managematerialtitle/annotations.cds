@@ -36,6 +36,15 @@ annotate service.TitleV with @(
             $Type : 'UI.DataField',
             Value : GofilexTitleId,
         },
+        {
+            $Type : 'UI.DataField',
+            Value : ID,
+            Label : 'ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : UseSecureName,
+        },
     ],   
 
     // Define Field Group for Object Page Details

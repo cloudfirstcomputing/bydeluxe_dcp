@@ -48,7 +48,7 @@ sap.ui.define([
                                     url: `${oModel.sServiceUrl}deleteProduct`, // Call the action instead of the entity
                                     type: "POST",
                                     contentType: "application/json",
-                                    data: JSON.stringify({ input: sMaterialMasterTitleID }), // Pass data under `input`
+                                    data: JSON.stringify({ input: {Product: sMaterialMasterTitleID } }), // Pass data under `input`
                                     success: function (response) {
                                         MessageToast.show("Title deleted successfully.");
                                         oView.getModel().refresh();                                        

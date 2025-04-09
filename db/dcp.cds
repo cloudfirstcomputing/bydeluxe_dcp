@@ -583,6 +583,7 @@ entity Titles : cuid, managed {
         StudioTitleId         : String(50)  @Common.Label: 'Studio Title ID';
         GofilexTitleId        : String(50)  @Common.Label: 'Gofilex Title Id';
         StudioDistributor     : String(20)  @Common.Label: 'Studio Distributor';
+        UseSecureName         : String(5)   @Common.Label: 'Use Secure Name';
         ExternalTitleIDs_Ass  : Composition of many ExternalTitleIDs
                                     on ExternalTitleIDs_Ass.Title = $self;
         Ratings_Ass           : Composition of many Ratings
@@ -590,15 +591,15 @@ entity Titles : cuid, managed {
 }
 
 entity ExternalTitleIDs : cuid, managed {
-    IDType  : String(20);
-    IDValue : String(50);
-    Title   : Association to Titles;
+    IDType         : String(20);
+    IDValue        : String(50);
+    Title          : Association to Titles;
 }
 
 entity Ratings : cuid, managed {
-    RatingCode : String(20);
-    AgencyName : String(40);
-    Title      : Association to Titles;
+    RatingCode     : String(20);
+    AgencyName     : String(40);
+    Title          : Association to Titles;
 }
 
 define view RatingsConcat as
@@ -646,7 +647,8 @@ define view TitleV as
             Titles.ImdbId,
             Titles.StudioTitleId,
             Titles.StudioDistributor,
-            Titles.GofilexTitleId, 
+            Titles.GofilexTitleId,
+            Titles.UseSecureName,  
             RatingsConcat.RatingCode,
             ExternalTitleIDs.IDType,
             ExternalTitleIDs.IDValue

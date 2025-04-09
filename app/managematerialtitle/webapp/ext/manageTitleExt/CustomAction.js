@@ -149,7 +149,8 @@ sap.ui.define([
                             var oInput = oEvent.getSource(),
                                 oModel = oView.getModel(),
                                 sProductDescription = oInput.getValue(),
-                                sUrl = `${oModel.sServiceUrl}ProductDescription?$filter=ProductDescription eq '${sProductDescription}'`;
+                                //sUrl = `${oModel.sServiceUrl}ProductDescription?$filter=ProductDescription eq '${sProductDescription}'`;
+                                sUrl = `${oModel.sServiceUrl}ProductBasicText?$filter=LongText eq '${sProductDescription}'`;
 
                             $.ajax({
                                 url: sUrl,

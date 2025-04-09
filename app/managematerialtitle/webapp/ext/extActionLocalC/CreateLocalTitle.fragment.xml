@@ -16,7 +16,7 @@
                           editable="true">
                 
                  <f:content>
-                    <Label id="localCreate_lblOriginalTitleName" text="Local ID"/>
+                    <Label id="localCreate_OrgCre" text="Local ID"/>
                     <Input required="true" id="localCreate_inputOriginalTitleName" 
                            value="{formModel>/LocalTitleId}" 
                             editable="false"/>

@@ -27,14 +27,6 @@
                     <Label id="lblOriginalTitleName" text="Original Title Name"/>
                     <Input required="true" id="inputOriginalTitleName" value="{formModel>/OriginalTitleName}" change=".onValidateOriginalTitle"/>                    
 
-                    <Label id="lblTitleType" text="Title Type"/>
-                    <Select id="selectEditTitletypeC" selectedKey="{formModel>/TitleType}" editable="false">
-                        <items>
-                            <core:Item id="itemEditTitleType2C" key="Parent" text="Parent"/>
-                            <core:Item id="itemEditTitleType1C" key="Local" text="Local"/>                            
-                        </items>
-                    </Select>
-
                     <Label id="lblTitleCategory" text="Title Category"/>
                     <Select id="selectTitleCategory" selectedKey="{formModel>/TitleCategory}">
                         <items>
@@ -75,6 +67,9 @@
                             <core:Item id="itemReleaseSize02" key="Tentpole" text="Tentpole"/>
                         </items>
                     </Select>
+
+                    <Label id="localCreate_lblSecurityTitleC" text="Security Title"/>
+                    <Input id="localCreate_inputSecurityTitleC" value="{formModel>/SecurityTitle}" editable="true"/>
 
                     <Label id="lblRatings1" text="Ratings"/>
                     <Input id="inputRatings" value="{formModel>/Ratings}"/>
