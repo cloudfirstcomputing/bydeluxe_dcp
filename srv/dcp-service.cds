@@ -403,10 +403,14 @@ service BookingOrderService {
              BillingDocumentCategory,
              BillingDocumentType,
              BillingDocumentDate,
-             _Item
+             to_Item: redirected to BillingDocumentItem,   
       }
 
-     entity BillingDocumentItem        as projection on api.BillingDocumentItem
+     entity BillingDocumentItem        as projection on api.BillingDocumentItem{
+        key BillingDocument,
+        key BillingDocumentItem,
+            SalesDocumentItemCategory
+     }
     
     
 

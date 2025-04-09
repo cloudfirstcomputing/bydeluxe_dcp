@@ -18,7 +18,7 @@ using {API_MATERIAL_DOCUMENT_SRV as MaterialDoc} from '../srv/external/API_MATER
 using {API_PRODUCTION_ORDER_2_SRV as s4_productionOrder} from '../srv/external/API_PRODUCTION_ORDER_2_SRV';
 using {API_PRODUCTGROUP_SRV as prdgrp} from '../srv/external/API_PRODUCTGROUP_SRV';
 using {YY1_ADDITIONALMATERIALGRP1_CDS as prdgrp1} from '../srv/external/YY1_ADDITIONALMATERIALGRP1_CDS';
-using {sap_s4_CE_BILLINGDOCUMENT_0001_v1 as Billing} from '../srv/external/sap-s4-CE_BILLINGDOCUMENT_0001-v1';
+using {API_BILLING_DOCUMENT_SRV as Billing} from '../srv/external/API_BILLING_DOCUMENT_SRV';
 
 context api {
 
@@ -56,6 +56,6 @@ context api {
     entity MaterialDocumentHeader as projection on MaterialDoc.A_MaterialDocumentHeader;
     entity MaterialDocumentItem as projection on MaterialDoc.A_MaterialDocumentItem;
     entity ProductionOrder        as projection on s4_productionOrder.A_ProductionOrder_2;
-    entity BillingDocument        as projection on Billing.BillingDocument;
-    entity BillingDocumentItem        as projection on Billing.BillingDocumentItem
+    entity BillingDocument        as projection on Billing.A_BillingDocument;
+    entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem
 }

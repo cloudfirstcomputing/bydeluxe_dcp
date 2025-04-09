@@ -1138,6 +1138,7 @@
     },
     "_Item": {
      "type": "cds.Composition",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItem",
      "cardinality": {
       "max": "*"
      },
@@ -1146,6 +1147,7 @@
     },
     "_Partner": {
      "type": "cds.Composition",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentPartner",
      "cardinality": {
       "max": "*"
      },
@@ -1154,6 +1156,7 @@
     },
     "_Text": {
      "type": "cds.Composition",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentText",
      "cardinality": {
       "max": "*"
      },
@@ -1164,22 +1167,41 @@
    "actions": {
     "CreateFromSDDocument": {
      "kind": "action",
-     "@cds.validate": false,
-     "params": {},
+     "params": {
+      "_it": {
+       "items": {
+        "type": "$self",
+        "notNull": true
+       }
+      },
+      "_Control": {
+       "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.D_BillgDocCrteFrmSDDocCtrlPP",
+       "notNull": true,
+       "default": {
+        "val": null
+       }
+      },
+      "_Reference": {
+       "items": {
+        "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.D_BillgDocCrteFrmSDDocRefPP",
+        "notNull": true
+       }
+      }
+     },
      "returns": {
       "items": {
-       "type": "cds.LargeString",
+       "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument",
        "notNull": true
       }
      }
     },
     "PostToAccounting": {
      "kind": "action",
-     "@cds.validate": false,
-     "params": {},
-     "returns": {
-      "type": "cds.LargeString",
-      "notNull": true
+     "params": {
+      "_it": {
+       "type": "$self",
+       "notNull": true
+      }
      }
     }
    },
@@ -2621,6 +2643,7 @@
     },
     "_BillingDocument": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument",
      "cardinality": {
       "max": 1
      },
@@ -2628,6 +2651,7 @@
     },
     "_ItemPartner": {
      "type": "cds.Composition",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItemPartner",
      "cardinality": {
       "max": "*"
      },
@@ -2636,6 +2660,7 @@
     },
     "_ItemText": {
      "type": "cds.Composition",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItemText",
      "cardinality": {
       "max": "*"
      },
@@ -2932,6 +2957,7 @@
     },
     "_BillingDocument": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument",
      "cardinality": {
       "max": 1
      },
@@ -2939,6 +2965,7 @@
     },
     "_Item": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItem",
      "cardinality": {
       "max": 1
      },
@@ -3021,6 +3048,7 @@
     },
     "_BillingDocument": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument",
      "cardinality": {
       "max": 1
      },
@@ -3028,6 +3056,7 @@
     },
     "_Item": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItem",
      "cardinality": {
       "max": 1
      },
@@ -3140,6 +3169,7 @@
     },
     "_BillingDocument": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument",
      "cardinality": {
       "max": 1
      },
@@ -3209,6 +3239,7 @@
     },
     "_BillingDocument": {
      "type": "cds.Association",
+     "target": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument",
      "cardinality": {
       "max": 1
      },

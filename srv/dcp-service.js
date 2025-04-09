@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText } = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -30,7 +30,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
-        var srv_BillingDocument = await cds.connect.to("sap_s4_CE_BILLINGDOCUMENT_0001_v1");
+        var srv_BillingDocument = await cds.connect.to("API_BILLING_DOCUMENT_SRV");
         
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
@@ -1368,6 +1368,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("READ", S4H_BuisnessPartner, async (req, res) => {
             await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
         });
+        this.on("READ", BillingDocument, async (req, res) => {
+            await srv_BillingDocument.run(req.query);
+        });
+        this.on("READ", BillingDocumentItem, async (req, res) => {
+            await srv_BillingDocument.run(req.query);
+        });
+
+        
         this.on("READ", S4H_CustomerSalesArea, async (req, res) => {
             var query = `/A_CustomerSalesArea?$filter=Customer eq '${sSoldToCustomer}' and SalesOrganization eq  '${SalesOrganization}' and DistributionChannel eq '${DistributionChannel}' and Division eq '${Division}'&$expand=to_PartnerFunction`;
             return s4h_bp_Txn.get(query);
