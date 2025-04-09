@@ -397,6 +397,16 @@ service BookingOrderService {
         };
 
     entity ProductionOrder as projection on  api.ProductionOrder;
+
+      entity BillingDocument        as projection on api.BillingDocument{
+         key BillingDocument,
+             BillingDocumentCategory,
+             BillingDocumentType,
+             BillingDocumentDate,
+             _Item
+      }
+
+     entity BillingDocumentItem        as projection on api.BillingDocumentItem
     
     
 

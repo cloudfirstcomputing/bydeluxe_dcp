@@ -327,6 +327,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "sap_s4_CE_BILLINGDOCUMENT_0001_v1": {
+        "kind": "odata",
+        "model": "srv/external/sap-s4-CE_BILLINGDOCUMENT_0001-v1",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata4/sap/api_billingdocument/srvd_a2x/sap/billingdocument/0001/",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

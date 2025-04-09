@@ -30,6 +30,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
+        var srv_BillingDocument = await cds.connect.to("sap_s4_CE_BILLINGDOCUMENT_0001_v1");
+        
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));

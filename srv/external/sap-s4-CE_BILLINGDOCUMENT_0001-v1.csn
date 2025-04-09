@@ -1,0 +1,3253 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.8.2"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.D_BillgDocCrteFrmSDDocRefPP": {
+   "kind": "type",
+   "@cds.external": true,
+   "elements": {
+    "SDDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "SD Document",
+     "@Common.Heading": "Document",
+     "@Common.QuickInfo": "Sales and Distribution Document Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN"
+    },
+    "BillingDocumentType": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Type",
+     "@Common.Heading": "BillT",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKART"
+    },
+    "BillingDocumentDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Billing Date",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKDAT"
+    },
+    "DestinationCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Dest. Country/Region",
+     "@Common.Heading": "Dest. Ctry/Reg",
+     "@Common.QuickInfo": "Destination Country/Region",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LLAND"
+    },
+    "SalesOrganization": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales Organization",
+     "@Common.Heading": "SOrg.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VKORG"
+    },
+    "SDDocumentCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.Label": "SD Document Category",
+     "@Common.Heading": "Doc.Cat.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBTYPL"
+    }
+   }
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.D_BillgDocCrteFrmSDDocCtrlPP": {
+   "kind": "type",
+   "@cds.external": true,
+   "elements": {
+    "DefaultBillingDocumentDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Default Billing Date",
+     "@Common.QuickInfo": "Default Billing Document Date"
+    },
+    "DefaultBillingDocumentType": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Default Billing Type",
+     "@Common.QuickInfo": "Default Billing Document Type"
+    },
+    "AutomPostingToAcctgIsDisabled": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Posting Block",
+     "@Common.Heading": "FIBk",
+     "@Common.QuickInfo": "Blocked for transfer to accounting",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=RFBFK"
+    },
+    "CutOffBillingDocumentDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Billing up to",
+     "@Common.Heading": "Bill up to",
+     "@Common.QuickInfo": "Date up to which billing is to be carried out",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKDAT_BIS"
+    }
+   }
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.SAP__Message": {
+   "kind": "type",
+   "@cds.external": true,
+   "elements": {
+    "code": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "message": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "target": {
+     "type": "cds.LargeString"
+    },
+    "additionalTargets": {
+     "items": {
+      "type": "cds.LargeString",
+      "notNull": true
+     }
+    },
+    "transition": {
+     "type": "cds.Boolean",
+     "notNull": true
+    },
+    "numericSeverity": {
+     "type": "cds.Integer",
+     "@odata.Type": "Edm.Byte",
+     "notNull": true
+    },
+    "longtextUrl": {
+     "type": "cds.LargeString"
+    }
+   }
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1": {
+   "kind": "service",
+   "@cds.external": true,
+   "@CodeList.CurrencyCodes": {
+    "Url": "../../../../default/iwbep/common/0001/$metadata",
+    "CollectionPath": "Currencies"
+   },
+   "@CodeList.UnitsOfMeasure": {
+    "Url": "../../../../default/iwbep/common/0001/$metadata",
+    "CollectionPath": "UnitsOfMeasure"
+   },
+   "@Common.ApplyMultiUnitBehaviorForSortingAndFiltering": true,
+   "@Capabilities.FilterFunctions": [
+    "eq",
+    "ne",
+    "gt",
+    "ge",
+    "lt",
+    "le",
+    "and",
+    "or",
+    "contains",
+    "startswith",
+    "endswith",
+    "any",
+    "all"
+   ],
+   "@Capabilities.SupportedFormats": [
+    "application/json",
+    "application/pdf"
+   ],
+   "@PDF.Features": {
+    "DocumentDescriptionReference": "../../../../default/iwbep/common/0001/$metadata",
+    "DocumentDescriptionCollection": "MyDocumentDescriptions",
+    "ArchiveFormat": true,
+    "Border": true,
+    "CoverPage": true,
+    "FitToPage": true,
+    "FontName": true,
+    "FontSize": true,
+    "HeaderFooter": true,
+    "IANATimezoneFormat": true,
+    "Margin": true,
+    "Padding": true,
+    "ResultSizeDefault": 20000,
+    "ResultSizeMaximum": 20000,
+    "Signature": true,
+    "TextDirectionLayout": true,
+    "Treeview": true,
+    "UploadToFileShare": true
+   },
+   "@Capabilities.KeyAsSegmentSupported": true,
+   "@Capabilities.AsynchronousRequestsSupported": true
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocument": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BillingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Document",
+     "@Common.Heading": "Bill. Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VF"
+    },
+    "SDDocumentCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SDDocumentCategory",
+     "@Core.Computed": true,
+     "@Common.Label": "SD Document Category",
+     "@Common.Heading": "Doc.Cat.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBTYPL"
+    },
+    "BillingDocumentCategory": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "BillingDocumentCategory",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Category",
+     "@Common.Heading": "BlCat",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKTYP"
+    },
+    "BillingDocumentType": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "BillingDocumentType",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Type",
+     "@Common.Heading": "BillT",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKART"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Created By",
+     "@Common.QuickInfo": "Name of Person Responsible for Creating the Object"
+    },
+    "CreationDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Created On",
+     "@Common.QuickInfo": "Record Creation Date"
+    },
+    "CreationTime": {
+     "type": "cds.Time",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Time",
+     "@Common.QuickInfo": "Entry time",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ERZET"
+    },
+    "LastChangeDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Changed On",
+     "@Common.Heading": "Chngd On",
+     "@Common.QuickInfo": "Last Changed On"
+    },
+    "LastChangeDateTime": {
+     "type": "cds.Timestamp",
+     "@odata.Precision": 7,
+     "@odata.Type": "Edm.DateTimeOffset",
+     "@Core.Computed": true,
+     "@Common.Label": "Time Stamp",
+     "@Common.QuickInfo": "UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TIMESTAMPL"
+    },
+    "LogicalSystem": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Logical System",
+     "@Common.Heading": "Log.System",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LOGSYS"
+    },
+    "SalesOrganization": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales Organization",
+     "@Common.Heading": "SOrg.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VKORG"
+    },
+    "DistributionChannel": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Distribution Channel",
+     "@Common.Heading": "DChl",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VTWEG"
+    },
+    "Division": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Division",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Division",
+     "@Common.Heading": "Dv",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SPART"
+    },
+    "BillingDocumentDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Billing Date",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKDAT"
+    },
+    "BillingDocumentIsCancelled": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Canceled",
+     "@Common.Heading": "Can",
+     "@Common.QuickInfo": "Billing document is canceled"
+    },
+    "CancelledBillingDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Canceled Bill. Doc.",
+     "@Common.Heading": "CancBillDc",
+     "@Common.QuickInfo": "Number of canceled billing document"
+    },
+    "BillingDocCombinationCriteria": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Combination Criteria",
+     "@Common.Heading": "Combination Criteria in the Billing Doc.",
+     "@Common.QuickInfo": "Combination criteria in the billing document"
+    },
+    "IsIntrastatReportingRelevant": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Intrastat Relevance",
+     "@Common.Heading": "relevant for Intrastat",
+     "@Common.QuickInfo": "Relevant for Intrastat Reporting",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INTRA_REL"
+    },
+    "IsIntrastatReportingExcluded": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Intrastat Exclusion",
+     "@Common.Heading": "exclude from Intrastat",
+     "@Common.QuickInfo": "Exclude from Intrastat Reporting",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INTRA_EXCL"
+    },
+    "TotalNetAmount": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Net Value",
+     "@Common.QuickInfo": "Net Value in Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=NETWR"
+    },
+    "TransactionCurrency": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Currency",
+     "@Common.IsCurrency": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Document Currency",
+     "@Common.Heading": "Crcy",
+     "@Common.QuickInfo": "SD Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WAERK"
+    },
+    "StatisticsCurrency": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Currency",
+     "@Common.IsCurrency": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Statistics Currency",
+     "@Common.Heading": "Curr."
+    },
+    "TotalTaxAmount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Tax Amount",
+     "@Common.QuickInfo": "Tax Amount in Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MWSBP"
+    },
+    "TotalGrossAmount": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Total Amount"
+    },
+    "CustomerPriceGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerPriceGroup",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Price Group",
+     "@Common.Heading": "CPG",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KONDA"
+    },
+    "PriceListType": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Price List Type",
+     "@Common.Heading": "PL",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PLTYP"
+    },
+    "TaxDepartureCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Departure C/R",
+     "@Common.Heading": "TDC",
+     "@Common.QuickInfo": "Tax Departure Country/Region",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LANDTX"
+    },
+    "VATRegistration": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "VAT Registration No.",
+     "@Common.QuickInfo": "VAT Registration Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STCEG"
+    },
+    "VATRegistrationOrigin": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "VATRegistrationOrigin",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Origin Sales Tax No.",
+     "@Common.Heading": "OSI",
+     "@Common.QuickInfo": "Origin of Sales Tax Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STCEG_H"
+    },
+    "VATRegistrationCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Ctry/Rgn Sls Tax No.",
+     "@Common.Heading": "STC",
+     "@Common.QuickInfo": "Country/Region of Sales Tax ID Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STCEG_L"
+    },
+    "CustomerTaxClassification1": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.1 Customer",
+     "@Common.Heading": "Tx2Cs",
+     "@Common.QuickInfo": "Tax Classification 1 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK1"
+    },
+    "CustomerTaxClassification2": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.2 Customer",
+     "@Common.Heading": "Tx2Cs",
+     "@Common.QuickInfo": "Tax Classification 2 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK2"
+    },
+    "CustomerTaxClassification3": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.3 Customer",
+     "@Common.Heading": "Tx3Cs",
+     "@Common.QuickInfo": "Tax Classification 3 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK3"
+    },
+    "CustomerTaxClassification4": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.4 Customer",
+     "@Common.Heading": "Tx4Cs",
+     "@Common.QuickInfo": "Tax Classification 4 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK4"
+    },
+    "CustomerTaxClassification5": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.5 Customer",
+     "@Common.Heading": "Tx5Cs",
+     "@Common.QuickInfo": "Tax Classification 5 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK5"
+    },
+    "CustomerTaxClassification6": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.6 Customer",
+     "@Common.Heading": "Tx6Cs",
+     "@Common.QuickInfo": "Tax Classification 6 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK6"
+    },
+    "CustomerTaxClassification7": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.7 Customer",
+     "@Common.Heading": "Tx7Cs",
+     "@Common.QuickInfo": "Tax Classification 7 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK7"
+    },
+    "CustomerTaxClassification8": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.8 Customer",
+     "@Common.Heading": "Tx8Cs",
+     "@Common.QuickInfo": "Tax Classification 8 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK8"
+    },
+    "CustomerTaxClassification9": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerTaxClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.9 Customer",
+     "@Common.Heading": "Tx9Cs",
+     "@Common.QuickInfo": "Tax Classification 9 for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXK9"
+    },
+    "IsEUTriangularDeal": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "EU Triangular Deal",
+     "@Common.QuickInfo": "Indicator: Triangular Deal Within the EU",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=XEGDR"
+    },
+    "SDPricingProcedure": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Pricing Procedure",
+     "@Common.Heading": "PriPr.",
+     "@Common.QuickInfo": "Pricing Procedure in Pricing",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KALSMASD"
+    },
+    "ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Shipping Conditions",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VSBED"
+    },
+    "IncotermsVersion": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "IncotermsVersion",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Incoterms Version",
+     "@Common.Heading": "IncoV",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INCOV"
+    },
+    "IncotermsClassification": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "IncotermsClassification",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Incoterms",
+     "@Common.Heading": "IncoT",
+     "@Common.QuickInfo": "Incoterms (Part 1)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INCO1"
+    },
+    "IncotermsTransferLocation": {
+     "type": "cds.String",
+     "length": 28,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Incoterms (Part 2)",
+     "@Common.Heading": "Inco. 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INCO2"
+    },
+    "IncotermsLocation1": {
+     "type": "cds.String",
+     "length": 70,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Incoterms Location 1",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INCO2_L"
+    },
+    "IncotermsLocation2": {
+     "type": "cds.String",
+     "length": 70,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Incoterms Location 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=INCO3_L"
+    },
+    "PayerParty": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Payer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KUNRG"
+    },
+    "ContractAccount": {
+     "type": "cds.String",
+     "length": 12,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Contract Account",
+     "@Common.Heading": "Cont.Account",
+     "@Common.QuickInfo": "Contract Account Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CORR_VKONT_KK"
+    },
+    "CustomerPaymentTerms": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Terms of Payment",
+     "@Common.QuickInfo": "Key for Terms of Payment",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=DZTERM"
+    },
+    "PaymentMethod": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "PaymentMethod",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Payment Method",
+     "@Common.Heading": "PM",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SCHZW_BSEG"
+    },
+    "PaymentReference": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Payment Reference",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KIDNO"
+    },
+    "FixedValueDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Fixed Value Date",
+     "@Common.Heading": "FixValDate",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VALDT"
+    },
+    "AdditionalValueDays": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Addit. Value Days",
+     "@Common.Heading": "AValD",
+     "@Common.QuickInfo": "Additional Value Days",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VALTG"
+    },
+    "SEPAMandate": {
+     "type": "cds.String",
+     "length": 35,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Mandate Reference",
+     "@Common.QuickInfo": "Unique Reference to Mandate for each Payee",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SEPA_MNDID"
+    },
+    "CompanyCode": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Company Code",
+     "@Common.Heading": "CoCd",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BUKRS"
+    },
+    "FiscalYear": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Fiscal Year",
+     "@Common.Heading": "Year",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=GJAHR"
+    },
+    "AccountingDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Document Number",
+     "@Common.Heading": "Doc. No.",
+     "@Common.QuickInfo": "Document Number of an Accounting Document",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BELNR_D"
+    },
+    "CustomerAccountAssignmentGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerAccountAssignmentGroup",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Acct Assmt Grp Cust.",
+     "@Common.Heading": "AAGC",
+     "@Common.QuickInfo": "Account Assignment Group for Customer",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KTGRD"
+    },
+    "AccountingExchangeRateIsSet": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Set Exchange Rate",
+     "@Common.Heading": "SRate",
+     "@Common.QuickInfo": "Exchange Rate Setting",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CPKUR"
+    },
+    "AbsltAccountingExchangeRate": {
+     "type": "cds.Decimal",
+     "precision": 9,
+     "scale": 5,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Abs.Exch.Rate Acct.",
+     "@Common.Heading": "AbsExchRt-Act",
+     "@Common.QuickInfo": "Absolute exchange rate for FI postings",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KURRF_ABS"
+    },
+    "AcctgExchangeRateIsIndrctQtan": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Indirect Quotation",
+     "@Common.QuickInfo": "Accounting exchange rate quotation is indirect"
+    },
+    "ExchangeRateDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Translation Date",
+     "@Common.Heading": "TranslDate",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WWERT_D"
+    },
+    "ExchangeRateType": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "ExchangeRateType",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Exchange Rate Type",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KURST"
+    },
+    "DocumentReferenceID": {
+     "type": "cds.String",
+     "length": 16,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Reference",
+     "@Common.QuickInfo": "Reference Document Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=XBLNR_V1"
+    },
+    "AssignmentReference": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Assignment",
+     "@Common.QuickInfo": "Assignment Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ORDNR_V"
+    },
+    "ReversalReason": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "ReversalReason",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Reversal Reason",
+     "@Common.Heading": "Rev.Reas.",
+     "@Common.QuickInfo": "Reason for Reversal or Inverse Posting",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STGRD"
+    },
+    "DunningArea": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Dunning Area",
+     "@Common.Heading": "Area",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MABER"
+    },
+    "DunningBlockingReason": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "DunningBlockingReason",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Dunning Block",
+     "@Common.Heading": "Block",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MANSP"
+    },
+    "DunningKey": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "DunningKey",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Dunning Key",
+     "@Common.Heading": "Dunn.Key",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MSCHL"
+    },
+    "IsRelevantForAccrual": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Relevant for Accrual",
+     "@Common.Heading": "Is Relevant for Accrual",
+     "@Common.QuickInfo": "Is relevant for accrual"
+    },
+    "SoldToParty": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sold-to Party",
+     "@Common.Heading": "Sold-to",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KUNAG"
+    },
+    "PartnerCompany": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Trading Partner No.",
+     "@Common.Heading": "Tr.Prt",
+     "@Common.QuickInfo": "Company ID of Trading Partner",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=RASSC"
+    },
+    "PurchaseOrderByCustomer": {
+     "type": "cds.String",
+     "length": 35,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Customer Reference",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BSTKD"
+    },
+    "CustomerGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "CustomerGroup",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Group",
+     "@Common.Heading": "CGrp",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KDGRP"
+    },
+    "Country": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Country",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Dest. Country/Region",
+     "@Common.Heading": "Dest. Ctry/Reg",
+     "@Common.QuickInfo": "Destination Country/Region",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LLAND"
+    },
+    "CityCode": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "City Code",
+     "@Common.Heading": "Code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CITYC"
+    },
+    "SalesDistrict": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales District",
+     "@Common.Heading": "SDst",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BZIRK"
+    },
+    "Region": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Region",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Region",
+     "@Common.Heading": "Rg",
+     "@Common.QuickInfo": "Region (State, Province, County)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=REGIO"
+    },
+    "County": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "County Code",
+     "@Common.Heading": "CCd",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=COUNC"
+    },
+    "CreditControlArea": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Credit Control Area",
+     "@Common.Heading": "CCAr",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KKBER"
+    },
+    "PricingDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Doc. Condition No.",
+     "@Common.Heading": "Doc.Cond.",
+     "@Common.QuickInfo": "Number of the Document Condition",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KNUMV"
+    },
+    "OverallSDProcessStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "OverallSDProcessStatus",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Overall Status",
+     "@Common.Heading": "OS",
+     "@Common.QuickInfo": "Overall Processing Status (Header/All Items)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=GBSTK"
+    },
+    "OverallBillingStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "OverallBillingDocumentStatus",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Status",
+     "@Common.QuickInfo": "SD Billing Status"
+    },
+    "AccountingPostingStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "BillingDocAcctgPostingStatus",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Posting Status",
+     "@Common.Heading": "PS",
+     "@Common.QuickInfo": "Posting Status of Billing Document",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BUCHK"
+    },
+    "AccountingTransferStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "BillingDocAcctgTransferStatus",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Posting Status",
+     "@Common.Heading": "PsSt",
+     "@Common.QuickInfo": "Status for Transfer to Accounting",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=RFBSK"
+    },
+    "BillingIssueType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "BillingIssueType",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Issue Type",
+     "@Common.QuickInfo": "Billing Issue Type"
+    },
+    "InvoiceListStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "InvoiceListStatus",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Invoice List Status",
+     "@Common.Heading": "ILSt",
+     "@Common.QuickInfo": "Invoice list status of billing document"
+    },
+    "OvrlItmGeneralIncompletionSts": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "All Items",
+     "@Common.Heading": "AI",
+     "@Common.QuickInfo": "Incompletion Status (All Items)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=UVALL_SU"
+    },
+    "OverallPricingIncompletionSts": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "OverallSDDocPrcgIncompltnSts",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Pricing – All Items",
+     "@Common.Heading": "PI",
+     "@Common.QuickInfo": "Pricing Incompletion Status (All Items)"
+    },
+    "InvoiceListType": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "InvoiceListType",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Invoice List Type",
+     "@Common.Heading": "ILTyp",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKART_RL"
+    },
+    "InvoiceListBillingDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Inv. List Bill. Date",
+     "@Common.Heading": "InvList BD",
+     "@Common.QuickInfo": "Billing date for the invoice list",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKDAT_RL"
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_Item": {
+     "type": "cds.Composition",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Composition": true
+    },
+    "_Partner": {
+     "type": "cds.Composition",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Composition": true
+    },
+    "_Text": {
+     "type": "cds.Composition",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Composition": true
+    }
+   },
+   "actions": {
+    "CreateFromSDDocument": {
+     "kind": "action",
+     "@cds.validate": false,
+     "params": {},
+     "returns": {
+      "items": {
+       "type": "cds.LargeString",
+       "notNull": true
+      }
+     }
+    },
+    "PostToAccounting": {
+     "kind": "action",
+     "@cds.validate": false,
+     "params": {},
+     "returns": {
+      "type": "cds.LargeString",
+      "notNull": true
+     }
+    }
+   },
+   "@Common.Label": "Header",
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.NavigationRestrictions.RestrictedProperties": [
+    {
+     "NavigationProperty": {
+      "=": "_Text"
+     },
+     "InsertRestrictions": {
+      "Insertable": true
+     }
+    }
+   ],
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_Item",
+    "_Partner",
+    "_Text"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true,
+   "@Core.OptimisticConcurrency": [
+    "LastChangeDateTime"
+   ],
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "TotalNetAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "TotalTaxAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "TotalGrossAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    }
+   ]
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItem": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BillingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Document",
+     "@Common.Heading": "Bill. Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VF"
+    },
+    "BillingDocumentItem": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Item",
+     "@Common.QuickInfo": "Billing Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=POSNR_VF"
+    },
+    "SalesDocumentItemCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SalesDocumentItemCategory",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales Doc. Item Cat.",
+     "@Common.Heading": "Sales Doc. Item Category",
+     "@Common.QuickInfo": "Sales Document Item Category"
+    },
+    "SalesDocumentItemType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SalesDocumentItemType",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Item Type",
+     "@Common.Heading": "IT",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=POSAR"
+    },
+    "ReturnItemProcessingType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Returns",
+     "@Common.Heading": "Ret",
+     "@Common.QuickInfo": "Returns item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SHKZG_VF"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Created By",
+     "@Common.QuickInfo": "Name of Person Responsible for Creating the Object"
+    },
+    "CreationDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Created On",
+     "@Common.QuickInfo": "Record Creation Date"
+    },
+    "CreationTime": {
+     "type": "cds.Time",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Time",
+     "@Common.QuickInfo": "Entry time",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ERZET"
+    },
+    "ReferenceLogicalSystem": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Logical System",
+     "@Common.Heading": "Log.System",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LOGSYS"
+    },
+    "OrganizationDivision": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Division of Order",
+     "@Common.Heading": "DivOr",
+     "@Common.QuickInfo": "Division in Sales Order Header"
+    },
+    "Division": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Division",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Division",
+     "@Common.Heading": "Dv",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SPART"
+    },
+    "SalesOffice": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales Office",
+     "@Common.Heading": "SOff.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VKBUR"
+    },
+    "Product": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Product",
+     "@Common.QuickInfo": "Product Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PRODUCTNUMBER"
+    },
+    "OriginallyRequestedMaterial": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Entered",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MATWA"
+    },
+    "InternationalArticleNumber": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "EAN/UPC",
+     "@Common.QuickInfo": "International Article Number (EAN/UPC)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=EAN11"
+    },
+    "PricingReferenceMaterial": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Pricing Ref. Matl",
+     "@Common.QuickInfo": "Pricing Reference Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PMATN"
+    },
+    "Batch": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Batch",
+     "@Common.QuickInfo": "Batch Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CHARG_D"
+    },
+    "ProductGroup": {
+     "type": "cds.String",
+     "length": 9,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "ProductGroup",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Product Group",
+     "@Common.Heading": "Prd Group",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PRODUCTGROUP"
+    },
+    "AdditionalMaterialGroup1": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalProductGroup1",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Group 1",
+     "@Common.Heading": "MG 1",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MVGR1"
+    },
+    "AdditionalMaterialGroup2": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalProductGroup2",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Group 2",
+     "@Common.Heading": "MG 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MVGR2"
+    },
+    "AdditionalMaterialGroup3": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalProductGroup3",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Group 3",
+     "@Common.Heading": "MG 3",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MVGR3"
+    },
+    "AdditionalMaterialGroup4": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalProductGroup4",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Group 4",
+     "@Common.Heading": "MG 4",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MVGR4"
+    },
+    "AdditionalMaterialGroup5": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalProductGroup5",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Group 5",
+     "@Common.Heading": "MG 5",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MVGR5"
+    },
+    "ProductConfiguration": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Configuration",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CUOBJ_VA"
+    },
+    "Plant": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Plant",
+     "@Common.Heading": "Plnt",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WERKS_D"
+    },
+    "StorageLocation": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "StorageLocation",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Storage Location",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LGORT_D"
+    },
+    "PlantRegion": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Region of Dlv. Plant",
+     "@Common.Heading": "Reg",
+     "@Common.QuickInfo": "Region in which plant is located"
+    },
+    "PlantCounty": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "County of Dlv.Plant",
+     "@Common.Heading": "Cty",
+     "@Common.QuickInfo": "County in which plant is located"
+    },
+    "PlantCity": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "City of Deliv. Plant",
+     "@Common.Heading": "Cty",
+     "@Common.QuickInfo": "City in which plant is located"
+    },
+    "MaterialDeterminationType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Mat.Determ.Active",
+     "@Common.QuickInfo": "ID for material determination"
+    },
+    "SoldProduct": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Product Sold",
+     "@Common.QuickInfo": "Sales Billing: Product Sold",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SDBIL_SOLD_PRODUCT"
+    },
+    "BillingDocumentItemText": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Item Description",
+     "@Common.QuickInfo": "Short Text for Sales Order Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ARKTX"
+    },
+    "ServicesRenderedDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Serv. Rendered Date",
+     "@Common.Heading": "Serv.R.Dte",
+     "@Common.QuickInfo": "Date on which services are rendered",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FBUDA"
+    },
+    "BillingQuantity": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "BillingQuantityUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "BillingQuantityUnitISOCode"
+     },
+     "@Common.Label": "Invoiced Quantity",
+     "@Common.QuickInfo": "Actual Invoiced Quantity",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FKIMG"
+    },
+    "BillingQuantityUnitSAPCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUnit": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Sales Unit",
+     "@Common.Heading": "SU",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VRKME"
+    },
+    "BillingQuantityUnitISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Quantity Unit in ISO Code"
+    },
+    "BillingQuantityInBaseUnit": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "BaseUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "BaseUnitISOCode"
+     },
+     "@Common.Label": "Billing Qty in SKU",
+     "@Common.Heading": "Bill. Qty in SKU",
+     "@Common.QuickInfo": "Billing quantity in stock keeping unit"
+    },
+    "BaseUnitSAPCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUnit": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Base Unit of Measure",
+     "@Common.Heading": "BUn",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MEINS"
+    },
+    "BaseUnitISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Base unit ISO code",
+     "@Common.Heading": "BUI",
+     "@Common.QuickInfo": "Base unit of measure in ISO code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MEINS_ISO"
+    },
+    "MRPRequiredQuantityInBaseUnit": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "BaseUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "BaseUnitISOCode"
+     },
+     "@Common.Label": "Required Quantity",
+     "@Common.QuickInfo": "Required quantity for mat.management in stockkeeping units",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LMENG"
+    },
+    "BillingToBaseQuantityDnmntr": {
+     "type": "cds.Decimal",
+     "precision": 5,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Denominator",
+     "@Common.QuickInfo": "Denominator (divisor) for conversion of sales Qty into SKU",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=UMVKN"
+    },
+    "BillingToBaseQuantityNmrtr": {
+     "type": "cds.Decimal",
+     "precision": 5,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Numerator",
+     "@Common.QuickInfo": "Numerator (factor) for conversion of sales quantity into SKU",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=UMVKZ"
+    },
+    "ItemGrossWeight": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "ItemWeightUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "ItemWeightUnitISOCode"
+     },
+     "@Common.Label": "Gross Weight",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BRGEW_15"
+    },
+    "ItemNetWeight": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "ItemWeightUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "ItemWeightUnitISOCode"
+     },
+     "@Common.Label": "Net Weight",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=NTGEW_15"
+    },
+    "ItemWeightUnitSAPCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUnit": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Unit of Weight",
+     "@Common.Heading": "WUn",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=GEWEI"
+    },
+    "ItemWeightUnitISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Unit of weight ISO",
+     "@Common.Heading": "WUn",
+     "@Common.QuickInfo": "Unit of weight in ISO code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=GEWEI_ISO"
+    },
+    "ItemVolume": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "ItemVolumeUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "ItemVolumeUnitISOCode"
+     },
+     "@Common.Label": "Volume",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VOLUM_15"
+    },
+    "ItemVolumeUnitSAPCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUnit": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Volume Unit",
+     "@Common.Heading": "VUn",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VOLEH"
+    },
+    "ItemVolumeUnitISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Volume unit ISO",
+     "@Common.Heading": "VUI",
+     "@Common.QuickInfo": "Volume unit in ISO code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VOLEH_ISO"
+    },
+    "BillingPlanRule": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "BillingPlanBillingRule",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Rule",
+     "@Common.Heading": "BR",
+     "@Common.QuickInfo": "Rule in billing plan/invoice plan",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FAREG"
+    },
+    "BillingPlan": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bill. Plan No.",
+     "@Common.Heading": "Bill. Plan",
+     "@Common.QuickInfo": "Billing Plan Number / Invoicing Plan Number"
+    },
+    "BillingPlanItem": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Item",
+     "@Common.QuickInfo": "Item for billing plan/invoice plan/payment cards"
+    },
+    "NetAmount": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Net Value",
+     "@Common.QuickInfo": "Net Value of Billing item in Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=NETWR_FP"
+    },
+    "TransactionCurrency": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "Currency",
+     "@Common.IsCurrency": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Document Currency",
+     "@Common.Heading": "Crcy",
+     "@Common.QuickInfo": "SD Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WAERK"
+    },
+    "GrossAmount": {
+     "type": "cds.Decimal",
+     "precision": 15,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Gross Value",
+     "@Common.QuickInfo": "Gross Value of the Billing Item in Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BRTWR_FP"
+    },
+    "PricingDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Pricing Date",
+     "@Common.Heading": "Pricing Dt",
+     "@Common.QuickInfo": "Date for Pricing and Exchange Rate",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PRSDT"
+    },
+    "AbsltPriceDetnExchangeRate": {
+     "type": "cds.Decimal",
+     "precision": 9,
+     "scale": 5,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Abs. Exch. Rate Prc.",
+     "@Common.Heading": "Abs.Exch.Rate.Prc.",
+     "@Common.QuickInfo": "Absolute exchange rate for price determination",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KURSK_ABS"
+    },
+    "PriceDetnExchRateIsIndrctQtan": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "PrcExchRateIsIndirct",
+     "@Common.Heading": "Prc.Det.Exch.Rate Is Indirect Quotation",
+     "@Common.QuickInfo": "Pricing exchange rate quotation is indirect"
+    },
+    "PriceDetnExchangeRateDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Translation Date",
+     "@Common.Heading": "TranslDate",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WWERT_D"
+    },
+    "PricingScaleQuantityInBaseUnit": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.Unit": {
+      "=": "BillingQuantityUnitSAPCode"
+     },
+     "@Measures.UNECEUnit": {
+      "=": "BillingQuantityUnitISOCode"
+     },
+     "@Common.Label": "Scale Quantity",
+     "@Common.QuickInfo": "Scale Quantity in base unit of measure"
+    },
+    "TaxAmount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Tax Amount",
+     "@Common.QuickInfo": "Tax Amount in Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MWSBP"
+    },
+    "CostAmount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Cost",
+     "@Common.QuickInfo": "Cost in Document Currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WAVWR"
+    },
+    "Subtotal1Amount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Subtotal 1",
+     "@Common.QuickInfo": "Subtotal 1 from Pricing Procedure for Price Element",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KZWI1"
+    },
+    "Subtotal2Amount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Subtotal 2",
+     "@Common.QuickInfo": "Subtotal 2 from Pricing Procedure for Price Element",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KZWI2"
+    },
+    "Subtotal3Amount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Subtotal 3",
+     "@Common.QuickInfo": "Subtotal 3 from Pricing Procedure for Price Element",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KZWI3"
+    },
+    "Subtotal4Amount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Subtotal 4",
+     "@Common.QuickInfo": "Subtotal 4 from Pricing Procedure for Price Element",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KZWI4"
+    },
+    "Subtotal5Amount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Subtotal 5",
+     "@Common.QuickInfo": "Subtotal 5 from Pricing Procedure for Price Element",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KZWI5"
+    },
+    "Subtotal6Amount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Subtotal 6",
+     "@Common.QuickInfo": "Subtotal 6 from Pricing Procedure for Price Element",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KZWI6"
+    },
+    "StatisticalValueControl": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SDDocItemStatisticalValControl",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Statistical Value",
+     "@Common.Heading": "Stat.",
+     "@Common.QuickInfo": "Statistical Values",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KOWRR"
+    },
+    "CashDiscountIsDeductible": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Cash Discount",
+     "@Common.Heading": "CDc",
+     "@Common.QuickInfo": "Cash Discount Indicator",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SKTOF"
+    },
+    "CustomerConditionGroup1": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Condition Group 1",
+     "@Common.Heading": "CGr1",
+     "@Common.QuickInfo": "Customer Condition Group 1",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KDKG1"
+    },
+    "CustomerConditionGroup2": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Condition Group 2",
+     "@Common.Heading": "CGr2",
+     "@Common.QuickInfo": "Customer Condition Group 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KDKG2"
+    },
+    "CustomerConditionGroup3": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Condition Group 3",
+     "@Common.Heading": "CGr3",
+     "@Common.QuickInfo": "Customer Condition Group 3",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KDKG3"
+    },
+    "CustomerConditionGroup4": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Condition Group 4",
+     "@Common.Heading": "CGr4",
+     "@Common.QuickInfo": "Customer Condition Group 4",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KDKG4"
+    },
+    "CustomerConditionGroup5": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Condition Group 5",
+     "@Common.Heading": "CGr5",
+     "@Common.QuickInfo": "Customer Condition Group 5",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KDKG5"
+    },
+    "ManualPriceChangeType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Manual Price",
+     "@Common.Heading": "MPr",
+     "@Common.QuickInfo": "Status manual price change"
+    },
+    "MaterialPricingGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "MaterialPricingGroup",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material Price Grp",
+     "@Common.Heading": "MPG",
+     "@Common.QuickInfo": "Material Price Group",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KONDM"
+    },
+    "AbsltStatisticsExchangeRate": {
+     "type": "cds.Decimal",
+     "precision": 9,
+     "scale": 5,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Abs.Exch.rate stats",
+     "@Common.Heading": "AbsExRateStat",
+     "@Common.QuickInfo": "Absolute exchange rate for statistics",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STCUR_ABS"
+    },
+    "StatisticsExchRateIsIndrctQtan": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "StatExcRateIsIndirct",
+     "@Common.Heading": "Stat.Exch.Rate Is Indirect Quotation",
+     "@Common.QuickInfo": "Statistics exchange rate quotation is indirect"
+    },
+    "MainItemPricingRefMaterial": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Pricing Ref.Material",
+     "@Common.Heading": "Pricing Ref.Matl",
+     "@Common.QuickInfo": "Pricing reference material of main item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=UPMAT"
+    },
+    "MainItemMaterialPricingGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "MnItem MatPricingGrp",
+     "@Common.Heading": "MnItem MPG",
+     "@Common.QuickInfo": "Material pricing group of main item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=UKONM"
+    },
+    "TimeSheetOvertimeCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Overtime Category",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CATS_OVERTIME_CATEGORY"
+    },
+    "DepartureCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Departure Ctry/Reg.",
+     "@Common.Heading": "DeCR",
+     "@Common.QuickInfo": "Departure Country/Region (from which the goods are sent)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ALAND"
+    },
+    "TaxJurisdiction": {
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "TaxJurisdiction",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Jurisdiction",
+     "@Common.Heading": "Tax Jur.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TXJCD"
+    },
+    "ProductTaxClassification1": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class. Material",
+     "@Common.Heading": "TxMt1",
+     "@Common.QuickInfo": "Tax Classification of Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM1"
+    },
+    "ProductTaxClassification2": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.2 Material",
+     "@Common.Heading": "Tx2Mt",
+     "@Common.QuickInfo": "Tax Classification 2 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM2"
+    },
+    "ProductTaxClassification3": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.3 Material",
+     "@Common.Heading": "Tx3Mt",
+     "@Common.QuickInfo": "Tax Classification 3 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM3"
+    },
+    "ProductTaxClassification4": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.4 Material",
+     "@Common.Heading": "Tx4Mt",
+     "@Common.QuickInfo": "Tax Classification 4 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM4"
+    },
+    "ProductTaxClassification5": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.5 Material",
+     "@Common.Heading": "Tx5Mt",
+     "@Common.QuickInfo": "Tax Classification 5 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM5"
+    },
+    "ProductTaxClassification6": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.6 Material",
+     "@Common.Heading": "Tx6Mt",
+     "@Common.QuickInfo": "Tax Classification 6 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM6"
+    },
+    "ProductTaxClassification7": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.7 Material",
+     "@Common.Heading": "Tx7Mt",
+     "@Common.QuickInfo": "Tax Classification 7 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM7"
+    },
+    "ProductTaxClassification8": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.8 Material",
+     "@Common.Heading": "Tx8Mt",
+     "@Common.QuickInfo": "Tax Classification 8 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM8"
+    },
+    "ProductTaxClassification9": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Class.9 Material",
+     "@Common.Heading": "Tx9Mt",
+     "@Common.QuickInfo": "Tax Classification 9 for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TAXM9"
+    },
+    "TaxCode": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SalesTaxCode",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Code",
+     "@Common.Heading": "Tx",
+     "@Common.QuickInfo": "Tax on Sales/Purchases Code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MWSKZ"
+    },
+    "TaxRateValidityStartDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Tax Rate Valid-From",
+     "@Common.QuickInfo": "Valid-From Date of the Tax Rate",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FOT_TXDAT_FROM"
+    },
+    "EligibleAmountForCashDiscount": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Cash Disc. Bas.",
+     "@Common.Heading": "CashDiscount Basis",
+     "@Common.QuickInfo": "Amount eligible for cash discount in document currency",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SKFBP"
+    },
+    "BusinessArea": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Business Area",
+     "@Common.Heading": "BusA",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=GSBER"
+    },
+    "ProfitCenter": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Profit Center",
+     "@Common.Heading": "Profit Ctr",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PRCTR"
+    },
+    "WBSElementExternalID": {
+     "type": "cds.String",
+     "length": 24,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "WBS Element",
+     "@Common.QuickInfo": "Work Breakdown Structure Element (WBS Element) Edited",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PS_POSID_EDIT"
+    },
+    "ProviderContract": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Provider Contract",
+     "@Common.QuickInfo": "Identification of a Provider Contract",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VTKEY_KK"
+    },
+    "ProviderContractItem": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Provider Contract Item"
+    },
+    "BillingPeriodOfPerfStartDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Per. of Perf. Start",
+     "@Common.Heading": "Start Date",
+     "@Common.QuickInfo": "Period of Performance Start Date",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FM_PEROP_SD_LOW"
+    },
+    "BillingPeriodOfPerfEndDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Per. of Perf. End",
+     "@Common.Heading": "End Date",
+     "@Common.QuickInfo": "Period of Performance End Date",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=FM_PEROP_SD_HIGH"
+    },
+    "ControllingArea": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Controlling Area",
+     "@Common.Heading": "COAr",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KOKRS"
+    },
+    "CostCenter": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Cost Center",
+     "@Common.Heading": "Cost Ctr",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KOSTL"
+    },
+    "MatlAccountAssignmentGroup": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "MaterialAccountAssignmentGroup",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Acct Assmt Grp Mat.",
+     "@Common.Heading": "AAGM",
+     "@Common.QuickInfo": "Account Assignment Group for Material",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KTGRM"
+    },
+    "ReferenceSDDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Reference Document",
+     "@Common.Heading": "Ref. Doc.",
+     "@Common.QuickInfo": "Document Number of Reference Document",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VGBEL"
+    },
+    "ReferenceSDDocumentItem": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Reference Item",
+     "@Common.Heading": "RefItm",
+     "@Common.QuickInfo": "Item Number of the Reference Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VGPOS"
+    },
+    "ReferenceSDDocumentCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SDDocumentCategory",
+     "@Core.Computed": true,
+     "@Common.Label": "Ref. Doc. Category",
+     "@Common.Heading": "RDCat",
+     "@Common.QuickInfo": "Reference Document Category"
+    },
+    "SalesDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales Document",
+     "@Common.Heading": "Sales Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VA"
+    },
+    "SalesDocumentItem": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Sales Document Item",
+     "@Common.Heading": "Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=POSNR_VA"
+    },
+    "SalesSDDocumentCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Sales Doc. Category",
+     "@Common.Heading": "Doc.Cat.",
+     "@Common.QuickInfo": "Sales Document Category"
+    },
+    "HigherLevelItem": {
+     "type": "cds.String",
+     "length": 6,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Higher-Level Item",
+     "@Common.Heading": "HgLvIt",
+     "@Common.QuickInfo": "Higher-Level Item in Bill of Material Structures",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=UEPOS"
+    },
+    "BillingDocumentItemInPartSgmt": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Partner Item",
+     "@Common.Heading": "ParItm",
+     "@Common.QuickInfo": "Item Number in the Partner Segment"
+    },
+    "SalesGroup": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Sales Group",
+     "@Common.Heading": "SGrp",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VKGRP"
+    },
+    "AdditionalCustomerGroup1": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalCustomerGroup1",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Group 1",
+     "@Common.Heading": "Grp1",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KVGR1"
+    },
+    "AdditionalCustomerGroup2": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalCustomerGroup2",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Group 2",
+     "@Common.Heading": "Grp2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KVGR2"
+    },
+    "AdditionalCustomerGroup3": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalCustomerGroup3",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Group 3",
+     "@Common.Heading": "Grp3",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KVGR3"
+    },
+    "AdditionalCustomerGroup4": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalCustomerGroup4",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Group 4",
+     "@Common.Heading": "Grp4",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KVGR4"
+    },
+    "AdditionalCustomerGroup5": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "AdditionalCustomerGroup5",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer Group 5",
+     "@Common.Heading": "Grp5",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KVGR5"
+    },
+    "SDDocumentReason": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "SalesDocumentReason",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Order Reason",
+     "@Common.Heading": "OrdRs",
+     "@Common.QuickInfo": "Order Reason (Reason for the Business Transaction)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AUGRU"
+    },
+    "ItemIsRelevantForCredit": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Credit Funct. Active",
+     "@Common.Heading": "Credit Active",
+     "@Common.QuickInfo": "ID: Item with active credit function / relevant for credit",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CMPNT"
+    },
+    "CreditRelatedPrice": {
+     "type": "cds.Decimal",
+     "precision": 11,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Measures.ISOCurrency": {
+      "=": "TransactionCurrency"
+     },
+     "@Common.Label": "Credit Price",
+     "@Common.QuickInfo": "Item credit price",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CMPRE"
+    },
+    "ShippingPoint": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "ShippingPoint",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Shipping Point",
+     "@Common.Heading": "ShPt",
+     "@Common.QuickInfo": "Shipping Point / Receiving Point",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VSTEL"
+    },
+    "ServiceDocumentType": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "ServiceDocumentType",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Service Doc. Type",
+     "@Common.Heading": "Service Document Type",
+     "@Common.QuickInfo": "Service Document Type"
+    },
+    "ServiceDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Service Document",
+     "@Common.QuickInfo": "Service Document ID"
+    },
+    "ServiceDocumentItem": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Service Doc. Item",
+     "@Common.Heading": "Service Document Item",
+     "@Common.QuickInfo": "Service Document Item ID"
+    },
+    "BusinessSolutionOrder": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Solution Order"
+    },
+    "BusinessSolutionOrderItem": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Solution Order Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CRMS4_SOLO_NUMBER_INT"
+    },
+    "HigherLevelItemUsage": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Usage of HL Item",
+     "@Common.QuickInfo": "ID for higher-level item usage"
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_BillingDocument": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "_ItemPartner": {
+     "type": "cds.Composition",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Composition": true
+    },
+    "_ItemText": {
+     "type": "cds.Composition",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Composition": true
+    }
+   },
+   "@Common.Label": "Items",
+   "@Common.SemanticKey": [
+    "BillingDocumentItem",
+    "BillingDocument"
+   ],
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.NavigationRestrictions.RestrictedProperties": [
+    {
+     "NavigationProperty": {
+      "=": "_ItemText"
+     },
+     "InsertRestrictions": {
+      "Insertable": true
+     }
+    }
+   ],
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_BillingDocument",
+    "_ItemPartner",
+    "_ItemText"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true,
+   "@Core.OptimisticConcurrency": [
+    "_BillingDocument/LastChangeDateTime"
+   ],
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "BillingQuantity"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "BillingQuantityUnitSAPCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "BillingQuantityUnitISOCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "BillingQuantityInBaseUnit"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "BaseUnitSAPCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "BaseUnitISOCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "MRPRequiredQuantityInBaseUnit"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemGrossWeight"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemNetWeight"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemWeightUnitSAPCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemWeightUnitISOCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemVolume"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemVolumeUnitSAPCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "ItemVolumeUnitISOCode"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "NetAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "GrossAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "PricingScaleQuantityInBaseUnit"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "TaxAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "CostAmount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "Subtotal1Amount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "Subtotal2Amount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "Subtotal3Amount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "Subtotal4Amount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "Subtotal5Amount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "Subtotal6Amount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "EligibleAmountForCashDiscount"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "CreditRelatedPrice"
+     },
+     "AllowedExpressions": "MultiValue"
+    }
+   ]
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItemPartner": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BillingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Document",
+     "@Common.Heading": "Bill. Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VF"
+    },
+    "BillingDocumentItem": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Item",
+     "@Common.QuickInfo": "Billing Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=POSNR_VF"
+    },
+    "PartnerFunction": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "PartnerFunction",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Partner Function",
+     "@Common.Heading": "PartF",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PARVW_UNV"
+    },
+    "Customer": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer",
+     "@Common.QuickInfo": "Customer Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KUNNR"
+    },
+    "Supplier": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Supplier",
+     "@Common.QuickInfo": "Account Number of Supplier",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LIFNR"
+    },
+    "Personnel": {
+     "type": "cds.String",
+     "length": 8,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Personnel Number",
+     "@Common.Heading": "Pers.No.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PERNR_D"
+    },
+    "ContactPerson": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Contact Person",
+     "@Common.Heading": "Partner",
+     "@Common.QuickInfo": "Number of Contact Person",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PARNR"
+    },
+    "ReferenceBusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Business Partner",
+     "@Common.QuickInfo": "Business Partner Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BU_PARTNER"
+    },
+    "BusinessPartnerAddressUUID": {
+     "type": "cds.UUID",
+     "@Common.Label": "GUID of a Business Partner Address"
+    },
+    "PartnerIsSpecificForSDDocItem": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.Label": "Item-Specific Partner",
+     "@Common.QuickInfo": "Partner is specific for item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SD_PARTNER_ITEM_IND"
+    },
+    "_BillingDocument": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "_Item": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@Common.Label": "Item Partners",
+   "@Common.SemanticKey": [
+    "PartnerFunction",
+    "BillingDocumentItem",
+    "BillingDocument"
+   ],
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_BillingDocument",
+    "_Item"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentItemText": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BillingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Document",
+     "@Common.Heading": "Bill. Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VF"
+    },
+    "BillingDocumentItem": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Item",
+     "@Common.QuickInfo": "Billing Item",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=POSNR_VF"
+    },
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.Label": "Language Key",
+     "@Common.Heading": "Language",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SPRAS"
+    },
+    "LongTextID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Text ID",
+     "@Common.Heading": "ID",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TDID"
+    },
+    "LongText": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_BillingDocument": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "_Item": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@Common.Label": "Item Texts",
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.FilterRestrictions.Filterable": true,
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "LongText"
+     },
+     "AllowedExpressions": "SearchExpression"
+    }
+   ],
+   "@Capabilities.FilterRestrictions.NonFilterableProperties": [
+    "LongText"
+   ],
+   "@Capabilities.SortRestrictions.NonSortableProperties": [
+    "LongText"
+   ],
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_BillingDocument",
+    "_Item"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true,
+   "@Core.OptimisticConcurrency": [
+    "_BillingDocument/LastChangeDateTime"
+   ]
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentPartner": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BillingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Document",
+     "@Common.Heading": "Bill. Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VF"
+    },
+    "PartnerFunction": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.SAPObjectNodeTypeReference": "PartnerFunction",
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Partner Function",
+     "@Common.Heading": "PartF",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PARVW_UNV"
+    },
+    "Customer": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Customer",
+     "@Common.QuickInfo": "Customer Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=KUNNR"
+    },
+    "Supplier": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Supplier",
+     "@Common.QuickInfo": "Account Number of Supplier",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LIFNR"
+    },
+    "Personnel": {
+     "type": "cds.String",
+     "length": 8,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Personnel Number",
+     "@Common.Heading": "Pers.No.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PERNR_D"
+    },
+    "ContactPerson": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Contact Person",
+     "@Common.Heading": "Partner",
+     "@Common.QuickInfo": "Number of Contact Person",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PARNR"
+    },
+    "ReferenceBusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Business Partner",
+     "@Common.QuickInfo": "Business Partner Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BU_PARTNER"
+    },
+    "BusinessPartnerAddressUUID": {
+     "type": "cds.UUID",
+     "@Common.Label": "GUID of a Business Partner Address"
+    },
+    "_BillingDocument": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@Common.Label": "Header Partners",
+   "@Common.SemanticKey": [
+    "PartnerFunction",
+    "BillingDocument"
+   ],
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_BillingDocument"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true
+  },
+  "sap_s4_CE_BILLINGDOCUMENT_0001_v1.BillingDocumentText": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BillingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Billing Document",
+     "@Common.Heading": "Bill. Doc.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VBELN_VF"
+    },
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.Label": "Language Key",
+     "@Common.Heading": "Language",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SPRAS"
+    },
+    "LongTextID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Text ID",
+     "@Common.Heading": "ID",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=TDID"
+    },
+    "LongText": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "sap_s4_CE_BILLINGDOCUMENT_0001_v1.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_BillingDocument": {
+     "type": "cds.Association",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@Common.Label": "Header Texts",
+   "@Common.SemanticKey": [
+    "LongTextID",
+    "Language",
+    "BillingDocument"
+   ],
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.FilterRestrictions.Filterable": true,
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "LongText"
+     },
+     "AllowedExpressions": "SearchExpression"
+    }
+   ],
+   "@Capabilities.FilterRestrictions.NonFilterableProperties": [
+    "LongText"
+   ],
+   "@Capabilities.SortRestrictions.NonSortableProperties": [
+    "LongText"
+   ],
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_BillingDocument"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true,
+   "@Core.OptimisticConcurrency": [
+    "_BillingDocument/LastChangeDateTime"
+   ]
+  }
+ }
+}
