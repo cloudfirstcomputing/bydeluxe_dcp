@@ -19,7 +19,14 @@ sap.ui.define([
             var that = this;            
             var oModel = oView.getModel();
             var oContext = this._controller._getTable()._oTable.getSelectedItem().getBindingContext();
-
+            
+            var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
+            var sTitleType = oFormModel.getData().TitleType;
+            var oModel = oView.getModel();
+            if (!sTitleType || sTitleType === "Parent") {
+                MessageToast.show("Select a Local Title!");
+                return;
+            }
             if (!oContext) {
                 MessageBox.error("No row selected for deletion.");
                 return;
@@ -44,20 +51,9 @@ sap.ui.define([
                             type: "DELETE",
                             contentType: "application/json",
                             success: function () {
-                                var updateCall = $.ajax({
-                                    url: `${oModel.sServiceUrl}deleteProduct`, // Call the action instead of the entity
-                                    type: "POST",
-                                    contentType: "application/json",
-                                    data: JSON.stringify({ input: {Product: sMaterialMasterTitleID } }), // Pass data under `input`
-                                    success: function (response) {
-                                        MessageToast.show("Title deleted successfully.");
-                                        oView.getModel().refresh();                                        
-                                    }.bind(this),
-                                    error: function (xhr, status, error) {
-                                        console.error("Product delete failed:", status, error, xhr.responseText);
-                                    }
-                                });
-                               
+                                
+                                MessageToast.show("Title deleted successfully.");
+                                        oView.getModel().refresh();
                                 oModel.refresh();  // Refresh model to update UI                                
                             }.bind(that),
                             error: function (xhr, status, error) {

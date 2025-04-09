@@ -19,10 +19,10 @@
                     <Label id="lblEditOriginalTitleName" text="Original Title Name"/>
                     <Input id="inputEditOriginalTitleName" value="{formModel>/OriginalTitleName}" editable="true"/>
 
-                    <Label id="lblEdit_lblOriginalRegionalTitle" text="Regional Title Name"/>
+                    <Label id="lblEdit_lblOriginalRegionalTitle" text="Regional Title Name" visible="{= ${formModel>/TitleType} !== 'Parent' }"/>
                     <Input  id="lblEdit_inputOriginalRegionalTitle" 
                            value="{formModel>/RegionalTitleName}" 
-                           change=".onValidateOriginalTitle" editable="true"/>
+                           change=".onValidateOriginalTitle" editable="true" visible="{= ${formModel>/TitleType} !== 'Parent' }"/>
                     <Label id="lblEdit_lblOriginalShortTitle" text="Short Title Name"/>
                     <Input  id="lblEdit_inputOriginalShortTitle" 
                            value="{formModel>/ShortTitle}" 
@@ -74,6 +74,14 @@
                         <items>
                             <core:Item id="itemReleaseSize03" key="Wide" text="Wide"/>
                             <core:Item id="itemReleaseSize04" key="Tentpole" text="Tentpole"/>
+                        </items>
+                    </Select>
+
+                    <Label id="localCreate_lblUseSecureName03" text="Use Secure Name"/>
+                    <Select id="localCreate_selectUseSecureName04" selectedKey="{formModel>/UseSecureName}">
+                        <items>
+                              <core:Item id="_IDGenItem03" key="Yes" text="Yes"/>
+                              <core:Item id="_IDGenItem104" key="No" text="No"/>
                         </items>
                     </Select>
 

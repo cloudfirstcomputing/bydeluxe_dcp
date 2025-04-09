@@ -192,6 +192,7 @@ sap.ui.define([
                     that._oDialogE = oDialog;
                     var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
                     var oFormModel = new sap.ui.model.json.JSONModel(oContext.getObject());
+                    var oViewModel = new sap.ui.model.json.JSONModel(oContext.getObject());
                     var sTitleType = oFormModel.getData().TitleType;
                     // if (sTitleType === "Parent") {
                     //     MessageToast.show("Select a non Parent Item to Edit!");
@@ -201,6 +202,7 @@ sap.ui.define([
 
 
                     oView.setModel(oFormModel, "formModel");
+                    oView.setModel(oViewModel, "viewModel");
                     oView.addDependent(oDialog);
 
                 });

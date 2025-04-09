@@ -68,6 +68,14 @@
                         </items>
                     </Select>
 
+                    <Label id="localCreate_lblUseSecureName01" text="Use Secure Name"/>
+                    <Select id="localCreate_selectUseSecureName02" selectedKey="{formModel>/UseSecureName}">
+                        <items>
+                              <core:Item id="_IDGenItem01" key="Yes" text="Yes"/>
+                              <core:Item id="_IDGenItem102" key="No" text="No"/>
+                        </items>
+                    </Select>
+
                     <Label id="localCreate_lblSecurityTitleC" text="Security Title"/>
                     <Input id="localCreate_inputSecurityTitleC" value="{formModel>/SecurityTitle}" editable="true"/>
 
