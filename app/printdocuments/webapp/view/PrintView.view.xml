@@ -5,14 +5,14 @@
 	xmlns:f="sap.f"
 	xmlns:fb="sap.ui.comp.filterbar"
 	xmlns:svm="sap.ui.comp.smartvariants">
-    <f:DynamicPage headerExpanded="{/headerExpanded}" >
+    <f:DynamicPage id="_IDGenDynamicPage" headerExpanded="{/headerExpanded}" >
 			<f:title>
-				<f:DynamicPageTitle>
+				<f:DynamicPageTitle id="_IDGenDynamicPageTitle">
 					<f:heading>
-						<Title text="Print Forms"/>
+						<Title id="_IDGenTitle" text="Print Forms"/>
 					</f:heading>
 					<f:actions>
-						<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>						
+						<Button id="_IDGenButton" text="Print" press="onPreviewForm" icon="sap-icon://print"/>						
                 	</f:actions>					
 					<f:expandedContent>
 						<Label id="expandedLabel" text="No filters active" />
@@ -23,35 +23,36 @@
 				</f:DynamicPageTitle>
 			</f:title>
 			<f:header>
-				<f:DynamicPageHeader>
+				<f:DynamicPageHeader id="_IDGenDynamicPageHeader">
 					<f:content>
 						<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch1" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
 							<fb:filterGroupItems>
-								<fb:FilterGroupItem name="Name" label="Form Name / Output Type" groupName="Group1" visibleInFilterBar="true">
+								<fb:FilterGroupItem id="_IDGenFilterGroupItem" name="Name" label="Form Name / Output Type" groupName="Group1" visibleInFilterBar="true">
 									<fb:control>
 										<Select id="selectFormName" change="onSelectChange">
 											<items>
-												<core:Item key="1" text="Inbound label (PID) (CAN only)"/>
-												<core:Item key="2" text="DCDC HDD label "/>
-												<core:Item key="3" text="Deluxe HDD Label"/>
-												<core:Item key="4" text="Master HDD Label "/>
-												<core:Item key="5" text="thumbnail_Hard Drive Label 4 x 6"/>
+												<core:Item id="_IDGenItem1" key="1" text="Inbound label (PID) (CAN only)"/>
+												<core:Item id="_IDGenItem2" key="2" text="DCDC HDD label "/>
+												<core:Item id="_IDGenItem3" key="3" text="Deluxe HDD Label"/>
+												<core:Item id="_IDGenItem4" key="4" text="Master HDD Label "/>
+												<core:Item id="_IDGenItem5" key="5" text="thumbnail_Hard Drive Label 4 x 6"/>
+												<core:Item id="_IDGenItem6" key="6" text="Invoice form Label"/>
 											</items>
 										</Select>											
 									</fb:control>
 								</fb:FilterGroupItem>
-								<fb:FilterGroupItem groupName="General" label="Document Creation Date" name="StartDate" visibleInFilterBar="true">
+								<fb:FilterGroupItem id="_IDGenFilterGroupItem1" groupName="General" label="Document Creation Date" name="StartDate" visibleInFilterBar="true">
 									<fb:control>
 								    	<DatePicker id="startDate" change="onDateChange"/>
 									</fb:control>
 								</fb:FilterGroupItem>
 
-								<fb:FilterGroupItem groupName="General" label="To" name="EndDate" visibleInFilterBar="true">
+								<fb:FilterGroupItem id="_IDGenFilterGroupItem2" groupName="General" label="To" name="EndDate" visibleInFilterBar="true">
 									<fb:control>
 										<DatePicker id="endDate" change="onDateChange"/>
 									</fb:control>
 								</fb:FilterGroupItem>
-								<fb:FilterGroupItem groupName="General" label="Document Key" name="DocuKey" visibleInFilterBar="true">
+								<fb:FilterGroupItem id="_IDGenFilterGroupItem3" groupName="General" label="Document Key" name="DocuKey" visibleInFilterBar="true">
 									<fb:control>
 										<Input id="documentKey" />
 									</fb:control>
@@ -62,46 +63,47 @@
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-			<VBox>
+			<VBox id="_IDGenVBox">
+			
 					<Table id="docTable" mode="MultiSelect" items="{path:'/MaterialDocumentItem', sorter: { path: 'to_MaterialDocumentHeader/PostingDate', descending: true}}" visible="{viewModel>/visibleTable1}" growingScrollToLoad="true" growing="true" growingThreshold="10">
 						<headerToolbar>
-							<Toolbar>
-								<Title text="Documents"/>
-								<ToolbarSpacer/>
-								<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>
+							<Toolbar id="_IDGenToolbar">
+								<Title id="_IDGenTitle1" text="Documents"/>
+								<ToolbarSpacer id="_IDGenToolbarSpacer"/>
+								<Button id="_IDGenButton1" text="Print" press="onPreviewForm" icon="sap-icon://print"/>
 							</Toolbar>
 						</headerToolbar>
 
 						<columns>
-							<Column>
-								<Text text="Document Number"/>
+							<Column id="_IDGenColumn">
+								<Text id="_IDGenText" text="Document Number"/>
 							</Column>
-							<Column>
-								<Text text="Document Items No"/>
+							<Column id="_IDGenColumn1">
+								<Text id="_IDGenText1" text="Document Items No"/>
 							</Column>
-							<Column>
-								<Text text="Material"/>
+							<Column id="_IDGenColumn2">
+								<Text id="_IDGenText2" text="Material"/>
 							</Column>
-							<Column>
-								<Text text="Plant"/>
+							<Column id="_IDGenColumn3">
+								<Text id="_IDGenText3" text="Plant"/>
 							</Column>
-							<Column>
-								<Text text="Document Type"/>
+							<Column id="_IDGenColumn4">
+								<Text id="_IDGenText4" text="Document Type"/>
 							</Column>
-							<Column>
-								<Text text="Document Date"/>
+							<Column id="_IDGenColumn5">
+								<Text id="_IDGenText5" text="Document Date"/>
 							</Column>
 						</columns>
 
 						<items>
-							<ColumnListItem type="Active" press="onPrint">
+							<ColumnListItem id="_IDGenColumnListItem" type="Active" press="onPrint">
 								<cells>
-									<Text text="{MaterialDocument}"/>
-									<Text text="{MaterialDocumentItem}"/>
-									<Text text="{Material}"/>
-									<Text text="{Plant}"/>
-									<Text text="{to_MaterialDocumentHeader/InventoryTransactionType}"/>
-									<Text text="{to_MaterialDocumentHeader/PostingDate}"/>
+									<Text id="_IDGenText6" text="{MaterialDocument}"/>
+									<Text id="_IDGenText7" text="{MaterialDocumentItem}"/>
+									<Text id="_IDGenText8" text="{Material}"/>
+									<Text id="_IDGenText9" text="{Plant}"/>
+									<Text id="_IDGenText10" text="{to_MaterialDocumentHeader/InventoryTransactionType}"/>
+									<Text id="_IDGenText11" text="{to_MaterialDocumentHeader/PostingDate}"/>
 								</cells>
 							</ColumnListItem>
 						</items>
@@ -109,35 +111,73 @@
 
 			<Table id="docTable2" mode="MultiSelect" items="{path:'/Products',sorter: { path: 'CreationDate', descending: true}}" visible="{viewModel>/visibleTable2}" growingScrollToLoad="true" growing="true" growingThreshold="10">
                 <headerToolbar>
-                    <Toolbar>
-                        <Title text="Documents"/>
-						 <ToolbarSpacer/>
-						<Button text="Print" press="onPreviewForm" icon="sap-icon://print"/>
+                    <Toolbar id="_IDGenToolbar1">
+                        <Title id="_IDGenTitle2" text="Documents"/>
+						 <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+						<Button id="_IDGenButton2" text="Print" press="onPreviewForm" icon="sap-icon://print"/>
                     </Toolbar>
                 </headerToolbar>
 
                 <columns>                    
-                    <Column>
-                        <Text text="Document Number"/>
+                    <Column id="_IDGenColumn6">
+                        <Text id="_IDGenText12" text="Document Number"/>
                     </Column>
-                    <Column>
-                        <Text text="Document Type"/>
+                    <Column id="_IDGenColumn7">
+                        <Text id="_IDGenText13" text="Document Type"/>
                     </Column>
-                    <Column>
-                        <Text text="Document Date"/>
+                    <Column id="_IDGenColumn8">
+                        <Text id="_IDGenText14" text="Document Date"/>
                     </Column>
                 </columns>
 
                 <items>
-                    <ColumnListItem type="Active" press="onPrint">
+                    <ColumnListItem id="_IDGenColumnListItem1" type="Active" press="onPrint">
                         <cells>                            
-                            <Text text="{Product}"/>
-                            <Text text="{ProductType}"/>
-                            <Text text="{CreationDate}"/>
+                            <Text id="_IDGenText15" text="{Product}"/>
+                            <Text id="_IDGenText16" text="{ProductType}"/>
+                            <Text id="_IDGenText17" text="{CreationDate}"/>
                         </cells>
                     </ColumnListItem>
                 </items>
             </Table>
+			<Table id="docTable3" mode="MultiSelect" items="{path:'/BillingDocument', sorter: { path: 'to_Item/SalesDocumentItemCategory', descending: true}}" visible="{viewModel>/visibleTable3}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+						<headerToolbar>
+							<Toolbar id="_IDGenToolbar2">
+								<Title id="_IDGenTitle3" text="Documents"/>
+								<ToolbarSpacer id="_IDGenToolbarSpacer3"/>
+								<Button id="_IDGenButton3" text="Print" press="onPreviewForm" icon="sap-icon://print"/>
+							</Toolbar>
+						</headerToolbar>
+
+						<columns>
+							<Column id="_IDGenColumn9">
+								<Text id="_IDGenText18" text="BillingDocument"/>
+							</Column>
+							<Column id="_IDGenColumn10">
+								<Text id="_IDGenText19" text="BillingDocumentCategory"/>
+							</Column>
+							<Column id="_IDGenColumn11">
+								<Text id="_IDGenText20" text="BillingDocumentType"/>
+							</Column>
+							<Column id="_IDGenColumn12">
+								<Text id="_IDGenText21" text="BillingDocumentDate"/>
+							</Column>
+							
+						</columns>
+
+						<items>
+							<ColumnListItem id="_IDGenColumnListItem3" type="Active" press="onPrint">
+								<cells>
+									<Text id="_IDGenText24" text="{BillingDocument}"/>
+									<Text id="_IDGenText25" text="{BillingDocumentCategory}"/>
+									<Text id="_IDGenText26" text="{BillingDocumentType}"/>
+									<Text id="_IDGenText27" text="{BillingDocumentDate}"/>
+									<Text id="_IDGenText28" text="{to_Item/SalesDocumentItemCategory}"/>
+									
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
 			</VBox>
 			</f:content>
 		</f:DynamicPage>
