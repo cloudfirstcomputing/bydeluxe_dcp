@@ -82,7 +82,11 @@ entity KeyPackage {
         ]  @mandatory;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
-        // IncludeContent     : Boolean;
+        OrderType          : String(1) enum {
+            Content = 'C';
+            Keys    = 'K';
+            Both    = 'B';
+        };
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
         to_DistRestriction : Composition of many KeyDistRestrictions
@@ -97,7 +101,11 @@ entity Package {
             0,
             99
         ]  @mandatory;
-        // IncludeKey         : Boolean;
+        OrderType          : String(1) enum {
+            Content = 'C';
+            Keys    = 'K';
+            Both    = 'B';
+        };
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
         DeliveryMethod1    : Association to api.ShippingConditions;
@@ -140,11 +148,6 @@ entity DistRestrictions : cuid {
         Weekly  = 'W';
         NA      = '0';
     };
-    OrderType                  : String(1) enum {
-        Content = 'C';
-        Keys    = 'K';
-        Both    = 'B';
-    };
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
 };
@@ -171,11 +174,6 @@ entity KeyDistRestrictions : cuid {
         Monthly = 'M';
         Weekly  = 'W';
         NA      = '0';
-    };
-    OrderType                  : String(1) enum {
-        Content = 'C';
-        Keys    = 'K';
-        Both    = 'B';
     };
     to_KeyPackage              : Association to KeyPackage;
     to_DistroSpec              : Association to DistroSpec;

@@ -113,7 +113,7 @@ annotate service.CustomerRef with {
 annotate service.Package with {
     PackageName      @Common: {Label: '{i18n>PackageName}', };
     Priority         @Common: {Label: '{i18n>Priority}', };
-    // IncludeKey       @Common: {Label: '{i18n>IncludeKey}', };
+    OrderType        @Common: {Label: '{i18n>OrderType}', };
     DeliveryMethod1  @Common: {
         Label          : '{i18n>DeliveryMethod1}',
         Text           : DeliveryMethod1.ShippingConditionName,
@@ -169,11 +169,11 @@ annotate service.Package with {
 };
 
 annotate service.KeyPackage with {
-    PackageName    @Common: {Label: '{i18n>PackageName}', };
-    Priority       @Common: {Label: '{i18n>Priority}', };
-    // IncludeContent @Common: {Label: '{i18n>IncludeContent}', };
-    ValidFrom      @Common: {Label: '{i18n>ValidFrom}', };
-    ValidTo        @Common: {Label: '{i18n>ValidTo}', };
+    PackageName @Common: {Label: '{i18n>PackageName}', };
+    Priority    @Common: {Label: '{i18n>Priority}', };
+    OrderType   @Common: {Label: '{i18n>OrderType}', };
+    ValidFrom   @Common: {Label: '{i18n>ValidFrom}', };
+    ValidTo     @Common: {Label: '{i18n>ValidTo}', };
 };
 
 annotate service.DistRestrictions with {
@@ -211,7 +211,6 @@ annotate service.DistRestrictions with {
     PlayBackCapability9        @Common: {Label: '{i18n>PlayBackCapability9}', };
     PlayBackCapability10       @Common: {Label: '{i18n>PlayBackCapability10}', };
     TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
-    OrderType                  @Common: {Label: '{i18n>OrderType}', };
 };
 
 annotate service.KeyDistRestrictions with {
@@ -249,7 +248,6 @@ annotate service.KeyDistRestrictions with {
     PlayBackCapability9        @Common: {Label: '{i18n>PlayBackCapability9}', };
     PlayBackCapability10       @Common: {Label: '{i18n>PlayBackCapability10}', };
     TrailMixSub                @Common: {Label: '{i18n>TrailMixSub}', };
-    OrderType                  @Common: {Label: '{i18n>OrderType}', };
 };
 
 annotate service.CPLDetail with {
@@ -591,6 +589,10 @@ annotate service.Package with @(
                 $Type: 'UI.DataField',
                 Value: Priority,
             },
+            {
+                $Type: 'UI.DataField',
+                Value: OrderType,
+            },
         ],
     },
     UI.FieldGroup #_PackageValidityDate : {
@@ -699,6 +701,10 @@ annotate service.Package with @(
             $Type: 'UI.DataField',
             Value: Priority,
         },
+        {
+            $Type: 'UI.DataField',
+            Value: OrderType,
+        },
     ]
 );
 
@@ -721,6 +727,10 @@ annotate service.KeyPackage with @(
             {
                 $Type: 'UI.DataField',
                 Value: Priority,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: OrderType,
             },
         ],
     },
@@ -778,6 +788,10 @@ annotate service.KeyPackage with @(
         {
             $Type: 'UI.DataField',
             Value: Priority,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: OrderType,
         },
     ]
 );
@@ -896,10 +910,6 @@ annotate service.DistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: TrailMixSub,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: OrderType,
             },
         ]
     },
@@ -1033,10 +1043,6 @@ annotate service.KeyDistRestrictions with @(
             {
                 $Type: 'UI.DataField',
                 Value: TrailMixSub,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: OrderType,
             },
         ]
     },
