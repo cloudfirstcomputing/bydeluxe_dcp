@@ -357,37 +357,104 @@ sap.ui.define([
                             this._selectedFile = oEvent.getParameter("files")[0];
                             this._selectedFileName = oEvent.getParameter("files")[0].name;
                             MessageToast.show("File selected: " + oEvent.getParameter("files")[0].name);
-                        },
-                        onConfirmUpload: function (oEvent) {
-                            const file = this._selectedFile;
-                            const file_name = this.selectedFileName;
-                            console.log(file);
-                            console.log(file_name);
+                        },                        
+                        onConfirmUpload: function (data, filename) {
+                            var oView = this.getView();
+                            var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+                            var that = this;
                         
-                            if (file) {
-                                var batchModel = oView.getModel();
-                                console.log(batchModel);
-                                var oContext = batchModel.bindContext("/MassUploadManageMaterialTitle(...)");
-                                oContext.setParameter("fileData", file);
-                            oContext.setParameter("fileName", file_name);
-                            // oContext.setParameter("fieldNames", that.fieldNamesCAPM);
-                                const reader = new FileReader();
+                            oView.setBusy(true);
+                            that.Obj = this;
+                            var response;
                         
-                                reader.onload = function (evt) {
-                                    const fileContent = evt.target.result;
-                                    console.log("File content:", fileContent);
-                                    // You can parse it here if it's JSON, CSV, etc.
-                                };
+                            var uploadSuccess = oResourceBundle.getText("uploadSuccess"),
+                                uploadSuccessTitle = oResourceBundle.getText("uploadSuccessTitle"),
+                                uploadSuccessCount = oResourceBundle.getText("uploadSuccessCount"),
+                                uploadErrorTitle = oResourceBundle.getText("uploadErrorTitle"),
+                                uploadError = oResourceBundle.getText("uploadError"),
+                                uploadFailed = oResourceBundle.getText("uploadFailed");
                         
-                                reader.onerror = function (err) {
-                                    console.error("Error reading file:", err);
-                                };
+                            var batchModel = oView.getModel();
+                            var oContext = batchModel.bindContext("/MassUploadManageMaterialTitle(...)");
                         
-                                reader.readAsText(file); // Or use readAsBinaryString / readAsDataURL based on the file type
-                            } else {
-                                console.warn("No file selected.");
-                            }
-                        },
+                            // Set parameters for the action
+                            oContext.setParameter("fileData", data);
+                            oContext.setParameter("fileName", filename);
+                            oContext.setParameter("fieldNames", that.fieldNamesMaterialTitle); // Custom: Adjust based on your field mapping
+                        
+                            // Execute the action
+                            oContext.execute().then(function () {
+                                sap.ui.getCore().byId("dialog").close();
+                                response = oContext.getBoundContext().getObject();
+                        
+                                if (response?.message) {
+                                    var oResponse = response.message;
+                                    var aSuccess = oResponse.success,
+                                        aError = oResponse.error,
+                                        aWarning = oResponse.warning;
+                        
+                                    if (aError?.length) {
+                                        MessageBox.error('Click the below link for more details', {
+                                            details: JSON.stringify(aError),
+                                            title: 'Errors occurred',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });
+                                    }
+                        
+                                    if (aWarning?.length) {
+                                        MessageBox.warning('Click the below link for more details', {
+                                            details: JSON.stringify(aWarning),
+                                            title: 'Warnings occurred',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });
+                                    }
+                        
+                                    if (aSuccess?.length) {
+                                        MessageBox.success('Click the below link for more details', {
+                                            details: JSON.stringify(aSuccess),
+                                            title: 'Following operations have been executed successfully',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });
+                                    }
+                        
+                                    batchModel.refresh();
+                                    oView.setBusy(false);
+                                }
+                        
+                            }, function (oErr) {
+                                var errorCode = uploadFailed + "\n" + oErr.error?.message || oErr.message;
+                                MessageBox.error(errorCode, {
+                                    title: uploadErrorTitle,
+                                    actions: MessageBox.Action.OK,
+                                    emphasizedAction: MessageBox.Action.OK,
+                                    onClose: function (oAction) {
+                                        if (oAction === MessageBox.Action.OK) {
+                                            that.Obj.fieldCancel();
+                                        }
+                                    }
+                                });
+                                batchModel.refresh();
+                                oView.setBusy(false);
+                            });
+                        },                        
                         onCancelUpload: function () {
                             if (that._oUploadDialog) {
                                 that._oUploadDialog.close();

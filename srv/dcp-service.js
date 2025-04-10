@@ -62,9 +62,65 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: aResponse
             });
         });
-        this.on('MassUploadManageMaterialTitle', async (req, res) => {
-            console.log('mass');
-        });
+        this.on('MassUploadManageMaterialTitle', async (req) => {
+            const { TitleV } = this.entities;
+            const db = await cds.connect.to('db');
+        
+            const tx = db.tx(req); // Start transaction
+        
+            const uploadedFile = req.data.file; // Assuming the file is passed in the request
+            if (!uploadedFile || !uploadedFile.length) {
+                req.error(400, bundle.getText('UPLOAD_ERROR_NO_FILE'));
+                return;
+            }
+        
+            try {
+                const workbook = XLSX.read(uploadedFile, { type: "buffer" });
+                const sheetName = workbook.SheetNames[0];
+                const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        
+                const inserted = [];
+        
+                for (const row of sheetData) {
+                    const titleRecord = {
+                        ID: uuidv4(),
+                        MaterialMasterTitleID: row.MaterialMasterTitleID,
+                        TitleType: row.TitleType,
+                        RegionCode: row.RegionCode,
+                        ReleaseDate: row.ReleaseDate ? new Date(row.ReleaseDate) : null,
+                        ImdbId: row.ImdbId,
+                        OriginalTitleName: row.OriginalTitleName,
+                        RegionalTitleName: row.RegionalTitleName,
+                        ShortTitle: row.ShortTitle,
+                        SecurityTitle: row.SecurityTitle,
+                        LanguageCode: row.LanguageCode,
+                        RepertoryDate: row.RepertoryDate ? new Date(row.RepertoryDate) : null,
+                        Format: row.Format,
+                        ReleaseSize: row.ReleaseSize,
+                        Ratings: row.Ratings,
+                        ReelCountEstimated: row.ReelCountEstimated,
+                        AssetVaultTitleId: row.AssetVaultTitleId,
+                        GofilexTitleId: row.GofilexTitleId,
+                        StudioTitleId: row.StudioTitleId,
+                        StudioDistributor: row.StudioDistributor,
+                        UseSecureName: row.UseSecureName === 'TRUE',
+                        IsMarkedForDeletion: row.IsMarkedForDeletion === 'TRUE',
+                    };
+        
+                    await tx.run(INSERT.into(TitleV).entries(titleRecord));
+                    inserted.push(titleRecord);
+                }
+        
+                await tx.commit();
+        
+                req.info(`${inserted.length} records successfully uploaded.`);
+                return inserted;
+            } catch (error) {
+                await tx.rollback();
+                console.error("Upload failed:", error);
+                req.error(500, bundle.getText('UPLOAD_ERROR_PROCESSING'));
+            }
+        });        
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
@@ -1372,10 +1428,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
         });
         this.on("READ", BillingDocument, async req => {
-            await srv_BillingDocument.run(req.query);
+           return  await srv_BillingDocument.run(req.query);
         });
         this.on("READ", BillingDocumentItem, async req => {
-            await srv_BillingDocument.run(req.query);
+           return await srv_BillingDocument.run(req.query);
         });
 
         

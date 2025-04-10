@@ -287,28 +287,8 @@ sap.ui.define([
         },       
         
         onSearch: function () {
-            var that = this;
-        
-            // Dummy data for testing
-            // var aDummyData = [
-            //     { docNumber: "1000001", docTy: "GR", docDate: "2025-03-05" },
-            //     { docNumber: "1000002", docType: "GI", docDate: "2025-03-06" },
-            //     { docNumber: "1000003", docType: "STO", docDate: "2025-03-07" },
-            //     { docNumber: "1000004", docType: "TR", docDate: "2025-03-08" },
-            //     { docNumber: "1000005", docType: "INV", docDate: "2025-03-09" },
-            //     { docNumber: "1000006", docType: "GR", docDate: "2025-03-10" },
-            //     { docNumber: "1000007", docType: "GI", docDate: "2025-03-11" },
-            //     { docNumber: "1000008", docType: "STO", docDate: "2025-03-12" },
-            //     { docNumber: "1000009", docType: "TR", docDate: "2025-03-13" },
-            //     { docNumber: "1000010", docType: "INV", docDate: "2025-03-14" }
-            // ];
-        
-            // // Create and set JSON model
-            // var oJSONModel = new sap.ui.model.json.JSONModel();
-            // oJSONModel.setData({ documents: aDummyData });
-            // that.getView().setModel(oJSONModel, "docModel");
-        
-            // sap.m.MessageToast.show("Dummy data loaded successfully.");
+            var that = this;       
+            
         },
 
         fetchDatafromAPI:function(){

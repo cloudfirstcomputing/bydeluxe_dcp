@@ -17,6 +17,11 @@ annotate service.TitleV with @(
         { $Type : 'UI.DataField', Value : OriginalTitleName, Label : 'Original Title Name' },
         { $Type : 'UI.DataField', Value : TitleType, Label : 'Title Type' },
         { $Type : 'UI.DataField', Value : TitleCategory, Label : 'Title Category' },
+         {
+            $Type : 'UI.DataField',
+            Value : IsMarkedForDeletion,
+            Label : 'Deleted',
+        },
         { $Type : 'UI.DataField', Value : RegionalTitleName, Label : 'Regional Title Name' },
         { $Type : 'UI.DataField', Value : ShortTitle, Label : 'Short Title' },
         { $Type : 'UI.DataField', Value : SecurityTitle, Label : 'Security Title' },
@@ -44,12 +49,7 @@ annotate service.TitleV with @(
         {
             $Type : 'UI.DataField',
             Value : UseSecureName,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : IsMarkedForDeletion,
-            Label : 'IsMarkedForDeletion',
-        },
+        }
     ],   
 
     // Define Field Group for Object Page Details
