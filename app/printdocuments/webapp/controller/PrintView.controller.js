@@ -13,7 +13,8 @@ sap.ui.define([
         onInit() {
             var oViewModel = new sap.ui.model.json.JSONModel({
                 visibleTable1: true,
-                visibleTable2: false
+                visibleTable2: false,
+                visibleTable3:false
             });
             this.getView().setModel(oViewModel, "viewModel");
             
@@ -25,9 +26,18 @@ sap.ui.define([
             if (sSelectedKey === "1") {
                 oViewModel.setProperty("/visibleTable1", true);
                 oViewModel.setProperty("/visibleTable2", false);
-            } else {
+                oViewModel.setProperty("/visibleTable3",false);
+            } 
+            else if(sSelectedKey==="6")
+            {
+                oViewModel.setProperty("/visibleTable1", false);
+                oViewModel.setProperty("/visibleTable2", false);
+                oViewModel.setProperty("/visibleTable3",true);
+            }
+            else {
                 oViewModel.setProperty("/visibleTable1", false);
                 oViewModel.setProperty("/visibleTable2", true);
+                oViewModel.setProperty("/visibleTable3",false);
             }
         },
         onPreviewForm: function (oEvent) {
