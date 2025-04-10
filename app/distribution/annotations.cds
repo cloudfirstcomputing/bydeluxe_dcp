@@ -113,7 +113,7 @@ annotate service.CustomerRef with {
 annotate service.Package with {
     PackageName      @Common: {Label: '{i18n>PackageName}', };
     Priority         @Common: {Label: '{i18n>Priority}', };
-    IncludeKey       @Common: {Label: '{i18n>IncludeKey}', };
+    // IncludeKey       @Common: {Label: '{i18n>IncludeKey}', };
     DeliveryMethod1  @Common: {
         Label          : '{i18n>DeliveryMethod1}',
         Text           : DeliveryMethod1.ShippingConditionName,
@@ -171,7 +171,7 @@ annotate service.Package with {
 annotate service.KeyPackage with {
     PackageName    @Common: {Label: '{i18n>PackageName}', };
     Priority       @Common: {Label: '{i18n>Priority}', };
-    IncludeContent @Common: {Label: '{i18n>IncludeContent}', };
+    // IncludeContent @Common: {Label: '{i18n>IncludeContent}', };
     ValidFrom      @Common: {Label: '{i18n>ValidFrom}', };
     ValidTo        @Common: {Label: '{i18n>ValidTo}', };
 };
@@ -591,10 +591,6 @@ annotate service.Package with @(
                 $Type: 'UI.DataField',
                 Value: Priority,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: IncludeKey,
-            },
         ],
     },
     UI.FieldGroup #_PackageValidityDate : {
@@ -703,10 +699,6 @@ annotate service.Package with @(
             $Type: 'UI.DataField',
             Value: Priority,
         },
-        {
-            $Type: 'UI.DataField',
-            Value: IncludeKey,
-        },
     ]
 );
 
@@ -729,10 +721,6 @@ annotate service.KeyPackage with @(
             {
                 $Type: 'UI.DataField',
                 Value: Priority,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: IncludeContent,
             },
         ],
     },
@@ -790,10 +778,6 @@ annotate service.KeyPackage with @(
         {
             $Type: 'UI.DataField',
             Value: Priority,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: IncludeContent,
         },
     ]
 );
