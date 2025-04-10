@@ -605,7 +605,7 @@ entity Ratings : cuid, managed {
 define view RatingsConcat as
     select from Ratings {
         Title.MaterialMasterTitleID,
-        Title.LocalTitleId,
+       // Title.LocalTitleId,
         Title.ID,
         Title.RegionCode,
         STRING_AGG(
@@ -614,7 +614,7 @@ define view RatingsConcat as
     }
     group by
         Title.MaterialMasterTitleID,
-        Title.LocalTitleId,
+       // Title.LocalTitleId,
         Title.ID,
         Title.RegionCode;
 
@@ -624,14 +624,14 @@ define view TitleV as
         on RatingsConcat.MaterialMasterTitleID = Titles.MaterialMasterTitleID
     left outer join ExternalTitleIDs
         on ExternalTitleIDs.Title = Title
-    {
-
+    distinct{
+        
         key Titles.MaterialMasterTitleID,
         key Titles.LocalTitleId,
-            Titles.ID,
+        key Titles.ID,
+        Key Titles.TitleType,
             Titles.RegionCode,
-            Titles.OriginalTitleName,
-            Titles.TitleType,
+            Titles.OriginalTitleName,        
             Titles.TitleCategory,
             Titles.RegionalTitleName,
             Titles.ShortTitle,

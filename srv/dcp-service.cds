@@ -25,6 +25,7 @@ service BookingOrderService {
     annotate StudioFeed with @odata.draft.enabled;
     action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
+    action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String) returns UploadResponse;
     action remediateSalesOrder(bookingID : String, salesOrder : String) returns String;
     action reconcileStudioFeed(aBookingID: array of String) returns String;
     
@@ -411,6 +412,7 @@ service BookingOrderService {
         key BillingDocumentItem,
             SalesDocumentItemCategory
      }
+    
     
     
 

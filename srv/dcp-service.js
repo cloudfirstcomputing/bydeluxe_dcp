@@ -62,6 +62,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: aResponse
             });
         });
+        this.on('MassUploadManageMaterialTitle', async (req, res) => {
+            console.log('mass');
+        });
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}

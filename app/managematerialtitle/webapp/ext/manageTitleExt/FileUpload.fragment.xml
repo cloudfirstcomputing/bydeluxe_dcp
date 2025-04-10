@@ -1,0 +1,34 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  xmlns:u="sap.ui.unified">
+  <Dialog
+    id="uploadDialog"
+    title="Upload File"
+    draggable="true"
+    resizable="true"
+    contentWidth="400px"
+    contentHeight="200px">
+
+    <VBox class="sapUiSmallMargin">
+      <u:FileUploader
+        id="fileUploader"
+        name="excelUpload"
+        
+        tooltip="Upload your Excel file"
+        uploadComplete=".onUploadComplete"
+        change=".onFileChange"
+        fileType="xlsx,xls"
+        
+        style="Emphasized"
+        width="100%" />
+    </VBox>
+
+    <beginButton>
+      <Button text="Upload" press=".onConfirmUpload" />
+    </beginButton>
+    <endButton>
+      <Button text="Cancel" press=".onCancelUpload" />
+    </endButton>
+  </Dialog>
+</core:FragmentDefinition>

@@ -284,7 +284,8 @@ sap.ui.define([
             //         sap.m.MessageToast.show("Failed to retrieve material documents.");
             //     }
             // });
-        },
+        },       
+        
         onSearch: function () {
             var that = this;
         

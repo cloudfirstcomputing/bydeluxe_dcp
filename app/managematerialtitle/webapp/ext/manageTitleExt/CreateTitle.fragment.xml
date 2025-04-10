@@ -89,7 +89,7 @@
                     <Input id="inputGofilexTitleId" value="{formModel>/GofilexTitleId}"/>
 
                     <Label id="lblImdbId1" text="IMDB ID"/>
-                    <Input id="inputImdbId" value="{formModel>/ImdbId}"/>
+                    <Input id="inputImdbId" value="{formMexportodel>/ImdbId}"/>
 
                     <Label id="lblStudioTitleId1" text="Studio Title Id"/>
                     <Input id="inputStudioTitleId" value="{formModel>/StudioTitleId}"/>

@@ -160,6 +160,18 @@
                       "requiresSelection": true,
                       "text": "{@i18n>deleteTitle}",
                       "icon": "sap-icon://delete"
+                    },
+                    "uploadFile": {
+                      "press": "com.dlx.managematerialtitle.ext.manageTitleExt.CustomAction.onUploadPress",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "{i18n>upload}",
+                      "icon": "sap-icon://upload",            
+                      "position": {
+                        "placement": "After",
+                        "anchor": "deleteTitle"
+                      }
                     }
                   }
                 }

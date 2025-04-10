@@ -342,8 +342,66 @@ sap.ui.define([
                     }
                 });
             }
-        }
-
-
+        },
+        onUploadPress: function () {
+            var oView = this.getEditFlow().getView();
+            var that = this;
+        
+            if (!this._oUploadDialog) {
+                Fragment.load({
+                    id: oView.getId(),
+                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.FileUpload",
+                    controller: {
+                        onFileChange: function (oEvent) {
+                           // Store selected file for later
+                            this._selectedFile = oEvent.getParameter("files")[0];
+                            this._selectedFileName = oEvent.getParameter("files")[0].name;
+                            MessageToast.show("File selected: " + oEvent.getParameter("files")[0].name);
+                        },
+                        onConfirmUpload: function (oEvent) {
+                            const file = this._selectedFile;
+                            const file_name = this.selectedFileName;
+                            console.log(file);
+                            console.log(file_name);
+                        
+                            if (file) {
+                                var batchModel = oView.getModel();
+                                console.log(batchModel);
+                                var oContext = batchModel.bindContext("/MassUploadManageMaterialTitle(...)");
+                                oContext.setParameter("fileData", file);
+                            oContext.setParameter("fileName", file_name);
+                            // oContext.setParameter("fieldNames", that.fieldNamesCAPM);
+                                const reader = new FileReader();
+                        
+                                reader.onload = function (evt) {
+                                    const fileContent = evt.target.result;
+                                    console.log("File content:", fileContent);
+                                    // You can parse it here if it's JSON, CSV, etc.
+                                };
+                        
+                                reader.onerror = function (err) {
+                                    console.error("Error reading file:", err);
+                                };
+                        
+                                reader.readAsText(file); // Or use readAsBinaryString / readAsDataURL based on the file type
+                            } else {
+                                console.warn("No file selected.");
+                            }
+                        },
+                        onCancelUpload: function () {
+                            if (that._oUploadDialog) {
+                                that._oUploadDialog.close();
+                            }
+                        }
+                    }
+                }).then(function (oDialog) {
+                    that._oUploadDialog = oDialog;
+                    oView.addDependent(oDialog);
+                    oDialog.open();
+                });
+            } else {
+                this._oUploadDialog.open();
+            }
+        } 
     };
 });
