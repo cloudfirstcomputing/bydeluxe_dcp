@@ -45,6 +45,11 @@ annotate service.TitleV with @(
             $Type : 'UI.DataField',
             Value : UseSecureName,
         },
+        {
+            $Type : 'UI.DataField',
+            Value : IsMarkedForDeletion,
+            Label : 'IsMarkedForDeletion',
+        },
     ],   
 
     // Define Field Group for Object Page Details

@@ -1371,10 +1371,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("READ", S4H_BuisnessPartner, async (req, res) => {
             await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
         });
-        this.on("READ", BillingDocument, async (req, res) => {
+        this.on("READ", BillingDocument, async req => {
             await srv_BillingDocument.run(req.query);
         });
-        this.on("READ", BillingDocumentItem, async (req, res) => {
+        this.on("READ", BillingDocumentItem, async req => {
             await srv_BillingDocument.run(req.query);
         });
 

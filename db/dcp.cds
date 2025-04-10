@@ -584,6 +584,7 @@ entity Titles : cuid, managed {
         GofilexTitleId        : String(50)  @Common.Label: 'Gofilex Title Id';
         StudioDistributor     : String(20)  @Common.Label: 'Studio Distributor';
         UseSecureName         : String(5)   @Common.Label: 'Use Secure Name';
+        IsMarkedForDeletion   : Boolean default false;
         ExternalTitleIDs_Ass  : Composition of many ExternalTitleIDs
                                     on ExternalTitleIDs_Ass.Title = $self;
         Ratings_Ass           : Composition of many Ratings
@@ -623,8 +624,9 @@ define view TitleV as
     left outer join RatingsConcat
         on RatingsConcat.MaterialMasterTitleID = Titles.MaterialMasterTitleID
     left outer join ExternalTitleIDs
-        on ExternalTitleIDs.Title = Title
-    distinct{
+        on ExternalTitleIDs.Title = Title    
+    distinct
+    {
         
         key Titles.MaterialMasterTitleID,
         key Titles.LocalTitleId,
@@ -648,7 +650,8 @@ define view TitleV as
             Titles.StudioTitleId,
             Titles.StudioDistributor,
             Titles.GofilexTitleId,
-            Titles.UseSecureName,  
+            Titles.UseSecureName,
+            Titles.IsMarkedForDeletion,  
             RatingsConcat.RatingCode,
             ExternalTitleIDs.IDType,
             ExternalTitleIDs.IDValue

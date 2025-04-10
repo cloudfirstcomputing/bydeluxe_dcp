@@ -57,5 +57,5 @@ context api {
     entity MaterialDocumentItem as projection on MaterialDoc.A_MaterialDocumentItem;
     entity ProductionOrder        as projection on s4_productionOrder.A_ProductionOrder_2;
     entity BillingDocument        as projection on Billing.A_BillingDocument;
-    entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem
+    entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem;
 }

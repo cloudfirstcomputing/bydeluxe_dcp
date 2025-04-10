@@ -410,7 +410,8 @@ service BookingOrderService {
      entity BillingDocumentItem        as projection on api.BillingDocumentItem{
         key BillingDocument,
         key BillingDocumentItem,
-            SalesDocumentItemCategory
+            SalesDocumentItemCategory,
+            to_BillingDocument: redirected to BillingDocument
      }
     
     

@@ -140,7 +140,7 @@
                     </ColumnListItem>
                 </items>
             </Table>
-			<Table id="docTable3" mode="MultiSelect" items="{path:'/BillingDocument', sorter: { path: 'to_Item/SalesDocumentItemCategory', descending: true}}" visible="{viewModel>/visibleTable3}" growingScrollToLoad="true" growing="true" growingThreshold="10">
+			<Table id="docTable3" mode="MultiSelect" items="{path:'/BillingDocument', sorter: { path: 'BillingDocumentDate', descending: true}}" visible="{viewModel>/visibleTable3}" growingScrollToLoad="true" growing="true" growingThreshold="10">
 						<headerToolbar>
 							<Toolbar id="_IDGenToolbar2">
 								<Title id="_IDGenTitle3" text="Documents"/>

@@ -34,6 +34,7 @@ sap.ui.define([
 
             // Extract key values from the selected row
             var oData = oContext.getObject();
+            oData.IsMarkedForDeletion = true;
             var sPath = oContext.getPath(); // OData entity path (e.g., "/Titles('123')")
             var result = sPath.substring(sPath.indexOf("(")); 
             var sRealPath = "/Titles"+result
@@ -48,8 +49,9 @@ sap.ui.define([
                         $.ajax({
                             //url: `${oModel.sServiceUrl}${sRealPath}(${sTitleId})`,  // Construct the DELETE request URL
                             url:`${oModel.sServiceUrl}/Titles(MaterialMasterTitleID=${sMaterialMasterTitleID},LocalTitleId='${sLocalTitleId}',ID='${sTitleId}',RegionCode='${sRegionCode}')`,
-                            type: "DELETE",
+                            type: "PUT",
                             contentType: "application/json",
+                            data: JSON.stringify(oData),
                             success: function () {
                                 
                                 MessageToast.show("Title deleted successfully.");
