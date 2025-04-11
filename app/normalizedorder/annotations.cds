@@ -702,6 +702,12 @@ annotate BookingOrderService.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : AdditionalMaterialGroup1,
+            Label : '{i18n>Additionalmaterialgroup1}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : RequestedQuantity,
             Label : '{i18n>Requestedquantity}',
             ![@UI.Importance] : #High,
@@ -966,6 +972,11 @@ annotate BookingOrderService.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : ProductGroup,
                 Label : '{i18n>Productgroup}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : AdditionalMaterialGroup1,
+                Label : '{i18n>Additionalmaterialgroup1}',
             },
             {
                 $Type : 'UI.DataField',

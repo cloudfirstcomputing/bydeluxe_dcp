@@ -270,6 +270,7 @@ entity BookingSalesorderItem : managed {
         Plant                    : String(4);
         ShippingPoint            : String(4);
         ProductGroup             : String(9);
+        AdditionalMaterialGroup1 : String(3);
         ShipmentIndicator        : String(1);
         ScreeningIndicator       : String(1);
         PlayStartDate            : Date;

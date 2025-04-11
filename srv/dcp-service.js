@@ -1069,6 +1069,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                 oContentData.to_Item[i].LongText = sGoFilexTitleID;
                 oContentData.to_Item[i].ProductGroup = oSalesOrderItem.MaterialGroup;
+                oContentData.to_Item[i].AdditionalMaterialGroup1 = oSalesOrderItem.AdditionalMaterialGroup1;
                 oContentData.to_Item[i].Plant = oSalesOrderItem.ProductionPlant;
                 if (oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) { //RULE 5.2 
                     await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
