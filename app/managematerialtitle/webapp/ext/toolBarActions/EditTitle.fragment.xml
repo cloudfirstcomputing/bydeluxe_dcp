@@ -17,7 +17,7 @@
                 
                 <f:content>
                     <Label id="lblEditOriginalTitleName" text="Original Title Name"/>
-                    <Input id="inputEditOriginalTitleName" value="{formModel>/OriginalTitleName}" editable="true"/>
+                    <Input id="inputEditOriginalTitleName" value="{formModel>/OriginalTitleName}" editable="{= ${formModel>/TitleType} === 'Parent' }"/>
 
                     <Label id="lblEdit_lblOriginalRegionalTitle" text="Regional Title Name" visible="{= ${formModel>/TitleType} !== 'Parent' }"/>
                     <Input  id="lblEdit_inputOriginalRegionalTitle" 

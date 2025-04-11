@@ -49,7 +49,25 @@ annotate service.TitleV with @(
         {
             $Type : 'UI.DataField',
             Value : UseSecureName,
-        }
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RatingCode,
+            Label : 'RatingCode',
+            ![@UI.Hidden],
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : IDType,
+            Label : 'IDType',
+            ![@UI.Hidden],
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : IDValue,
+            Label : 'IDValue',
+            ![@UI.Hidden],
+        },
     ],   
 
     // Define Field Group for Object Page Details
@@ -87,11 +105,6 @@ annotate service.TitleV with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : RatingCode,
-                Label : 'RatingCode',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : LocalTitleId,
             },
         ]
@@ -105,10 +118,13 @@ annotate service.TitleV with @(
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneralInfo'
         }
-    ]
+    ],
+
 );
+
 
 annotate service.TitleV.MaterialMasterTitleID with @(
     Common.Text : '',
     UI.TextArrangement : #TextOnly
 );
+
