@@ -830,16 +830,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 sErrorMessage = "DCP Material not available";
                             }
                         }
-                        else { // RULE 5.1, 6.1 => Common for Content and Key
-                            var sMode;
-                            if (iDifferenceInHours > 24) {
-                                sMode = 'Release';
-                            }
-                            else {
-                                sMode = 'Screening';
-                            }
-                            if (oFinalContentPackage) { //Applicable only for Content
-                                var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                        // RULE 5.1, 6.1 => Common for Content and Key
+                        var sMode;
+                        if (iDifferenceInHours > 24) {
+                            sMode = 'Release';
+                        }
+                        else {
+                            sMode = 'Screening';
+                        }
+                        if (oFinalContentPackage) { //Applicable only for Content
+                            var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                            if(oDCPMapping){
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -851,50 +852,83 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "ShippingType": sShippingType
                                 });
                             }
-                            if (oFinalKeyPackage) { //This indicates Key is also applicable
-                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: '07', Variable: sMode }); //RULE 7.2 => Shipping Type for KEY
+                            else{
+                                oResponseStatus.warning.push({
+                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                    "errorMessage": sErrorMessage
+                                })
+                            }
+                        }
+                        if (oFinalKeyPackage) { //This indicates Key is also applicable
+                            oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: '07', Variable: sMode }); //RULE 7.2 => Shipping Type for KEY
+                            if(oDCPMapping){
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
                                     "RequestedQuantity": '1',
                                     "RequestedQuantityISOUnit": "EA",
-                                    // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
                                     "DeliveryPriority": `1`,
                                     "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                     "ShippingType": '07'
                                 });
                             }
-
-                            if (ReleaseDate && dStartDate > ReleaseDate) {
-                                sMode = 'PostBreak';
-                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": sShippingType
-                                });
-                            }
-                            if (RepertoryDate) {
-                                sMode = 'Repertory';
-                                oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": sShippingType
-                                });
+                            else{
+                                oResponseStatus.warning.push({
+                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                    "errorMessage": sErrorMessage
+                                })
                             }
                         }
-                                            
+                        if (ReleaseDate) {
+                            if(dStartDate < ReleaseDate){
+                                sMode = 'PreRelease';
+                            }
+                            else if(dStartDate = ReleaseDate){
+                                sMode = 'Release';
+                            }
+                            else{
+                                sMode = 'PostBreak';
+                            }
+                            oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                            if(oDCPMapping){
+                                oPayLoad.to_Item.push({
+                                    "Material": oDCPMapping?.Material,
+                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                    "RequestedQuantity": '1',
+                                    "RequestedQuantityISOUnit": "EA",
+                                    "DeliveryPriority": `1`,
+                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                    "ShippingType": sShippingType
+                                });
+                            }
+                            else{
+                                oResponseStatus.warning.push({
+                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                    "errorMessage": sErrorMessage
+                                })
+                            }
+                        }
+                        if (RepertoryDate) {
+                            sMode = 'Repertory';
+                            oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                            if(oDCPMapping){
+                                oPayLoad.to_Item.push({
+                                    "Material": oDCPMapping?.Material,
+                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                    "RequestedQuantity": '1',
+                                    "RequestedQuantityISOUnit": "EA",
+                                    "DeliveryPriority": `1`,
+                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                    "ShippingType": sShippingType
+                                });
+                            }
+                            else{
+                                oResponseStatus.warning.push({
+                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                    "errorMessage": sErrorMessage
+                                })
+                            }
+                        }
                     }
                 }
             }
