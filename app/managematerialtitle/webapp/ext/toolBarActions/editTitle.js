@@ -231,7 +231,8 @@ sap.ui.define([
                         {
                             Product: Product,
                             Language: "EN", //LanguageCode
-                            LongText: oData.RegionalTitleName
+                            // LongText: oData.RegionalTitleName
+                            LongText: oData.OriginalTitleName
                         }
                     ],
                     to_Description: [
