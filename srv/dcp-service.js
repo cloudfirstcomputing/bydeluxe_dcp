@@ -1063,8 +1063,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of local CDS
                 oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
-                var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
-                    where({ DCP: oSalesOrderItem.Material });
+                // var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
+                //     where({ DCP: oSalesOrderItem.Material });
 
                 var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                 oContentData.to_Item[i].LongText = sGoFilexTitleID;
@@ -1074,24 +1074,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 if (oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) { //RULE 5.2 
                     await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
                 }
-                // if (oAssetvault?._Items?.length > 0) {
-                //     var sLinkedCTT = oAssetvault._Items.map(u => u.LinkedCTT).join(`\n`);
-                //     var sCPLUUID = oAssetvault._Items.map(u => u.LinkedCPLUUID).join(`,`);
-                //     aCTTCPL.push({ "Product": oSalesOrderItem.Material, "LinkedCTT": sLinkedCTT, "CPLUUID": sCPLUUID })
-                // }
-                // var oCTTCPL = aCTTCPL?.find((entry) => { return entry.Product === oSalesOrderItem.Material });
-                // if (oCTTCPL) {
-                //     oContentData.to_Item[i].CTT = oCTTCPL.LinkedCTT;
-                //     oContentData.to_Item[i].CPLUUID = oCTTCPL.CPLUUID;
-                //     await updateItemTextForSalesOrder(req, "Z005", oCTTCPL?.CPLUUID, oResponseStatus, oSalesOrderItem, oContentData);
-                //     if (sContentIndicator === "K") {
-                //         await updateItemTextForSalesOrder(req, "0001", oCTTCPL?.LinkedCTT, oResponseStatus, oSalesOrderItem, oContentData);
-                //     }
-                // }
-                // var oCplList = await SELECT.one.from(CplList_Local).where({ DCP: oSalesOrderItem.Material });
-                // if (oCplList) {
-                //     await updateItemTextForSalesOrder(req, "Z006", `${oCplList?.ProjectID}`, oResponseStatus, oSalesOrderItem, oContentData);
-                // }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
                 var aContentPkgCPL = oContentPackage?.to_DCPMaterial,
                     aContentPkgCTT = [], sContentPkgCTTs, aContentPkgCPLUUID = [], sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
