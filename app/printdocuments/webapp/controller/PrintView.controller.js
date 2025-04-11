@@ -6,7 +6,7 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/core/BusyIndicator"
-], function (Controller, MessageToast, Fragment,PDFViewer, Filter, FilterOperator, BusyIndicator) {
+], function (Controller, MessageToast, Fragment, PDFViewer, Filter, FilterOperator, BusyIndicator) {
     "use strict";
 
     return Controller.extend("com.dlx.printdocu.printdocuments.controller.PrintView", {
@@ -14,30 +14,29 @@ sap.ui.define([
             var oViewModel = new sap.ui.model.json.JSONModel({
                 visibleTable1: true,
                 visibleTable2: false,
-                visibleTable3:false
+                visibleTable3: false
             });
             this.getView().setModel(oViewModel, "viewModel");
-            
+
         },
         onSelectChange: function (oEvent) {
             var sSelectedKey = oEvent.getSource().getSelectedKey();
             var oViewModel = this.getView().getModel("viewModel");
-        
+
             if (sSelectedKey === "1") {
                 oViewModel.setProperty("/visibleTable1", true);
                 oViewModel.setProperty("/visibleTable2", false);
-                oViewModel.setProperty("/visibleTable3",false);
-            } 
-            else if(sSelectedKey==="6")
-            {
+                oViewModel.setProperty("/visibleTable3", false);
+            }
+            else if (sSelectedKey === "6") {
                 oViewModel.setProperty("/visibleTable1", false);
                 oViewModel.setProperty("/visibleTable2", false);
-                oViewModel.setProperty("/visibleTable3",true);
+                oViewModel.setProperty("/visibleTable3", true);
             }
             else {
                 oViewModel.setProperty("/visibleTable1", false);
                 oViewModel.setProperty("/visibleTable2", true);
-                oViewModel.setProperty("/visibleTable3",false);
+                oViewModel.setProperty("/visibleTable3", false);
             }
         },
         onPreviewForm: function (oEvent) {
@@ -45,108 +44,127 @@ sap.ui.define([
             var sServiceUrl = oModel.sServiceUrl;
             var sPdfUrl = sServiceUrl + "downloadFormADS()";
             var oPrintModel = this.getView().getModel("printModel");
-            // if(this.byId("selectFormName").getSelectedKey() === '5'){
-            //     var aSelecteditems = this.byId("docTable2").getSelectedItems();
-            //     for(var i in aSelecteditems){
-            //         var oSelectedItem = aSelecteditems[i];
-            //         var sProdId = oSelectedItem.getBindingContext().getObject().Product;
-            //         if(sProdId){
-            //             sPdfUrl = `${oPrintModel.getServiceUrl()}getKrakenHDDLabel(DCPBarcode='${sProdId}')`;
-            //         }
-            //         var that = this;
-            //         BusyIndicator.show();
-            //         var updateCall = $.ajax({
-            //             url: sPdfUrl,
-            //             type: "GET",
-            //             headers: {
-            //                 "Accept": "application/pdf"
-            //             },
-            //             success: function (data) {
-            //                 that.onOpenPDF(data);
-            //                 BusyIndicator.hide();
-            //             },
-            //             error: function (xhr, status, error) {
-            //                 console.error("Error fetching PDF:", status, error);
-            //                 BusyIndicator.hide();
-            //                 sap.m.MessageToast.show("Failed to load the form.");
-            //             }
-            //         });
-            //     }
-            // }
-            if (this.byId("selectFormName").getSelectedKey() === '1'){
+            if (this.byId("selectFormName").getSelectedKey() === '1') {
                 var oSelecteditem;
-                    [oSelecteditem] = this.byId("docTable").getSelectedItems();
-                    var sForm = "YY1_MMIM_GR_LABEL_EN" ;
-                  
-                    var oMaterialDoc = oSelecteditem.getBindingContext().getObject();
-                    var oData = {
-                        form:sForm,
-                        Material:{
-                            MaterialDocumentYear: oMaterialDoc.MaterialDocumentYear,
-                            MaterialDocument : oMaterialDoc.MaterialDocument,
-                            MaterialDocumentItem :oMaterialDoc.MaterialDocumentItem
-                        }
-                    }
-                      var sSource = sServiceUrl + `formGR_LABEL`
-                    var that = this;
-                    var updateCall = $.ajax({
-                        url: sSource,
-                        type: "POST",
-                        data : JSON.stringify(oData),
-                        headers: {
-                            "Accept": "application/pdf",
-                            "Content-Type" :"application/json"
-                        },
-                        success: function (data) {
-                            that.onOpenPDF(data);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error fetching PDF:", status, error);
-                            sap.m.MessageToast.show("Failed to load the form.");
-                        }
-                    });
-            }
-            else
-            {
-                // var opdfViewer = new PDFViewer();
-                    // this.getView().addDependent(opdfViewer);
-                    var oSelecteditem;
-                    // opdfViewer.setSource(sSource);
-                    // opdfViewer.setTitle( "My PDF");
-                    // opdfViewer.open();
-                    // this.openPdfViewer(sSource);
-                    [oSelecteditem] = this.byId("docTable2").getSelectedItems();
+                [oSelecteditem] = this.byId("docTable").getSelectedItems();
+                var sForm = "YY1_MMIM_GR_LABEL_EN";
 
-                    var sForm = this.byId("selectFormName").getSelectedKey() =='5'? 'HDDLabel':this.byId("selectFormName").getSelectedKey() =='2' ? "DCDCLabel" : this.byId("selectFormName").getSelectedKey() =='3' ? "DeluxeLabel": "MasterLabel" ;
-                  
-                    var sProdId = oSelecteditem.getBindingContext().getObject().Product;
-                    var oData = {
-                        form:sForm,
-                        Product:sProdId
+                var oMaterialDoc = oSelecteditem.getBindingContext().getObject();
+                var oData = {
+                    form: sForm,
+                    Material: {
+                        MaterialDocumentYear: oMaterialDoc.MaterialDocumentYear,
+                        MaterialDocument: oMaterialDoc.MaterialDocument,
+                        MaterialDocumentItem: oMaterialDoc.MaterialDocumentItem
                     }
-                      var sSource = sServiceUrl + `downloadFormADS`
-                    var that = this;
-                    BusyIndicator.show();
-                    var updateCall = $.ajax({
-                        url: sSource,
-                        type: "POST",
-                        data : JSON.stringify(oData),
-                        headers: {
-                            "Accept": "application/pdf",
-                            "Content-Type" :"application/json"
-                        },
-                        success: function (data) {
-                            BusyIndicator.hide();
-                            that.onOpenPDF(data);
-                        },
-                        error: function (xhr, status, error) {
-                            BusyIndicator.hide();
-                            console.error("Error fetching PDF:", status, error);
-                            sap.m.MessageToast.show("Failed to load the form.");
-                        }
-                    });
+                }
+                var sSource = sServiceUrl + `invoiceForm_LABEL`
+                var that = this;
+                var updateCall = $.ajax({
+                    url: sSource,
+                    type: "POST",
+                    data: JSON.stringify(oData),
+                    headers: {
+                        "Accept": "application/pdf",
+                        "Content-Type": "application/json"
+                    },
+                    success: function (data) {
+                        that.onOpenPDF(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching PDF:", status, error);
+                        sap.m.MessageToast.show("Failed to load the form.");
+                    }
+                });
             }
-           // // Get the OData Model attached to the view or component
+            else if (this.byId("selectFormName").getSelectedKey() === '6') {
+                var oSelecteditem;
+                [oSelecteditem] = this.byId("docTable3").getSelectedItems();
+                var sForm = "SDBIL_CI_STANDARD_US_E";
+
+                var oBillingDoc = oSelecteditem.getBindingContext().getObject();
+                var oBill = {
+                    BillingDocument : oBillingDoc.BillingDocument,
+                    BillingDocumentCategory : oBillingDoc.BillingDocumentCategory,
+                    BillingDocumentDate : oBillingDoc.BillingDocumentDate,
+                    BillingDocumentType : oBillingDoc.BillingDocumentType
+                }
+                var oData = {
+                    form: sForm,
+                    Billing: oBill
+                }
+                var sSource = sServiceUrl + `invoiceForm_LABEL`
+                var that = this;
+                var updateCall = $.ajax({
+                    url: sSource,
+                    type: "POST",
+                    data: JSON.stringify(oData),
+                    headers: {
+                        "Accept": "application/pdf",
+                        "Content-Type": "application/json"
+                    },
+                    success: function (data) {
+                        that.onOpenPDF(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching PDF:", status, error);
+                        sap.m.MessageToast.show("Failed to load the form.");
+                    }
+                });
+            }
+            else {
+                // var opdfViewer = new PDFViewer();
+                // this.getView().addDependent(opdfViewer);
+                var oSelecteditem;
+                // opdfViewer.setSource(sSource);
+                // opdfViewer.setTitle( "My PDF");
+                // opdfViewer.open();
+                // this.openPdfViewer(sSource);
+                [oSelecteditem] = this.byId("docTable2").getSelectedItems();
+
+                var sForm = this.byId("selectFormName").getSelectedKey() == '5' ? 'HDDLabel' : this.byId("selectFormName").getSelectedKey() == '2' ? "DCDCLabel" : this.byId("selectFormName").getSelectedKey() == '3' ? "DeluxeLabel" : "MasterLabel";
+
+                var sProdId = oSelecteditem.getBindingContext().getObject().Product;
+                var oData = {
+                    form: sForm,
+                    Product: sProdId
+                }
+                var sSource = sServiceUrl + `downloadFormADS`
+                var that = this;
+                BusyIndicator.show();
+                var updateCall = $.ajax({
+                    url: sSource,
+                    type: "POST",
+                    data: JSON.stringify(oData),
+                    headers: {
+                        "Accept": "application/pdf",
+                        "Content-Type": "application/json"
+                    },
+                    success: function (data) {
+                        BusyIndicator.hide();
+                        that.onOpenPDF(data);
+                    },
+                    error: function (xhr, status, error) {
+                        BusyIndicator.hide();
+                        console.error("Error fetching PDF:", status, error);
+                        sap.m.MessageToast.show("Failed to load the form.");
+                    }
+                });
+            }
+            // // Get the OData Model attached to the view or component
+            // var oModel = this.getView().getModel(); // Assuming the default model
+
+            // // Get the service URL from the OData model
+            // var sServiceUrl = oModel.sServiceUrl;
+
+            // // Construct the full PDF URL
+            // var sPdfUrl = sServiceUrl + "downloadFormADS()";
+
+            // window.open(sPdfUrl);
+
+
+
+            // // Get the OData Model attached to the view or component
             // var oModel = this.getView().getModel(); // Assuming the default model
 
             // // Get the service URL from the OData model
@@ -162,11 +180,11 @@ sap.ui.define([
                 this._pdfViewerDialog = sap.ui.xmlfragment("com.dlx.printdocu.printdocuments.view.pdfView", this);
                 this.getView().addDependent(this._pdfViewerDialog);
             }
-        
+
             var oPdfViewer = sap.ui.getCore().byId("pdfViewer");
             oPdfViewer.setSource(sPdfUrl);
             oPdfViewer.setTitle("PDF Preview");
-        
+
             this._pdfViewerDialog.open();
         },
         onClosePdfDialog: function () {
@@ -178,18 +196,18 @@ sap.ui.define([
             var base64String = data.value;
             var byteCharacters = atob(base64String);
             var byteNumbers = new Array(byteCharacters.length);
-            
+
             for (var i = 0; i < byteCharacters.length; i++) {
                 byteNumbers[i] = byteCharacters.charCodeAt(i);
             }
-            
+
             var byteArray = new Uint8Array(byteNumbers);
             var blob = new Blob([byteArray], { type: "application/pdf" });
             var blobURL = URL.createObjectURL(blob);
-            
+
             // Open the PDF in a new tab
             window.open(blobURL);
-           // this.openPdfViewer(blobURL);
+            // this.openPdfViewer(blobURL);
         },
         onDateChange: function () {
             var oView = this.getView();
@@ -202,19 +220,19 @@ sap.ui.define([
                 oEndDatePicker.setDateValue("null");
                 oEndDatePicker.setEnabled(true);
                 oDocKeyInput.setEnabled(false);
-                } 
+            }
             else {
-               oDocKeyInput.setEnabled(true);
-    }
+                oDocKeyInput.setEnabled(true);
+            }
         },
         onSearch1: function () {
             var that = this;
             var oModel = this.getView().getModel(); // Assuming the default model
-            var sServiceUrl = oModel.sServiceUrl, sSuffix = "",aFilters =[];
-           
-            if(this.byId("selectFormName").getSelectedKey() === '5'){
+            var sServiceUrl = oModel.sServiceUrl, sSuffix = "", aFilters = [];
+
+            if (this.byId("selectFormName").getSelectedKey() === '5') {
                 var sKey = this.byId("documentKey").getValue();
-                if(sKey){
+                if (sKey) {
                     aFilters.push(new Filter("Product", FilterOperator.EQ, sKey))
                     // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
                 }
@@ -222,17 +240,17 @@ sap.ui.define([
                 //     this.byId("docTable2").getBinding("items").filter(null, null, null);
                 // }
             }
-            else if(this.byId("selectFormName").getSelectedKey() === '1'){
+            else if (this.byId("selectFormName").getSelectedKey() === '1') {
                 var sKey = this.byId("documentKey").getValue();
-                if(sKey){
+                if (sKey) {
                     aFilters.push(new Filter("MaterialDocument", FilterOperator.EQ, sKey))
                     // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
                 }
             }
-            else{
+            else {
                 // sSuffix = "MaterialDocumentHeader"
                 var sKey = this.byId("documentKey").getValue();
-                if(sKey){
+                if (sKey) {
                     // let oFilter = new Filter("Product", FilterOperator.EQ, sKey);
                     aFilters.push(new Filter("Product", FilterOperator.EQ, sKey))
                     // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
@@ -244,22 +262,28 @@ sap.ui.define([
 
             var dStartDate = this.byId("startDate").getValue();
             var dEndDate = this.byId("endDate").getValue();
-    
 
-            if(dStartDate && dStartDate!= '' ){
+
+            if (dStartDate && dStartDate != '') {
                 var sFormatedStart = new Date(dStartDate).toISOString().split("T")[0];
                 var sFormatedEnd = new Date(dEndDate).toISOString().split("T")[0];
-                aFilters.push(new Filter("CreationDate", FilterOperator.BT, sFormatedStart,sFormatedEnd))
-                
+                aFilters.push(new Filter("CreationDate", FilterOperator.BT, sFormatedStart, sFormatedEnd))
+
             }
 
-            if(this.byId("selectFormName").getSelectedKey() === '1'){
+            if (this.byId("selectFormName").getSelectedKey() === '1') {
                 this.byId("docTable").getBinding("items").filter(aFilters);
             }
-            else{
+            else {
                 this.byId("docTable2").getBinding("items").filter(aFilters);
             }
-            
+
+            if (this.byId("selectFormName").getSelectedKey() === '6') {
+                this.byId("docTable3").getBinding("items").filter(aFilters);
+            }
+            else {
+                this.byId("docTable2").getBinding("items").filter(aFilters);
+            }
             // else{
             //     this.byId("docTable2").getBinding("items").filter(null, null, null);
             // }
@@ -284,14 +308,14 @@ sap.ui.define([
             //         sap.m.MessageToast.show("Failed to retrieve material documents.");
             //     }
             // });
-        },       
-        
-        onSearch: function () {
-            var that = this;       
-            
         },
 
-        fetchDatafromAPI:function(){
+        onSearch: function () {
+            var that = this;
+
+        },
+
+        fetchDatafromAPI: function () {
 
         }
 

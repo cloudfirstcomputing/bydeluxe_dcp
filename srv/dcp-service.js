@@ -2102,6 +2102,275 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 req.error(502, e)
             }
         });
+        /* this.on("SDBIL_CI_STANDARD_US_E", async (req, res) => {
+            try {
+                var form_name = req.data.form;
+                var query = `/v1/forms/${form_name}`;
+                var oFormObject = await deluxe_adsrestapi.get(query);
+                var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+                var oBillingDocument = req?.data?.Billing;
+        
+                // Fetch the selected Billing Document with expanded BillingDocumentItems
+                const billingDocument = await cds.run(
+                    SELECT.from(BillingDocument, (header) => {
+                        header.BillingDocument,
+                        header.BillingDocumentDate,
+                        header.BillingDocumentType,
+                        header.BillingDocumentCategory,
+                        header.to_Item();
+                    }).where({ BillingDocument: oBillingDocument.BillingDocument })
+                );
+        
+                // If no document found, return empty response
+                if (!billingDocument.length) {
+                    console.log("No billing document found for", oBillingDocument.BillingDocument);
+                    return;
+                }
+        
+                // Construct BillingItemNode array
+                const BillingItemNode = billingDocument[0].to_Item.reduce((accum, item) => {
+                    if (item.BillingDocumentItem == oBillingDocument.BillingDocumentItem) {
+                        accum.push({
+                            BillingDocumentItem: item.BillingDocumentItem,
+                            Material: item.Material,
+                            MaterialName: item.MaterialName || "Unknown",
+                            NetAmount: item.NetAmount || 0,
+                            Quantity: item.Quantity || 1,
+                            QuantityUnit: item.QuantityUnit || "EA",
+                            TaxAmount: item.TaxAmount || 0,
+                            YY1_Description_BDI: item.MaterialName || "No Description",
+                            YY1_ExtendedAmount_BDI: item.NetAmount || 0,
+                            YY1_UnitPrice_BDI: item.Quantity ? (item.NetAmount / item.Quantity).toFixed(2) : "0.00"
+                        });
+                    }
+                    return accum;
+                }, []);
+        
+                // Construct final formData object
+                const formData = {
+                    Form: {
+                        BillingHeaderNode: {
+                            BillingDocument: oBillingDocument.BillingDocument,
+                            Language: "EN",
+                            BillingDate: billingDocument[0].BillingDocumentDate,
+                            BillingDocumentType: billingDocument[0].BillingDocumentType,
+                            BillingDocumentCategory: billingDocument[0].BillingDocumentCategory,
+                            YY1_Customer_BDH: "Customer A",
+                            YY1_CompanyEmail_BDH: "billing@example.com",
+                            YY1_Title_BDH: "Invoice",
+                            TotalNetAmount: BillingItemNode.reduce((sum, item) => sum + Number(item.NetAmount), 0),
+                            TotalTaxAmount: BillingItemNode.reduce((sum, item) => sum + Number(item.TaxAmount), 0),
+                            TotalGrossAmount: BillingItemNode.reduce((sum, item) => sum + Number(item.NetAmount) + Number(item.TaxAmount), 0),
+                            TransactionCurrency: "USD",
+                            BDI: {
+                                BillingItemNode
+                            }
+                        }
+                    }
+                };
+        
+                console.log(JSON.stringify(formData, null, 2));
+        
+                // Convert JSON to XML
+                const xmlData = xmljs.js2xml(formData, { compact: true, spaces: 4 });
+        
+                // Encode XML to Base64
+                const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+        
+                const headers = {
+                    "Content-Type": 'application/json',
+                    "accept": 'application/json',
+                };
+        
+                // Print PDF code logic
+                var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+        
+                const data = {
+                    "xdpTemplate": sXMLTemplate,
+                    "xmlData": base64EncodedXml,
+                    "formType": "print",
+                    "formLocale": "en_US",
+                    "taggedPdf": 1,
+                    "embedFont": 0,
+                    "changeNotAllowed": false,
+                    "printNotAllowed": false
+                };
+        
+                var oPrintForm = await deluxe_adsrestapi.send({
+                    method: "POST",
+                    path: sDownloadPDFurl,
+                    data,
+                    headers
+                });
+        
+                return oPrintForm.fileContent;
+            }
+            catch (e) {
+                req.error(502, e)
+            }
+        }); */
+        this.on("invoiceForm_LABEL", async (req, res) => {
+            try {
+                var form_name = req.data.form;
+                var query = `/v1/forms/${form_name}`;
+                var oFormObject = await deluxe_adsrestapi.get(query);
+                var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+        
+                var oBillingDocument = req?.data?.Billing;
+        
+                const billingDocument = await s4h_billing_read.run(
+                    SELECT.from(BillingDocument, (header) => {
+                        header.BillingDocumentDate,
+                        header.BillingDocumentCategory,
+                        header.BillingDocumentType,
+                     
+                        header.to_Item()
+                    }).where({ BillingDocument: oBillingDocument.BillingDocument })
+                );
+        
+                if (!billingDocument.length) {
+                    console.log("No billing document found for", oBillingDocument.BillingDocument);
+                    return;
+                }
+         // Construct GRMatItemNode array with mapped product details
+         const billingHeader = billingDocument[0]; // header
+         const item = billingHeader.to_Item.find(it => it.BillingDocumentItem === oBillingDocument.BillingDocumentItem); // item
+         
+         const billingDataNode = {
+             AbsltAccountingExchangeRate: "",
+             AcctgExchangeRateIsIndrctQtan: "",
+             BillingDate: billingHeader.BillingDocumentDate,
+             BillingDocument: billingHeader.BillingDocument,
+             BillingDocumentCategory: billingHeader.BillingDocumentCategory,
+             BillingDocumentType: billingHeader.BillingDocumentType,
+             BillingDocumentTypeName: "", // if you have a name lookup
+             BillingSDDocumentCategory: "", // if you have it
+             BillingSDDocumentCategoryName: "",
+             CancelledBillingDocument: "",
+             CompanyCodeCurrency: billingHeader.TransactionCurrency,
+             DocumentReferenceID: "",
+             ExchangeRateDate: billingHeader.BillingDocumentDate,
+             InvoiceListStatus: "",
+             NumberOfSourceCurrencyUnits: "",
+             NumberOfTargetCurrencyUnits: "",
+             PrelimBillingDocument: "",
+             PricingProcedure: "",
+             PurchaseOrderByCustomer: billingHeader.PurchaseOrderByCustomer,
+             ReferenceSDDocument: billingHeader.ReferenceSDDocument,
+             ReferenceSDDocumentCategory: billingHeader.ReferenceSDDocumentCategory,
+             ReferenceSDDocumentCategoryName: "",
+             SalesContract: billingHeader.SalesContract,
+             SalesDocument: billingHeader.SalesDocument,
+             SalesOrganization: billingHeader.SalesOrganization,
+             SalesOrganizationName: "",
+             SalesSDDocumentCategory: "",
+             SalesSDDocumentCategoryName: "",
+             SolutionOrder: "",
+             TotalGrossAmount: billingHeader.TotalGrossAmount,
+             TotalNetAmount: billingHeader.TotalNetAmount,
+             TotalTaxAmount: billingHeader.TotalTaxAmount,
+             TransactionCurrency: billingHeader.TransactionCurrency,
+             // YY1 Custom Fields - assuming they come from header or a separate read
+             YY1_BillTo_BDH: billingHeader.YY1_BillTo_BDH,
+             YY1_BillTo_BDHF: billingHeader.YY1_BillTo_BDHF,
+             YY1_CompanyAddress_BDH: billingHeader.YY1_CompanyAddress_BDH,
+             YY1_CompanyAddress_BDHF: billingHeader.YY1_CompanyAddress_BDHF,
+             YY1_CompanyEmail_BDH: billingHeader.YY1_CompanyEmail_BDH,
+             YY1_CompanyEmail_BDHF: billingHeader.YY1_CompanyEmail_BDHF,
+             YY1_CustomerContact_BDH: billingHeader.YY1_CustomerContact_BDH,
+             YY1_CustomerContact_BDHF: billingHeader.YY1_CustomerContact_BDHF,
+             YY1_CustomerPO_BDH: billingHeader.YY1_CustomerPO_BDH,
+             YY1_CustomerPO_BDHF: billingHeader.YY1_CustomerPO_BDHF,
+             YY1_Customer_BDH: billingHeader.YY1_Customer_BDH,
+             YY1_Customer_BDHF: billingHeader.YY1_Customer_BDHF,
+             YY1_DueDate_BDH: billingHeader.YY1_DueDate_BDH,
+             YY1_DueDate_BDHF: billingHeader.YY1_DueDate_BDHF,
+             YY1_PaymentTermsName_BDH: billingHeader.YY1_PaymentTermsName_BDH,
+             YY1_PaymentTermsName_BDHF: billingHeader.YY1_PaymentTermsName_BDHF,
+             YY1_ShipTo_BDH: billingHeader.YY1_ShipTo_BDH,
+             YY1_ShipTo_BDHF: billingHeader.YY1_ShipTo_BDHF,
+             YY1_Telphone_BDH: billingHeader.YY1_Telphone_BDH,
+             YY1_Telphone_BDHF: billingHeader.YY1_Telphone_BDHF,
+             YY1_Territory_BDH: billingHeader.YY1_Territory_BDH,
+             YY1_Territory_BDHF: billingHeader.YY1_Territory_BDHF,
+             YY1_Title_BDH: billingHeader.YY1_Title_BDH,
+             YY1_Title_BDHF: billingHeader.YY1_Title_BDHF,
+             YY1_VATNumber_BDH: billingHeader.YY1_VATNumber_BDH,
+             YY1_VATNumber_BDHF: billingHeader.YY1_VATNumber_BDHF,
+             BillToParty: {
+                 AddressID: billingHeader.to_BillToParty?.AddressID || "",
+                 AddressLine1Text: billingHeader.to_BillToParty?.AddressLine1Text || "",
+                 AddressLine2Text: billingHeader.to_BillToParty?.AddressLine2Text || "",
+                 AddressLine3Text: billingHeader.to_BillToParty?.AddressLine3Text || "",
+                 AddressLine4Text: billingHeader.to_BillToParty?.AddressLine4Text || "",
+                 AddressLine5Text: billingHeader.to_BillToParty?.AddressLine5Text || "",
+                 AddressLine6Text: billingHeader.to_BillToParty?.AddressLine6Text || "",
+                 AddressLine7Text: billingHeader.to_BillToParty?.AddressLine7Text || "",
+                 AddressLine8Text: billingHeader.to_BillToParty?.AddressLine8Text || "",
+                 AddressType: billingHeader.to_BillToParty?.AddressType || "",
+                 FullName: billingHeader.to_BillToParty?.FullName || "",
+                 Partner: billingHeader.to_BillToParty?.Partner || "",
+                 PartnerFunction: billingHeader.to_BillToParty?.PartnerFunction || "",
+                 PartnerFunctionName: billingHeader.to_BillToParty?.PartnerFunctionName || "",
+                 Person: billingHeader.to_BillToParty?.Person || ""
+             }
+         };
+         
+        // Construct final formData object
+                const formData = {
+                    Form: {
+                        billingDataNode:{
+                           GoodsReceiptHeadlinePrint: oBillingDocument.BillingDocument,
+                                    Language: "EN",
+                                    Client :billingData[0]?.YY1_CustomerDes_PRD,
+                                    Biling: oMaterialDocument.BillingDocument,
+                                    BillingDocument: oBillingDocument.BillingDocument,
+                                    MaterialDocumentHeaderText: productData[0]?.YY1_CustomerDes_PRD,
+                                    MaterialDocumentItem: oMaterialDocument.MaterialDocument,
+                                    MaterialDocumentYear: oMaterialDocument.MaterialDocument,
+                                    PrinterIsCapableBarCodes: productData[0]?.ProductManufacturerNumber == '' ? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
+                                    ReferenceDocument: productData[0]?.YY1_CustomerDes_PRD,
+                                    GRMI: {
+                                        billingDataNode
+                                    }
+                        }
+                    }
+                };
+               console.log(JSON.stringify(formData, null, 2));
+        
+                const xmlData = xmljs.js2xml(formData, { compact: true, spaces: 4 });
+                const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+        
+                const headers = {
+                    "Content-Type": 'application/json',
+                    "accept": 'application/json'
+                };
+        
+                const sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0";
+        
+                const data = {
+                    xdpTemplate: sXMLTemplate,
+                    xmlData: base64EncodedXml,
+                    formType: "print",
+                    formLocale: "en_US",
+                    taggedPdf: 1,
+                    embedFont: 0,
+                    changeNotAllowed: false,
+                    printNotAllowed: false
+                };
+        
+                const oPrintForm = await deluxe_adsrestapi.send({
+                    method: "POST",
+                    path: sDownloadPDFurl,
+                    data,
+                    headers
+                });
+        
+                return oPrintForm.fileContent;
+            } catch (e) {
+                req.error(502, e);
+            }
+        });
 
         this.on("createContent", async (req, res) => {
             var aResult = await createBookingFeed(req, "C");
