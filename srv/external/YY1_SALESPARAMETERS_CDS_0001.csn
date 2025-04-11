@@ -11,6 +11,111 @@
    "@sap.message.scope.supported": "true",
    "@sap.supported.formats": "atom json xlsx"
   },
+  "YY1_SALESPARAMETERS_CDS_0001.I_CompanyCodeStdVH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.searchable": "true",
+   "@sap.content.version": "1",
+   "@sap.label": "Company Code",
+   "elements": {
+    "CompanyCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "CompanyCodeName",
+     "@sap.label": "Company Code",
+     "notNull": true
+    },
+    "CompanyCodeName": {
+     "type": "cds.String",
+     "length": 25,
+     "@sap.label": "Company Name",
+     "@sap.quickinfo": "Name of Company Code or Company"
+    }
+   }
+  },
+  "YY1_SALESPARAMETERS_CDS_0001.I_CountryVH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.searchable": "true",
+   "@sap.content.version": "1",
+   "@sap.label": "Country/Region",
+   "elements": {
+    "Country": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "Country_Text",
+     "@sap.label": "Country/Region Key",
+     "notNull": true
+    },
+    "Country_Text": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "Country/Region Name",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "Description": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "Country/Region Name"
+    },
+    "CountryThreeLetterISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "ISO Code 3 Char",
+     "@sap.quickinfo": "ISO Country/Region Code 3 Characters"
+    },
+    "CountryThreeDigitISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "ISO Code Num. 3",
+     "@sap.quickinfo": "ISO Country/Region Code Numeric 3-Characters"
+    }
+   }
+  },
+  "YY1_SALESPARAMETERS_CDS_0001.I_SalesOrganizationStdVH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.searchable": "true",
+   "@sap.content.version": "1",
+   "@sap.label": "Sales Organization",
+   "elements": {
+    "SalesOrganization": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "SalesOrganization_Text",
+     "@sap.label": "Sales Organization",
+     "notNull": true
+    },
+    "SalesOrganization_Text": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.label": "Sales Organization Description",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    }
+   }
+  },
   "YY1_SALESPARAMETERS_CDS_0001.P_Scbo_User": {
    "kind": "entity",
    "@cds.external": true,
@@ -64,10 +169,10 @@
      "length": 20,
      "@sap.label": "Studio BP"
     },
-    "SAP_Description": {
+    "ShippingConditions": {
      "type": "cds.String",
-     "length": 80,
-     "@sap.label": "Description"
+     "length": 50,
+     "@sap.label": "Shipping Conditions"
     },
     "StudioName": {
      "type": "cds.String",
@@ -76,13 +181,26 @@
     },
     "Country": {
      "type": "cds.String",
-     "length": 20,
-     "@sap.label": "Country"
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "Country_Text",
+     "@sap.label": "Country",
+     "@sap.value.list": "standard"
+    },
+    "Country_Text": {
+     "type": "cds.String",
+     "length": 50,
+     "@sap.label": "Country/Region Name",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
     },
     "SalesOrganization": {
      "type": "cds.String",
-     "length": 10,
-     "@sap.label": "Sales Organization"
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "to_SalesOrganization/SalesOrganization_Text",
+     "@sap.label": "Sales Organization",
+     "@sap.value.list": "standard"
     },
     "DistributionChannel": {
      "type": "cds.String",
@@ -94,15 +212,31 @@
      "length": 10,
      "@sap.label": "Division"
     },
+    "MaterialGroup1": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.label": "MaterialGroup1Â"
+    },
+    "ServiceProvided": {
+     "type": "cds.String",
+     "length": 500,
+     "@sap.label": "Service Provided"
+    },
     "CompanyCode": {
      "type": "cds.String",
-     "length": 10,
-     "@sap.label": "Company Code"
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "CompanyCode_Text",
+     "@sap.label": "Company Code",
+     "@sap.value.list": "standard"
     },
-    "ShippingConditions": {
+    "CompanyCode_Text": {
      "type": "cds.String",
-     "length": 50,
-     "@sap.label": "Shipping Conditions"
+     "length": 25,
+     "@sap.label": "Company Name",
+     "@sap.quickinfo": "Name of Company Code or Company",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
     },
     "SoldTo": {
      "type": "cds.String",
@@ -184,6 +318,21 @@
      "@sap.creatable": "false",
      "@sap.updatable": "false"
     },
+    "to_CompanyCode": {
+     "type": "cds.Association",
+     "target": "YY1_SALESPARAMETERS_CDS_0001.I_CompanyCodeStdVH",
+     "keys": []
+    },
+    "to_Country": {
+     "type": "cds.Association",
+     "target": "YY1_SALESPARAMETERS_CDS_0001.I_CountryVH",
+     "keys": []
+    },
+    "to_SalesOrganization": {
+     "type": "cds.Association",
+     "target": "YY1_SALESPARAMETERS_CDS_0001.I_SalesOrganizationStdVH",
+     "keys": []
+    },
     "to_SAPSysAdminDataChangeUser": {
      "type": "cds.Association",
      "target": "YY1_SALESPARAMETERS_CDS_0001.P_Scbo_User",
@@ -210,10 +359,10 @@
      "length": 20,
      "@sap.label": "Text of length 20"
     },
-    "SAP_Description": {
+    "ShippingConditions": {
      "type": "cds.String",
-     "length": 80,
-     "@sap.label": "Text of length 80"
+     "length": 50,
+     "@sap.label": "Text of length 50"
     },
     "StudioName": {
      "type": "cds.String",
@@ -222,13 +371,13 @@
     },
     "Country": {
      "type": "cds.String",
-     "length": 20,
-     "@sap.label": "Text of length 20"
+     "length": 3,
+     "@sap.label": "Country"
     },
     "SalesOrganization": {
      "type": "cds.String",
-     "length": 10,
-     "@sap.label": "Text of length 10"
+     "length": 4,
+     "@sap.label": "SalesOrganization"
     },
     "DistributionChannel": {
      "type": "cds.String",
@@ -240,15 +389,20 @@
      "length": 10,
      "@sap.label": "Text of length 10"
     },
+    "MaterialGroup1": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.label": "Text of length 20"
+    },
+    "ServiceProvided": {
+     "type": "cds.String",
+     "length": 500,
+     "@sap.label": "Text of length 500"
+    },
     "CompanyCode": {
      "type": "cds.String",
-     "length": 10,
-     "@sap.label": "Text of length 10"
-    },
-    "ShippingConditions": {
-     "type": "cds.String",
-     "length": 50,
-     "@sap.label": "Text of length 50"
+     "length": 4,
+     "@sap.label": "CompanyCode"
     },
     "SoldTo": {
      "type": "cds.String",
