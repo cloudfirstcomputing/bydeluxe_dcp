@@ -25,44 +25,6 @@ service BookingOrderService {
     //Normalized Order
     entity StudioFeed                   as projection on db.StudioFeed;
     annotate StudioFeed with @odata.draft.enabled;
-    action createStudioFeeds(StudioFeed: array of StudioFeed) returns String;
-    action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
-    action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
-    action remediateSalesOrder(bookingID : String, salesOrder : String) returns String;
-    action reconcileStudioFeed(aBookingID: array of String) returns String;
-    
-    entity S4H_SOHeader          as projection on S4_SalesOrder.SalesOrder;
-    entity S4H_BuisnessPartner   as projection on S4_BuisnessPartner.A_BusinessPartner;
-    entity S4H_CustomerSalesArea as projection on S4_BuisnessPartner.A_CustomerSalesArea;
-    entity S4H_SOHeader_V2       as projection on api.SalesOrderHeader;
-    entity S4H_SalesOrderItem_V2 as projection on api.SalesOrderItem;
-    entity S4H_BusinessPartnerapi as projection on api.BusinessPartnersV1;
-    entity S4H_BusinessPartnerAddress as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
-    entity S4H_Country as projection on api.Country{        
-        
-        @Common.ValueList: {
-            Label: 'Country',
-            CollectionPath: 'S4H_Country',
-            Parameters: [
-                { $Type: 'Common.ValueListParameterInOut', LocalDataProperty: 'Country', ValueListProperty: 'Country' },
-                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryName' }
-            ]
-        }
-        Country,
-        
-        CountryThreeLetterISOCode,
-        CountryThreeDigitISOCode,
-        CountryCurrency,
-        
-        to_Text.CountryName as CountryName
-    };
-    entity S4_Parameters as projection on S4_Param.YY1_PARAMETER{
-        key ID,
-        VariableName,
-        VariableValue
-    };
-    entity S4_SalesParameter as projection on S4_Sales_Param.YY1_SALESPARAMETERS;
-    type FieldMap           : many {
     action createStudioFeeds(StudioFeed : array of StudioFeed)                                             returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)          returns UploadResponse;
     action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
@@ -100,7 +62,7 @@ service BookingOrderService {
             CountryCurrency,
             to_Text.CountryName as CountryName
         };
-
+    entity CountryText as projection on api.CountryText;
     entity S4_Parameters                as
         projection on S4_Param.YY1_PARAMETER {
             key ID,
@@ -344,9 +306,29 @@ service BookingOrderService {
     entity Titles                       as projection on db.Titles;
     entity Ratings                      as projection on db.Ratings;
     entity ExternalTitleIDs             as projection on db.ExternalTitleIDs;
-
+   
     @readonly
-    entity TitleV                       as select from db.TitleV;
+    entity TitleV                       as projection on  db.TitleV{
+        *,
+           @Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'CountryText',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: RegionCode,
+                    ValueListProperty: 'Country',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'CountryName',
+                }
+            ],
+        }
+           @Common.Text : 'CountryName'
+           RegionCode,
+           to_Text.CountryName as CountryName,
+    };
 
     entity Products                     as
         projection on externalProduct.A_Product {
@@ -459,16 +441,16 @@ service BookingOrderService {
                 to_BillingDocument : redirected to BillingDocument
         }
 
+    type BillingDoc {
+        BillingDocument         : String;
+        BillingDocumentCategory : String;
+        BillingDocumentType     : String;
+        BillingDocumentDate     : Date;
 
-  
-type BillingDoc{
-    BillingDocument:String(1);
- BillingDocumentCategory:String(1);
- BillingDocumentType:String(4);
- BillingDocumentDate:Date;
+    }
 
-}
     action invoiceForm_LABEL(form : String, Billing : BillingDoc)                                          returns LargeString;
+
     action  SDBIL_CI_STANDARD_US_E (form:String, Billing:BillingDoc) returns LargeString;
     
 }

@@ -655,5 +655,6 @@ define view TitleV as
             Titles.IsMarkedForDeletion,  
             RatingsConcat.RatingCode,
             ExternalTitleIDs.IDType,
-            ExternalTitleIDs.IDValue
+            ExternalTitleIDs.IDValue,
+             to_Text : Association to one api.CountryText on $self.RegionCode = to_Text.Country
     };

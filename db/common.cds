@@ -19,6 +19,8 @@ using {API_PRODUCTION_ORDER_2_SRV as s4_productionOrder} from '../srv/external/A
 using {API_PRODUCTGROUP_SRV as prdgrp} from '../srv/external/API_PRODUCTGROUP_SRV';
 using {YY1_ADDITIONALMATERIALGRP1_CDS as prdgrp1} from '../srv/external/YY1_ADDITIONALMATERIALGRP1_CDS';
 using {API_BILLING_DOCUMENT_SRV as Billing} from '../srv/external/API_BILLING_DOCUMENT_SRV';
+using {Distrospec_SRV as Distro} from '../srv/external/Distrospec_SRV';
+
 
 context api {
 
@@ -43,6 +45,7 @@ context api {
     entity DeliveryPriority       as projection on delvprior.YY1_DeliveryPriority;
     entity CustomerGroup          as projection on custgrp.A_CustomerGroup;
     entity Country                as projection on country.A_Country;
+    entity CountryText            as projection on country.A_CountryText;
     entity Plants                 as projection on plant.A_Plant;
     entity StorageLocations       as projection on sloc.YY1_StorageLocation;
     entity SalesOrganizations     as projection on salesorg.A_SalesOrganization;
@@ -58,4 +61,6 @@ context api {
     entity ProductionOrder        as projection on s4_productionOrder.A_ProductionOrder_2;
     entity BillingDocument        as projection on Billing.A_BillingDocument;
     entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem;
+    entity CountriesApi       as projection on Distro.Countries;
+    
 }
