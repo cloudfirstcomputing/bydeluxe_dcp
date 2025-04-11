@@ -353,46 +353,43 @@ sap.ui.define([
                     name: "com.dlx.managematerialtitle.ext.manageTitleExt.FileUpload",
                     controller: {
                         onFileChange: function (oEvent) {
-                           // Store selected file for later
                             this._selectedFile = oEvent.getParameter("files")[0];
                             this._selectedFileName = oEvent.getParameter("files")[0].name;
-                            MessageToast.show("File selected: " + oEvent.getParameter("files")[0].name);
-                        },                        
+                            MessageToast.show("File selected: " + this._selectedFileName);
+                        },
+        
                         onConfirmUpload: function (data, filename) {
-                            var oView = this.getView();
-                            var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-                            var that = this;
-                        
+                            var oView = that.getEditFlow().getView();
+                            var oResourceBundle = that.getOwnerComponent().getModel("i18n").getResourceBundle();
+                            var response;
+        
                             oView.setBusy(true);
                             that.Obj = this;
-                            var response;
-                        
+        
                             var uploadSuccess = oResourceBundle.getText("uploadSuccess"),
                                 uploadSuccessTitle = oResourceBundle.getText("uploadSuccessTitle"),
                                 uploadSuccessCount = oResourceBundle.getText("uploadSuccessCount"),
                                 uploadErrorTitle = oResourceBundle.getText("uploadErrorTitle"),
                                 uploadError = oResourceBundle.getText("uploadError"),
                                 uploadFailed = oResourceBundle.getText("uploadFailed");
-                        
+        
                             var batchModel = oView.getModel();
                             var oContext = batchModel.bindContext("/MassUploadManageMaterialTitle(...)");
-                        
-                            // Set parameters for the action
+        
                             oContext.setParameter("fileData", data);
                             oContext.setParameter("fileName", filename);
-                            oContext.setParameter("fieldNames", that.fieldNamesMaterialTitle); // Custom: Adjust based on your field mapping
-                        
-                            // Execute the action
+                            oContext.setParameter("fieldNames", that.fieldNamesMaterialTitle);
+        
                             oContext.execute().then(function () {
                                 sap.ui.getCore().byId("dialog").close();
                                 response = oContext.getBoundContext().getObject();
-                        
+        
                                 if (response?.message) {
                                     var oResponse = response.message;
                                     var aSuccess = oResponse.success,
                                         aError = oResponse.error,
                                         aWarning = oResponse.warning;
-                        
+        
                                     if (aError?.length) {
                                         MessageBox.error('Click the below link for more details', {
                                             details: JSON.stringify(aError),
@@ -406,7 +403,7 @@ sap.ui.define([
                                             }
                                         });
                                     }
-                        
+        
                                     if (aWarning?.length) {
                                         MessageBox.warning('Click the below link for more details', {
                                             details: JSON.stringify(aWarning),
@@ -420,7 +417,7 @@ sap.ui.define([
                                             }
                                         });
                                     }
-                        
+        
                                     if (aSuccess?.length) {
                                         MessageBox.success('Click the below link for more details', {
                                             details: JSON.stringify(aSuccess),
@@ -434,13 +431,12 @@ sap.ui.define([
                                             }
                                         });
                                     }
-                        
+        
                                     batchModel.refresh();
                                     oView.setBusy(false);
                                 }
-                        
                             }, function (oErr) {
-                                var errorCode = uploadFailed + "\n" + oErr.error?.message || oErr.message;
+                                var errorCode = uploadFailed + "\n" + (oErr.error?.message || oErr.message);
                                 MessageBox.error(errorCode, {
                                     title: uploadErrorTitle,
                                     actions: MessageBox.Action.OK,
@@ -454,7 +450,8 @@ sap.ui.define([
                                 batchModel.refresh();
                                 oView.setBusy(false);
                             });
-                        },                        
+                        },
+        
                         onCancelUpload: function () {
                             if (that._oUploadDialog) {
                                 that._oUploadDialog.close();
@@ -469,6 +466,7 @@ sap.ui.define([
             } else {
                 this._oUploadDialog.open();
             }
-        } 
+        }
+         
     };
 });

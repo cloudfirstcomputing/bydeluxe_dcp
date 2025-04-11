@@ -174,7 +174,93 @@ sap.ui.define([
             // var sPdfUrl = sServiceUrl + "downloadFormADS()";
 
             // window.open(sPdfUrl);
-        },
+        
+        if (this.byId("selectFormName").getSelectedKey() === '6')
+            {
+            var oSelecteditem;
+                [oSelecteditem] = this.byId("docTable3").getSelectedItems();
+                var sForm = "YY1_MMIM_GR_LABEL_EN_BILLING" ;
+              
+                var oBillingDoc = oSelecteditem.getBindingContext().getObject();
+                var oData = {
+                    form:sForm,
+                    Billing:{
+                        BillingDocumentCategory: oBillingDoc.BillingDocumentCategory,
+                        BillingDocumentType : oMaterialDoc.BillingDocumentType,
+                        BillingDocumentDate :oMaterialDoc.BillingDocumentDate,
+                        BillingDocumentItem:oBillingDoc.BillingDocumentItem
+                    }
+                }
+                  var sSource = sServiceUrl + `SDBIL_CI_STANDARD_US_E`
+                var that = this;
+                var updateCall = $.ajax({
+                    url: sSource,
+                    type: "POST",
+                    data : JSON.stringify(oData),
+                    headers: {
+                        "Accept": "application/pdf",
+                        "Content-Type" :"application/json"
+                    },
+                    success: function (data) {
+                        that.onOpenPDF(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching PDF:", status, error);
+                        sap.m.MessageToast.show("Failed to load the form.");
+                    }
+                });
+        }
+        else
+        {
+            // var opdfViewer = new PDFViewer();
+                // this.getView().addDependent(opdfViewer);
+                var oSelecteditem;
+                // opdfViewer.setSource(sSource);
+                // opdfViewer.setTitle( "My PDF");
+                // opdfViewer.open();
+                // this.openPdfViewer(sSource);
+                [oSelecteditem] = this.byId("docTable2").getSelectedItems();
+
+                var sForm = this.byId("selectFormName").getSelectedKey() =='5'? 'HDDLabel':this.byId("selectFormName").getSelectedKey() =='2' ? "DCDCLabel" : this.byId("selectFormName").getSelectedKey() =='3' ? "DeluxeLabel": "MasterLabel" ;
+              
+                var sProdId = oSelecteditem.getBindingContext().getObject().Product;
+                var oData = {
+                    form:sForm,
+                    Product:sProdId
+                }
+                  var sSource = sServiceUrl + `downloadFormADS`
+                var that = this;
+                BusyIndicator.show();
+                var updateCall = $.ajax({
+                    url: sSource,
+                    type: "POST",
+                    data : JSON.stringify(oData),
+                    headers: {
+                        "Accept": "application/pdf",
+                        "Content-Type" :"application/json"
+                    },
+                    success: function (data) {
+                        BusyIndicator.hide();
+                        that.onOpenPDF(data);
+                    },
+                    error: function (xhr, status, error) {
+                        BusyIndicator.hide();
+                        console.error("Error fetching PDF:", status, error);
+                        sap.m.MessageToast.show("Failed to load the form.");
+                    }
+                });
+        }
+       // // Get the OData Model attached to the view or component
+        // var oModel = this.getView().getModel(); // Assuming the default model
+
+        // // Get the service URL from the OData model
+        // var sServiceUrl = oModel.sServiceUrl;
+
+        // // Construct the full PDF URL
+        // var sPdfUrl = sServiceUrl + "downloadFormADS()";
+
+        // window.open(sPdfUrl);
+    },
         openPdfViewer: function (sPdfUrl) {
             if (!this._pdfViewerDialog) {
                 this._pdfViewerDialog = sap.ui.xmlfragment("com.dlx.printdocu.printdocuments.view.pdfView", this);

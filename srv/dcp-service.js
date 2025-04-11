@@ -62,29 +62,59 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: aResponse
             });
         });
-        this.on('MassUploadManageMaterialTitle', async (req) => {
-            const { TitleV } = this.entities;
+        this.on("MassUploadManageMaterialTitle", async (req) => {
+            const { Titles } = this.entities;
             const db = await cds.connect.to('db');
         
-            const tx = db.tx(req); // Start transaction
+            const uploadedFile = req.data.fileData;
+            const fileName = req.data.fileName;
+            const fieldNames = req.data.fieldNames;
         
-            const uploadedFile = req.data.file; // Assuming the file is passed in the request
-            if (!uploadedFile || !uploadedFile.length) {
-                req.error(400, bundle.getText('UPLOAD_ERROR_NO_FILE'));
-                return;
+            if (!uploadedFile) {
+                req.error(400, 'No file data provided');
             }
         
-            try {
-                const workbook = XLSX.read(uploadedFile, { type: "buffer" });
-                const sheetName = workbook.SheetNames[0];
-                const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            const workbook = XLSX.read(uploadedFile, { type: 'buffer' });
+            const sheetName = workbook.SheetNames[0];
+            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
         
-                const inserted = [];
+            let result = {
+                success: [],
+                error: [],
+                warning: []
+            };
         
-                for (const row of sheetData) {
-                    const titleRecord = {
+            for (const row of sheetData) {
+                try {
+                    // Step 1: Prepare Product Payload
+                    const productPayload = {
+                        ProductGroup: row.TitleCategory,
+                        ProductType: "SERV",
+                        BaseUnit: "EA",
+                        ProductManufacturerNumber: "",
+                        to_ProductBasicText: [
+                            { Language: "EN", LongText: row.OriginalTitleName }
+                        ],
+                        to_Description: [
+                            { Language: "EN", ProductDescription: row.OriginalTitleName }
+                        ]
+                    };
+        
+                    const createProductResponse = await cds
+                        .transaction(req)
+                        .run([
+                            INSERT.into("BookingOrderService.createProduct").entries({ input: productPayload })
+                        ]);
+        
+                    const createdProductID = createProductResponse[0]?.Product;
+                    if (!createdProductID) {
+                        throw new Error("Product creation failed.");
+                    }
+        
+                    // Step 2: Prepare Title Payload
+                    const titlePayload = {
                         ID: uuidv4(),
-                        MaterialMasterTitleID: row.MaterialMasterTitleID,
+                        MaterialMasterTitleID: createdProductID,
                         TitleType: row.TitleType,
                         RegionCode: row.RegionCode,
                         ReleaseDate: row.ReleaseDate ? new Date(row.ReleaseDate) : null,
@@ -107,20 +137,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         IsMarkedForDeletion: row.IsMarkedForDeletion === 'TRUE',
                     };
         
-                    await tx.run(INSERT.into(TitleV).entries(titleRecord));
-                    inserted.push(titleRecord);
+                    await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
+        
+                    result.success.push({
+                        TitleID: createdProductID,
+                        Message: `Title created with ID ${createdProductID}`
+                    });
+                } catch (err) {
+                    console.error("Error processing row:", row, err.message);
+                    result.error.push({
+                        RowData: row,
+                        Error: err.message
+                    });
                 }
-        
-                await tx.commit();
-        
-                req.info(`${inserted.length} records successfully uploaded.`);
-                return inserted;
-            } catch (error) {
-                await tx.rollback();
-                console.error("Upload failed:", error);
-                req.error(500, bundle.getText('UPLOAD_ERROR_PROCESSING'));
             }
-        });        
+        
+            return {
+                message: result
+            };
+        });       
+        
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
