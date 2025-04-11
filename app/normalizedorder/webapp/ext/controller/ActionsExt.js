@@ -794,15 +794,15 @@ sap.ui.define([
             }
             var oEntry = aSelectedItems[0].getBindingContext().getObject();
             oView.setModel(new JSONModel(oEntry), "viewModel");
-            if (!oEntry?.SalesOrder) {
-                MessageBox.error("Invalid Selection", {
-                    title: "Error",
-                    details: "Sales Order not available for the selected entry",
-                    contentWidth: "auto",
-                    styleClass: sResponsivePaddingClasses
-                });
-                return;
-            }
+            // if (!oEntry?.SalesOrder) {
+            //     MessageBox.error("Invalid Selection", {
+            //         title: "Error",
+            //         details: "Sales Order not available for the selected entry",
+            //         contentWidth: "auto",
+            //         styleClass: sResponsivePaddingClasses
+            //     });
+            //     return;
+            // }
             // else if (oEntry?.Remediation) {
             //     MessageBox.error("Invalid Selection", {
             //         title: "Error",
@@ -812,7 +812,8 @@ sap.ui.define([
             //     });
             //     return;
             // }
-            else {
+            // else 
+            {
                 MessageBox.confirm(oResourceBundle.getText("confirmSORemediation"), {
                     title: oResourceBundle.getText("confirmSORemediationTitle"),
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
@@ -823,8 +824,9 @@ sap.ui.define([
                             var oModel = this.getModel();
                             var oViewModel = this.getEditFlow().getView().getModel("viewModel");
                             var oActionODataContextBinding = oModel.bindContext("/remediateSalesOrder(...)");
-                            oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/BookingID"));
-                            oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/SalesOrder"));
+                            // oActionODataContextBinding.setParameter("bookingID", oViewModel?.getProperty("/BookingID"));
+                            // oActionODataContextBinding.setParameter("salesOrder", oViewModel?.getProperty("/SalesOrder"));
+                            oActionODataContextBinding.setParameter("ID", oViewModel?.getProperty("/ID"));
                             // oActionODataContextBinding.setParameter("oInput", {
                             //     "bookingID": oViewModel?.getProperty("/BookingID"),
                             //     "salesOrder": oViewModel?.getProperty("/SalesOrder")
