@@ -76,6 +76,24 @@ annotate service.TitleV with @(
             { $Type : 'UI.DataField', Value : ImdbId, Label : 'IMDB ID' },
             { $Type : 'UI.DataField', Value : StudioTitleId, Label : 'Studio Title Id' },
             { $Type : 'UI.DataField', Value : StudioDistributor, Label : 'Studio/Distributor' },
+            {
+                $Type : 'UI.DataField',
+                Value : UseSecureName,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : IsMarkedForDeletion,
+                Label : 'IsMarkedForDeletion',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : RatingCode,
+                Label : 'RatingCode',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : LocalTitleId,
+            },
         ]
     },
 
