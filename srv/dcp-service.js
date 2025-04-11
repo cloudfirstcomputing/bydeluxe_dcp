@@ -232,176 +232,177 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.reject(400, e);
             }
         });
-        // this.on('remediateSalesOrder', async (req, res) => { //RULE 11
-        //     var oInput = req.data;
-        //     var sBookingID = oInput?.bookingID, sSalesOrder = oInput?.salesOrder,
-        //         oContentData, sMaterialGroup, aResponseStatus = [], hanaDBTable = StudioFeed;
+        this.on('remediateSalesOrder', async (req, res) => { //RULE 11
+            var oInput = req.data;
+            var sID = oInput?.ID, sBookingID, sSalesOrder, oFeedDBData, aResponseStatus = [], hanaDBTable = StudioFeed;
 
-        //     if (sBookingID) {
-        //         oContentData = await SELECT.one.from(hanaDBTable).where({ BookingID: sBookingID, SalesOrder: sSalesOrder, IsActive: "Y" });
-        //     }
-        //     else if (sSalesOrder) {
-        //         oContentData = SELECT.one.from(hanaDBTable).where({ SalesOrder: sSalesOrder, IsActive: "Y" });
-        //     }
-        //     else {
-        //         req.reject(501, "Booking ID / Sales order not available for processing");
-        //         return;
-        //     }
-        //     if (!oContentData) {
-        //         req.reject(501, "Selected entry not available");
-        //         return;
-        //     }
-        //     else if (!oContentData.SalesOrder) {
-        //         req.reject(501, "Please Select an entry where Sales Order is available for remediation");
-        //         return;
-        //     }
-        //     else if (!oContentData.DeliveryMethod) {
-        //         req.reject(501, "Initial Delivery method was not captured for this entry, hence cannot be remediated");
-        //         return;
-        //     }
-        //     else if (!oContentData.RemediationCounter) {
-        //         req.reject(501, "Remediation counterfor this entry, hence cannot be remediated");
-        //         return;
-        //     }
-        //     var aRemediatedDeliveryMethods = oContentData.DeliveryMethod?.split(","), iRemediationCounter = oContentData.RemediationCounter;
+            if (sID) {
+                oFeedDBData = await SELECT.one.from(hanaDBTable).where({ ID: sID });
+            }
 
-        //     var oSalesorderItem_PayLoad = {};
-        //     var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder }));
-        //     if (!aSalesOrderItem?.length) {
-        //         aResponseStatus.push({
-        //             "message": `| No items available for remediation in Sales Order: ${sSalesOrder} |`,
-        //             "status": "E"
-        //         });
-        //     }
-        //     var aNonKeyItems = aSalesOrderItem?.filter((s4Item) => {
-        //         return (s4Item.MaterialGroup !== 'Z003' && s4Item.ItemBillingBlockReason !== '03' && s4Item.DeliveryPriority !== '04');
-        //     });
-        //     if (!aNonKeyItems?.length) { //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
-        //         req.reject(501, `Remediation cannot be done for Sales Order: ${sSalesOrder} as all items are key entries`);
-        //         return;
-        //     }
-        //     else {
-        //         var aDeliverySeqFromDistHeader = [];
-        //         var distroSpecData = await getDistroSpecData(req, oContentData, aDeliverySeqFromDistHeader);
-        //         aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader?.filter((sDelSeq) => {
-        //             return sDelSeq !== ''
-        //         }); //Removing blank entries
-        //         var aContentPackages = distroSpecData?.to_Package, oContentPackages;
-        //         aContentPackages = await performPrioritySort_OrderType_ValidityCheck(aContentPackages, oContentData, distroSpecData);
-        //         if (!aContentPackages?.length) {
-        //             req.reject(400,
-        //                 `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order ${sBookingID}`);
-        //             return;
-        //         }
-        //         if (aDeliverySeqFromDistHeader?.length <= iRemediationCounter) {
-        //             req.reject(400,
-        //                 `Remediation is not possible any more as all ${iRemediationCounter} Delivery methods are utilized for remediation`);
-        //             return;
-        //         }
-        //         for (var i in aRemediatedDeliveryMethods) { //Removing the Delivery methods which are already remediated
-        //             aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader.filter((seq) => {
-        //                 return seq !== aRemediatedDeliveryMethods[i];
-        //             }
-        //             );
-        //         }
-        //         for (var i in aNonKeyItems) {
-        //             var oSalesOrderItem = aNonKeyItems[i];
-        //             oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
-        //             // var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({SalesOrder: oSalesOrderItem.SalesOrder, Product: oSalesOrderItem.Material}); 
-        //             //     // SalesOrderItem: oSalesOrderItem.SalesOrderItem});
+            if (!oFeedDBData) {
+                req.reject(501, "Selected entry not available");
+                return;
+            }
+            if (!oFeedDBData.SalesOrder) {
+                req.reject(501, "Please Select an entry where Sales Order is available for remediation");
+                return;
+            }
+            // if (!oFeedDBData.DeliveryMethod) {
+            //     req.reject(501, "Initial Delivery method was not captured for this entry, hence cannot be remediated");
+            //     return;
+            // }
+            // else if (!oFeedDBData.RemediationCounter) {
+            //     req.reject(501, "Remediation counterfor this entry, hence cannot be remediated");
+            //     return;
+            // }
+            sSalesOrder = oFeedDBData?.SalesOrder;
+            var aRemediatedDeliveryMethods = oFeedDBData.DeliveryMethod?.split(","), iRemediationCounter = oFeedDBData.RemediationCounter;
 
-        //             var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
-        //             for (var j in aDeliverySeqFromDistHeader) {
-        //                 var sDelSeq = aDeliverySeqFromDistHeader[j];
-        //                 if (sDelSeq === '03' || sDelSeq === '10') { //RULE 11.2
-        //                     req.reject(400,
-        //                         `Remediation is completed for the selected entry as the delivery sequence has reached till shipping condition: ${sDelSeq}`);
-        //                     return;
-        //                 }
-        //                 else if (sDelSeq) {
-        //                     oContentPackages = aContentPackages.find((pkg) => {
-        //                         return (
-        //                             pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
-        //                             pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
-        //                             pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
-        //                             pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
-        //                             pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
-        //                     });
-        //                     if (oContentPackages) {
-        //                         oFilteredContentPackage = oContentPackages;
-        //                         aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction;
-        //                         sDeliveryMethod = sDelSeq;
-        //                         break;
-        //                     }
-        //                 }
-        //             }
-        //             if (!oFilteredContentPackage) {
-        //                 req.reject(400, `No suitable package found for remediation`);
-        //                 return;
-        //             }
-        //             oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
-        //             oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
-        //             oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
-        //             oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
-        //             oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
-        //             oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
+            var oSalesorderItem_PayLoad = {};
+            var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder }));
+            if (!aSalesOrderItem?.length) {
+                aResponseStatus.push({
+                    "message": `| No items available for remediation in Sales Order: ${sSalesOrder} |`,
+                    "status": "E"
+                });
+            }
+            var aNonKeyItems = aSalesOrderItem?.filter((s4Item) => {
+                return (s4Item.MaterialGroup !== 'Z004' && (s4Item.ItemBillingBlockReason ===  '' || s4Item.ItemBillingBlockReason !== '03') && s4Item.DeliveryPriority !== '04');
+            });
+            if (!aNonKeyItems?.length) { //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
+                req.reject(501, `Remediation cannot be done for Sales Order: ${sSalesOrder} as all items are key entries`);
+                return;
+            }
+            else if (!oFeedDBData.DeliveryMethod) {
+                req.reject(501, "Initial Delivery method was not captured for this entry, hence cannot be remediated");
+                return;
+            }
+            else if (!oFeedDBData.RemediationCounter) {
+                req.reject(501, "Remediation counterfor this entry, hence cannot be remediated");
+                return;
+            }
+            else {
+                var aDeliverySeqFromDistHeader = [];
+                var distroSpecData = await getDistroSpecData(req, oFeedDBData, aDeliverySeqFromDistHeader);
+                aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader?.filter((sDelSeq) => {
+                    return sDelSeq !== ''
+                }); //Removing blank entries
+                var  oContentPackages;
+                var oPackages = await performPrioritySort_OrderType_ValidityCheck(oFeedDBData, distroSpecData);
+                var aContentPackages = oPackages?.ContentPackage,  aKeyPackages = oPackages?.KeyPackage;
+                if (!aContentPackages?.length) {
+                    req.reject(400,
+                        `No matching Content Or Key Package available for DistroSpec ${distroSpecData?.DistroSpecID}`);
+                    return;
+                }
+                if (aDeliverySeqFromDistHeader?.length <= iRemediationCounter) {
+                    req.reject(400,
+                        `Remediation is not possible any more as all ${iRemediationCounter} Delivery methods are utilized for remediation`);
+                    return;
+                }
+                for (var i in aRemediatedDeliveryMethods) { //Removing the Delivery methods which are already remediated
+                    aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader.filter((seq) => {
+                        return seq !== aRemediatedDeliveryMethods[i];
+                    }
+                    );
+                }
+                for (var i in aNonKeyItems) {
+                    var oSalesOrderItem = aNonKeyItems[i];
+                    oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
 
-        //             // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
+                    var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
+                    for (var j in aDeliverySeqFromDistHeader) {
+                        var sDelSeq = aDeliverySeqFromDistHeader[j];
+                        if (sDelSeq === '03' || sDelSeq === '10') { //RULE 11.2
+                            req.reject(400,
+                                `Remediation is completed for the selected entry as the delivery sequence has reached till shipping condition: ${sDelSeq}`);
+                            return;
+                        }
+                        else if (sDelSeq) {
+                            oContentPackages = aContentPackages.find((pkg) => {
+                                return (
+                                    pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
+                                    pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
+                            });
+                            if (oContentPackages) {
+                                oFilteredContentPackage = oContentPackages;
+                                aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction;
+                                sDeliveryMethod = sDelSeq;
+                                break;
+                            }
+                        }
+                    }
+                    if (!oFilteredContentPackage) {
+                        req.reject(400, `No suitable package with Delivery Method ${sDelSeq} found for remediation`);
+                        return;
+                    }
+                    oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
+                    oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
+                    oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
+                    oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
+                    oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
+                    oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
 
-        //             oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
-        //                 "SalesOrder": sSalesOrder,
-        //                 "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
-        //                 "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
-        //             }];
-        //             var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
-        //             var sShippingType = oShippingTypeMapping.ShippingType;
-        //             if (!sShippingType) {
-        //                 req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
-        //                 return;
-        //             }
-        //             oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
-        //             await s4h_sohv2_Txn.send({
-        //                 method: 'POST',
-        //                 path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
-        //                 data: oSalesorderItem_PayLoad
-        //             }).catch((err) => {
-        //                 aResponseStatus.push({
-        //                     "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
-        //                     "status": "E"
-        //                 });
-        //             }).then(async (result) => {
-        //                 if (result) {
-        //                     oContentData.DeliveryMethod = oContentData.DeliveryMethod + ", " + sDeliveryMethod;
-        //                     oContentData.RemediationCounter = iRemediationCounter + 1;
-        //                     oContentData.Remediation = oContentData.Remediation ? (oContentData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
-        //                     let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oContentData.Remediation}`, DeliveryMethod: oContentData.DeliveryMethod, RemediationCounter: oContentData.RemediationCounter }).where({ BookingID: oContentData.BookingID, IsActive: 'Y' })
+                    // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
 
-        //                     var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
-        //                     let oNewBTPItem = {};
-        //                     if (oBTPItem) {
-        //                         oNewBTPItem = oBTPItem;
-        //                     }
-        //                     oNewBTPItem.SalesOrder = result?.SalesOrder;
-        //                     oNewBTPItem.SalesOrderItem = result?.SalesOrderItem;
-        //                     oNewBTPItem.Product = result?.Material;
-        //                     oNewBTPItem.ShippingPoint = result?.ShippingPoint;
-        //                     oNewBTPItem.ProductGroup = result?.MaterialGroup;
-        //                     oNewBTPItem.ShippingType_ID = result?.ShippingType;
+                    oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
+                        "SalesOrder": sSalesOrder,
+                        "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
+                        "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
+                    }];
+                    var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
+                    var sShippingType = oShippingTypeMapping.ShippingType;
+                    if (!sShippingType) {
+                        req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
+                        return;
+                    }
+                    oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
+                    await s4h_sohv2_Txn.send({
+                        method: 'POST',
+                        path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
+                        data: oSalesorderItem_PayLoad
+                    }).catch((err) => {
+                        aResponseStatus.push({
+                            "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
+                            "status": "E"
+                        });
+                    }).then(async (result) => {
+                        if (result) {
+                            oFeedDBData.DeliveryMethod = oFeedDBData.DeliveryMethod + ", " + sDeliveryMethod;
+                            oFeedDBData.RemediationCounter = iRemediationCounter + 1;
+                            oFeedDBData.Remediation = oFeedDBData.Remediation ? (oFeedDBData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
+                            let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oFeedDBData.Remediation}`, DeliveryMethod: oFeedDBData.DeliveryMethod, RemediationCounter: oFeedDBData.RemediationCounter }).where({ ID: sID })
 
-        //                     let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
-        //                     aResponseStatus.push({
-        //                         "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
-        //                         "status": "S"
-        //                     });
-        //                 }
-        //             });
-        //         }
-        //     }
-        //     req.reply({
-        //         code: 201,
-        //         message: JSON.stringify(aResponseStatus)
-        //     });
-        // });
+                            var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
+                            let oNewBTPItem = {};
+                            if (oBTPItem) {
+                                oNewBTPItem = oBTPItem;
+                            }
+                            oNewBTPItem.SalesOrder = result?.SalesOrder;
+                            oNewBTPItem.SalesOrderItem = result?.SalesOrderItem;
+                            oNewBTPItem.Product = result?.Material;
+                            oNewBTPItem.ShippingPoint = result?.ShippingPoint;
+                            oNewBTPItem.ProductGroup = result?.MaterialGroup;
+                            oNewBTPItem.ShippingType_ID = result?.ShippingType;
+
+                            let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
+                            aResponseStatus.push({
+                                "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
+                                "status": "S"
+                            });
+                        }
+                    });
+                }
+            }
+            req.reply({
+                code: 201,
+                message: JSON.stringify(aResponseStatus)
+            });
+        });
         const createStudioFeeds = async (req, aData, bReconcile) => {
             var recordsToBeInserted = [], recordsToBeUpdated = [], successEntries = [], updateSuccessEntries = [], hanatable = StudioFeed;
             var data = aData;

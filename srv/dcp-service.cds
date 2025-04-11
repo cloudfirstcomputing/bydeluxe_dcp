@@ -21,13 +21,16 @@ service BookingOrderService {
     action postKeyToSAP(bookingIDs : array of String)                                                      returns String;
     action MassUploadBookingFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)         returns UploadResponse;
     // action reconcileKey(bookingIDs: array of  String) returns String;
+    
+    //Normalized Order
     entity StudioFeed                   as projection on db.StudioFeed;
     annotate StudioFeed with @odata.draft.enabled;
     action createStudioFeeds(StudioFeed : array of StudioFeed)                                             returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)          returns UploadResponse;
     action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
-    action remediateSalesOrder(bookingID : String, salesOrder : String)                                    returns String;
+    action remediateSalesOrder(ID : String)                                    returns String;
     action reconcileStudioFeed(aBookingID : array of String)                                               returns String;
+
     entity S4H_SOHeader                 as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner          as projection on S4_BuisnessPartner.A_BusinessPartner;
     entity S4H_CustomerSalesArea        as projection on S4_BuisnessPartner.A_CustomerSalesArea;
