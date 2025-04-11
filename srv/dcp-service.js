@@ -795,12 +795,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var sStartTime = oFeedData?.PlayStartTime;
                         var sEndDate = oFeedData?.PlayEndDate;
                         var sEndTime = oFeedData?.PlayEndTime;
-                        var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(sStartDate);
-                        var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(sEndDate);
+                        var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(`${sStartDate}T00:00:00`);
+                        var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(`${sEndDate}T00:00:00`);
                         var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
-                        var ReleaseDate = distroSpecData?.ReleaseDate;
-                        var RepertoryDate = distroSpecData?.RepertoryDate;
-
+                        var sReleaseDate = distroSpecData?.ReleaseDate;
+                        var ReleaseDate = sReleaseDate? new Date(`${sReleaseDate}T00:00:00`): undefined;
+                        var sRepertoryDate = distroSpecData?.RepertoryDate;
+                        var RepertoryDate = sRepertoryDate? new Date(`${sRepertoryDate}T00:00:00`): undefined;
                         oPayLoad.to_Item = [];
                         var sLongText;
                         if ((oFinalContentPackage) && sShippingType == '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
