@@ -1548,7 +1548,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("READ", [TitleV], async (req, res) => {
             // return await s4h_country.run(req.query);
             const dbData = await cds.tx(req).run(req.query);
-            if (dbData.length>1){
+            if (dbData.length>0){
             const countryCodes = [...new Set(dbData.map(row => row.RegionCode))]
 
             const countryTexts = await s4h_country.run(
@@ -1560,10 +1560,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return dbData.map(row => ({
               ...row,
             //   Country : row.RegionalCode,
-              Region: textMap[row.RegionalCode] || null
+              Region: textMap[row.RegionCode] || null
             }))
           }
           else{
+            const oneDb = await SELECT.one.from(TitleV).where({
+                MaterialMasterTitleID: dbData.MaterialMasterTitleID,
+                LocalTitleId:dbData.LocalTitleId,
+                ID:dbData.ID,
+                TitleType:dbData.TitleType
+            })
+            const countryTexts = await s4h_country.run(
+                SELECT.one.from(CountryText).where({ Country: oneDb.RegionCode ,Language:'EN'})
+              )
+
+              dbData.Region = countryTexts.CountryName;
             return dbData
           }
          });
