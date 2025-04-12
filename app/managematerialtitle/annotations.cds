@@ -1,5 +1,11 @@
 using BookingOrderService as service from '../../srv/dcp-service';
 
+annotate service.TitleV.MaterialMasterTitleID with @(
+    Common.Text : '',
+    UI.TextArrangement : #TextOnly
+);
+
+
 annotate service.TitleV with @(
     // Selection Fields (Filters in Fiori Elements)
     UI.SelectionFields : [
@@ -122,12 +128,5 @@ annotate service.TitleV with @(
 
 );
 
-annotate service.TitleV.MaterialMasterTitleID with @(
-    Common.Text : '',
-    UI.TextArrangement : #TextOnly
-);
 
-annotate service.TitleV.RegionCode with @(
-    Common.Text : 'name',
-    UI.TextArrangement : #TextOnly
-);
+

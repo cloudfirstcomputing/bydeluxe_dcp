@@ -325,9 +325,7 @@ service BookingOrderService {
                 }
             ],
         }
-           @Common.Text : 'CountryName'
-           RegionCode,
-           to_Text.CountryName as CountryName,
+           RegionCode
     };
 
     entity Products                     as

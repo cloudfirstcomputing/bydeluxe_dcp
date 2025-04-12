@@ -590,6 +590,7 @@ entity Titles : cuid, managed {
                                     on ExternalTitleIDs_Ass.Title = $self;
         Ratings_Ass           : Composition of many Ratings
                                     on Ratings_Ass.Title = $self;
+         to_Text              : Association to one api.CountryText on $self.RegionCode = to_Text.Country
 }
 
 entity ExternalTitleIDs : cuid, managed {
@@ -656,5 +657,5 @@ define view TitleV as
             RatingsConcat.RatingCode,
             ExternalTitleIDs.IDType,
             ExternalTitleIDs.IDValue,
-             to_Text : Association to one api.CountryText on $self.RegionCode = to_Text.Country
+             to_Text.CountryName
     };
