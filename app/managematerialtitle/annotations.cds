@@ -31,6 +31,7 @@ annotate service.TitleV with @(
         { $Type : 'UI.DataField', Value : RegionalTitleName, Label : 'Regional Title Name' },
         { $Type : 'UI.DataField', Value : ShortTitle, Label : 'Short Title' },
         { $Type : 'UI.DataField', Value : SecurityTitle, Label : 'Security Title' },
+        { $Type : 'UI.DataField', Value : Region, Label : 'Region' },
         { $Type : 'UI.DataField', Value : RegionCode, Label : 'Region Code' },
         { $Type : 'UI.DataField', Value : LanguageCode, Label : 'Language Code' },
         { $Type : 'UI.DataField', Value : ReleaseDate, Label : 'Release Date' },
@@ -81,6 +82,7 @@ annotate service.TitleV with @(
         $Type : 'UI.FieldGroupType',
         Data : [
             { $Type : 'UI.DataField', Value : MaterialMasterTitleID, Label : 'Material Master Title ID' },
+            { $Type : 'UI.DataField', Value : Region, Label : 'Region' },
             { $Type : 'UI.DataField', Value : RegionCode, Label : 'Region Code' },
             { $Type : 'UI.DataField', Value : OriginalTitleName, Label : 'Original Title Name' },
             { $Type : 'UI.DataField', Value : TitleType, Label : 'Title Type' },

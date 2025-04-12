@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,S4H_Country,CountryText} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,S4H_Country,CountryText,TitleV} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -1545,6 +1545,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
            return await s4h_country.run(req.query);
         });
         
+        this.on("READ", [TitleV], async (req, res) => {
+            // return await s4h_country.run(req.query);
+            const dbData = await cds.tx(req).run(req.query);
+            if (dbData.length>1){
+            const countryCodes = [...new Set(dbData.map(row => row.RegionCode))]
+
+            const countryTexts = await s4h_country.run(
+              SELECT.from(CountryText).where({ Country: { in: countryCodes } })
+            )
+          
+            const textMap = Object.fromEntries(countryTexts.map(ct => [ct.Country, ct.CountryName]))
+         
+            return dbData.map(row => ({
+              ...row,
+            //   Country : row.RegionalCode,
+              Region: textMap[row.RegionalCode] || null
+            }))
+          }
+          else{
+            return dbData
+          }
+         });
         
         
         this.on("READ", S4H_CustomerSalesArea, async (req, res) => {

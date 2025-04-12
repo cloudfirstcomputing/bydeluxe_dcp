@@ -325,7 +325,11 @@ service BookingOrderService {
                 }
             ],
         }
-           RegionCode
+        @Common.Text: to_CountryText.CountryName
+        @UI.TextArrangement : #TextOnly
+        @sap_common.TextAssociation: to_CountryText
+           RegionCode ,
+           Region
     };
 
     entity Products                     as
