@@ -61,6 +61,10 @@
                     <Label id="lblEditReleaseDate" text="Release Date"/>
                     <DatePicker id="datePickerEditReleaseDate" value="{formModel>/ReleaseDate}"/>
 
+                    <Label id="lblRepertoryDate01" text="Repertory Date"/>
+                    <DatePicker id="datePickerRepertoryDate02" value="{formModel>/RepertoryDate}"/>
+
+
                     <Label id="lblEditFormat" text="Format"/>
                     <Select id="selectEditFormat" selectedKey="{formModel>/Format}">
                         <items>

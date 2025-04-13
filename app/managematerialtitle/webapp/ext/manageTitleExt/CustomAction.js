@@ -188,15 +188,19 @@ sap.ui.define([
                             var oData = oView.getModel("formModel").getData();
 
                             if (oData.ReleaseDate) {
-                                oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
+                                oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString()//.split("T")[0]; // "YYYY-MM-DD"
                             }
                             if (oData.RepertoryDate) {
-                                oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
+                                oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString()//.split("T")[0]; // "YYYY-MM-DD"
                             }
 
 
+                            var truncatedTitle = oData.OriginalTitleName 
+                            ? oData.OriginalTitleName.substring(0, 40) 
+                            : "";
 
-                            var oDataS4API = {                                
+                            var oDataS4API = {  
+                                Product: truncatedTitle,  // Cut to 40 char                            
                                 ProductGroup: oData.TitleCategory,
                                 ProductType: "SERV", //TitleType
                                 BaseUnit: "EA",
@@ -208,11 +212,11 @@ sap.ui.define([
                                         LongText: oData.OriginalTitleName
                                     }
                                 ],
-                                to_Description: [
+                                to_Description: [  
                                     {
                                        
                                         Language: "EN",
-                                        ProductDescription: oData.OriginalTitleName
+                                        ProductDescription: truncatedTitle  //Cut to 40 char   
                                     }
                                 ]
                             };

@@ -221,15 +221,19 @@ sap.ui.define([
             this.postTitles = function (oData, Product) {
                 var oModel = oView.getModel();
 
+                var truncatedTitle = oData.OriginalTitleName
+                ? oData.OriginalTitleName.substring(0, 40)
+                : "";        
+
                 var oPatchData = {
-                    Product: Product,
+                    Product: Product,  //Cut to 40 char   
                     ProductGroup: oData.TitleCategory,
                     ProductType: "SERV", //TitleType
                     BaseUnit: "EA",
                     ProductManufacturerNumber: "",
                     to_ProductBasicText: [
                         {
-                            Product: Product,
+                            //Product: truncatedProduct,
                             Language: "EN", //LanguageCode
                             // LongText: oData.RegionalTitleName
                             LongText: oData.OriginalTitleName
@@ -237,9 +241,9 @@ sap.ui.define([
                     ],
                     to_Description: [
                         {
-                            Product: Product,
+                            //Product: truncatedProduct,
                             Language: "EN",
-                            ProductDescription: oData.OriginalTitleName
+                            ProductDescription: truncatedDescription   //Need to cut this string to 40 cha
                         }
                     ]
                 };
