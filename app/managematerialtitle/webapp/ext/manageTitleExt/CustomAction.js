@@ -151,7 +151,7 @@ sap.ui.define([
                                 sProductDescription = oInput.getValue(),
                                 //sUrl = `${oModel.sServiceUrl}ProductDescription?$filter=ProductDescription eq '${sProductDescription}'`;
                                 //sUrl = `${oModel.sServiceUrl}ProductBasicText?$filter=LongText eq '${sProductDescription}'`;
-                                sUrl = `${oModel.sServiceUrl}TitleV?$filter=OriginalTitleName eq '${sProductDescription}'`;
+                                sUrl = `${oModel.sServiceUrl}Titles?$filter=OriginalTitleName eq '${sProductDescription}'`;
 
                             $.ajax({
                                 url: sUrl,
@@ -188,19 +188,16 @@ sap.ui.define([
                             var oData = oView.getModel("formModel").getData();
 
                             if (oData.ReleaseDate) {
-                                oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString()//.split("T")[0]; // "YYYY-MM-DD"
+                                oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
                             if (oData.RepertoryDate) {
-                                oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString()//.split("T")[0]; // "YYYY-MM-DD"
+                                oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
 
 
-                            var truncatedTitle = oData.OriginalTitleName 
-                            ? oData.OriginalTitleName.substring(0, 40) 
-                            : "";
+                            var truncatedTitle = oData.OriginalTitleName ? oData.OriginalTitleName.substring(0, 40) : "";
 
-                            var oDataS4API = {  
-                                Product: truncatedTitle,  // Cut to 40 char                            
+                            var oDataS4API = {                                                        
                                 ProductGroup: oData.TitleCategory,
                                 ProductType: "SERV", //TitleType
                                 BaseUnit: "EA",

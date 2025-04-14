@@ -150,7 +150,7 @@ sap.ui.define([
 
                             var oData = oContext.getObject();
 
-
+                            
                             var oPostData = oView.getModel("formModel").getData();
                             if (oPostData.ReleaseDate) {
                                 oPostData.ReleaseDate = new Date(oPostData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
@@ -163,6 +163,8 @@ sap.ui.define([
                                     RatingCode: rating.trim()
                                 }));
                             }
+                            //Cleaning Up Region
+                            delete oPostData.Region;
                             var sKey = `(MaterialMasterTitleID=${oData.MaterialMasterTitleID},LocalTitleId='${oData.LocalTitleId}',ID=${oData.ID},RegionCode='${oData.RegionCode}')`;
                             var updateCall = $.ajax({
                                 url: `${oModel.sServiceUrl}Titles${sKey}`,
@@ -221,9 +223,7 @@ sap.ui.define([
             this.postTitles = function (oData, Product) {
                 var oModel = oView.getModel();
 
-                var truncatedTitle = oData.OriginalTitleName
-                ? oData.OriginalTitleName.substring(0, 40)
-                : "";        
+                var truncatedTitle = oData.OriginalTitleName ? oData.OriginalTitleName.substring(0, 40): "";        
 
                 var oPatchData = {
                     Product: Product,  //Cut to 40 char   
@@ -232,18 +232,16 @@ sap.ui.define([
                     BaseUnit: "EA",
                     ProductManufacturerNumber: "",
                     to_ProductBasicText: [
-                        {
-                            //Product: truncatedProduct,
+                        {                            
                             Language: "EN", //LanguageCode
                             // LongText: oData.RegionalTitleName
                             LongText: oData.OriginalTitleName
                         }
                     ],
                     to_Description: [
-                        {
-                            //Product: truncatedProduct,
+                        {                            
                             Language: "EN",
-                            ProductDescription: truncatedDescription   //Need to cut this string to 40 cha
+                            ProductDescription: truncatedTitle   //Need to cut this string to 40 cha
                         }
                     ]
                 };
