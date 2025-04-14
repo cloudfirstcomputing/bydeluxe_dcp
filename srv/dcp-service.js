@@ -2288,7 +2288,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
         
                 var oBillingDocument = req?.data?.Billing;
         
-                const billingDocument = await s4h_billing_read.run(
+                const billingDocument = await srv_BillingDocument.run(
                     SELECT.from(BillingDocument, (header) => {
                         header.BillingDocumentDate,
                         header.BillingDocumentCategory,
@@ -2392,17 +2392,17 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         billingDataNode:{
                            GoodsReceiptHeadlinePrint: oBillingDocument.BillingDocument,
                                     Language: "EN",
-                                    Client :billingData[0]?.YY1_CustomerDes_PRD,
-                                    Biling: oMaterialDocument.BillingDocument,
+                                    Client :billingDataNode[0]?.YY1_CustomerDes_PRD,
+                                    Biling: oBillingDocument.BillingDocument,
                                     BillingDocument: oBillingDocument.BillingDocument,
-                                    MaterialDocumentHeaderText: productData[0]?.YY1_CustomerDes_PRD,
-                                    MaterialDocumentItem: oMaterialDocument.MaterialDocument,
-                                    MaterialDocumentYear: oMaterialDocument.MaterialDocument,
-                                    PrinterIsCapableBarCodes: productData[0]?.ProductManufacturerNumber == '' ? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
-                                    ReferenceDocument: productData[0]?.YY1_CustomerDes_PRD,
-                                    GRMI: {
-                                        billingDataNode
-                                    }
+                                    // MaterialDocumentHeaderText: productData[0]?.YY1_CustomerDes_PRD,
+                                    MaterialDocumentItem: '',
+                                    MaterialDocumentYear: ''
+                                    // PrinterIsCapableBarCodes: productData[0]?.ProductManufacturerNumber == '' ? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
+                                    // ReferenceDocument: productData[0]?.YY1_CustomerDes_PRD,
+                                    // GRMI: {
+                                    //     billingDataNode
+                                    // }
                         }
                     }
                 };

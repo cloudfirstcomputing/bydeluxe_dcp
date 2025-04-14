@@ -23,9 +23,8 @@ sap.ui.define([
             this.bindTheDocMaterial();
         },
         bindTheDocMaterial: function () {
-            var oModel = this.getView().getModel(); // Assuming the default model
+            var oModel = this.getView().getModel(),aFilters=[]; // Assuming the default model
             var that = this,sServiceUrl = oModel.sServiceUrl;
-            var aFilters = []
             $.ajax({
                 url: sServiceUrl+"S4_Plants?$filter=CompanyCode eq '3011'",
                 type: "GET",
@@ -34,11 +33,11 @@ sap.ui.define([
                     for (var index in aData) {
                         aFilters.push(new Filter("Plant", FilterOperator.EQ, aData[index].Plant))
                     }
-                    var oFilter = new Filter({
+                    that.oFilter = new Filter({
                         filters: aFilters,
                         and: false
                     });
-                    that.byId("docTable").getBinding("items").filter([oFilter]);
+                    that.byId("docTable").getBinding("items").filter([that.oFilter],"Application");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching PDF:", status, error);
@@ -108,7 +107,7 @@ sap.ui.define([
             else if (this.byId("selectFormName").getSelectedKey() === '6') {
                 var oSelecteditem;
                 [oSelecteditem] = this.byId("docTable3").getSelectedItems();
-                var sForm = "SDBIL_CI_STANDARD_US_E";
+                var sForm = "PRINTINVOICEFORM";
 
                 var oBillingDoc = oSelecteditem.getBindingContext().getObject();
                 var oBill = {
@@ -306,11 +305,17 @@ sap.ui.define([
             if (dStartDate && dStartDate != '') {
                 var sFormatedStart = new Date(dStartDate).toISOString().split("T")[0];
                 var sFormatedEnd = new Date(dEndDate).toISOString().split("T")[0];
-                aFilters.push(new Filter("CreationDate", FilterOperator.BT, sFormatedStart, sFormatedEnd))
+                if (this.byId("selectFormName").getSelectedKey() === '1'){
+                    aFilters.push(new Filter("to_MaterialDocumentHeader/PostingDate", FilterOperator.BT, sFormatedStart, sFormatedEnd))
+                }else{
+                    aFilters.push(new Filter("CreationDate", FilterOperator.BT, sFormatedStart, sFormatedEnd))
+                }
+                
 
             }
 
             if (this.byId("selectFormName").getSelectedKey() === '1') {
+                aFilters.push(that.oFilter);
                 this.byId("docTable").getBinding("items").filter(aFilters);
             }
             else {
