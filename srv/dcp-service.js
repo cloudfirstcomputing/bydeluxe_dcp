@@ -11,7 +11,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, ProductionOrder,
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print,MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,S4H_Country,CountryText,TitleV} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
@@ -1474,8 +1474,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return s4h_param_Txn.run(req.query);
         });
 
-        this.on(['READ'], S4_Plants, req => {
-            return s4h_planttx.run(req.query);
+        this.on(['READ'], S4_Plants, async req => {
+            return await s4h_planttx.run(req.query);
         });
         this.on(['READ'], S4_ShippingConditions, req => {
             return s4h_shipConditions_Txn.run(req.query);
@@ -1621,8 +1621,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], MaterialDocumentItem, async req => { //s4h_bp_vh
             return s4h_material_read.run(req.query);
         });
+        // this.on(['READ'], MaterialDocumentItem_Print, async req => { //s4h_bp_vh
+
+        //     var aPlants= s4h_planttx.run(SELECT.from(MaterialDocumentItem_Print).where({ ComapnyCode: '3011' }));
+        //     return await s4h_material_read.run(req.query);
+        // });
+        // this.on(['READ'], MaterialDocumentHeader_Prnt, async req => { //s4h_bp_vh
+        //     return await s4h_material_read.run(req.query);
+        // });
+        
         this.on(['READ'], S4H_BusinessPartnerapi, async req => { //s4h_bp_vh
-            return s4h_bp_vh.run(req.query);
+            return await s4h_bp_vh.run(req.query);
         });
         // this.before('CREATE', 'Titles', async (req) => {
         //     const lastEntry = await SELECT.one.from('Titles').orderBy('LocalTitleId desc');
@@ -2008,7 +2017,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             ManufactureMaterial: item.Material,
                             ManufacturingOrder: "",
                             MasterFixedAsset: "",
-                            Material: item.Material,
+                            // Material: item.Material,
+                            Material:productData[0]?.to_Description[0].ProductDescription,
                             MaterialDocument: item.MaterialDocument,
                             MaterialDocumentItem: item.MaterialDocumentItem,
                             MaterialDocumentYear: item.MaterialDocumentYear,
