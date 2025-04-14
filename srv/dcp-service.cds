@@ -328,7 +328,19 @@ service BookingOrderService {
         @Common.Text: Region
         @UI.TextArrangement : #TextOnly
            RegionCode ,
-           Region
+           Region,
+           @Common.Text: TitleCategoryText
+        @UI.TextArrangement : #TextOnly
+           TitleCategory,
+           TitleCategoryText ,
+           @Common.Text: LangCodeText
+        @UI.TextArrangement : #TextOnly
+           LanguageCode,
+           LangCodeText ,
+           @Common.Text: StudioText
+        @UI.TextArrangement : #TextOnly
+           StudioDistributor,
+           StudioText 
     };
 
     entity Products                     as
@@ -438,6 +450,7 @@ service BookingOrderService {
         projection on api.BillingDocumentItem {
             key BillingDocument,
             key BillingDocumentItem,
+                SalesDocument,
                 SalesDocumentItemCategory,
                 to_BillingDocument : redirected to BillingDocument
         }

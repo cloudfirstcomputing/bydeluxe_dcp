@@ -10,7 +10,7 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print,MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,BillingDocumentPartner,S4H_Country,CountryText,TitleV} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
@@ -1553,19 +1553,39 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("READ", [TitleV], async (req, res) => {
             // return await s4h_country.run(req.query);
             const dbData = await cds.tx(req).run(req.query);
+            const oTitleCategory = {
+                                    "Z006" : "Provisional/Unknown Title",
+                                    "Z007" : "Confirmed/Known Title"
+            }
             if (dbData.length>0){
             const countryCodes = [...new Set(dbData.map(row => row.RegionCode))]
+            const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor))]
+            const aLanguage = [...new Set(dbData.map(row => row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''))]
 
             const countryTexts = await s4h_country.run(
               SELECT.from(CountryText).where({ Country: { in: countryCodes } })
             )
           
             const textMap = Object.fromEntries(countryTexts.map(ct => [ct.Country, ct.CountryName]))
+
+            const aStudioText =await s4h_bp_vh.run(
+                SELECT.from(S4H_BusinessPartnerapi).where({ BusinessPartner: { in: aStudioDistrbution } })
+            );
+            const textMapStudio = Object.fromEntries(aStudioText.map(ct => [ct.BusinessPartner, ct.BusinessPartnerFullName]))
+
+            const aLanguageText =await distrospec_Txn.run(
+                SELECT.from(Languages).where({ code: { in: aLanguage } })
+            );
+            const textMapLanguage = Object.fromEntries(aLanguageText.map(ct => [ct.code, ct.name]))
+            
          
             return dbData.map(row => ({
               ...row,
             //   Country : row.RegionalCode,
-              Region: textMap[row.RegionCode] || null
+              Region: textMap[row.RegionCode] || null,
+              TitleCategoryText : oTitleCategory[row.TitleCategory] || null,
+              StudioText : textMapStudio[row.StudioDistributor] || null,
+              LangCodeText : textMapLanguage[row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''] || null
             }))
           }
           else{
@@ -1578,8 +1598,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             const countryTexts = await s4h_country.run(
                 SELECT.one.from(CountryText).where({ Country: oneDb.RegionCode ,Language:'EN'})
               )
+              const oStudioText =await s4h_bp_vh.run(
+                SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: oneDb.StudioDistributor })
+            );
 
+            const oLanguageText =await distrospec_Txn.run(
+                SELECT.one.from(Languages).where({ code: oneDb.LanguageCode.toLowerCase() })
+            );
               dbData.Region = countryTexts.CountryName;
+              dbData.TitleCategoryText = oTitleCategory[oneDb.TitleCategory]
+              dbData.StudioText = oStudioText.BusinessPartnerFullName;
+              dbData.LangCodeText =oLanguageText.name;
             return dbData
           }
          });
@@ -1682,8 +1711,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 // Make a POST call to the external API              
                 //const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
-                const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
-                const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
+                const sDescription = await s4h_products_Crt.run(SELECT.from(ProductDescription).where({ Product: input.Product, Language: 'EN' }));
+                if (sDescription.length!=0){
+                    const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
+                }
+                else{
+                    const response1 = await s4h_products_Crt.run(INSERT.into(ProductDescription).entries({ ProductDescription: input.to_Description[0].ProductDescription, Product: input.Product, Language: 'EN' }));
+                }
+                
+                const sBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: input.Product, Language: 'EN' }));
+                if (sBasicText.length!=0){
+                    const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
+                }
+                else{
+                    const response = await s4h_products_Crt.run(INSERT.into(ProductBasicText).entries({ Product: input.Product,LongText: input.to_ProductBasicText[0].LongText,Language: 'EN'}));
+                }
+                
                 // var sData =
                 // {
                 //     "LongText": "Testing"
@@ -2306,7 +2349,13 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oBillingDocumentPartner = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument , PartnerFunction :'RE'})
                 )
-        
+                
+                const oBillingDocumentItem = await srv_BillingDocument.run(
+                    SELECT.one.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument , BillingDocumentItem :'10'})
+                ) 
+                const oSalesOrder = await s4h_so_Txn.run(
+                    SELECT.one.from(S4H_SOHeader).where({ SalesOrder: oBillingDocumentItem.SalesDocument})
+                )
                 if (!billingDocument.length) {
                     console.log("No billing document found for", oBillingDocument.BillingDocument);
                     return;
@@ -2328,7 +2377,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 "BillTo": {
                   "BillToAddress": "ss",
                   "CustomerAccountNo": oBillingDocumentPartner.Customer,
-                  "CustomerPONo": "ss",
+                  "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
                   "CustomerContact": "77979",
                   "DeluxContact": "",
                   "DeliverInvoiceByMailTo": ""
