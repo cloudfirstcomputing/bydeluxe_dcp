@@ -442,6 +442,8 @@ service BookingOrderService {
                 to_BillingDocument : redirected to BillingDocument
         }
 
+    entity BillingDocumentPartner as projection on api.BillingDocumentPartner;
+ 
     type BillingDoc {
         BillingDocument         : String;
         BillingDocumentCategory : String;

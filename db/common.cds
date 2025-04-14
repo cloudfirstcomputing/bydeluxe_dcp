@@ -62,5 +62,6 @@ context api {
     entity BillingDocument        as projection on Billing.A_BillingDocument;
     entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem;
     entity CountriesApi       as projection on Distro.Countries;
+    entity BillingDocumentPartner        as projection on Billing.A_BillingDocumentPartner;
     
 }

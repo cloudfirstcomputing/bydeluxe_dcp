@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print,MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,S4H_Country,CountryText,TitleV} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,BillingDocumentPartner,S4H_Country,CountryText,TitleV} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -1324,6 +1324,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], S4_ProductGroupText, async (req) => {
             return s4h_prodGroup.run(req.query);
         });
+
+        this.on(['READ'], BillingDocumentPartner, async (req) => {
+            return srv_BillingDocument.run(req.query);
+        });
+        
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(), aInsertData = []; // Generate a unique ID
             try {
@@ -2297,6 +2302,10 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         header.to_Item()
                     }).where({ BillingDocument: oBillingDocument.BillingDocument })
                 );
+
+                const oBillingDocumentPartner = await srv_BillingDocument.run(
+                    SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument , PartnerFunction :'RE'})
+                )
         
                 if (!billingDocument.length) {
                     console.log("No billing document found for", oBillingDocument.BillingDocument);
@@ -2307,104 +2316,84 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
          const item = billingHeader.to_Item.find(it => it.BillingDocumentItem === oBillingDocument.BillingDocumentItem); // item
          
          const billingDataNode = {
-             AbsltAccountingExchangeRate: "",
-             AcctgExchangeRateIsIndrctQtan: "",
-             BillingDate: billingHeader.BillingDocumentDate,
-             BillingDocument: billingHeader.BillingDocument,
-             BillingDocumentCategory: billingHeader.BillingDocumentCategory,
-             BillingDocumentType: billingHeader.BillingDocumentType,
-             BillingDocumentTypeName: "", // if you have a name lookup
-             BillingSDDocumentCategory: "", // if you have it
-             BillingSDDocumentCategoryName: "",
-             CancelledBillingDocument: "",
-             CompanyCodeCurrency: billingHeader.TransactionCurrency,
-             DocumentReferenceID: "",
-             ExchangeRateDate: billingHeader.BillingDocumentDate,
-             InvoiceListStatus: "",
-             NumberOfSourceCurrencyUnits: "",
-             NumberOfTargetCurrencyUnits: "",
-             PrelimBillingDocument: "",
-             PricingProcedure: "",
-             PurchaseOrderByCustomer: billingHeader.PurchaseOrderByCustomer,
-             ReferenceSDDocument: billingHeader.ReferenceSDDocument,
-             ReferenceSDDocumentCategory: billingHeader.ReferenceSDDocumentCategory,
-             ReferenceSDDocumentCategoryName: "",
-             SalesContract: billingHeader.SalesContract,
-             SalesDocument: billingHeader.SalesDocument,
-             SalesOrganization: billingHeader.SalesOrganization,
-             SalesOrganizationName: "",
-             SalesSDDocumentCategory: "",
-             SalesSDDocumentCategoryName: "",
-             SolutionOrder: "",
-             TotalGrossAmount: billingHeader.TotalGrossAmount,
-             TotalNetAmount: billingHeader.TotalNetAmount,
-             TotalTaxAmount: billingHeader.TotalTaxAmount,
-             TransactionCurrency: billingHeader.TransactionCurrency,
-             // YY1 Custom Fields - assuming they come from header or a separate read
-             YY1_BillTo_BDH: billingHeader.YY1_BillTo_BDH,
-             YY1_BillTo_BDHF: billingHeader.YY1_BillTo_BDHF,
-             YY1_CompanyAddress_BDH: billingHeader.YY1_CompanyAddress_BDH,
-             YY1_CompanyAddress_BDHF: billingHeader.YY1_CompanyAddress_BDHF,
-             YY1_CompanyEmail_BDH: billingHeader.YY1_CompanyEmail_BDH,
-             YY1_CompanyEmail_BDHF: billingHeader.YY1_CompanyEmail_BDHF,
-             YY1_CustomerContact_BDH: billingHeader.YY1_CustomerContact_BDH,
-             YY1_CustomerContact_BDHF: billingHeader.YY1_CustomerContact_BDHF,
-             YY1_CustomerPO_BDH: billingHeader.YY1_CustomerPO_BDH,
-             YY1_CustomerPO_BDHF: billingHeader.YY1_CustomerPO_BDHF,
-             YY1_Customer_BDH: billingHeader.YY1_Customer_BDH,
-             YY1_Customer_BDHF: billingHeader.YY1_Customer_BDHF,
-             YY1_DueDate_BDH: billingHeader.YY1_DueDate_BDH,
-             YY1_DueDate_BDHF: billingHeader.YY1_DueDate_BDHF,
-             YY1_PaymentTermsName_BDH: billingHeader.YY1_PaymentTermsName_BDH,
-             YY1_PaymentTermsName_BDHF: billingHeader.YY1_PaymentTermsName_BDHF,
-             YY1_ShipTo_BDH: billingHeader.YY1_ShipTo_BDH,
-             YY1_ShipTo_BDHF: billingHeader.YY1_ShipTo_BDHF,
-             YY1_Telphone_BDH: billingHeader.YY1_Telphone_BDH,
-             YY1_Telphone_BDHF: billingHeader.YY1_Telphone_BDHF,
-             YY1_Territory_BDH: billingHeader.YY1_Territory_BDH,
-             YY1_Territory_BDHF: billingHeader.YY1_Territory_BDHF,
-             YY1_Title_BDH: billingHeader.YY1_Title_BDH,
-             YY1_Title_BDHF: billingHeader.YY1_Title_BDHF,
-             YY1_VATNumber_BDH: billingHeader.YY1_VATNumber_BDH,
-             YY1_VATNumber_BDHF: billingHeader.YY1_VATNumber_BDHF,
-             BillToParty: {
-                 AddressID: billingHeader.to_BillToParty?.AddressID || "",
-                 AddressLine1Text: billingHeader.to_BillToParty?.AddressLine1Text || "",
-                 AddressLine2Text: billingHeader.to_BillToParty?.AddressLine2Text || "",
-                 AddressLine3Text: billingHeader.to_BillToParty?.AddressLine3Text || "",
-                 AddressLine4Text: billingHeader.to_BillToParty?.AddressLine4Text || "",
-                 AddressLine5Text: billingHeader.to_BillToParty?.AddressLine5Text || "",
-                 AddressLine6Text: billingHeader.to_BillToParty?.AddressLine6Text || "",
-                 AddressLine7Text: billingHeader.to_BillToParty?.AddressLine7Text || "",
-                 AddressLine8Text: billingHeader.to_BillToParty?.AddressLine8Text || "",
-                 AddressType: billingHeader.to_BillToParty?.AddressType || "",
-                 FullName: billingHeader.to_BillToParty?.FullName || "",
-                 Partner: billingHeader.to_BillToParty?.Partner || "",
-                 PartnerFunction: billingHeader.to_BillToParty?.PartnerFunction || "",
-                 PartnerFunctionName: billingHeader.to_BillToParty?.PartnerFunctionName || "",
-                 Person: billingHeader.to_BillToParty?.Person || ""
-             }
-         };
+              "TaxInvoiceNode": {
+                "Header": {
+                  "CompanyAddress": "a",
+                  "PageNo": "",
+                  "InvoiceNo": "",
+                  "InvoiceDate": "",
+                  "Terms": "",
+                  "PaymentDueDate": ""
+                },
+                "BillTo": {
+                  "BillToAddress": "ss",
+                  "CustomerAccountNo": oBillingDocumentPartner.Customer,
+                  "CustomerPONo": "ss",
+                  "CustomerContact": "77979",
+                  "DeluxContact": "",
+                  "DeliverInvoiceByMailTo": ""
+                },
+                "Table": {
+                  "TabHeader": [
+                    {
+                      "SrNo": "",
+                      "Title": "",
+                      "Qty": "",
+                      "UOM": "",
+                      "Cur": "",
+                      "Price": "",
+                      "Discount": "",
+                      "Extended": "",
+                      "Tax": 0.0
+                    }
+                  ],
+                  "Title": [
+                    {
+                      "Title": ""
+                    }
+                  ],
+                  "Items": [
+                    {
+                      "SrNo": "",
+                      "Title": "",
+                      "Qty": "",
+                      "UOM": "",
+                      "Cur": "",
+                      "Price": "",
+                      "Discount": "",
+                      "Extended": "",
+                      "Tax": 0.0
+                    }
+                  ]
+                },
+                "PaymentInfo": {
+                  "Payee": "",
+                  "LockBoxNo": "",
+                  "Address": "",
+                  "Beneficiary": "",
+                  "AccountNo": "",
+                  "RoutingNoACH": "",
+                  "RoutingNoWire": "",
+                  "SwitchAddress": "",
+                  "SubTotal": 0.0,
+                  "SalesTax1": 0.0,
+                  "SalesTax2": 0.0,
+                  "Discount": 0.0,
+                  "GrandTotalDue": 0.0,
+                  "SalexTax1Type": "",
+                  "SalesTax2Type": ""
+                },
+                "Footer": {
+                  "FooterText": ""
+                }
+              }
+            
+          }
+          
          
         // Construct final formData object
                 const formData = {
-                    Form: {
-                        billingDataNode:{
-                           GoodsReceiptHeadlinePrint: oBillingDocument.BillingDocument,
-                                    Language: "EN",
-                                    Client :billingDataNode[0]?.YY1_CustomerDes_PRD,
-                                    Biling: oBillingDocument.BillingDocument,
-                                    BillingDocument: oBillingDocument.BillingDocument,
-                                    // MaterialDocumentHeaderText: productData[0]?.YY1_CustomerDes_PRD,
-                                    MaterialDocumentItem: '',
-                                    MaterialDocumentYear: ''
-                                    // PrinterIsCapableBarCodes: productData[0]?.ProductManufacturerNumber == '' ? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
-                                    // ReferenceDocument: productData[0]?.YY1_CustomerDes_PRD,
-                                    // GRMI: {
-                                    //     billingDataNode
-                                    // }
-                        }
-                    }
+                    Form: billingDataNode
                 };
                console.log(JSON.stringify(formData, null, 2));
         
