@@ -2350,11 +2350,14 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument , PartnerFunction :'RE'})
                 )
                 
-                const oBillingDocumentItem = await srv_BillingDocument.run(
-                    SELECT.one.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument , BillingDocumentItem :'10'})
+                const aBillingDocumentItem = await srv_BillingDocument.run(
+                    SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument , BillingDocumentItem :'10'})
                 ) 
+                var aItem10 = aBillingDocumentItem.filter(function(item){
+                        return item.BillingDocumentItem === '10'
+                })
                 const oSalesOrder = await s4h_so_Txn.run(
-                    SELECT.one.from(S4H_SOHeader).where({ SalesOrder: oBillingDocumentItem.SalesDocument})
+                    SELECT.one.from(S4H_SOHeader).where({ SalesOrder: aItem10[0].SalesDocument})
                 )
                 if (!billingDocument.length) {
                     console.log("No billing document found for", oBillingDocument.BillingDocument);
