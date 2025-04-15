@@ -6,7 +6,9 @@ sap.ui.define([
     "sap/ui/core/BusyIndicator",
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
-    "sap/ui/export/library"
+    "sap/ui/export/library",
+    'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator'
 ], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary) {
     "use strict";
 
@@ -147,7 +149,13 @@ sap.ui.define([
                             var oContext = event.getSource().getBindingContext();
                             var oModel = oView.getModel();
 
-                            var oData = oView.getModel("formModel").getData();                            
+                            var oData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));        
+                            
+                            delete oData.Region;
+                            delete oData.LangCodeText;
+                            delete oData.TitleCategoryText;
+                            delete oData.StudioText;        
+
                             if (oData.ReleaseDate) {
                                 oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0];
                             }
