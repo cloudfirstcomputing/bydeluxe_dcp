@@ -9,7 +9,7 @@ sap.ui.define([
     "sap/ui/export/library",
     'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator'
-], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary) {
+], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary,Filter,FilterOperator) {
     "use strict";
 
     return {
@@ -150,7 +150,7 @@ sap.ui.define([
                             var oModel = oView.getModel();
 
                             var oData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));        
-                            
+
                             delete oData.Region;
                             delete oData.LangCodeText;
                             delete oData.TitleCategoryText;
