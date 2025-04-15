@@ -6,8 +6,10 @@ sap.ui.define([
     "sap/ui/core/BusyIndicator",
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
-    "sap/ui/export/library"
-], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary) {
+    "sap/ui/export/library",
+       'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator'
+], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary,Filter,FilterOperator) {
     "use strict";
 
     return {
@@ -151,7 +153,7 @@ sap.ui.define([
                             var oData = oContext.getObject();
 
                             
-                            var oPostData = oView.getModel("formModel").getData();
+                            var oPostData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));
                             if (oPostData.ReleaseDate) {
                                 oPostData.ReleaseDate = new Date(oPostData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
@@ -163,8 +165,12 @@ sap.ui.define([
                                     RatingCode: rating.trim()
                                 }));
                             }
-                            //Cleaning Up Region
+                            //Cleaning Up Region and other text
                             delete oPostData.Region;
+                            delete oPostData.LangCodeText;
+                            delete oPostData.TitleCategoryText;
+                            delete oPostData.StudioText;   
+
                             var sKey = `(MaterialMasterTitleID=${oData.MaterialMasterTitleID},LocalTitleId='${oData.LocalTitleId}',ID=${oData.ID},RegionCode='${oData.RegionCode}')`;
                             var updateCall = $.ajax({
                                 url: `${oModel.sServiceUrl}Titles${sKey}`,
@@ -253,9 +259,10 @@ sap.ui.define([
                     data: JSON.stringify({ input: oPatchData }), // Pass data under `input`
                     success: function (response) {
                         console.log("Product Edit successful:", response.Product);
+                        MessageToast.show("Product Edit successful:" + response.Product);
                         oView.getModel().refresh();
                         oData.MaterialMasterTitleID = response.Product
-                        this.postTitles(oData, response.Product)
+                        // this.postTitles(oData, response.Product)
                     }.bind(this),
                     error: function (xhr, status, error) {
                         console.error("Product Edit failed:", status, error, xhr.responseText);

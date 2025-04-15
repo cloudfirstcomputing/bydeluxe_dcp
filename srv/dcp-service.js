@@ -1742,7 +1742,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 //     data : sData,
                 //     headers:headers                        
                 // });
-                //return "Succesfully Edited";
+                return {Product :input.Product};
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);
             }
