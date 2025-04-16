@@ -110,17 +110,8 @@ service DistributionService {
     entity PlayBackCapability8  as projection on api.Parameters;
     entity PlayBackCapability9  as projection on api.Parameters;
     entity PlayBackCapability10 as projection on api.Parameters;
-
-    entity DCPMaterialConfig    as projection on db.DCPMaterialConfig
-                                   where
-                                       createdBy = $user.id
-        actions {
-            action createDCPMaterial() returns Products;
-        };
-
     entity DCPMaterialMapping   as projection on db.DCPMaterialMapping;
     annotate DistroSpec with @odata.draft.enabled;
-    annotate DCPMaterialConfig with @odata.draft.enabled;
     annotate DCPMaterialMapping with @odata.draft.enabled;
 
     extend projection DCPMaterials with {

@@ -6,7 +6,6 @@ using {
 } from '@sap/cds/common';
 using from '@sap/cds-common-content';
 using api from './common';
-using deluxe.assetvault as av from './asset-vault';
 
 namespace deluxe.distribution;
 
@@ -208,18 +207,6 @@ entity DCPMaterials {
         to_Package               : Association to Package;
         to_DistroSpec            : Association to DistroSpec;
 }
-
-entity DCPMaterialConfig : cuid, managed {
-    ProjectID        : Association to one av.DistributionDcp @mandatory;
-    to_SalesDelivery : Composition of many {
-                           key ProductSalesOrg         : Association to one api.SalesOrganizations   @mandatory;
-                           key ProductDistributionChnl : Association to one api.DistributionChannels @mandatory;
-                       };
-    to_Plant         : Composition of many {
-                           key Plant           : Association to one api.Plants           @mandatory;
-                               StorageLocation : Association to one api.StorageLocations @mandatory;
-                       }
-};
 
 entity DCPMaterialMapping : cuid, managed {
     ShippingType  : String(2);
