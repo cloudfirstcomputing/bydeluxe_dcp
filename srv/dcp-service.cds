@@ -452,10 +452,18 @@ service BookingOrderService {
             key BillingDocumentItem,
                 SalesDocument,
                 SalesDocumentItemCategory,
+                PricingReferenceMaterial,
+                BillingQuantity,
+                BillingQuantityUnit,
+                TransactionCurrency,
                 to_BillingDocument : redirected to BillingDocument
         }
 
     entity BillingDocumentPartner as projection on api.BillingDocumentPartner;
+
+    entity BillingDocumentItemText as projection on api.BillingDocumentItemText;
+    entity BillingDocumentItemPrcgElmnt as projection on api.BillingDocumentItemPrcgElmnt;
+    
  
     type BillingDoc {
         BillingDocument         : String;

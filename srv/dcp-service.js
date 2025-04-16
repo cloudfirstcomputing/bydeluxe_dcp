@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print,MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,BillingDocumentPartner,S4H_Country,CountryText,TitleV} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,BillingDocumentItemPrcgElmnt,BillingDocumentPartner,S4H_Country,CountryText,TitleV,BillingDocumentItemText} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -2331,7 +2331,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
         }); */
         this.on("invoiceForm_LABEL", async (req, res) => {
             try {
-                var form_name = req.data.form;
+                var form_name = req.data.form,aItems=[];
                 var query = `/v1/forms/${form_name}`;
                 var oFormObject = await deluxe_adsrestapi.get(query);
                 var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
@@ -2353,11 +2353,35 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 )
                 
                 const aBillingDocumentItem = await srv_BillingDocument.run(
-                    SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument , BillingDocumentItem :'10'})
+                    SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument})
                 ) 
                 var aItem10 = aBillingDocumentItem.filter(function(item){
                         return item.BillingDocumentItem === '10'
                 })
+
+                var sMapBillingDocumentItem = [...new Set(aBillingDocumentItem.map(row => row.BillingDocumentItem))];
+
+                // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
+                // const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},LongTextID:"Z002"}));
+                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem}}));
+                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},ConditionClass :'B'}));
+                const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},ConditionClass :'A',ConditionIsForStatistics:false}));
+                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},ConditionClass :'A',ConditionInactiveReason:{ '<>' : ''}}));
+                for(var index in aBillingDocumentItem){
+                    aItems.push(   {
+                        "SrNo": index,
+                        "Title": aItemList[index]?.LongText ,
+                        "Qty": aBillingDocumentItem[index].BillingQuantity,
+                        "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
+                        "Cur": aBillingDocumentItem[index].TransactionCurrency,
+                        "Price": aPriceItem[index].ConditionRateValue,
+                        "Discount": aDiscountItem[index]?.ConditionAmount,
+                        "Extended": "",
+                        "Tax": 0.0
+                      })
+                }
+                
+
                 const oSalesOrder = await s4h_so_Txn.run(
                     SELECT.one.from(S4H_SOHeader).where({ SalesOrder: aItem10[0].SalesDocument})
                 )
@@ -2406,19 +2430,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                       "Title": ""
                     }
                   ],
-                  "Items": [
-                    {
-                      "SrNo": "",
-                      "Title": "",
-                      "Qty": "",
-                      "UOM": "",
-                      "Cur": "",
-                      "Price": "",
-                      "Discount": "",
-                      "Extended": "",
-                      "Tax": 0.0
-                    }
-                  ]
+                  "Items":aItems,
                 },
                 "PaymentInfo": {
                   "Payee": "",
