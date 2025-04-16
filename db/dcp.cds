@@ -609,7 +609,7 @@ define view RatingsConcat as
         Title.MaterialMasterTitleID,
        // Title.LocalTitleId,
         Title.ID,
-        Title.RegionCode,
+        // Title.RegionCode,
         STRING_AGG(
             RatingCode, ','
         ) as RatingCode : String
@@ -617,8 +617,8 @@ define view RatingsConcat as
     group by
         Title.MaterialMasterTitleID,
        // Title.LocalTitleId,
-        Title.ID,
-        Title.RegionCode;
+        Title.ID;
+        // Title.RegionCode;
 
 define view TitleV as
     select from Titles
