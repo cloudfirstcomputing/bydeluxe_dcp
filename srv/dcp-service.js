@@ -1594,7 +1594,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 LocalTitleId:dbData.LocalTitleId,
                 ID:dbData.ID,
                 TitleType:dbData.TitleType
-            })
+            });
+            if(oneDb){
             const countryTexts = await s4h_country.run(
                 SELECT.one.from(CountryText).where({ Country: oneDb.RegionCode ,Language:'EN'})
               )
@@ -1610,6 +1611,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
               dbData.StudioText = oStudioText.BusinessPartnerFullName;
               dbData.LangCodeText =oLanguageText.name;
             return dbData
+            }
           }
          });
         
