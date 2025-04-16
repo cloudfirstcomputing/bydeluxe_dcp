@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, ShippingType, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, DCPMaterialConfig, SalesDistricts, DCPMapProducts,
+        const { DistroSpec, ShippingType, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
             StorageLocations, ProductGroup, ProductGroup1, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
@@ -448,10 +448,6 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return data.map(item => {
                 return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
             })
-        })
-
-        this.before('NEW', 'DCPMaterialConfig.to_Plant.drafts', req => {
-            req.data.StorageLocation_Plant = req.data.Plant_Plant
         })
 
         this.on('READ', Parameters, async req => {
