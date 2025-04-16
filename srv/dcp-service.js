@@ -1102,8 +1102,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of local CDS
                 oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
-                // var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
-                //     where({ DCP: oSalesOrderItem.Material });
+                var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
+                    where({ DCP: oSalesOrderItem.Material });
 
                 var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                 oContentData.to_Item[i].LongText = sGoFilexTitleID;
