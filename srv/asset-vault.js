@@ -7,7 +7,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
-        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations,
+        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations, Products,
             SalesOrganizations, CustomerPlant, SalesOrgDistCh, Company } = this.entities
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -57,10 +57,10 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         this.on('createDcp', async req => {
             const { ProjectID } = req.params[0]
             const { Customer, Title } = req.data
-            const to_Plant = []
-            const to_SalesDelivery = []
-            const to_Valuation = []
-            const assetvault = await SELECT.one.from(DistributionDcp, ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+            let to_Plant = []
+            let to_SalesDelivery = []
+            let to_Valuation = []
+            let assetvault = await SELECT.one.from(DistributionDcp, ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
             if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
             try {
                 const plants = await cuspltx.run(SELECT.from(CustomerPlant).where({ Customer: Customer }))
@@ -87,6 +87,8 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                             "Product": ProjectID,
                             "Plant": plant.Plant,
                             "MRPType": "PD",
+                            "ProcurementType": "X",
+                            "LotSizingProcedure": "MB",
                             "MRPResponsible": "001",
                             "SafetyStockQuantity": "5",
                             "LotSizingProcedure": "MB",
@@ -115,6 +117,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
 
                 for (let k = 0; k < sorgs.length; k++) {
                     const salesorg = sorgs[k];
+                    const element = comp.find(item => item.CompanyCode === salesorg.CompanyCode)
                     to_SalesDelivery = sorgdist.filter(item => item.SalesOrganization === salesorg.SalesOrganization)
                         .map(item => {
                             return {
@@ -124,6 +127,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                 "AccountDetnProductGroup": "03",
                                 "ItemCategoryGroup": "NORM",
                                 "SupplyingPlant": "1172",
+                                "PricingReferenceProduct": Title,
                                 "to_SalesTax": [
                                     {
                                         "Product": ProjectID,

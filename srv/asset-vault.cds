@@ -16,6 +16,8 @@ service AssetVaultService {
             action createDcp(Customer : dcpParam:Customer, Title : dcpParam:Title) returns many String;
         };
 
+    entity Products           as projection on api.Products;
+
     @readonly
     entity Studios            as projection on api.BusinessPartners;
 

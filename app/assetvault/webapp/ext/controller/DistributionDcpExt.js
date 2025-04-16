@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/m/MessageToast",
+    "sap/ui/core/BusyIndicator",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/Fragment"
-], function (MessageToast, JSONModel, Fragment) {
+], function (MessageToast, BusyIndicator, JSONModel, Fragment) {
     'use strict';
 
     return {
@@ -63,6 +64,7 @@ sap.ui.define([
 
                         // Code to upload the excelsheet data
                         callUploadAction: function (data, filename) {
+                            // BusyIndicator.show();
                             that.Obj = this;
                             var oCustomer;
                             var oTitle;
@@ -87,12 +89,15 @@ sap.ui.define([
                                 skipParameterDialog: true,
                                 invocationGrouping: true,
                                 parameterValues: [{ name: 'Customer', value: oCustomer.getSelectedKey() },
-                                                  { name: 'Title', value: oTitle.getSelectedKey() }]
+                                { name: 'Title', value: oTitle.getSelectedKey() }]
                             }).then((val) => {
                                 oEditFlow.getView().getModel().refresh();
                                 that.Obj.fieldCancel();
+                                // BusyIndicator.hide();
                                 oView.getModel("localModel").setProperty("/customerCompany", []);
                                 oView.getDependents()[1].close()
+                            }).catch((err) => {
+                                // BusyIndicator.hide();
                             });
 
                         },
@@ -108,7 +113,7 @@ sap.ui.define([
                                 oCustomer = that.Obj.getControlLaunchpadRun("customer");
                                 oTitle = that.Obj.getControlLaunchpadRun("title");
                             }
-                            oCustomer.clearSelection(); oTitle.clearSelection(); 
+                            oCustomer.clearSelection(); oTitle.clearSelection();
 
                         }
                     }
