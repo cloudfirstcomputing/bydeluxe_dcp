@@ -26,10 +26,10 @@ service AssetVaultService {
     entity SalesOrganizations as projection on api.SalesOrganizations;
 
     @readonly
-    entity CustomerPlant as projection on api.CustomerPlant;
+    entity CustomerPlant      as projection on api.CustomerPlant;
 
     @readonly
-    entity SalesOrgDistCh as projection on api.SalesOrgDistCh;
+    entity SalesOrgDistCh     as projection on api.SalesOrgDistCh;
 
     @readonly
     entity Plants             as projection on api.Plants;
@@ -39,8 +39,9 @@ service AssetVaultService {
 
     @readonly
     entity CustomerCompany    as projection on api.CustomerCompany;
+
     @readonly
-    entity Company as projection on api.Company;
+    entity Company            as projection on api.Company;
 
     entity MediaFiles         as projection on db.MediaFiles;
     function downloadFormADS() returns LargeString;

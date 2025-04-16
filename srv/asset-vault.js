@@ -7,7 +7,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
-        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants,
+        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations,
             SalesOrganizations, CustomerPlant, SalesOrgDistCh, Company } = this.entities
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
