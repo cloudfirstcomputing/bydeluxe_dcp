@@ -255,7 +255,7 @@ sap.ui.define([
                         ReleaseDate: null,
                         RepertoryDate: null,
                         Format: "2D",
-                        ReleaseSize: "",
+                        ReleaseSize: "Wide",
                         Ratings: "",
                         ReelCountEstimated: null,
                         AssetVaultTitleId: "",

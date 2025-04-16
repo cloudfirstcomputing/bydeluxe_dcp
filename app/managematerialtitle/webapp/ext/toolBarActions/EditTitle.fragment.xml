@@ -58,6 +58,7 @@
 				            <core:ListItem id="_IDGenListItem3" text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
 		            </Input>
+                    
                     <Label id="lblEditReleaseDate" text="Release Date"/>
                     <DatePicker id="datePickerEditReleaseDate" value="{formModel>/ReleaseDate}"/>
 
