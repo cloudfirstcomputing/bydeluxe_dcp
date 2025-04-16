@@ -1086,7 +1086,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         }
         const updateBTPSOItemsAndS4Texts = async (req, oContentData, oResponseStatus) => {
             var sSalesOrder = oResponseStatus?.SalesOrder, sContentIndicator = oContentData?.OrderType;
-            var distroSpecData = oResponseStatus?.distroSpecData, aCTTCPL = [], oContentPackage = oResponseStatus?.ContentPackage?.[0],
+            var distroSpecData = oResponseStatus?.distroSpecData, oContentPackage = oResponseStatus?.ContentPackage?.[0],
                 oPayLoad = oResponseStatus?.payLoad, oKeyPackage = oResponseStatus?.KeyPackage?.[0];
             var oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }, { "ref": ["to_Partner"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
 
@@ -1102,20 +1102,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of local CDS
                 oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
-                var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
-                    where({ DCP: oSalesOrderItem.Material });
-
-                var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
-                oContentData.to_Item[i].LongText = sGoFilexTitleID;
+                // var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
+                //     where({ DCP: oSalesOrderItem.Material });
+                // var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                 oContentData.to_Item[i].ProductGroup = oSalesOrderItem.MaterialGroup;
                 oContentData.to_Item[i].AdditionalMaterialGroup1 = oSalesOrderItem.AdditionalMaterialGroup1;
                 oContentData.to_Item[i].Plant = oSalesOrderItem.ProductionPlant;
-                if (oPayLoad?.ShippingCondition === '02' && sGoFilexTitleID) { //RULE 5.2 
-                    await updateItemTextForSalesOrder(req, "Z004", sGoFilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
+                if (oPayLoad?.ShippingCondition === '02' && oContentPackage?.GofilexTitleID) { //RULE 5.2 
+                    oContentData.to_Item[i].LongText = oContentPackage.GofilexTitleID;
+                    await updateItemTextForSalesOrder(req, "Z004", oContentPackage.GofilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
                 }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
-                var aContentPkgCPL = oContentPackage?.to_DCPMaterial,
-                    aContentPkgCTT = [], sContentPkgCTTs, aContentPkgCPLUUID = [], sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
+                var aContentPkgCPL = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
 
                 var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
@@ -1146,9 +1144,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sPackageName = oContentPackage?.PackageName;
                     oContentData.to_Item[i].DistroSpecPackageID = oContentPackage?.PackageUUID;
                     oContentData.to_Item[i].DistroSpecPackageName = oContentPackage?.PackageName;
-                    if (oAssetvault?.KrakenTitleID) { //RULE 9.3
-                        await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
-                    }
+                    // if (oAssetvault?.KrakenTitleID) { //RULE 9.3
+                    //     await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
+                    // }
                     var aFinalCPLs = [], aFinalCTTs = [];
                     for (var c in aContentPkgCPL) {
                         var aDCPDet = aContentPkgCPL[c];
@@ -1161,9 +1159,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (aCTTs?.length) {
                             aFinalCTTs = aFinalCTTs?.length ? [...aFinalCTTs, ...aLinkedCPLUUIDs] : [...aLinkedCPLUUIDs];
                         }
-                        // if(aContentPkgCPL[c]?.LinkedCTT){
-                        //     aContentPkgCTT.push(aContentPkgCPL[c]?.LinkedCTT);
-                        // }
                     }
                     if (aFinalCTTs?.length) { //RULE 9.1
                         sContentPkgCTTs = aFinalCTTs?.map((u) => { return u ? u : false }).join(`,`);
