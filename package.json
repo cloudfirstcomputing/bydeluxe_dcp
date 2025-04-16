@@ -349,6 +349,32 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_CUSTOMERCOMPANYBYPLANT_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CUSTOMERCOMPANYBYPLANT_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CUSTOMERCOMPANYBYPLANT_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_SLSORGANIZATIONDISTRCH_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_SLSORGANIZATIONDISTRCH_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_SLSORGANIZATIONDISTRCH_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "API_COMPANYCODE_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_COMPANYCODE_SRV"
       }
     }
   },

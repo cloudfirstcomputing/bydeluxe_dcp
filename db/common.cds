@@ -20,7 +20,9 @@ using {API_PRODUCTGROUP_SRV as prdgrp} from '../srv/external/API_PRODUCTGROUP_SR
 using {YY1_ADDITIONALMATERIALGRP1_CDS as prdgrp1} from '../srv/external/YY1_ADDITIONALMATERIALGRP1_CDS';
 using {API_BILLING_DOCUMENT_SRV as Billing} from '../srv/external/API_BILLING_DOCUMENT_SRV';
 using {Distrospec_SRV as Distro} from '../srv/external/Distrospec_SRV';
-
+using { YY1_CUSTOMERCOMPANYBYPLANT_CDS as custplant } from '../srv/external/YY1_CUSTOMERCOMPANYBYPLANT_CDS';
+using { YY1_SLSORGANIZATIONDISTRCH_CDS as slsdist } from '../srv/external/YY1_SLSORGANIZATIONDISTRCH_CDS';
+using { API_COMPANYCODE_SRV as company } from '../srv/external/API_COMPANYCODE_SRV';
 
 context api {
 
@@ -63,5 +65,8 @@ context api {
     entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem;
     entity CountriesApi       as projection on Distro.Countries;
     entity BillingDocumentPartner        as projection on Billing.A_BillingDocumentPartner;
-    
+    entity CustomerCompany as projection on bupa.A_CustomerCompany;
+    entity CustomerPlant as projection on custplant.YY1_CustomerCompanyByPlant;
+    entity SalesOrgDistCh as projection on slsdist.YY1_SlsOrganizationDistrCh;
+    entity Company as projection on company.A_CompanyCode;
 }

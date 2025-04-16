@@ -136,11 +136,11 @@
                   },
                   "actions": {
                     "DistributionDcpExt": {
-                      "press": "com.dlx.assetvault.ext.assetVaultExt.DistributionDcpExt.onPreviewForm",
+                      "press": "com.dlx.assetvault.ext.controller.DistributionDcpExt.onCreateDcp",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": true,
-                      "text": "Preview Form"
+                      "text": "Create DCP Material"
                     }
                   }
                 }

@@ -7,9 +7,187 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
+        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants,
+            SalesOrganizations, CustomerPlant, SalesOrgDistCh, Company } = this.entities
+        const _asArray = x => Array.isArray(x) ? x : [x]
+        const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
+        const pdtx = await cds.connect.to('API_PRODUCT_SRV')
+        const planttx = await cds.connect.to('API_PLANT_SRV')
+        const sloctx = await cds.connect.to('YY1_STORAGELOCATION_CDS')
+        const salesorgtx = await cds.connect.to('API_SALESORGANIZATION_SRV')
+        const distchtx = await cds.connect.to('YY1_SLSORGANIZATIONDISTRCH_CDS')
+        const cuspltx = await cds.connect.to('YY1_CUSTOMERCOMPANYBYPLANT_CDS')
+        const comptx = await cds.connect.to('API_COMPANYCODE_SRV')
 
+        this.on('READ', [Studios, CustomerCompany], async req => {
+            return bptx.run(req.query)
+        })
 
-        this.on("READ","MediaFiles",async (req, res) => {
+        this.on(['READ'], CustomerPlant, req => {
+            return cuspltx.run(req.query)
+        })
+
+        this.on(['READ'], Company, req => {
+            return comptx.run(req.query)
+        })
+
+        this.on(['READ'], SalesOrgDistCh, req => {
+            return distchtx.run(req.query)
+        })
+
+        this.on(['READ'], StorageLocations, req => {
+            return sloctx.run(req.query)
+        })
+
+        this.on(['READ'], Plants, req => {
+            return planttx.run(req.query)
+        })
+
+        this.on(['READ'], SalesOrganizations, async req => {
+            return salesorgtx.run(req.query)
+        })
+
+        this.on(['READ'], Titles, async req => {
+            const data = _asArray(await pdtx.run(SELECT.from(Titles).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z007' })))
+            return data.map(item => {
+                return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
+            })
+        })
+
+        this.on('createDcp', async req => {
+            const { ProjectID } = req.params[0]
+            const { Customer, Title } = req.data
+            const to_Plant = []
+            const to_SalesDelivery = []
+            const to_Valuation = []
+            const assetvault = await SELECT.one.from(DistributionDcp, ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
+            if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
+            try {
+                const plants = await cuspltx.run(SELECT.from(CustomerPlant).where({ Customer: Customer }))
+                const plantIds = plants.map(item => item.Plant)
+                const compIds = plants.map(item => item.CompanyCode)
+                const slocs = await sloctx.run(SELECT.from(StorageLocations).where({ Plant: plantIds }))
+                const sorgs = await salesorgtx.run(SELECT.from(SalesOrganizations).where({ CompanyCode: compIds }))
+                const sorgIds = sorgs.map(item => item.SalesOrganization)
+                const sorgdist = await distchtx.run(SELECT.from(SalesOrgDistCh).where({ SalesOrganization: sorgIds }))
+                const comp = await comptx.run(SELECT.from(Company).where({ CompanyCode: compIds }))
+
+                for (let index = 0; index < plants.length; index++) {
+                    const plant = plants[index];
+                    const element = comp.find(item => item.CompanyCode === plant.CompanyCode)
+                    to_Plant.push({
+                        "Product": ProjectID,
+                        "Plant": plant.Plant,
+                        "ProfitCenter": "100402",
+                        "AvailabilityCheckType": "SR",
+                        "MRPType": "PD",
+                        "MRPResponsible": "001",
+                        "ProcurementType": "X",
+                        "to_ProductSupplyPlanning": {
+                            "Product": ProjectID,
+                            "Plant": plant.Plant,
+                            "MRPType": "PD",
+                            "MRPResponsible": "001",
+                            "SafetyStockQuantity": "5",
+                            "LotSizingProcedure": "MB",
+                            "PlanningStrategyGroup": "10"
+                        },
+                        "to_StorageLocation": slocs.filter(sloc => sloc.Plant === plant.Plant)
+                            .map(item => {
+                                return {
+                                    "Product": ProjectID,
+                                    "Plant": item.Plant,
+                                    "StorageLocation": item.StorageLocation
+                                }
+                            })
+                    })
+                    to_Valuation.push({
+                        "Product": ProjectID,
+                        "ValuationClass": "7920",
+                        "ValuationArea": plant.ValuationArea,
+                        "ValuationType": "",
+                        "Currency": element.Currency,
+                        "PriceDeterminationControl": "2",
+                        "InventoryValuationProcedure": "S",
+                        "StandardPrice": "0.01"
+                    })
+                }
+
+                for (let k = 0; k < sorgs.length; k++) {
+                    const salesorg = sorgs[k];
+                    to_SalesDelivery = sorgdist.filter(item => item.SalesOrganization === salesorg.SalesOrganization)
+                        .map(item => {
+                            return {
+                                "Product": ProjectID,
+                                "ProductSalesOrg": item.SalesOrganization,
+                                "ProductDistributionChnl": item.DistributionChannel,
+                                "AccountDetnProductGroup": "03",
+                                "ItemCategoryGroup": "NORM",
+                                "SupplyingPlant": "1172",
+                                "to_SalesTax": [
+                                    {
+                                        "Product": ProjectID,
+                                        "Country": element.Country,
+                                        "TaxCategory": "UTXJ",
+                                        "TaxClassification": "0"
+                                    }
+                                ],
+                                "to_SalesText": [
+                                    {
+                                        "Product": ProjectID,
+                                        "ProductSalesOrg": item.SalesOrganization,
+                                        "ProductDistributionChnl": item.DistributionChannel,
+                                        "Language": element.Language,
+                                        "LongText": assetvault._Items.map(u => u.LinkedCTT).join(`\n`)
+                                    }
+                                ]
+                            }
+                        })
+                }
+                const ins = await pdtx.run(INSERT.into(Products).entries({
+                    "ProductType": "ZDCP",
+                    "Product": ProjectID,
+                    "ProductGroup": "Z003",
+                    "BaseUnit": "EA",
+                    "NetWeight": "0.01",
+                    "GrossWeight": "0.01",
+                    "WeightUnit": "KG",
+                    "to_Description": [
+                        {
+                            "Product": ProjectID,
+                            "Language": "EN",
+                            "ProductDescription": assetvault.VolumeName
+                        }
+                    ],
+                    "to_ProductBasicText": [
+                        {
+                            "Product": ProjectID,
+                            "Language": "EN",
+                            "LongText": assetvault._Items.map(u => u.AssetMapUUID).join(`\n`)
+                        }
+                    ],
+                    "to_Plant": to_Plant,
+                    "to_SalesDelivery": to_SalesDelivery,
+                    "to_Valuation": to_Valuation,
+                    "to_ProductStorage": {
+                        "Product": ProjectID,
+                        "StorageConditions": "10"
+                    },
+                }))
+
+                await UPDATE(DistributionDcp, assetvault.ProjectID).with({
+                    DCP: ins.Product,
+                    CreatedinSAP: true
+                })
+                req.info({
+                    message: `DCP Material ${ins.Product} created`,
+                })
+            } catch (error) {
+                req.error(502, error)
+            }
+        })
+
+        this.on("READ", "MediaFiles", async (req, res) => {
             try {
                 var form_name = 'frm_058'
                 var query = `/v1/forms/${form_name}`;
@@ -66,84 +244,84 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
 
 
                 // Decode Base64 to Buffer
-        const buffer = Buffer.from(oPrintForm.fileContent, 'base64');
+                const buffer = Buffer.from(oPrintForm.fileContent, 'base64');
 
-        // Convert Buffer to Readable Stream
-        const stream = Readable.from(buffer);
+                // Convert Buffer to Readable Stream
+                const stream = Readable.from(buffer);
 
-        req._.res.setHeader("Content-Type", `application/pdf`);
-        req._.res.setHeader(
-          "Content-Disposition",
-          `attachment; filename="test.pdf"`
-        );
-        return stream ;
+                req._.res.setHeader("Content-Type", `application/pdf`);
+                req._.res.setHeader(
+                    "Content-Disposition",
+                    `attachment; filename="test.pdf"`
+                );
+                return stream;
                 // return oPrintForm.fileContent;
             }
             catch (e) {
                 req.error(502, e)
             }
         }),
-        this.on("downloadFormADS", async (req, res) => {
-            try {
-                var form_name = 'frm_058'
-                var query = `/v1/forms/${form_name}`;
-                var oFormObject = await deluxe_adsrestapi.get(query);
-                var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
-                const jsonData = {
-                    customer: {
-                        name: "John Doe",
-                        address: "1234 Elm Street",
-                        city: "Berlin",
-                        country: "Germany"
-                    },
-                    items: [
-                        { description: "Laptop", quantity: 1, price: 1200 },
-                        { description: "Mouse", quantity: 2, price: 25 }
-                    ],
-                    total: 1250
-                };
+            this.on("downloadFormADS", async (req, res) => {
+                try {
+                    var form_name = 'frm_058'
+                    var query = `/v1/forms/${form_name}`;
+                    var oFormObject = await deluxe_adsrestapi.get(query);
+                    var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
+                    const jsonData = {
+                        customer: {
+                            name: "John Doe",
+                            address: "1234 Elm Street",
+                            city: "Berlin",
+                            country: "Germany"
+                        },
+                        items: [
+                            { description: "Laptop", quantity: 1, price: 1200 },
+                            { description: "Mouse", quantity: 2, price: 25 }
+                        ],
+                        total: 1250
+                    };
 
-                // Wrap everything in a single root element to ensure well-formed XML
-                const wrappedJson = { root: jsonData };
+                    // Wrap everything in a single root element to ensure well-formed XML
+                    const wrappedJson = { root: jsonData };
 
-                // Convert JSON to XML (Ensure single root)
-                const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });
+                    // Convert JSON to XML (Ensure single root)
+                    const xmlData = xmljs.js2xml(wrappedJson, { compact: true, spaces: 4 });
 
-                // Encode XML to Base64
-                const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
+                    // Encode XML to Base64
+                    const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
 
-                const headers = {
-                    "Content-Type": 'application/json',
-                    "accept": 'application/json',
-                };
+                    const headers = {
+                        "Content-Type": 'application/json',
+                        "accept": 'application/json',
+                    };
 
-                // Print PDF code logic
-                var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
+                    // Print PDF code logic
+                    var sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0"
 
-                const data = {
-                    "xdpTemplate": sXMLTemplate,
-                    "xmlData": base64EncodedXml,
-                    "formType": "print",
-                    "formLocale": "en_US",
-                    "taggedPdf": 1,
-                    "embedFont": 0,
-                    "changeNotAllowed": false,
-                    "printNotAllowed": false
-                };
+                    const data = {
+                        "xdpTemplate": sXMLTemplate,
+                        "xmlData": base64EncodedXml,
+                        "formType": "print",
+                        "formLocale": "en_US",
+                        "taggedPdf": 1,
+                        "embedFont": 0,
+                        "changeNotAllowed": false,
+                        "printNotAllowed": false
+                    };
 
-                var oPrintForm = await deluxe_adsrestapi.send({
-                    method: "POST",
-                    path: sDownloadPDFurl,
-                    data,
-                    headers
-                });
+                    var oPrintForm = await deluxe_adsrestapi.send({
+                        method: "POST",
+                        path: sDownloadPDFurl,
+                        data,
+                        headers
+                    });
 
-                return oPrintForm.fileContent;
-            }
-            catch (e) {
-                req.error(502, e)
-            }
-        });
+                    return oPrintForm.fileContent;
+                }
+                catch (e) {
+                    req.error(502, e)
+                }
+            });
 
         return super.init();
     }
