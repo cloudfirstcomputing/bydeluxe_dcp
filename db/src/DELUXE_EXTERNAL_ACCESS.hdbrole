@@ -27,6 +27,12 @@
                 "privileges_with_grant_option":[] 
             },
             { 
+                "name":"DELUXE_DISTRIBUTION_KEYPACKAGE", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            },
+            { 
                 "name":"DELUXE_DISTRIBUTION_DISTRESTRICTIONS", 
                 "type":"TABLE", 
                 "privileges":[ "SELECT" ], 
