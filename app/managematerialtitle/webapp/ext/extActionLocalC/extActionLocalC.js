@@ -156,12 +156,11 @@ sap.ui.define([
                             delete oData.TitleCategoryText;
                             delete oData.StudioText;        
 
-                            if (oData.ReleaseDate instanceof Date && !isNaN(oData.ReleaseDate)) {
-                                oData.ReleaseDate = oData.ReleaseDate.toISOString().split("T")[0];
+                            if (oData.ReleaseDate) {
+                                oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0];
                             }
-                            
-                            if (oData.RepertoryDate instanceof Date && !isNaN(oData.RepertoryDate)) {
-                                oData.RepertoryDate = oData.RepertoryDate.toISOString().split("T")[0];
+                            if (oData.RepertoryDate) {
+                                oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString().split("T")[0];
                             }
                             oData.TitleType = "Local"; // Setting Title Type to Local
                             oData.MaterialMasterTitleID = oData.MaterialMasterTitleID.toString(); //Conversion

@@ -58,22 +58,11 @@
 				            <core:ListItem id="_IDGenListItem3" text="{code}" additionalText="{descr}" />
 			            </suggestionItems>
 		            </Input>
-                    
-                    <Label text="Release Date" labelFor="datePickerEditReleaseDate" />
-                    <DatePicker 
-                      id="datePickerEditReleaseDate02"
-                      value="{path: 'formModel>/ReleaseDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'yyyy-MM-dd'}}"
-                      displayFormat="yyyy-MM-dd" 
-                    />
+                    <Label id="lblEditReleaseDate" text="Release Date"/>
+                    <DatePicker id="datePickerEditReleaseDate" value="{formModel>/ReleaseDate}"/>
 
-                    <Label text="Repertory Date" labelFor="datePickerRepertoryDate02" />
-                    <DatePicker 
-                      id="datePickerRepertoryDate03"
-                      value="{path: 'formModel>/RepertoryDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'yyyy-MM-dd'}}"
-                      displayFormat="yyyy-MM-dd" 
-                    />
-
-
+                    <Label id="lblRepertoryDate01" text="Repertory Date"/>
+                    <DatePicker id="datePickerRepertoryDate02" value="{formModel>/RepertoryDate}"/>
 
                     <Label id="lblEditFormat" text="Format"/>
                     <Select id="selectEditFormat" selectedKey="{formModel>/Format}">
