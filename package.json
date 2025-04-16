@@ -374,7 +374,14 @@
       },
       "API_COMPANYCODE_SRV": {
         "kind": "odata-v2",
-        "model": "srv/external/API_COMPANYCODE_SRV"
+        "model": "srv/external/API_COMPANYCODE_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_COMPANYCODE_SRV",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
