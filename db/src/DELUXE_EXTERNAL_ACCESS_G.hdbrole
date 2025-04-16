@@ -39,7 +39,7 @@
                 "privileges_with_grant_option":["SELECT"]
             },
             { 
-                "name":"DCP_DB_BOOKINGSALESORDER", 
+                "name":"DCP_DB_STUDIOFEED", 
                 "type":"TABLE", 
                 "privileges":[], 
                 "privileges_with_grant_option":["SELECT"]

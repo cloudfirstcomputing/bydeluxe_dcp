@@ -387,7 +387,6 @@
   },
   "sapux": [
     "app/distribution",
-    "app/createdcpmaterials",
     "app/dcpcontentweb",
     "app/dcpkeyweb",
     "app/assetvault",

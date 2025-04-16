@@ -80,10 +80,6 @@ modules:
       name: comdlxdistribution
       target-path: resources/
     - artifacts:
-      - comdlxcreatedcpmaterials.zip
-      name: comdlxcreatedcpmaterials
-      target-path: resources/
-    - artifacts:
       - dcpcontentweb.zip
       name: dcpcontentweb
       target-path: resources/
@@ -118,16 +114,6 @@ modules:
 - name: comdlxdistribution
   type: html5
   path: app/distribution
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-- name: comdlxcreatedcpmaterials
-  type: html5
-  path: app/createdcpmaterials
   build-parameters:
     build-result: dist
     builder: custom
