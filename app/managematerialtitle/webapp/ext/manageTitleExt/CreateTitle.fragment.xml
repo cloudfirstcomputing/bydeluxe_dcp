@@ -49,11 +49,20 @@
 			            </suggestionItems>
 		            </Input>
 
-                    <Label id="lblReleaseDate1" text="Release Date"/>
-                    <DatePicker id="datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
+                    <Label text="Release Date" labelFor="datePickerEditReleaseDate" />
+                    <DatePicker 
+                      id="datePickerEditReleaseDate04"
+                      value="{path: 'formModel>/ReleaseDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'yyyy-MM-dd'}}"
+                      displayFormat="yyyy-MM-dd" 
+                    />
 
-                    <Label id="lblRepertoryDate" text="Repertory Date"/>
-                    <DatePicker id="datePickerRepertoryDate" value="{formModel>/RepertoryDate}"/>
+                    <Label text="Repertory Date" labelFor="datePickerRepertoryDate02" />
+                    <DatePicker 
+                      id="datePickerRepertoryDate05"
+                      value="{path: 'formModel>/RepertoryDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'yyyy-MM-dd'}}"
+                      displayFormat="yyyy-MM-dd" 
+                    />
+
 
                     <Label id="lblFormat1" text="Format"/>
                     <Select id="selectFormat" selectedKey="{formModel>/Format}">

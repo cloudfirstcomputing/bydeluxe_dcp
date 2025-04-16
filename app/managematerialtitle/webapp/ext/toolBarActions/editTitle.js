@@ -154,11 +154,12 @@ sap.ui.define([
 
                             
                             var oPostData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));
-                            if (oPostData.ReleaseDate) {
-                                oPostData.ReleaseDate = new Date(oPostData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
+                            if (oData.ReleaseDate instanceof Date && !isNaN(oData.ReleaseDate)) {
+                                oData.ReleaseDate = oData.ReleaseDate.toISOString().split("T")[0];
                             }
-                            if (oPostData.RepertoryDate) {
-                                oPostData.RepertoryDate = new Date(oPostData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
+                            
+                            if (oData.RepertoryDate instanceof Date && !isNaN(oData.RepertoryDate)) {
+                                oData.RepertoryDate = oData.RepertoryDate.toISOString().split("T")[0];
                             }
                             if (oPostData.Ratings) {
                                 oPostData.Ratings_Ass = oPostData.Ratings.split(",").map(rating => ({
