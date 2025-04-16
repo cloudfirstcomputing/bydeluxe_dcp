@@ -1,0 +1,60 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.8.2"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_CUSTOMERCOMPANYBYPLANT_CDS": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_CUSTOMERCOMPANYBYPLANT_CDS.YY1_CustomerCompanyByPlant": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "CustomerCompanyByPlant",
+   "elements": {
+    "Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Plant",
+     "notNull": true
+    },
+    "Customer": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Customer",
+     "@sap.quickinfo": "Customer Number",
+     "notNull": true
+    },
+    "ValuationArea": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Valuation Area"
+    },
+    "CompanyCode": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Company Code"
+    }
+   }
+  }
+ }
+}

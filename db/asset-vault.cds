@@ -7,7 +7,7 @@ entity DistributionDcp {
         AssetMapIDDescription          : String(80);
         AnnotationText                 : String;
         ExternalReference              : String;
-        VolumeName                     : String(80);
+        VolumeName                     : String(255);
         AssetMapFileSize               : String(80);
         Title                          : String(40);
         KrakenTitleID                  : String(40);
