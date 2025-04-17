@@ -1102,8 +1102,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 oContentData.to_Item.push({}); //to_Item from to be mapped with _Item of local CDS
                 oContentData.to_Item[i]["Product"] = oSalesOrderItem.Material;
-                // var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
-                //     where({ DCP: oSalesOrderItem.Material });
+                var oAssetvault = await SELECT.one.from(AssetVault_Local).columns(["*", { "ref": ["_Items"], "expand": ["*"] }]).
+                    where({ DCP: oSalesOrderItem.Material });
                 // var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
                 oContentData.to_Item[i].ProductGroup = oSalesOrderItem.MaterialGroup;
                 oContentData.to_Item[i].AdditionalMaterialGroup1 = oSalesOrderItem.AdditionalMaterialGroup1;
@@ -1144,9 +1144,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sPackageName = oContentPackage?.PackageName;
                     oContentData.to_Item[i].DistroSpecPackageID = oContentPackage?.PackageUUID;
                     oContentData.to_Item[i].DistroSpecPackageName = oContentPackage?.PackageName;
-                    // if (oAssetvault?.KrakenTitleID) { //RULE 9.3
-                    //     await updateItemTextForSalesOrder(req, "Z006", sContentPkgCTTs, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
-                    // }
+                    if (oAssetvault?.KrakenTitleID) { //RULE 9.3
+                        await updateItemTextForSalesOrder(req, "Z006", oAssetvault.KrakenTitleID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
+                    }
                     var aFinalCPLs = [], aFinalCTTs = [];
                     for (var c in aContentPkgCPL) {
                         var aDCPDet = aContentPkgCPL[c];
