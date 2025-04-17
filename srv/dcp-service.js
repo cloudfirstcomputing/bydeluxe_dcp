@@ -1705,8 +1705,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("editProduct", async (req) => {
             try {
                 const input = req.data.input; // Extract input data from request
-
+                
+               
                 // Make a POST call to the external API              
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({ ProductGroup: input.ProductGroup}).where({ Product: input.Product}));
                 //const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
                 const sDescription = await s4h_products_Crt.run(SELECT.from(ProductDescription).where({ Product: input.Product, Language: 'EN' }));
                 if (sDescription.length!=0){
