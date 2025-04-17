@@ -32,19 +32,11 @@ sap.ui.define([
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt1"),
                 "type": EdmType.Number
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt2"),
-                "type": EdmType.String
-            }, {
+            },  {
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt3"),
                 "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt4"),
-                "type": EdmType.String
-            }, {
+            },  {
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt5"),
                 "type": EdmType.String
@@ -58,24 +50,12 @@ sap.ui.define([
                 "type": EdmType.String
             }, {
                 "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt8"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt9"),
                 "type": EdmType.String
             }, {
                 "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt10"),
-                "type": EdmType.String
-            },{
-                "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt11"),
                 "type": EdmType.Number
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt12"),
-                "type": EdmType.String
             }, {
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt13"),
@@ -85,10 +65,6 @@ sap.ui.define([
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt14"),
                 "type": EdmType.String
             }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt15"),
-                "type": EdmType.String
-            },{
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt16"),
                 "type": EdmType.Number
@@ -142,87 +118,20 @@ sap.ui.define([
                 "type": EdmType.String
             }, {
                 "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt29"),
-                "type": EdmType.String
-            },
-            {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt30"),
-                "type": EdmType.Number
-            },{
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt31"),
-                "type": EdmType.Number
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt32"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt33"),
                 "type": EdmType.String
             }, {
                 "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt34"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt35"),
-                "type": EdmType.String
-            },{
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt36"),
-                "type": EdmType.Number
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt37"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt38"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt39"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt40"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt42"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt43"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt44"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt45"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt46"),
                 "type": EdmType.String
             }];
 
             that.fieldNamesCAPM = [{
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt1"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt1")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt2"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt2")
-            }, {
+            }, , {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt3"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt3")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt4"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt4")
             }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt5"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt5")
@@ -233,20 +142,11 @@ sap.ui.define([
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt7"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt7")
             }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt8"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt8")
-            }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt9"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt9")
             }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt10"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt10")
-            },{
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt11"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt11")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt12"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt12")
             }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt13"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt13")
@@ -254,9 +154,6 @@ sap.ui.define([
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt14"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt14")
             }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt15"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt15")
-            },{
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt16"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt16")
             }, {
@@ -296,59 +193,11 @@ sap.ui.define([
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt28"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt28")
             }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt29"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt29")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt30"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt30")
-            },{
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt31"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt31")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt32"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt32")
-            }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt33"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt33")
             }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt34"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt34")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt35"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt35")
-            },{
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt36"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt36")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt37"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt37")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt38"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt38")
-            }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt39"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt39")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt40"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt40")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt41"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt41")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt42"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt42")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt43"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt43")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt44"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt44")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt45"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt45")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt46"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt46")
             }];
 
             // Code to open fragment dialog

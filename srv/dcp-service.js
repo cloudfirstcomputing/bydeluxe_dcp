@@ -175,37 +175,37 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 })
                 if (req.data.fieldNames.length === 0) req.reject(400, 'reqfieldNames')
                 if (excelData.length === 0) req.reject(400, 'emptySheet')
-                for (let index = 0; index < excelData.length; index++) {
+                for (let index = 0; index < excelData.length; index++) {//Iterating each rows in excel
                     let object = excelData[index]
                     let row = object.__rowNum__ + 1
                     let element = {}
                     let error = {}
                     error.RowNumber = row.toString()
                     // error.ID = id
-                    for (const property in object) {
+                    for (const property in object) { //Iterating each columns in excel
                         const fieldName = req.data.fieldNames.find(item => {
-                            return item.excelColumn === property
+                            return item?.excelColumn === property
                         })
-                        if (!fieldName) req.reject(400, 'invalidSheet')
-                        if (fieldName.technicalName) {
-                            element[fieldName.technicalName] = object[property]
+                        // if (!fieldName) req.reject(400, 'invalidSheet')
+                        if (fieldName?.technicalName) {
+                            element[fieldName.technicalName] = typeof(object[property]) === 'string'?object[property]: `${object[property]}`
                         }
                     }
-                    element.Origin_OriginID = "S";
+                    element.Origin_OriginID = "S";//Spreasheet upload
 
                     var sValidationError = "";
-                    if (!element.SourceSystem) {
-                        sValidationError = "Source System is mandatory\n";
-                    }
+                    // if (!element.SourceSystem) {
+                    //     sValidationError = "Source System is mandatory\n";
+                    // }
                     if (!element.BookingID) {
                         sValidationError = sValidationError + "BookingID is mandatory.\n";
                     }
                     if (!element.Studio) {
                         sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
-                    if (!element.Title) {
-                        sValidationError = sValidationError + "Title is mandatory.\n";
-                    }
+                    // if (!element.Title) {
+                    //     sValidationError = sValidationError + "Title is mandatory.\n";
+                    // }
                     if (!element.RequestedDelivDate) {
                         sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
                     }
@@ -871,15 +871,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                         // RULE 5.1, 6.1 => Common for Content and Key
-                        var sMode;
-                        if (iDifferenceInHours > 24) {
+                        var sMode, bItemAdded = false;
+                        if(iDifferenceInHours < 24){
+                            sMode = 'Screening';   
+                        }
+                        else if(ReleaseDate && dStartDate < ReleaseDate){
+                            sMode = 'PreRelease';
+                        }
+                        else if ( ReleaseDate && dStartDate === ReleaseDate ) {
                             sMode = 'Release';
                         }
-                        else {
-                            sMode = 'Screening';
+                        else if ( ReleaseDate && dStartDate > ReleaseDate ) {
+                            sMode = 'PostBreak';
+                        }
+                        else if(RepertoryDate){
+                            sMode = 'Repertory';
+                        }
+                        if(sMode){
+                            var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                         }
                         if (oFinalContentPackage) { //Applicable only for Content
-                            var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                             if(oDCPMapping){
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
@@ -900,7 +911,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
-                            oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: '07', Variable: sMode }); //RULE 7.2 => Shipping Type for KEY
                             if(oDCPMapping){
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
@@ -910,56 +920,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "DeliveryPriority": `1`,
                                     "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                     "ShippingType": '07'
-                                });
-                            }
-                            else{
-                                oResponseStatus.warning.push({
-                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
-                                    "errorMessage": sErrorMessage
-                                })
-                            }
-                        }
-                        if (ReleaseDate) {
-                            if(dStartDate < ReleaseDate){
-                                sMode = 'PreRelease';
-                            }
-                            else if(dStartDate = ReleaseDate){
-                                sMode = 'Release';
-                            }
-                            else{
-                                sMode = 'PostBreak';
-                            }
-                            oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
-                            if(oDCPMapping){
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": sShippingType
-                                });
-                            }
-                            else{
-                                oResponseStatus.warning.push({
-                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
-                                    "errorMessage": sErrorMessage
-                                })
-                            }
-                        }
-                        if (RepertoryDate) {
-                            sMode = 'Repertory';
-                            oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
-                            if(oDCPMapping){
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": sShippingType
                                 });
                             }
                             else{
@@ -1025,7 +985,46 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
             var sTitle = oContentData.Title;
             var sBuPa = oContentData.Studio;
-            if (oContentData?.Origin_OriginID !== "F") {
+            if (oContentData?.Origin_OriginID === "S") {
+                var sCustomerRef = oContentData.CustomerReference;
+                if (sCustomerRef) {
+                    // var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
+                    // var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
+                    //     to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
+                    // if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {
+
+                    //     oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
+                    //     aDistroSpecData = await oDistroQuery;
+                    //     distroSpecData = aDistroSpecData?.find((dist) => {
+                    //         return dist.to_StudioKey?.find((stud) => {
+                    //             return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
+                    //         });
+                    //     });
+                    // }
+                    // else {
+                    //     sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
+                    // }
+                    if(isNaN(sCustomerRef)){
+                        sErrorMessage = `Distro ID should be a number formatted as Text during upload. Uploaded content has ${sCustomerRef} as DistroID`;
+                    }
+                    else{
+                        var iDistroSpecID = parseInt(sCustomerRef);
+                        oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
+                        aDistroSpecData = await oDistroQuery;
+                        if (aDistroSpecData?.length) {
+                            distroSpecData = aDistroSpecData[0];
+                        }
+                        else {
+                            sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
+                        }  
+
+                    }                
+                }
+                else {
+                    sErrorMessage = "DistroSpec ID is not available in the payload";
+                }
+            }
+            else{
                 var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
                 var Product = oProductDescFromS4?.Product;
                 if (Product) {
@@ -1044,30 +1043,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 else {
                     sErrorMessage = `Product not found for the title: ${sTitle}`;
-                }
-            }
-            else {
-                var sCustomerRef = oContentData.CustomerReference;
-                if (sCustomerRef) {
-                    var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
-                    var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
-                        to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
-                    if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {
-
-                        oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
-                        aDistroSpecData = await oDistroQuery;
-                        distroSpecData = aDistroSpecData?.find((dist) => {
-                            return dist.to_StudioKey?.find((stud) => {
-                                return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
-                            });
-                        });
-                    }
-                    else {
-                        sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
-                    }
-                }
-                else {
-                    sErrorMessage = "Customer reference is not available in the payload";
                 }
             }
             if (!sErrorMessage) {
