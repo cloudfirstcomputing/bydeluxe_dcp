@@ -1576,10 +1576,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             const oLanguageText =await distrospec_Txn.run(
                 SELECT.one.from(Languages).where({ code: oneDb.LanguageCode.toLowerCase() })
             );
-              dbData.Region = countryTexts.CountryName;
+              dbData.Region = countryTexts?.CountryName;
               dbData.TitleCategoryText = oTitleCategory[oneDb.TitleCategory]
-              dbData.StudioText = oStudioText.BusinessPartnerFullName;
-              dbData.LangCodeText =oLanguageText.name;
+              dbData.StudioText = oStudioText?.BusinessPartnerFullName;
+              dbData.LangCodeText =oLanguageText?.name;
             return dbData
             }
           }

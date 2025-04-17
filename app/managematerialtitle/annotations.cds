@@ -126,6 +126,17 @@ annotate service.TitleV with @(
         }
     ],
 
+    UI.HeaderInfo: {
+         TypeName: 'TitleV',
+    TypeNamePlural: 'TitleV',
+    Title: {
+      Value: OriginalTitleName
+    },
+    Description: {
+      Value:MaterialMasterTitleID
+    }
+    }
+
 );
 
 

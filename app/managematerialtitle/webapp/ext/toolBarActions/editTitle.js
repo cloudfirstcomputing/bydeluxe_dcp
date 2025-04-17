@@ -7,9 +7,9 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
     "sap/ui/export/library",
-       'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary,Filter,FilterOperator) {
+    'sap/ui/model/Filter',
+    'sap/ui/model/FilterOperator'
+], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary, Filter, FilterOperator) {
     "use strict";
 
     return {
@@ -27,28 +27,28 @@ sap.ui.define([
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.toolBarActions.EditTitle",
                     controller: {
-                        handleValueHelp : function (oEvent) {                            
+                        handleValueHelp: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._aValueHelpDialog) {
                                 this._aValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialog",  
+                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialog",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._aValueHelpDialog.then(function(oValueHelpDialog){
+                            this._aValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearch : function (oEvent) {
+
+                        _handleValueHelpSearch: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "BusinessPartnerFullName",
@@ -56,8 +56,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpClose : function (oEvent) {
+
+                        _handleValueHelpClose: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -65,28 +65,28 @@ sap.ui.define([
                             }
                             oEvent.getSource().getBinding("items").filter([]);
                         },
-                        handleValueHelplg : function (oEvent) {                            
+                        handleValueHelplg: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._bValueHelpDialog) {
                                 this._bValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialogLg",  
+                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialogLg",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._bValueHelpDialog.then(function(oValueHelpDialog){
+                            this._bValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearchlg : function (oEvent) {
+
+                        _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "name",
@@ -94,8 +94,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpCloselg : function (oEvent) {
+
+                        _handleValueHelpCloselg: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -103,28 +103,28 @@ sap.ui.define([
                             }
                             oEvent.getSource().getBinding("items").filter([]);
                         },
-                        handleValueHelprc : function (oEvent) {                            
+                        handleValueHelprc: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._cValueHelpDialog) {
                                 this._cValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialogRc",  
+                                    name: "com.dlx.managematerialtitle.ext.toolBarActions.ValueHelpDialogRc",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._cValueHelpDialog.then(function(oValueHelpDialog){
+                            this._cValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearchlg : function (oEvent) {
+
+                        _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "name",
@@ -132,8 +132,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpCloselg : function (oEvent) {
+
+                        _handleValueHelpCloselg: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -152,7 +152,7 @@ sap.ui.define([
 
                             var oData = oContext.getObject();
 
-                            
+
                             var oPostData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));
                             if (oPostData.ReleaseDate) {
                                 oPostData.ReleaseDate = new Date(oPostData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
@@ -169,7 +169,7 @@ sap.ui.define([
                             delete oPostData.Region;
                             delete oPostData.LangCodeText;
                             delete oPostData.TitleCategoryText;
-                            delete oPostData.StudioText;   
+                            delete oPostData.StudioText;
 
                             var sKey = `(MaterialMasterTitleID=${oData.MaterialMasterTitleID},LocalTitleId='${oData.LocalTitleId}',ID=${oData.ID},RegionCode='${oData.RegionCode}')`;
                             var updateCall = $.ajax({
@@ -178,7 +178,9 @@ sap.ui.define([
                                 contentType: "application/json",
                                 data: JSON.stringify(oPostData),
                                 success: function (response) {
-                                    this.postTitles(oPostData, oPostData.MaterialMasterTitleID);
+                                    if (oPostData.TitleType === 'Parent') {
+                                        this.postTitles(oPostData, oPostData.MaterialMasterTitleID);
+                                    }
                                     console.log("Update successful:", response);
                                     oView.getModel().refresh();
                                     if (that._oDialogE) {
@@ -229,7 +231,7 @@ sap.ui.define([
             this.postTitles = function (oData, Product) {
                 var oModel = oView.getModel();
 
-                var truncatedTitle = oData.OriginalTitleName ? oData.OriginalTitleName.substring(0, 40): "";        
+                var truncatedTitle = oData.OriginalTitleName ? oData.OriginalTitleName.substring(0, 40) : "";
 
                 var oPatchData = {
                     Product: Product,  //Cut to 40 char   
@@ -238,20 +240,20 @@ sap.ui.define([
                     BaseUnit: "EA",
                     ProductManufacturerNumber: "",
                     to_ProductBasicText: [
-                        {                            
+                        {
                             Language: "EN", //LanguageCode
                             // LongText: oData.RegionalTitleName
                             LongText: oData.OriginalTitleName
                         }
                     ],
                     to_Description: [
-                        {                            
+                        {
                             Language: "EN",
                             ProductDescription: truncatedTitle   //Need to cut this string to 40 cha
                         }
                     ]
                 };
-                
+
                 var updateCall = $.ajax({
                     url: `${oModel.sServiceUrl}editProduct`, // Call the action instead of the entity
                     type: "POST",
