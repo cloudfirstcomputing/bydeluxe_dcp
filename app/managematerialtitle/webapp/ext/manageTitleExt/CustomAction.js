@@ -148,7 +148,7 @@ sap.ui.define([
                         onValidateOriginalTitle: function (oEvent) {
                             var oInput = oEvent.getSource(),
                                 oModel = oView.getModel(),
-                                sProductDescription = oInput.getValue(),
+                                sProductDescription = oInput.getValue().replace("'", "''"),
                                 //sUrl = `${oModel.sServiceUrl}ProductDescription?$filter=ProductDescription eq '${sProductDescription}'`;
                                 //sUrl = `${oModel.sServiceUrl}ProductBasicText?$filter=LongText eq '${sProductDescription}'`;
                                 sUrl = `${oModel.sServiceUrl}Titles?$filter=OriginalTitleName eq '${sProductDescription}'`;
