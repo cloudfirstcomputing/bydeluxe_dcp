@@ -33,7 +33,7 @@ sap.ui.define([
             }
 
             // Extract key values from the selected row
-            var oData = JSON.parser(JSON.stringify(oContext.getObject()));
+            var oData = JSON.parse(JSON.stringify(oContext.getObject()));
             oData.IsMarkedForDeletion = true;
             var sPath = oContext.getPath(); // OData entity path (e.g., "/Titles('123')")
             var result = sPath.substring(sPath.indexOf("(")); 

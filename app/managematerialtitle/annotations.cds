@@ -9,6 +9,7 @@ annotate service.TitleV.MaterialMasterTitleID with @(
 annotate service.TitleV with @(
 
     Capabilities.SearchRestrictions.Searchable: false,
+    Common.Label: 'Titles',
     // Selection Fields (Filters in Fiori Elements)
     UI.SelectionFields : [
         MaterialMasterTitleID,
@@ -129,8 +130,8 @@ annotate service.TitleV with @(
     ],
 
     UI.HeaderInfo: {
-         TypeName: 'TitleV',
-    TypeNamePlural: 'TitleV',
+         TypeName: 'Manage Title',
+    TypeNamePlural: 'Titles',
     Title: {
       Value: OriginalTitleName
     },
