@@ -664,3 +664,15 @@ define view TitleV as
             // to_CountryText   : Association to api.CountryText 
             //          on to_CountryText.Country = $self.RegionCode
     };
+
+
+@cds.persistence.exists
+entity Batch : cuid, managed {
+    BatchNumber      : String(10) @mandatory;
+    StorageLocation  : String(4);
+    Plant            : String(4);
+    InventoryBinID   : String(10);
+    InventoryBinName : String(40);
+    Status           : Int16;
+    BatchNumberU     : String(10);
+}

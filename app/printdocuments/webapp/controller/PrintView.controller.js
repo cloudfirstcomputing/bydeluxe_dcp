@@ -298,8 +298,20 @@ sap.ui.define([
                 // }
             }
 
+            function formatDateForFilter(dateObj) {
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
             var dStartDate = this.byId("startDate").getDateValue();
             var dEndDate = this.byId("endDate").getDateValue();
+            
+            var formattedStartDate = formatDateForFilter(dStartDate);
+            var formattedEndDate = formatDateForFilter(dEndDate);
+
+           
 
             // // Optional: Remove time part to avoid time zone shift
             // dStartDate.setHours(0, 0, 0, 0);
@@ -307,12 +319,12 @@ sap.ui.define([
 
 
             if (dStartDate && dStartDate != '') {
-                var sFormatedStart = new Date(dStartDate).toISOString().split("T")[0];
-                var sFormatedEnd = new Date(dEndDate).toISOString().split("T")[0];
+                // var sFormatedStart = new Date(formattedStartDate).toISOString().split("T")[0];
+                // var sFormatedEnd = new Date(formattedEndDate).toISOString().split("T")[0];
                 if (this.byId("selectFormName").getSelectedKey() === '1'){
-                    aFilters.push(new Filter("to_MaterialDocumentHeader/PostingDate", FilterOperator.BT, sFormatedStart, sFormatedEnd))
+                    aFilters.push(new Filter("to_MaterialDocumentHeader/PostingDate", FilterOperator.BT, formattedStartDate, formattedEndDate))
                 }else{
-                    aFilters.push(new Filter("CreationDate", FilterOperator.BT, sFormatedStart, sFormatedEnd))
+                    aFilters.push(new Filter("CreationDate", FilterOperator.BT, formattedStartDate, formattedEndDate))
                 }
                 
 

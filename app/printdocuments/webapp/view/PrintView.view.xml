@@ -123,9 +123,9 @@
 									<Text id="_IDGenText9" text="{Plant}"/>
 									<Text  text="{PlantDescription}"/>
 									<Text  text="{Supplier}"/>
-									<Text  text="{SupplierDescrption}"/>
+									<Text  text="{SupplierDescription}"/>
 									<Text  text="{Batch}"/>
-									<Text  text="{BatchDescrption}"/>
+									<Text  text="{BatchDescription}"/>
 									<Text id="_IDGenText10" text="{to_MaterialDocumentHeader/InventoryTransactionType}"/>
 									<Text id="_IDGenText11" text="{to_MaterialDocumentHeader/PostingDate}"/>
 								</cells>

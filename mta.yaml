@@ -30,6 +30,11 @@ modules:
   - name: bydeluxe-db
     properties:
       TARGET_CONTAINER: ~{hdi-service-name}
+  - name: bydeluxeconfigtables-db
+    group: SERVICE_REPLACEMENTS
+    properties:
+      key: bydeluxeconfigtables-db-hdi
+      service: ~{bydeluxeconfigtables-db-hdi}
   parameters:
     buildpack: nodejs_buildpack
   build-parameters:
@@ -211,6 +216,12 @@ resources:
     service-plan: hdi-shared
   properties:
     hdi-service-name: ${service-name}
+- name: bydeluxeconfigtables-db
+  type: org.cloudfoundry.existing-service
+  parameters:
+    service-name: bydeluxeconfigtables-db
+  properties:
+    bydeluxeconfigtables-db-hdi: ${service-name}
 - name: bydeluxe-auth
   type: org.cloudfoundry.managed-service
   parameters:

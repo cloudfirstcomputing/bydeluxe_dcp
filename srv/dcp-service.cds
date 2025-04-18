@@ -436,7 +436,7 @@ service BookingOrderService {
                 '' as PlantDescription :String,
                 '' as MaterialDescription :String,
                 '' as BatchDescription :String,
-                '' as SupplierDescrption :String,
+                '' as SupplierDescription :String,
                 to_MaterialDocumentHeader : redirected to MaterialDocumentHeader,
 
         };

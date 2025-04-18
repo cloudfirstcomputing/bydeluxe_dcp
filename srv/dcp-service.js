@@ -10,9 +10,9 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress,Languages,
-            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print,MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText ,BillingDocument,BillingDocumentItem ,BillingDocumentItemPrcgElmnt,BillingDocumentPartner,S4H_Country,CountryText,TitleV,BillingDocumentItemText} = this.entities;
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
+            TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText ,Batch} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -28,12 +28,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");
         var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_country = await cds.connect.to("API_COUNTRY_SRV");
-        
+
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
         var srv_BillingDocument = await cds.connect.to("API_BILLING_DOCUMENT_SRV");
-        
+
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
         let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
@@ -67,25 +67,25 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("MassUploadManageMaterialTitle", async (req) => {
             const { Titles } = this.entities;
             const db = await cds.connect.to('db');
-        
+
             const uploadedFile = req.data.fileData;
             const fileName = req.data.fileName;
             const fieldNames = req.data.fieldNames;
-        
+
             if (!uploadedFile) {
                 req.error(400, 'No file data provided');
             }
-        
+
             const workbook = XLSX.read(uploadedFile, { type: 'buffer' });
             const sheetName = workbook.SheetNames[0];
             const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-        
+
             let result = {
                 success: [],
                 error: [],
                 warning: []
             };
-        
+
             for (const row of sheetData) {
                 try {
                     // Step 1: Prepare Product Payload
@@ -101,18 +101,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             { Language: "EN", ProductDescription: row.OriginalTitleName }
                         ]
                     };
-        
+
                     const createProductResponse = await cds
                         .transaction(req)
                         .run([
                             INSERT.into("BookingOrderService.createProduct").entries({ input: productPayload })
                         ]);
-        
+
                     const createdProductID = createProductResponse[0]?.Product;
                     if (!createdProductID) {
                         throw new Error("Product creation failed.");
                     }
-        
+
                     // Step 2: Prepare Title Payload
                     const titlePayload = {
                         ID: uuidv4(),
@@ -138,9 +138,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         UseSecureName: row.UseSecureName === 'TRUE',
                         IsMarkedForDeletion: row.IsMarkedForDeletion === 'TRUE',
                     };
-        
+
                     await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
-        
+
                     result.success.push({
                         TitleID: createdProductID,
                         Message: `Title created with ID ${createdProductID}`
@@ -153,12 +153,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
             }
-        
+
             return {
                 message: result
             };
-        });       
-        
+        });
+
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
@@ -188,7 +188,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         })
                         // if (!fieldName) req.reject(400, 'invalidSheet')
                         if (fieldName?.technicalName) {
-                            element[fieldName.technicalName] = typeof(object[property]) === 'string'?object[property]: `${object[property]}`
+                            element[fieldName.technicalName] = typeof (object[property]) === 'string' ? object[property] : `${object[property]}`
                         }
                     }
                     element.Origin_OriginID = "S";//Spreasheet upload
@@ -309,7 +309,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 });
             }
             var aNonKeyItems = aSalesOrderItem?.filter((s4Item) => {
-                return (s4Item.MaterialGroup !== 'Z004' && (s4Item.ItemBillingBlockReason ===  '' || s4Item.ItemBillingBlockReason !== '03') && s4Item.DeliveryPriority !== '04');
+                return (s4Item.MaterialGroup !== 'Z004' && (s4Item.ItemBillingBlockReason === '' || s4Item.ItemBillingBlockReason !== '03') && s4Item.DeliveryPriority !== '04');
             });
             if (!aNonKeyItems?.length) { //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
                 req.reject(501, `Remediation cannot be done for Sales Order: ${sSalesOrder} as all items are key entries`);
@@ -329,9 +329,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader?.filter((sDelSeq) => {
                     return sDelSeq !== ''
                 }); //Removing blank entries
-                var  oContentPackages;
+                var oContentPackages;
                 var oPackages = await performPrioritySort_OrderType_ValidityCheck(oFeedDBData, distroSpecData);
-                var aContentPackages = oPackages?.ContentPackage,  aKeyPackages = oPackages?.KeyPackage;
+                var aContentPackages = oPackages?.ContentPackage, aKeyPackages = oPackages?.KeyPackage;
                 if (!aContentPackages?.length) {
                     req.reject(400,
                         `No matching Content Or Key Package available for DistroSpec ${distroSpecData?.DistroSpecID}`);
@@ -624,7 +624,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     aContentPackages = oPackages?.ContentPackage;
                     aKeyPackages = oPackages?.KeyPackage;
 
-                    if(!aContentPackages?.length && !aKeyPackages?.length){// No matching content or Key packages found
+                    if (!aContentPackages?.length && !aKeyPackages?.length) {// No matching content or Key packages found
                         sErrorMessage = `No matching Content Or Key Package available for DistroSpec ${distroSpecData?.DistroSpecID}`;
                     }
                     if (!sErrorMessage && aContentPackages?.length) { //For Content Package
@@ -664,7 +664,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 aDeliveryMethodsFromPackage.push(oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition : "");
                                 aDeliveryMethodsFromPackage.push(oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : "");
                                 aDeliveryMethodsFromPackage.push(oFilteredContentPackage.DeliveryMethod10_ShippingCondition ? oFilteredContentPackage.DeliveryMethod10_ShippingCondition : "");
-        
+
                                 var aShiptoDelMethodsFromS4 = [], DCDCFlag, TrailMix;
                                 if (oShipToSalesData) { //4.2 =>DCDC check for Del Method
                                     DCDCFlag = oShipToSalesData?.YY1_DCDCFlag_csa;
@@ -693,7 +693,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     oShipToSalesData?.YY1_DeliveryMethod8_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod8_csa) : '';
                                     oShipToSalesData?.YY1_DeliveryMethod9_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod9_csa) : '';
                                     oShipToSalesData?.YY1_DeliveryMethod10_csa ? aShiptoDelMethodsFromS4.push(oShipToSalesData?.YY1_DeliveryMethod10_csa) : '';
-        
+
                                     var oPBC, pbcPresent = false; //For RULE 4.4 => Playback capability Check
                                     for (var d in aContentPackageDistRestrictions) {
                                         var aPBC = [];
@@ -755,36 +755,36 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                         sContentDeliveryMethod = oFilteredContentPackage.DeliveryMethod1_ShippingCondition ? oFilteredContentPackage.DeliveryMethod1_ShippingCondition :
-                        oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
-                            oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
-                                oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
-                                    oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
-                                        oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
-                                            oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
+                            oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
+                                oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
+                                    oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
+                                        oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
+                                            oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
+                                                oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
 
-                    //RULE 7.1 => Shipping Type for Content
-                    if (sContentDeliveryMethod) {
-                        oPayLoad.ShippingCondition = sContentDeliveryMethod;
-                        oResponseStatus.DeliveryMethod = sContentDeliveryMethod;
-                        var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sContentDeliveryMethod });
-                        sShippingType = oShippingTypeMapping.ShippingType;
+                        //RULE 7.1 => Shipping Type for Content
+                        if (sContentDeliveryMethod) {
+                            oPayLoad.ShippingCondition = sContentDeliveryMethod;
+                            oResponseStatus.DeliveryMethod = sContentDeliveryMethod;
+                            var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sContentDeliveryMethod });
+                            sShippingType = oShippingTypeMapping.ShippingType;
 
-                        if (!sShippingType) {
-                            sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sContentDeliveryMethod}`;
+                            if (!sShippingType) {
+                                sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sContentDeliveryMethod}`;
+                            }
                         }
+                        else {
+                            sErrorMessage = `Delivery Method could not be determined for Content`;
+                        }
+                        oPackages.ContentPackage = [oFilteredContentPackage];
                     }
-                    else {
-                        sErrorMessage = `Delivery Method could not be determined for Content`;
-                    }                        
-                    oPackages.ContentPackage = [oFilteredContentPackage];        
-                    }
-                    if(!sErrorMessage && aKeyPackages?.length){ //For Key Package
+                    if (!sErrorMessage && aKeyPackages?.length) { //For Key Package
                         sKeyDeliveryMethod = "04"; //Rule 3.3 => Delivery Method for Key is Fixed
                         sShippingType = '07'; //RULE 7.2 => Shipping Type for KEY
                     }
-                    for(var pk in oPackages){ //Going through both filtered content and Key packages if available
+                    for (var pk in oPackages) { //Going through both filtered content and Key packages if available
                         //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
-                        var aContOrKeyPckg = oPackages[pk];          
+                        var aContOrKeyPckg = oPackages[pk];
                         var aCircuits = aContOrKeyPckg?.filter((rest) => {
                             return rest.Circuit_CustomerGroup?.length > 0;
                         });
@@ -827,7 +827,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 }
                             }
                         }
-                        oResponseStatus[pk]  = aContOrKeyPckg?.[0]?[aContOrKeyPckg?.[0]]:[];                     
+                        oResponseStatus[pk] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
                         //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - END
                     }
                     if (!sErrorMessage) {
@@ -841,9 +841,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(`${sEndDate}T00:00:00`);
                         var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
                         var sReleaseDate = distroSpecData?.ReleaseDate;
-                        var ReleaseDate = sReleaseDate? new Date(`${sReleaseDate}T00:00:00`): undefined;
+                        var ReleaseDate = sReleaseDate ? new Date(`${sReleaseDate}T00:00:00`) : undefined;
                         var sRepertoryDate = distroSpecData?.RepertoryDate;
-                        var RepertoryDate = sRepertoryDate? new Date(`${sRepertoryDate}T00:00:00`): undefined;
+                        var RepertoryDate = sRepertoryDate ? new Date(`${sRepertoryDate}T00:00:00`) : undefined;
                         oPayLoad.to_Item = [];
                         var sLongText;
                         if ((oFinalContentPackage) && sShippingType == '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
@@ -875,26 +875,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                         // RULE 5.1, 6.1 => Common for Content and Key
                         var sMode, bItemAdded = false;
-                        if(iDifferenceInHours < 24){
-                            sMode = 'Screening';   
+                        if (iDifferenceInHours < 24) {
+                            sMode = 'Screening';
                         }
-                        else if(ReleaseDate && dStartDate < ReleaseDate){
+                        else if (ReleaseDate && dStartDate < ReleaseDate) {
                             sMode = 'PreRelease';
                         }
-                        else if ( ReleaseDate && dStartDate === ReleaseDate ) {
+                        else if (ReleaseDate && dStartDate === ReleaseDate) {
                             sMode = 'Release';
                         }
-                        else if ( ReleaseDate && dStartDate > ReleaseDate ) {
+                        else if (ReleaseDate && dStartDate > ReleaseDate) {
                             sMode = 'PostBreak';
                         }
-                        else if(RepertoryDate){
+                        else if (RepertoryDate) {
                             sMode = 'Repertory';
                         }
-                        if(sMode){
+                        if (sMode) {
                             var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                         }
                         if (oFinalContentPackage) { //Applicable only for Content
-                            if(oDCPMapping){
+                            if (oDCPMapping) {
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -906,7 +906,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "ShippingType": sShippingType
                                 });
                             }
-                            else{
+                            else {
                                 oResponseStatus.warning.push({
                                     "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
                                     "errorMessage": sErrorMessage
@@ -914,7 +914,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
-                            if(oDCPMapping){
+                            if (oDCPMapping) {
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
                                     "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
@@ -925,7 +925,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "ShippingType": '07'
                                 });
                             }
-                            else{
+                            else {
                                 oResponseStatus.warning.push({
                                     "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
                                     "errorMessage": sErrorMessage
@@ -1007,10 +1007,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     // else {
                     //     sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
                     // }
-                    if(isNaN(sCustomerRef)){
+                    if (isNaN(sCustomerRef)) {
                         sErrorMessage = `Distro ID should be a number formatted as Text during upload. Uploaded content has ${sCustomerRef} as DistroID`;
                     }
-                    else{
+                    else {
                         var iDistroSpecID = parseInt(sCustomerRef);
                         oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
                         aDistroSpecData = await oDistroQuery;
@@ -1019,15 +1019,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                         else {
                             sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
-                        }  
+                        }
 
-                    }                
+                    }
                 }
                 else {
                     sErrorMessage = "DistroSpec ID is not available in the payload";
                 }
             }
-            else{
+            else {
                 // var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
                 // var Product = oProductDescFromS4?.Product;
                 var Product = sTitle;
@@ -1207,7 +1207,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return oContentData;
         };
         const performPrioritySort_OrderType_ValidityCheck = async (oFeedData, distroSpecData) => {
-           var sFeedOrderType = oFeedData?.OrderType; 
+            var sFeedOrderType = oFeedData?.OrderType;
             var aContentPackage = distroSpecData?.to_Package;
             var aKeyPackage = distroSpecData?.to_KeyPackage;
 
@@ -1220,8 +1220,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
             var dPlayStartDate = new Date(oFeedData.PlayStartDate.replace(/-/g, '/'));
             var dPlayEndDate = new Date(oFeedData.PlayEndDate.replace(/-/g, '/'));
-            
-            if(sFeedOrderType === 'C' || sFeedOrderType === 'B'){  //Package check when Feed Order Type is C or B
+
+            if (sFeedOrderType === 'C' || sFeedOrderType === 'B') {  //Package check when Feed Order Type is C or B
                 //FeedOrderType = C Line 2-13 (K will not be picked from Content Package)
                 //FeedOrderType = B Line 2-5, 10-13 (C will be picked from Content Package)
                 aContentPackage = aContentPackage.filter((pkg) => {
@@ -1229,10 +1229,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if(pkg.OrderType){ //If content package has Order type maintained
+                    if (pkg.OrderType) { //If content package has Order type maintained
                         return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType === sFeedOrderType || sFeedOrderType === 'B'));
                     }
-                    else{ 
+                    else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
                         //FeedOrderType = B Line 14-17 (Blank content will not be picked)
                         return false;
@@ -1243,15 +1243,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if(pkg.OrderType){ //If key package has Order type maintained
+                    if (pkg.OrderType) { //If key package has Order type maintained
                         return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType === sFeedOrderType || sFeedOrderType === 'B'));
                     }
-                    else{ 
+                    else {
                         return false;
                     }
                 });
             }
-            else if(sFeedOrderType === 'K' || sFeedOrderType === 'B'){ //Package check when Feed Order Type is K or B
+            else if (sFeedOrderType === 'K' || sFeedOrderType === 'B') { //Package check when Feed Order Type is K or B
                 //FeedOrderType = K Line 2-13 (C will not be picked from Key Package)
                 //FeedOrderType = B Line 6-13 (K Or B will be picked from Key Package)
                 aKeyPackage = aKeyPackage.filter((pkg) => {
@@ -1259,10 +1259,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if(pkg.OrderType){//If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && ( pkg.OrderType === sFeedOrderType || sFeedOrderType === 'B') );
+                    if (pkg.OrderType) {//If key package has Order type maintained
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType === sFeedOrderType || sFeedOrderType === 'B'));
                     }
-                    else{ //FeedOrderType = K Line 14-17 (Blank content will not be picked)
+                    else { //FeedOrderType = K Line 14-17 (Blank content will not be picked)
                         return false;
                     }
                 });
@@ -1271,20 +1271,20 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if(pkg.OrderType){//If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && ( pkg.OrderType === sFeedOrderType || sFeedOrderType === 'B') );
+                    if (pkg.OrderType) {//If content package has Order type maintained
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType === sFeedOrderType || sFeedOrderType === 'B'));
                     }
-                    else{ 
+                    else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
                         //FeedOrderType = B Line 14-17 (Blank content will not be picked)
                         return false;
                     }
                 });
             }
-            else{ // If Feed Ordertype is blank, no content/key packages can be fected
-                return {"ContentPackage": [], "KeyPackage": [] };    
+            else { // If Feed Ordertype is blank, no content/key packages can be fected
+                return { "ContentPackage": [], "KeyPackage": [] };
             }
-            return {"ContentPackage": aContentPackage, "KeyPackage": aKeyPackage};
+            return { "ContentPackage": aContentPackage, "KeyPackage": aKeyPackage };
         };
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
             return s4h_bp_Txn.run(req.query);
@@ -1302,7 +1302,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on(['READ'], BillingDocumentPartner, async (req) => {
             return srv_BillingDocument.run(req.query);
         });
-        
+
         this.on("createMaccs", async (req, res) => {
             var uuid = uuidv4(), aInsertData = []; // Generate a unique ID
             try {
@@ -1514,82 +1514,82 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             await s4h_so_Txn.run(SELECT.one.from(S4H_SOHeader));
         });
         this.on("READ", BillingDocument, async req => {
-           return  await srv_BillingDocument.run(req.query);
+            return await srv_BillingDocument.run(req.query);
         });
         this.on("READ", BillingDocumentItem, async req => {
-           return await srv_BillingDocument.run(req.query);
+            return await srv_BillingDocument.run(req.query);
         });
 
-        this.on("READ", [S4H_Country,CountryText], async (req, res) => {
-           return await s4h_country.run(req.query);
+        this.on("READ", [S4H_Country, CountryText], async (req, res) => {
+            return await s4h_country.run(req.query);
         });
-        
+
         this.on("READ", [TitleV], async (req, res) => {
             // return await s4h_country.run(req.query);
             const dbData = await cds.tx(req).run(req.query);
             const oTitleCategory = {
-                                    "Z006" : "Provisional/Unknown Title",
-                                    "Z007" : "Confirmed/Known Title"
+                "Z006": "Provisional/Unknown Title",
+                "Z007": "Confirmed/Known Title"
             }
-            if (dbData.length>0){
-            const countryCodes = [...new Set(dbData.map(row => row.RegionCode))]
-            const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor))]
-            const aLanguage = [...new Set(dbData.map(row => row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''))]
+            if (dbData.length > 0) {
+                const countryCodes = [...new Set(dbData.map(row => row.RegionCode))]
+                const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor))]
+                const aLanguage = [...new Set(dbData.map(row => row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''))]
 
-            const countryTexts = await s4h_country.run(
-              SELECT.from(CountryText).where({ Country: { in: countryCodes } })
-            )
-          
-            const textMap = Object.fromEntries(countryTexts.map(ct => [ct.Country, ct.CountryName]))
+                const countryTexts = await s4h_country.run(
+                    SELECT.from(CountryText).where({ Country: { in: countryCodes } })
+                )
 
-            const aStudioText =await s4h_bp_vh.run(
-                SELECT.from(S4H_BusinessPartnerapi).where({ BusinessPartner: { in: aStudioDistrbution } })
-            );
-            const textMapStudio = Object.fromEntries(aStudioText.map(ct => [ct.BusinessPartner, ct.BusinessPartnerFullName]))
+                const textMap = Object.fromEntries(countryTexts.map(ct => [ct.Country, ct.CountryName]))
 
-            const aLanguageText =await distrospec_Txn.run(
-                SELECT.from(Languages).where({ code: { in: aLanguage } })
-            );
-            const textMapLanguage = Object.fromEntries(aLanguageText.map(ct => [ct.code, ct.name]))
-            
-         
-            return dbData.map(row => ({
-              ...row,
-            //   Country : row.RegionalCode,
-              Region: textMap[row.RegionCode] || null,
-              TitleCategoryText : oTitleCategory[row.TitleCategory] || null,
-              StudioText : textMapStudio[row.StudioDistributor] || null,
-              LangCodeText : textMapLanguage[row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''] || null
-            }))
-          }
-          else{
-            const oneDb = await SELECT.one.from(TitleV).where({
-                MaterialMasterTitleID: dbData.MaterialMasterTitleID,
-                LocalTitleId:dbData.LocalTitleId,
-                ID:dbData.ID,
-                TitleType:dbData.TitleType
-            });
-            if(oneDb){
-            const countryTexts = await s4h_country.run(
-                SELECT.one.from(CountryText).where({ Country: oneDb.RegionCode ,Language:'EN'})
-              )
-              const oStudioText =await s4h_bp_vh.run(
-                SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: oneDb.StudioDistributor })
-            );
+                const aStudioText = await s4h_bp_vh.run(
+                    SELECT.from(S4H_BusinessPartnerapi).where({ BusinessPartner: { in: aStudioDistrbution } })
+                );
+                const textMapStudio = Object.fromEntries(aStudioText.map(ct => [ct.BusinessPartner, ct.BusinessPartnerFullName]))
 
-            const oLanguageText =await distrospec_Txn.run(
-                SELECT.one.from(Languages).where({ code: oneDb.LanguageCode.toLowerCase() })
-            );
-              dbData.Region = countryTexts?.CountryName;
-              dbData.TitleCategoryText = oTitleCategory[oneDb.TitleCategory]
-              dbData.StudioText = oStudioText?.BusinessPartnerFullName;
-              dbData.LangCodeText =oLanguageText?.name;
-            return dbData
+                const aLanguageText = await distrospec_Txn.run(
+                    SELECT.from(Languages).where({ code: { in: aLanguage } })
+                );
+                const textMapLanguage = Object.fromEntries(aLanguageText.map(ct => [ct.code, ct.name]))
+
+
+                return dbData.map(row => ({
+                    ...row,
+                    //   Country : row.RegionalCode,
+                    Region: textMap[row.RegionCode] || null,
+                    TitleCategoryText: oTitleCategory[row.TitleCategory] || null,
+                    StudioText: textMapStudio[row.StudioDistributor] || null,
+                    LangCodeText: textMapLanguage[row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''] || null
+                }))
             }
-          }
-         });
-        
-        
+            else {
+                const oneDb = await SELECT.one.from(TitleV).where({
+                    MaterialMasterTitleID: dbData.MaterialMasterTitleID,
+                    LocalTitleId: dbData.LocalTitleId,
+                    ID: dbData.ID,
+                    TitleType: dbData.TitleType
+                });
+                if (oneDb) {
+                    const countryTexts = await s4h_country.run(
+                        SELECT.one.from(CountryText).where({ Country: oneDb.RegionCode, Language: 'EN' })
+                    )
+                    const oStudioText = await s4h_bp_vh.run(
+                        SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: oneDb.StudioDistributor })
+                    );
+
+                    const oLanguageText = await distrospec_Txn.run(
+                        SELECT.one.from(Languages).where({ code: oneDb.LanguageCode.toLowerCase() })
+                    );
+                    dbData.Region = countryTexts?.CountryName;
+                    dbData.TitleCategoryText = oTitleCategory[oneDb.TitleCategory]
+                    dbData.StudioText = oStudioText?.BusinessPartnerFullName;
+                    dbData.LangCodeText = oLanguageText?.name;
+                    return dbData
+                }
+            }
+        });
+
+
         this.on("READ", S4H_CustomerSalesArea, async (req, res) => {
             var query = `/A_CustomerSalesArea?$filter=Customer eq '${sSoldToCustomer}' and SalesOrganization eq  '${SalesOrganization}' and DistributionChannel eq '${DistributionChannel}' and Division eq '${Division}'&$expand=to_PartnerFunction`;
             return s4h_bp_Txn.get(query);
@@ -1629,25 +1629,56 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return s4h_material_read.run(req.query);
         });
         this.on(['READ'], MaterialDocumentItem, async req => { //s4h_bp_vh
-            var aMatDoc=  await s4h_material_read.run(req.query);
+            var aMatDoc = await s4h_material_read.run(req.query);
 
             const aMaterials = [...new Set(aMatDoc.map(row => row.Material))]
-            const aStudioDistrbution = [...new Set(aMatDoc.map(row => row.Plant))]
+            const aPlant = [...new Set(aMatDoc.map(row => row.Plant))]
             const aBatch = [...new Set(aMatDoc.map(row => row.Batch))]
             const aSupplier = [...new Set(aMatDoc.map(row => row.Supplier))]
 
-            const aMaterialTexts = await s4h_products_Crt.run(
-              SELECT.from(ProductDescription).where({ Product: { in: aMaterials } ,Language :'EN' })
-            )
-          
-            const mDescMap = Object.fromEntries(aMaterialTexts.map(ct => [ct.Product, ct.ProductDescription]))
+            if (aMaterials.length != 0) {
+                var aMaterialTexts = await s4h_products_Crt.run(
+                    SELECT.from(ProductDescription).where({ Product: { in: aMaterials }, Language: 'EN' })
+                )
+            } else {
+                var aMaterialTexts = [];
+            }
 
+            if (aPlant.length != 0) {
+                var aPlantTexts = await s4h_planttx.run(
+                    SELECT.from(S4_Plants).where({ Plant: { in: aPlant } })
+                );
+            }
+            else {
+                var aPlantTexts = [];
+            }
+
+            if (aSupplier.length!=0){
+                var aSupplierTexts = await s4h_bp_Txn.run(SELECT.from(S4H_BuisnessPartner).where({ Supplier: { in: aSupplier } }))
+            }else{
+                var aSupplierTexts =[];
+            }
+
+            if (aBatch.length!=0){
+                var aBatchTexts = await cds.transaction(req).run(SELECT.from(Batch).where({BatchNumber: {in : aBatch}}));
+            }else{
+                var aBatchTexts =[];
+            }
+            
+
+            const mDescMap = Object.fromEntries(aMaterialTexts.map(ct => [ct.Product, ct.ProductDescription]))
+            const mPlantDescMap = Object.fromEntries(aPlantTexts.map(ct => [ct.Plant, ct.PlantName]))
+            const mSupplierDescMap = Object.fromEntries(aSupplierTexts.map(ct => [ct.Supplier, ct.BusinessPartnerFullName]))
+            const mBatchDescMap = Object.fromEntries(aBatchTexts.map(ct => [ct.BatchNumber, ct.InventoryBinName]))
 
             return aMatDoc.map(row => ({
                 ...row,
-              //   Country : row.RegionalCode,
-                MaterialDescription: mDescMap[row.Material] || null
-              }))
+                //   Country : row.RegionalCode,
+                MaterialDescription: mDescMap[row.Material] || null,
+                PlantDescription: mPlantDescMap[row.Plant] || null,
+                BatchDescription: mBatchDescMap[row.Batch] || null,
+                SupplierDescription: mSupplierDescMap[row.Supplier] || null
+            }))
 
         });
         // this.on(['READ'], MaterialDocumentItem_Print, async req => { //s4h_bp_vh
@@ -1658,7 +1689,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         // this.on(['READ'], MaterialDocumentHeader_Prnt, async req => { //s4h_bp_vh
         //     return await s4h_material_read.run(req.query);
         // });
-        
+
         this.on(['READ'], S4H_BusinessPartnerapi, async req => { //s4h_bp_vh
             return await s4h_bp_vh.run(req.query);
         });
@@ -1703,27 +1734,27 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("editProduct", async (req) => {
             try {
                 const input = req.data.input; // Extract input data from request
-                
-               
+
+
                 // Make a POST call to the external API              
-                const response = await s4h_products_Crt.run(UPDATE(Products).set({ ProductGroup: input.ProductGroup}).where({ Product: input.Product}));
+                const response = await s4h_products_Crt.run(UPDATE(Products).set({ ProductGroup: input.ProductGroup }).where({ Product: input.Product }));
                 //const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
                 const sDescription = await s4h_products_Crt.run(SELECT.from(ProductDescription).where({ Product: input.Product, Language: 'EN' }));
-                if (sDescription.length!=0){
+                if (sDescription.length != 0) {
                     const response1 = await s4h_products_Crt.run(UPDATE(ProductDescription).set({ ProductDescription: input.to_Description[0].ProductDescription }).where({ Product: input.Product, Language: 'EN' }));
                 }
-                else{
+                else {
                     const response1 = await s4h_products_Crt.run(INSERT.into(ProductDescription).entries({ ProductDescription: input.to_Description[0].ProductDescription, Product: input.Product, Language: 'EN' }));
                 }
-                
+
                 const sBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: input.Product, Language: 'EN' }));
-                if (sBasicText.length!=0){
+                if (sBasicText.length != 0) {
                     const response = await s4h_products_Crt.run(UPDATE(ProductBasicText).set({ LongText: input.to_ProductBasicText[0].LongText }).where({ Product: input.Product, Language: 'EN' }));
                 }
-                else{
-                    const response = await s4h_products_Crt.run(INSERT.into(ProductBasicText).entries({ Product: input.Product,LongText: input.to_ProductBasicText[0].LongText,Language: 'EN'}));
+                else {
+                    const response = await s4h_products_Crt.run(INSERT.into(ProductBasicText).entries({ Product: input.Product, LongText: input.to_ProductBasicText[0].LongText, Language: 'EN' }));
                 }
-                
+
                 // var sData =
                 // {
                 //     "LongText": "Testing"
@@ -1739,7 +1770,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 //     data : sData,
                 //     headers:headers                        
                 // });
-                return {Product :input.Product};
+                return { Product: input.Product };
             } catch (error) {
                 req.error(500, `Product creation failed: ${error.message}`);
             }
@@ -1986,7 +2017,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const materialDocument = await s4h_material_read.run(
                     SELECT.from(MaterialDocumentHeader, (header) => {
                         header.PostingDate,
-                        header.to_MaterialDocumentItem();
+                            header.to_MaterialDocumentItem();
                     }).where({ MaterialDocument: oMaterialDocument.MaterialDocument, MaterialDocumentYear: oMaterialDocument.MaterialDocumentYear })
                 );
 
@@ -2063,7 +2094,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             ManufacturingOrder: "",
                             MasterFixedAsset: "",
                             // Material: item.Material,
-                            Material:productData[0]?.to_Description[0].ProductDescription,
+                            Material: productData[0]?.to_Description[0].ProductDescription,
                             MaterialDocument: item.MaterialDocument,
                             MaterialDocumentItem: item.MaterialDocumentItem,
                             MaterialDocumentYear: item.MaterialDocumentYear,
@@ -2093,7 +2124,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         GRHeaderNode: {
                             GoodsReceiptHeadlinePrint: oMaterialDocument.MaterialDocument,
                             Language: "EN",
-                            Client :productData[0]?.YY1_CustomerDes_PRD,
+                            Client: productData[0]?.YY1_CustomerDes_PRD,
                             Product: oMaterialDocument.MaterialDocument,
                             MaterialDocument: oMaterialDocument.MaterialDocument,
                             MaterialDocumentHeaderText: productData[0]?.YY1_CustomerDes_PRD,
@@ -2326,46 +2357,46 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
         }); */
         this.on("invoiceForm_LABEL", async (req, res) => {
             try {
-                var form_name = req.data.form,aItems=[];
+                var form_name = req.data.form, aItems = [];
                 var query = `/v1/forms/${form_name}`;
                 var oFormObject = await deluxe_adsrestapi.get(query);
                 var sXMLTemplate = oFormObject.templates[0].xdpTemplate;
-        
+
                 var oBillingDocument = req?.data?.Billing;
-        
+
                 const billingDocument = await srv_BillingDocument.run(
                     SELECT.from(BillingDocument, (header) => {
                         header.BillingDocumentDate,
-                        header.BillingDocumentCategory,
-                        header.BillingDocumentType,
-                     
-                        header.to_Item()
+                            header.BillingDocumentCategory,
+                            header.BillingDocumentType,
+
+                            header.to_Item()
                     }).where({ BillingDocument: oBillingDocument.BillingDocument })
                 );
 
                 const oBillingDocumentPartner = await srv_BillingDocument.run(
-                    SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument , PartnerFunction :'RE'})
+                    SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'RE' })
                 )
-                
+
                 const aBillingDocumentItem = await srv_BillingDocument.run(
-                    SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument})
-                ) 
-                var aItem10 = aBillingDocumentItem.filter(function(item){
-                        return item.BillingDocumentItem === '10'
+                    SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument })
+                )
+                var aItem10 = aBillingDocumentItem.filter(function (item) {
+                    return item.BillingDocumentItem === '10'
                 })
 
                 var sMapBillingDocumentItem = [...new Set(aBillingDocumentItem.map(row => row.BillingDocumentItem))];
 
                 // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
                 // const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},LongTextID:"Z002"}));
-                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem}}));
-                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},ConditionClass :'B'}));
-                const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},ConditionClass :'A',ConditionIsForStatistics:false}));
-                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},ConditionClass :'A',ConditionInactiveReason:{ '<>' : ''}}));
-                for(var index in aBillingDocumentItem){
-                    aItems.push(   {
+                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem } }));
+                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B' }));
+                const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionIsForStatistics: false }));
+                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionInactiveReason: { '<>': '' } }));
+                for (var index in aBillingDocumentItem) {
+                    aItems.push({
                         "SrNo": index,
-                        "Title": aItemList[index]?.LongText ,
+                        "Title": aItemList[index]?.LongText,
                         "Qty": aBillingDocumentItem[index].BillingQuantity,
                         "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
                         "Cur": aBillingDocumentItem[index].TransactionCurrency,
@@ -2373,101 +2404,101 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         "Discount": aDiscountItem[index]?.ConditionAmount,
                         "Extended": "",
                         "Tax": 0.0
-                      })
+                    })
                 }
-                
+
 
                 const oSalesOrder = await s4h_so_Txn.run(
-                    SELECT.one.from(S4H_SOHeader).where({ SalesOrder: aItem10[0].SalesDocument})
+                    SELECT.one.from(S4H_SOHeader).where({ SalesOrder: aItem10[0].SalesDocument })
                 )
                 if (!billingDocument.length) {
                     console.log("No billing document found for", oBillingDocument.BillingDocument);
                     return;
                 }
-         // Construct GRMatItemNode array with mapped product details
-         const billingHeader = billingDocument[0]; // header
-         const item = billingHeader.to_Item.find(it => it.BillingDocumentItem === oBillingDocument.BillingDocumentItem); // item
-         
-         const billingDataNode = {
-              "TaxInvoiceNode": {
-                "Header": {
-                  "CompanyAddress": "a",
-                  "PageNo": "",
-                  "InvoiceNo": "",
-                  "InvoiceDate": "",
-                  "Terms": "",
-                  "PaymentDueDate": ""
-                },
-                "BillTo": {
-                  "BillToAddress": "ss",
-                  "CustomerAccountNo": oBillingDocumentPartner.Customer,
-                  "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
-                  "CustomerContact": "77979",
-                  "DeluxContact": "",
-                  "DeliverInvoiceByMailTo": ""
-                },
-                "Table": {
-                  "TabHeader": [
-                    {
-                      "SrNo": "",
-                      "Title": "",
-                      "Qty": "",
-                      "UOM": "",
-                      "Cur": "",
-                      "Price": "",
-                      "Discount": "",
-                      "Extended": "",
-                      "Tax": 0.0
+                // Construct GRMatItemNode array with mapped product details
+                const billingHeader = billingDocument[0]; // header
+                const item = billingHeader.to_Item.find(it => it.BillingDocumentItem === oBillingDocument.BillingDocumentItem); // item
+
+                const billingDataNode = {
+                    "TaxInvoiceNode": {
+                        "Header": {
+                            "CompanyAddress": "a",
+                            "PageNo": "",
+                            "InvoiceNo": "",
+                            "InvoiceDate": "",
+                            "Terms": "",
+                            "PaymentDueDate": ""
+                        },
+                        "BillTo": {
+                            "BillToAddress": "ss",
+                            "CustomerAccountNo": oBillingDocumentPartner.Customer,
+                            "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
+                            "CustomerContact": "77979",
+                            "DeluxContact": "",
+                            "DeliverInvoiceByMailTo": ""
+                        },
+                        "Table": {
+                            "TabHeader": [
+                                {
+                                    "SrNo": "",
+                                    "Title": "",
+                                    "Qty": "",
+                                    "UOM": "",
+                                    "Cur": "",
+                                    "Price": "",
+                                    "Discount": "",
+                                    "Extended": "",
+                                    "Tax": 0.0
+                                }
+                            ],
+                            "Title": [
+                                {
+                                    "Title": ""
+                                }
+                            ],
+                            "Items": aItems,
+                        },
+                        "PaymentInfo": {
+                            "Payee": "",
+                            "LockBoxNo": "",
+                            "Address": "",
+                            "Beneficiary": "",
+                            "AccountNo": "",
+                            "RoutingNoACH": "",
+                            "RoutingNoWire": "",
+                            "SwitchAddress": "",
+                            "SubTotal": 0.0,
+                            "SalesTax1": 0.0,
+                            "SalesTax2": 0.0,
+                            "Discount": 0.0,
+                            "GrandTotalDue": 0.0,
+                            "SalexTax1Type": "",
+                            "SalesTax2Type": ""
+                        },
+                        "Footer": {
+                            "FooterText": ""
+                        }
                     }
-                  ],
-                  "Title": [
-                    {
-                      "Title": ""
-                    }
-                  ],
-                  "Items":aItems,
-                },
-                "PaymentInfo": {
-                  "Payee": "",
-                  "LockBoxNo": "",
-                  "Address": "",
-                  "Beneficiary": "",
-                  "AccountNo": "",
-                  "RoutingNoACH": "",
-                  "RoutingNoWire": "",
-                  "SwitchAddress": "",
-                  "SubTotal": 0.0,
-                  "SalesTax1": 0.0,
-                  "SalesTax2": 0.0,
-                  "Discount": 0.0,
-                  "GrandTotalDue": 0.0,
-                  "SalexTax1Type": "",
-                  "SalesTax2Type": ""
-                },
-                "Footer": {
-                  "FooterText": ""
+
                 }
-              }
-            
-          }
-          
-         
-        // Construct final formData object
+
+
+                // Construct final formData object
                 const formData = {
                     Form: billingDataNode
                 };
-               console.log(JSON.stringify(formData, null, 2));
-        
+                console.log(JSON.stringify(formData, null, 2));
+
                 const xmlData = xmljs.js2xml(formData, { compact: true, spaces: 4 });
                 const base64EncodedXml = Buffer.from(xmlData, "utf-8").toString("base64");
-        
+
                 const headers = {
                     "Content-Type": 'application/json',
                     "accept": 'application/json'
                 };
-        
+
                 const sDownloadPDFurl = "/v1/adsRender/pdf?TraceLevel=0";
-        
+
                 const data = {
                     xdpTemplate: sXMLTemplate,
                     xmlData: base64EncodedXml,
@@ -2478,14 +2509,14 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     changeNotAllowed: false,
                     printNotAllowed: false
                 };
-        
+
                 const oPrintForm = await deluxe_adsrestapi.send({
                     method: "POST",
                     path: sDownloadPDFurl,
                     data,
                     headers
                 });
-        
+
                 return oPrintForm.fileContent;
             } catch (e) {
                 req.error(502, e);
@@ -2543,23 +2574,23 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
         };
 
         async function convertBytes(bytes) {
-          
+
             if (isNaN(bytes) || bytes < 0) {
-              return 'Invalid Value';
+                return 'Invalid Value';
             }
-          
+
             if (bytes === 0) {
-              return "0 Bytes";
+                return "0 Bytes";
             }
-          
+
             var k = 1024;
             var sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"];
             var i = Math.floor(Math.log(bytes) / Math.log(k));
             var value = bytes / Math.pow(k, i);
             var result = value.toFixed(2) + " " + sizes[i];
-          
+
             return result;
-          }
+        }
         return super.init();
     }
 
