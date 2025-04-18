@@ -33,7 +33,7 @@ sap.ui.define([
             }
 
             // Extract key values from the selected row
-            var oData = oContext.getObject();
+            var oData = JSON.parser(JSON.stringify(oContext.getObject()));
             oData.IsMarkedForDeletion = true;
             var sPath = oContext.getPath(); // OData entity path (e.g., "/Titles('123')")
             var result = sPath.substring(sPath.indexOf("(")); 
@@ -42,6 +42,13 @@ sap.ui.define([
             var sMaterialMasterTitleID = oData.MaterialMasterTitleID;
             var sLocalTitleId = oData.LocalTitleId;
             var sRegionCode = oData.RegionCode;
+
+            //Cleaning Up Region and other text
+            delete oData.Region;
+            delete oData.LangCodeText;
+            delete oData.TitleCategoryText;
+            delete oData.StudioText;
+
             MessageBox.confirm("Are you sure you want to delete this title?", {
                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                 onClose: function (oAction) {

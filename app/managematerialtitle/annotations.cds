@@ -7,6 +7,8 @@ annotate service.TitleV.MaterialMasterTitleID with @(
 
 
 annotate service.TitleV with @(
+
+    Capabilities.SearchRestrictions.Searchable: false,
     // Selection Fields (Filters in Fiori Elements)
     UI.SelectionFields : [
         MaterialMasterTitleID,
