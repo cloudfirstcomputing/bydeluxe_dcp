@@ -1,0 +1,14 @@
+{
+    "DCP_DB_BATCH": {
+        "target": {
+            "object": "DELUXE_CONFIG_BATCH",
+            "schema.configure": "bydeluxeconfigtables-db-hdi/schema"
+        }
+    },
+    "DCP_DB_PARAMETERS": {
+        "target": {
+            "object": "DELUXE_CONFIG_PARAMETERS",
+            "schema.configure": "bydeluxeconfigtables-db-hdi/schema"
+        }
+    }
+}

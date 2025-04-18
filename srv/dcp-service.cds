@@ -483,4 +483,5 @@ service BookingOrderService {
 
     action  SDBIL_CI_STANDARD_US_E (form:String, Billing:BillingDoc) returns LargeString;
     
+    entity Batch  as projection on db.Batch;
 }
