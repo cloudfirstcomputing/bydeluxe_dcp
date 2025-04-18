@@ -46,10 +46,6 @@ sap.ui.define([
                 "type": EdmType.Number
             }, {
                 "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt7"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt9"),
                 "type": EdmType.String
             }, {
@@ -64,19 +60,7 @@ sap.ui.define([
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt14"),
                 "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt16"),
-                "type": EdmType.Number
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt17"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt18"),
-                "type": EdmType.String
-            }, {
+            },{
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt19"),
                 "type": EdmType.String
@@ -91,6 +75,22 @@ sap.ui.define([
             }, {
                 "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt22"),
+                "type": EdmType.String
+            }, {
+                "width": "11rem",
+                "bindedCol": oResourceBundle.getText("uploadFileColTxt33"),
+                "type": EdmType.String
+            }, {
+                "width": "11rem",
+                "bindedCol": oResourceBundle.getText("uploadFileColTxt16"),
+                "type": EdmType.Number
+            }, {
+                "width": "11rem",
+                "bindedCol": oResourceBundle.getText("uploadFileColTxt17"),
+                "type": EdmType.String
+            }, {
+                "width": "11rem",
+                "bindedCol": oResourceBundle.getText("uploadFileColTxt18"),
                 "type": EdmType.String
             }, {
                 "width": "11rem",
@@ -118,10 +118,6 @@ sap.ui.define([
                 "type": EdmType.String
             }, {
                 "width": "11rem",
-                "bindedCol": oResourceBundle.getText("uploadFileColTxt33"),
-                "type": EdmType.String
-            }, {
-                "width": "11rem",
                 "bindedCol": oResourceBundle.getText("uploadFileColTxt39"),
                 "type": EdmType.String
             }];
@@ -138,9 +134,6 @@ sap.ui.define([
             },{
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt6"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt6")
-            }, {
-                technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt7"),
-                excelColumn: oResourceBundle.getText("uploadFileColTxt7")
             }, {
                 technicalName: oResourceBundle.getText("uploadFileColTechnicalTxt9"),
                 excelColumn: oResourceBundle.getText("uploadFileColTxt9")

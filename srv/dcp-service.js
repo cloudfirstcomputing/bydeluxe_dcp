@@ -203,12 +203,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!element.Studio) {
                         sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
-                    // if (!element.Title) {
-                    //     sValidationError = sValidationError + "Title is mandatory.\n";
-                    // }
-                    if (!element.RequestedDelivDate) {
-                        sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
-                    }
                     if (!element.OrderType) {
                         sValidationError = sValidationError + "OrderType is mandatory.\n";
                     }
@@ -217,6 +211,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     if (!element.PlayEndDate) {
                         sValidationError = sValidationError + "Play End Date is mandatory.\n";
+                    }
+                    if (!element.CustomerReference) {
+                        sValidationError = sValidationError + "Distrospec ID is mandatory.\n";
+                    }
+                    if (!element.RequestedDelivDate) {
+                        sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
+                    }
+                    if (!element.BookingType) {
+                        sValidationError = sValidationError + "BookingType is mandatory.\n";
                     }
                     if (!element.TheaterID) {
                         sValidationError = sValidationError + "Theater ID is mandatory.\n";
