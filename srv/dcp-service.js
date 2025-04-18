@@ -1025,8 +1025,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
             }
             else{
-                var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
-                var Product = oProductDescFromS4?.Product;
+                // var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
+                // var Product = oProductDescFromS4?.Product;
+                var Product = sTitle;
                 if (Product) {
                     oDistroQuery.SELECT.where = [{ ref: ["Title_Product"] }, "=", { val: Product }];
                     var aDistroSpecData = await oDistroQuery;
@@ -1042,7 +1043,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
                 else {
-                    sErrorMessage = `Product not found for the title: ${sTitle}`;
+                    sErrorMessage = `Title is empty`;
                 }
             }
             if (!sErrorMessage) {

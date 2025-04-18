@@ -3,84 +3,10 @@
 
 ###
 POST {{server}}/odata/v4/booking-order/createStudioFeeds
-Authorization:Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS00ZTBjYTBmZWUyIiwidHlwIjoiSldUIiwiamlkIjogInp1dVpwSE5UNkIzZFUvMDlqbkt2MXVOQ2FFTW9WLzJvUE9tR0E5VDd0T289In0.eyJqdGkiOiIzZDEwNjc0YjUxZmY0MTYzOWNiMWUwN2YwY2QzMzE4ZCIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJ6ZG4iOiJkZXYtZGhpcG5lNXQifSwic3ViIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiXSwic2NvcGUiOlsidWFhLnJlc291cmNlIl0sImNsaWVudF9pZCI6InNiLWJ5ZGVsdXhlLURldiF0MzM3Mzk1IiwiY2lkIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhenAiOiJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJyZXZfc2lnIjoiY2ViNDQxYjMiLCJpYXQiOjE3NDM1MTM0NzAsImV4cCI6MTc0MzU1NjY3MCwiaXNzIjoiaHR0cHM6Ly9kZXYtZGhpcG5lNXQuYXV0aGVudGljYXRpb24udXMxMC5oYW5hLm9uZGVtYW5kLmNvbS9vYXV0aC90b2tlbiIsInppZCI6ImRiZGZkNDZiLTQxNDQtNDcyOS1hMDNjLThmODIwZmNjODlmZSIsImF1ZCI6WyJ1YWEiLCJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSJdfQ.jfqD4tgeT-MtLAZDsGYN_QVxHP2aAsKyg_tb0-fdSUWCLa5SQlow4ZZKH_m5eZtPgqxwpzVsyo3gKHdLyvxxqC_gh4jJlvx0PNSLEtuct3pmzf48RHgnvTxUhsrSuCTg5u3NRB4VxKbvUeF4bxG65ARjMf3spReF4O-6Jo4F-_OCCi356iWOHiw-Y__qjnBTGSfZ41qYKDPECdUYBm47-rjV6jkc2s45N1LVto0n9a5F1KRp6bxnd-3R3uEzraW9OO_-s5vZ4gMSNnwTfPVZgLvGvq1v8Svwp8IEmeUkqFVwyyBNBEYcLH14ANa_r0jBn5m5ThW6u1r8oxVPOScbcQ
+Authorization:Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vZGV2LWRoaXBuZTV0LmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS00ZTBjYTBmZWUyIiwidHlwIjoiSldUIiwiamlkIjogIll6VUdMUzF4OGVkOEx5SzlxMHFNNXBqWUthditmWC9rSGh3THFKbUhKbEU9In0.eyJqdGkiOiI3NWYxNjg0MDgwMzI0YmFmYWU1Yzc3NjU5M2UyYWJiNiIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJkYmRmZDQ2Yi00MTQ0LTQ3MjktYTAzYy04ZjgyMGZjYzg5ZmUiLCJ6ZG4iOiJkZXYtZGhpcG5lNXQifSwic3ViIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiXSwic2NvcGUiOlsidWFhLnJlc291cmNlIl0sImNsaWVudF9pZCI6InNiLWJ5ZGVsdXhlLURldiF0MzM3Mzk1IiwiY2lkIjoic2ItYnlkZWx1eGUtRGV2IXQzMzczOTUiLCJhenAiOiJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJyZXZfc2lnIjoiY2ViNDQxYjMiLCJpYXQiOjE3NDQ5NTM3NjEsImV4cCI6MTc0NDk5Njk2MSwiaXNzIjoiaHR0cHM6Ly9kZXYtZGhpcG5lNXQuYXV0aGVudGljYXRpb24udXMxMC5oYW5hLm9uZGVtYW5kLmNvbS9vYXV0aC90b2tlbiIsInppZCI6ImRiZGZkNDZiLTQxNDQtNDcyOS1hMDNjLThmODIwZmNjODlmZSIsImF1ZCI6WyJ1YWEiLCJzYi1ieWRlbHV4ZS1EZXYhdDMzNzM5NSJdfQ.rLFLuaOTrHMRrbHzXXnGTKX7eiVJCASF9RwYdTfMu2BUKDHpjp6_T2gwtV5YaB-6Kd_0IqstFTW06fIjTIdJHUG9-1zewcrSW1y33e6YcFBs_U2AqyUsj9uHtJbGsP5AewOXS0L65JBHY0ryNBnNWBL2F8ZZkWIoLYmrB-YhjSWRXi0xJENfn-sTTxYl7S3hoqoOHsimcGOLjgacChwby2M1jqtIBKn00k3JyaHSvuqkubTRjUi_iIdyC5OiX2D2In_V39Q629LOrTK2jt2Lz8XcIv54ou6lFmpDd7lKeVpN6dtUR0QAxE8VKkRMb9VWw-NfefJOPG9e51aA_z7ihg
 Content-Type:application/json
 
-{
-
-  "StudioFeed": [
-
-    {
-
-      "BookingID": "2944176",
-
-      "SourceSystem": "SPIRITWORLD",
-
-      "Origin_OriginID": "F",
-
-      "EntityID": "SPC",
-
-      "Studio": "1000011",
-
-      "Title": "2477",
-
-      "CustomerReference": "2372561c-06eb-02e4-e063-0100007f59d",
-
-      "CreatedOn": "2025-02-04",
-
-      "RequestedDelivDate": "2025-02-14",
-
-      "ReleaseID": "2477",
-
-      "OrderType": "C",
-
-      "RecordType": "B",
-
-      "BookingType": "NO",
-
-      "TheaterID": "THR000542304",
-
-      "Circuit": "CRC000000281",
-
-      "OrderID": "29223787",
-
-      "PlayStartDate": "2025-02-14",
-
-      "PlayEndDate": "2025-02-15",
-
-      "HFR": "N",
-
-      "ShipmentIndicator": "Y",
-
-      "ScreeningIndicator": "N",
-
-      "DepotID": "5",
-
-      "SoundID": "51HIN",
-
-      "Language": "ENG",
-
-      "SubtitleType1": "E",
-
-      "PrintFormat": "SAT",
-
-      "ShipPriority": "2",
-
-      "PrintQuality": "2D",
-
-      "ApprovedScreens": "",
-
-      "CTTs": "PaddingtonPeru_FTR_S_EN-EN-CCAP_OV_51-HI-VI_4K_SPE_20241218_EKN_SMPTE_OV",
-
-      "CountryCode": "US",
-
-      "ScreenID": ""
-
-    }
-
-  ]
-
-}
+{"StudioFeed":[{"BookingID":"2764546","SourceSystem":"SPIRITWORLD","Origin_OriginID":"F","EntityID":"SPC","Studio":"1000011","Title":"6003","CustomerReference":"ff04f077-79ca-2c64-e053-0100007fb949","CreatedOn":"2025-09-05","RequestedDelivDate":"2025-09-10","ReleaseID":"2477","OrderType":"K","RecordType":"B","BookingType":"NS","TheaterID":"THR000542304","Circuit":"CRC000031880","OrderID":"25324011","PlayStartDate":"2025-09-11","PlayEndDate":"2025-09-11","KeyDeliveryOnDate":"2025-09-10","KeyStartDate":"2025-09-11","KeyStartTime":"17:00:00","KeyEndDate":"2025-09-11","KeyEndTime":"21:00:00","HFR":"Y","ShipmentIndicator":"Y","ScreeningIndicator":"Y","DepotID":"","SoundID":"51","Language":"ENG","SubtitleType1":"N","PrintFormat":"EXT3","ShipPriority":"2","ApprovedScreens":"3,11","CTTs":"Gran-Turismo_FTR_SCREEN-X_1_EN-xx_51_2D_SPR_2023071402_11_41_FAC","CountryCode":"US","ScreenID":"3"}]}
 
 
 ###
