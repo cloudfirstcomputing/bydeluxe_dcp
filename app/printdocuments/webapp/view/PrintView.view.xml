@@ -85,13 +85,31 @@
 								<Text id="_IDGenText2" text="Material"/>
 							</Column>
 							<Column id="_IDGenColumn3">
-								<Text id="_IDGenText3" text="Plant"/>
+								<Text id="_IDGenText3" text="MaterialDescription"/>
 							</Column>
 							<Column id="_IDGenColumn4">
-								<Text id="_IDGenText4" text="Document Type"/>
+								<Text id="_IDGenText4" text="Plant"/>
+							</Column>
+							<Column id="_IDGenColumnext3">
+								<Text id="_IDGenTextext3" text="PlantDescription"/>
+							</Column>
+							<Column id="_IDGenColumnext4">
+								<Text id="_IDGenTextext4" text="Supplier"/>
+							</Column>
+							<Column id="_IDGenColumnext5">
+								<Text id="_IDGenTextext5" text="SupplierDescription"/>
+							</Column>
+							<Column>
+								<Text text="Batch"/>
+							</Column>
+							<Column>
+								<Text text="BatchDescription"/>
 							</Column>
 							<Column id="_IDGenColumn5">
-								<Text id="_IDGenText5" text="Document Date"/>
+								<Text id="_IDGenText5" text="Document Type"/>
+							</Column>
+							<Column id="_IDGenColumnext6">
+								<Text id="_IDGenTextext6" text="Document Date"/>
 							</Column>
 						</columns>
 
@@ -101,7 +119,13 @@
 									<Text id="_IDGenText6" text="{MaterialDocument}"/>
 									<Text id="_IDGenText7" text="{MaterialDocumentItem}"/>
 									<Text id="_IDGenText8" text="{Material}"/>
+									<Text id="_IDGenTextext8" text="{MaterialDescription}"/>
 									<Text id="_IDGenText9" text="{Plant}"/>
+									<Text  text="{PlantDescription}"/>
+									<Text  text="{Supplier}"/>
+									<Text  text="{SupplierDescrption}"/>
+									<Text  text="{Batch}"/>
+									<Text  text="{BatchDescrption}"/>
 									<Text id="_IDGenText10" text="{to_MaterialDocumentHeader/InventoryTransactionType}"/>
 									<Text id="_IDGenText11" text="{to_MaterialDocumentHeader/PostingDate}"/>
 								</cells>

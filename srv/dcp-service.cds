@@ -431,6 +431,12 @@ service BookingOrderService {
             key MaterialDocumentItem,
                 Material,
                 Plant,
+                Supplier,
+                Batch,
+                '' as PlantDescription :String,
+                '' as MaterialDescription :String,
+                '' as BatchDescription :String,
+                '' as SupplierDescrption :String,
                 to_MaterialDocumentHeader : redirected to MaterialDocumentHeader,
 
         };
