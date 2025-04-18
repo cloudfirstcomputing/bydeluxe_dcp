@@ -1632,15 +1632,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aMatDoc=  await s4h_material_read.run(req.query);
 
             const aMaterials = [...new Set(aMatDoc.map(row => row.Material))]
-            const aStudioDistrbution = [...new Set(dbData.map(row => row.Plant))]
-            const aBatch = [...new Set(dbData.map(row => row.Batch != null ? row.LanguageCode.toLowerCase() : ''))]
-            const aSupplier = [...new Set(dbData.map(row => row.Supplier != null ? row.LanguageCode.toLowerCase() : ''))]
+            const aStudioDistrbution = [...new Set(aMatDoc.map(row => row.Plant))]
+            const aBatch = [...new Set(aMatDoc.map(row => row.Batch))]
+            const aSupplier = [...new Set(aMatDoc.map(row => row.Supplier))]
 
-            const aMaterialTexts = await s4h_country.run(
+            const aMaterialTexts = await s4h_products_Crt.run(
               SELECT.from(ProductDescription).where({ Product: { in: aMaterials } ,Language :'EN' })
             )
           
-            const mDescMap = Object.fromEntries(aMaterialTexts.map(ct => [ct.Product, ct.Description]))
+            const mDescMap = Object.fromEntries(aMaterialTexts.map(ct => [ct.Product, ct.ProductDescription]))
 
 
             return aMatDoc.map(row => ({

@@ -298,12 +298,12 @@ sap.ui.define([
                 // }
             }
 
-            var dStartDate = this.byId("startDate").getValue();
-            var dEndDate = this.byId("endDate").getValue();
+            var dStartDate = this.byId("startDate").getDateValue();
+            var dEndDate = this.byId("endDate").getDateValue();
 
-            // Optional: Remove time part to avoid time zone shift
-            dStartDate.setHours(0, 0, 0, 0);
-            dEndDate.setHours(23, 59, 59, 999);
+            // // Optional: Remove time part to avoid time zone shift
+            // dStartDate.setHours(0, 0, 0, 0);
+            // dEndDate.setHours(23, 59, 59, 999);
 
 
             if (dStartDate && dStartDate != '') {
