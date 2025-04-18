@@ -264,7 +264,8 @@ sap.ui.define([
                         StudioDistributor: "",
                         Ratings_Ass: [],
                         ExternalTitleIDs_Ass: [],
-                        GofilexTitleId: "" 
+                        GofilexTitleId: "" ,
+                        UseSecureName:"Yes"
                         //IDType: "",
                         //IDValue: ""
                     });
@@ -298,7 +299,8 @@ sap.ui.define([
                     StudioDistributor: "",
                     Ratings_Ass: [],
                     ExternalTitleIDs_Ass: [],
-                    GofilexTitleId: "" 
+                    GofilexTitleId: "" ,
+                    UseSecureName:"Yes"
                     //IDType: "",
                     //IDValue: ""
                 });
