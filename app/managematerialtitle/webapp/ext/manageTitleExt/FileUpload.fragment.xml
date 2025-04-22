@@ -10,7 +10,7 @@
     contentWidth="400px"
     contentHeight="200px">
 
-    <VBox class="sapUiSmallMargin">
+    <VBox id="_IDGenVBox1" class="sapUiSmallMargin">
       <u:FileUploader
         id="fileUploader"
         name="excelUpload"
@@ -19,16 +19,16 @@
         uploadComplete=".onUploadComplete"
         change=".onFileChange"
         fileType="xlsx,xls"
-        
+        uploadUrl="/upload"
         style="Emphasized"
         width="100%" />
     </VBox>
 
     <beginButton>
-      <Button text="Upload" press=".onConfirmUpload" />
+      <Button id="_IDGenButton2" text="Upload" press=".onConfirmUpload" />
     </beginButton>
     <endButton>
-      <Button text="Cancel" press=".onCancelUpload" />
+      <Button id="_IDGenButton3" text="Cancel" press=".onCancelUpload" />
     </endButton>
   </Dialog>
 </core:FragmentDefinition>

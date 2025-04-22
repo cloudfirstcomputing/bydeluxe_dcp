@@ -1,0 +1,41 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+  <Dialog
+    id="uploadSummaryDialog"
+    title="Upload Details"
+    draggable="true"
+    resizable="true"
+    contentWidth="80%"
+    contentHeight="70%">
+    
+    <VBox id="_IDGenVBox">
+      <Table id="uploadResultTable" items="{uploadSummary>/results}">
+        <columns>
+          <Column id="_IDGenColumn1"><Text id="_IDGenText" text="Title Name" /></Column>
+          <Column id="_IDGenColumn2"><Text id="_IDGenText1" text="Status" /></Column>
+          <Column id="_IDGenColumn3"><Text id="_IDGenText2" text="Message" /></Column>
+          <Column id="_IDGenColumn4"><Text id="_IDGenText3" text="Description" /></Column>
+        </columns>
+        <items>
+          <ColumnListItem id="_IDGenColumnListItem">
+            <cells>
+              <Text id="_IDGenText4" text="{uploadSummary>title}" />
+              <ObjectStatus id="_IDGenObjectStatus"
+                text="{uploadSummary>status}"
+                state="{
+                  = ${uploadSummary>status} === 'Success' ? 'Success' :
+                    ${uploadSummary>status} === 'Warning' ? 'Warning' : 'Error'
+                }"
+              />
+              <Text id="_IDGenText5" text="{uploadSummary>description}" />
+              <Text id="_IDGenText6" text="{uploadSummary>cause}" />
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </VBox>
+
+    <endButton>
+      <Button id="_IDGenButton" text="Close" press=".onCancelSummary" />
+    </endButton>
+  </Dialog>
+</core:FragmentDefinition>

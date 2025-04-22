@@ -27,7 +27,7 @@ service BookingOrderService {
     annotate StudioFeed with @odata.draft.enabled;
     action createStudioFeeds(StudioFeed : array of StudioFeed)                                             returns String;
     action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)          returns UploadResponse;
-    action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : FieldMap) returns UploadResponse;
+    action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : array of String) returns UploadResponse;
     action remediateSalesOrder(ID : String)                                    returns String;
     action reconcileStudioFeed(aBookingID : array of String)                                               returns String;
 
@@ -77,11 +77,23 @@ service BookingOrderService {
         excelColumn   : String;
     };
 
-    type UploadResponse : {
-        acknowledgement : String;
-        recordsUpdate   : Integer;
+    type ResultRow      : {
+        TitleID : String;
+        Message : String;
+        Error   : String;
+        RowData : String;
     };
 
+   type UploadResponse : {
+        message     : {
+            success : array of ResultRow;
+            error   : array of ResultRow;
+            warning : array of ResultRow;
+        };
+    };
+
+
+    
     @readonly
     entity S4_Plants                    as projection on api.Plants;
 

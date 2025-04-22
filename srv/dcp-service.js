@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText ,Batch} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -158,7 +158,184 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: result
             };
         });
+        this.on("MassUploadManageMaterialTitle", async (req) => {
+            const uploadedFile = req.data.fileData;
+            const fileName = req.data.fileName;
+            const fieldNames = req.data.fieldNames;
+            
+            if (!uploadedFile) {
+                req.error(400, "No file data provided");
+                return;
+            }
 
+            const binaryData = Buffer.from(uploadedFile, 'base64');
+            const workbook = XLSX.read(binaryData, { type: "buffer" });
+
+            const sheetName = workbook.SheetNames[0];
+            
+            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            
+            let result = {
+                success: [],
+                error: [],
+                warning: []
+            };
+
+            for (const row of sheetData) {
+                console.log("row",row);
+                try {
+
+                    const normalizedRow = {};
+                    Object.keys(row).forEach(k => {
+                        normalizedRow[k.trim().toLowerCase()] = row[k];
+                    });
+
+                    const fieldMap = {
+                        "original title name": "OriginalTitleName",
+                        "title type": "TitleType",
+                        "title category": "TitleCategory",
+                        "region code": "RegionCode",
+                        "release date": "ReleaseDate",
+                        "imdb id": "ImdbId",
+                        "regional title name": "RegionalTitleName",
+                        "short title": "ShortTitle",
+                        "security title": "SecurityTitle",
+                        "language code": "LanguageCode",
+                        "repertory date": "RepertoryDate",
+                        "format": "Format",
+                        "release size": "ReleaseSize",
+                        "ratings": "Ratings",
+                        "reel count (estimated)": "ReelCountEstimated",
+                        "asset vault title id": "AssetVaultTitleId",
+                        "gofilex title id": "GofilexTitleId",
+                        "studio title id": "StudioTitleId",
+                        "studio/distributor": "StudioDistributor",
+                        "use secure name": "UseSecureName"
+                    };
+
+
+
+                    const mappedRow = {};
+                    for (const [excelKey, targetKey] of Object.entries(fieldMap)) {
+                        mappedRow[targetKey] = normalizedRow[excelKey];
+                    }
+
+                    console.log("mappedRow",mappedRow);
+
+                    const requiredFields = ["OriginalTitleName", "TitleCategory", "TitleType"];
+                    const missingFields = requiredFields.filter(field => !mappedRow[field]?.toString().trim());
+                    if (missingFields.length) {
+                        throw new Error(`Missing required field(s): ${missingFields.join(", ")}`);
+                    }
+
+
+                    const duplicateCheck = await SELECT.one.from(Titles).where({ OriginalTitleName: mappedRow.OriginalTitleName });
+                    if (duplicateCheck) {
+                        result.warning.push({
+                            TitleID: "",
+                            Message: `Skipped duplicate: ${mappedRow.OriginalTitleName}`,
+                            Error: "Duplicate found",
+                            RowData: mappedRow
+                        });
+                        continue; // Skip this row
+                    }
+
+
+                    const productPayload = {
+                        ProductGroup: mappedRow.TitleCategory,
+                        ProductType: "SERV",
+                        BaseUnit: "EA",
+                        ProductManufacturerNumber: "",
+                        to_ProductBasicText: [
+                            { Language: "EN", LongText: mappedRow.OriginalTitleName }
+                        ],
+                        to_Description: [
+                            { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
+                        ]
+                    };
+                    const inputReq = {
+                            "ProductGroup": "Z007",
+                            "ProductType": "SERV",
+                            "BaseUnit": "EA",
+                            "ProductManufacturerNumber": "",
+                            "to_ProductBasicText": [
+                                {
+                                    "Language": "EN",
+                                    "LongText": "Wookies1"
+                                }
+                            ],
+                            "to_Description": [
+                                {
+                                    "Language": "EN",
+                                    "ProductDescription": "Wookies1"
+                                }
+                            ]
+                    };
+                    console.log(inputReq);
+                    const createProductResponse = await s4h_products_Crt.run(
+                        INSERT.into(Products).entries(productPayload)
+                    );
+                    
+                    //const response = await s4h_products_Crt.run(INSERT.into(Products).entries(input))
+                    const createdProductID = createProductResponse?.Product;
+                    if (!createdProductID) {
+                        throw new Error("Product creation failed.");
+                    }
+
+
+                    const titlePayload = {
+                        ID: uuidv4(),
+                        "MaterialMasterTitleID": createdProductID,
+                        "LocalTitleId": "",     //not present
+                        "RegionCode": mappedRow.RegionCode || "",
+                        "OriginalTitleName": mappedRow.OriginalTitleName || "",
+                        "TitleType": mappedRow.TitleType || "",
+                        "TitleCategory": mappedRow.TitleCategory || "",    //not present
+                        "RegionalTitleName": mappedRow.RegionalTitleName || "",
+                        "ShortTitle": mappedRow.ShortTitle || "",
+                        "SecurityTitle": mappedRow.SecurityTitle || "",
+                        "LanguageCode": mappedRow.LanguageCode || "",
+                        "ReleaseDate": mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
+                        "RepertoryDate": mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
+                        "Format":mappedRow.Format || "",
+                        "ReleaseSize": mappedRow.ReleaseSize || "",
+                        "Ratings": mappedRow.Ratings || "",
+                        "ReelCountEstimated": mappedRow.ReelCountEstimated || null,
+                        "AssetVaultTitleId": mappedRow.AssetVaultTitleId || "",
+                        "ImdbId": mappedRow.ImdbId || "",
+                        "StudioTitleId": mappedRow.StudioTitleId || "",
+                        "StudioDistributor": mappedRow.StudioDistributor || "",
+                        "Ratings_Ass": [],          //not present
+                        "ExternalTitleIDs_Ass": [],  //not present
+                        "GofilexTitleId": mappedRow.GofilexTitleId || "",
+                    };
+                    
+                    await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
+
+                    result.success.push({
+                        TitleID: createdProductID,
+                        Message: `Title created with Product ID ${createdProductID}`,
+                        Error: "",
+                        RowData: mappedRow
+                    });
+
+                } catch (err) {
+                    console.error("Error processing row:", row, err.message);
+                    result.error.push({
+                        TitleID: "",
+                        Message: "Failed to process row",
+                        Error: err.message,
+                        RowData: row
+                    });
+
+                }
+            }
+
+
+            return {
+                message: result
+            };
+        });
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
@@ -1640,18 +1817,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 var aPlantTexts = [];
             }
 
-            if (aSupplier.length!=0){
+            if (aSupplier.length != 0) {
                 var aSupplierTexts = await s4h_bp_Txn.run(SELECT.from(S4H_BuisnessPartner).where({ Supplier: { in: aSupplier } }))
-            }else{
-                var aSupplierTexts =[];
+            } else {
+                var aSupplierTexts = [];
             }
 
-            if (aBatch.length!=0){
-                var aBatchTexts = await cds.transaction(req).run(SELECT.from(Batch).where({BatchNumber: {in : aBatch}}));
-            }else{
-                var aBatchTexts =[];
+            if (aBatch.length != 0) {
+                var aBatchTexts = await cds.transaction(req).run(SELECT.from(Batch).where({ BatchNumber: { in: aBatch } }));
+            } else {
+                var aBatchTexts = [];
             }
-            
+
 
             const mDescMap = Object.fromEntries(aMaterialTexts.map(ct => [ct.Product, ct.ProductDescription]))
             const mPlantDescMap = Object.fromEntries(aPlantTexts.map(ct => [ct.Plant, ct.PlantName]))
@@ -2406,68 +2583,177 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const billingHeader = billingDocument[0]; // header
                 const item = billingHeader.to_Item.find(it => it.BillingDocumentItem === oBillingDocument.BillingDocumentItem); // item
 
+
                 const billingDataNode = {
                     "TaxInvoiceNode": {
                         "Header": {
-                            "CompanyAddress": "a",
-                            "PageNo": "",
-                            "InvoiceNo": "",
-                            "InvoiceDate": "",
-                            "Terms": "",
-                            "PaymentDueDate": ""
+                            "CompanyAddress": "123 Corp Lane",
+                            "PageNo": "1",
+                            "InvoiceNo": "INV-20250422",
+                            "InvoiceDate": "2025-04-22",
+                            "Terms": "Net 30",
+                            "PaymentDueDate": "2025-05-22"
                         },
                         "BillTo": {
-                            "BillToAddress": "ss",
+                            "BillToAddress": "456 Client Rd",
                             "CustomerAccountNo": oBillingDocumentPartner.Customer,
                             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
-                            "CustomerContact": "77979",
-                            "DeluxContact": "",
-                            "DeliverInvoiceByMailTo": ""
+                            "CustomerContact": "JSM",
+                            "DeluxContact": "delux@example.com",
+                            "DeliverInvoiceByMailTo": "billing@client.com"
                         },
                         "Table": {
                             "TabHeader": [
                                 {
-                                    "SrNo": "",
-                                    "Title": "",
-                                    "Qty": "",
-                                    "UOM": "",
-                                    "Cur": "",
-                                    "Price": "",
-                                    "Discount": "",
-                                    "Extended": "",
-                                    "Tax": 0.0
+                                    "SrNo": "1",
+                                    "Title": "A",
+                                    "Qty": "10",
+                                    "UOM": "pcs",
+                                    "Cur": "USD",
+                                    "Price": "100.000",
+                                    "Discount": "5%",
+                                    "Extended": "Yes",
+                                    "Tax": 7.500
                                 }
                             ],
-                            "Title": [
+                            "TabRow": [
                                 {
-                                    "Title": ""
+                                    "Title": [
+                                        {
+                                            "Title": "Product Group A"
+                                        }
+                                    ],
+                                    "Items": [
+                                        {
+                                            "SrNo": "1",
+                                            "Title": "A",
+                                            "Qty": "10",
+                                            "UOM": "pcs",
+                                            "Cur": "USD",
+                                            "Price": 100.000,
+                                            "Discount": 5.000,
+                                            "Extended": 950.000,
+                                            "Tax": 7.500
+                                        }
+                                    ]
                                 }
-                            ],
-                            "Items": aItems,
+                            ]
                         },
                         "PaymentInfo": {
-                            "Payee": "",
-                            "LockBoxNo": "",
-                            "Address": "",
-                            "Beneficiary": "",
-                            "AccountNo": "",
-                            "RoutingNoACH": "",
-                            "RoutingNoWire": "",
-                            "SwitchAddress": "",
-                            "SubTotal": 0.0,
-                            "SalesTax1": 0.0,
-                            "SalesTax2": 0.0,
-                            "Discount": 0.0,
-                            "GrandTotalDue": 0.0,
-                            "SalexTax1Type": "",
-                            "SalesTax2Type": ""
+                            "Payee": "Example Corp",
+                            "LockBoxNo": "LB12345",
+                            "Address": "789 Payment Way",
+                            "Beneficiary": "Example Corp",
+                            "AccountNo": "987654321",
+                            "RoutingNoACH": "011000015",
+                            "RoutingNoWire": "021000021",
+                            "SwitchAddress": "Bank XYZ",
+                            "SubTotal": 1000.000,
+                            "SalesTax1": 75.000,
+                            "SalesTax2": 25.000,
+                            "Discount": 50.000,
+                            "GrandTotalDue": 1050.000,
+                            "SalexTax1Type": "State",
+                            "SalesTax2Type": "City"
                         },
                         "Footer": {
-                            "FooterText": ""
+                            "FooterText": "Thank you for your business!"
+                        },
+                        "DetailTable": {
+                            "DtlTabHeader": [
+                                {
+                                    "SONo": "SO123",
+                                    "CustThrNo": "CT456",
+                                    "TheatreName": "Main Stage",
+                                    "City": "New York",
+                                    "StZIP": "10001",
+                                    "RequestNo": "REQ001",
+                                    "OrderNo": "ORD789",
+                                    "Booker": "John Smith",
+                                    "Start": "2025-04-01T00:00:00",
+                                    "End": "2025-04-15T00:00:00"
+                                }
+                            ],
+                            "DtlItems": [
+                                {
+                                    "SONo": "SO123",
+                                    "CustThr": "CT456",
+                                    "TheatreName": "Main Stage",
+                                    "City": "New York",
+                                    "StZIP": "10001",
+                                    "RequestNo": "REQ001",
+                                    "OrderNo": "ORD789",
+                                    "Booker": "John Smith",
+                                    "Start": "2025-04-01T00:00:00",
+                                    "End": "2025-04-15T00:00:00"
+                                }
+                            ]
                         }
                     }
-
                 }
+
+                // const billingDataNode = {
+                //     "TaxInvoiceNode": {
+                //         "Header": {
+                //             "CompanyAddress": "a",
+                //             "PageNo": "",
+                //             "InvoiceNo": "",
+                //             "InvoiceDate": "",
+                //             "Terms": "",
+                //             "PaymentDueDate": ""
+                //         },
+                //         "BillTo": {
+                //             "BillToAddress": "ss",
+                //             "CustomerAccountNo": oBillingDocumentPartner.Customer,
+                //             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
+                //             "CustomerContact": "77979",
+                //             "DeluxContact": "",
+                //             "DeliverInvoiceByMailTo": ""
+                //         },
+                //         "Table": {
+                //             "TabHeader": [
+                //                 {
+                //                     "SrNo": "",
+                //                     "Title": "",
+                //                     "Qty": "",
+                //                     "UOM": "",
+                //                     "Cur": "",
+                //                     "Price": "",
+                //                     "Discount": "",
+                //                     "Extended": "",
+                //                     "Tax": 0.0
+                //                 }
+                //             ],
+                //             "Title": [
+                //                 {
+                //                     "Title": ""
+                //                 }
+                //             ],
+                //             "Items": aItems,
+                //         },
+                //         "PaymentInfo": {
+                //             "Payee": "",
+                //             "LockBoxNo": "",
+                //             "Address": "",
+                //             "Beneficiary": "",
+                //             "AccountNo": "",
+                //             "RoutingNoACH": "",
+                //             "RoutingNoWire": "",
+                //             "SwitchAddress": "",
+                //             "SubTotal": 0.0,
+                //             "SalesTax1": 0.0,
+                //             "SalesTax2": 0.0,
+                //             "Discount": 0.0,
+                //             "GrandTotalDue": 0.0,
+                //             "SalexTax1Type": "",
+                //             "SalesTax2Type": ""
+                //         },
+                //         "Footer": {
+                //             "FooterText": ""
+                //         }
+                //     }
+
+                // }
 
 
                 // Construct final formData object

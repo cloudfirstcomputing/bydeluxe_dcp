@@ -8,7 +8,7 @@ sap.ui.define([
     "sap/ui/export/Spreadsheet",
     "sap/ui/export/library",
     'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator',
+    'sap/ui/model/FilterOperator',
 ], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary, Filter, FilterOperator) {
     "use strict";
 
@@ -26,28 +26,28 @@ sap.ui.define([
                     id: oView.getId(),  // Ensure unique fragment ID within the view
                     name: "com.dlx.managematerialtitle.ext.manageTitleExt.CreateTitle",
                     controller: {
-                        handleValueHelp : function (oEvent) {                            
+                        handleValueHelp: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._pValueHelpDialog) {
                                 this._pValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialog",  
+                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialog",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._pValueHelpDialog.then(function(oValueHelpDialog){
+                            this._pValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearch : function (oEvent) {
+
+                        _handleValueHelpSearch: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "BusinessPartnerFullName",
@@ -55,8 +55,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpClose : function (oEvent) {
+
+                        _handleValueHelpClose: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -64,28 +64,28 @@ sap.ui.define([
                             }
                             oEvent.getSource().getBinding("items").filter([]);
                         },
-                        handleValueHelplg : function (oEvent) {                            
+                        handleValueHelplg: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._qValueHelpDialog) {
                                 this._qValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialogLg",  
+                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialogLg",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._qValueHelpDialog.then(function(oValueHelpDialog){
+                            this._qValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearchlg : function (oEvent) {
+
+                        _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "name",
@@ -93,8 +93,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpCloselg : function (oEvent) {
+
+                        _handleValueHelpCloselg: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -102,28 +102,28 @@ sap.ui.define([
                             }
                             oEvent.getSource().getBinding("items").filter([]);
                         },
-                        handleValueHelprc : function (oEvent) {                            
+                        handleValueHelprc: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._rValueHelpDialog) {
                                 this._rValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialogRc",  
+                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.ValueHelpDialogRc",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._rValueHelpDialog.then(function(oValueHelpDialog){
+                            this._rValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearchlg : function (oEvent) {
+
+                        _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "name",
@@ -131,8 +131,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpCloselg : function (oEvent) {
+
+                        _handleValueHelpCloselg: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -163,7 +163,7 @@ sap.ui.define([
 
                                     if (!resp || !resp.length) {
                                         oInput.setValueState("None");
-                                    } else {                                        
+                                    } else {
                                         oInput.setValueState("Error");
                                         oView.getModel("formModel").setProperty("/OriginalTitleName", "");
 
@@ -194,24 +194,23 @@ sap.ui.define([
                                 oData.RepertoryDate = new Date(oData.RepertoryDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
                             }
 
-
                             var truncatedTitle = oData.OriginalTitleName ? oData.OriginalTitleName.substring(0, 40) : "";
 
-                            var oDataS4API = {                                                        
+                            var oDataS4API = {
                                 ProductGroup: oData.TitleCategory,
                                 ProductType: "SERV", //TitleType
                                 BaseUnit: "EA",
                                 ProductManufacturerNumber: "",
                                 to_ProductBasicText: [
                                     {
-                                        
+
                                         Language: "EN", //LanguageCode
                                         LongText: oData.OriginalTitleName
                                     }
                                 ],
-                                to_Description: [  
+                                to_Description: [
                                     {
-                                       
+
                                         Language: "EN",
                                         ProductDescription: truncatedTitle  //Cut to 40 char   
                                     }
@@ -264,8 +263,8 @@ sap.ui.define([
                         StudioDistributor: "",
                         Ratings_Ass: [],
                         ExternalTitleIDs_Ass: [],
-                        GofilexTitleId: "" ,
-                        UseSecureName:"Yes"
+                        GofilexTitleId: "",
+                        UseSecureName: "Yes"
                         //IDType: "",
                         //IDValue: ""
                     });
@@ -293,20 +292,20 @@ sap.ui.define([
                     ReleaseSize: "Wide",
                     Ratings: "",
                     ReelCountEstimated: null,
-                    AssetVaultTitleId: "", 
+                    AssetVaultTitleId: "",
                     ImdbId: "",
                     StudioTitleId: "",
                     StudioDistributor: "",
                     Ratings_Ass: [],
                     ExternalTitleIDs_Ass: [],
-                    GofilexTitleId: "" ,
-                    UseSecureName:"Yes"
+                    GofilexTitleId: "",
+                    UseSecureName: "Yes"
                     //IDType: "",
                     //IDValue: ""
                 });
 
                 // Set the model to the view
-                oView.setModel(oFormModel, "formModel");                
+                oView.setModel(oFormModel, "formModel");
                 this._oDialogC.open();
             }
 
@@ -347,119 +346,111 @@ sap.ui.define([
             }
         },
         onUploadPress: function () {
-            var oView = this.getEditFlow().getView();
-            var that = this;
-        
+            const oView = this.getEditFlow().getView();
+            const that = this; // store reference to main controller
+
             if (!this._oUploadDialog) {
                 Fragment.load({
                     id: oView.getId(),
                     name: "com.dlx.managematerialtitle.ext.manageTitleExt.FileUpload",
                     controller: {
                         onFileChange: function (oEvent) {
-                            this._selectedFile = oEvent.getParameter("files")[0];
-                            this._selectedFileName = oEvent.getParameter("files")[0].name;
-                            MessageToast.show("File selected: " + this._selectedFileName);
+                            that._selectedFile = oEvent.getParameter("files")[0];
+                            that._selectedFileName = that._selectedFile.name;
+                            MessageToast.show("File selected: " + that._selectedFileName);
                         },
-        
-                        onConfirmUpload: function (data, filename) {
-                            var oView = that.getEditFlow().getView();
-                            var oResourceBundle = that.getOwnerComponent().getModel("i18n").getResourceBundle();
-                            var response;
-        
-                            oView.setBusy(true);
-                            that.Obj = this;
-        
-                            var uploadSuccess = oResourceBundle.getText("uploadSuccess"),
-                                uploadSuccessTitle = oResourceBundle.getText("uploadSuccessTitle"),
-                                uploadSuccessCount = oResourceBundle.getText("uploadSuccessCount"),
-                                uploadErrorTitle = oResourceBundle.getText("uploadErrorTitle"),
-                                uploadError = oResourceBundle.getText("uploadError"),
-                                uploadFailed = oResourceBundle.getText("uploadFailed");
-        
-                            var batchModel = oView.getModel();
-                            var oContext = batchModel.bindContext("/MassUploadManageMaterialTitle(...)");
-        
-                            oContext.setParameter("fileData", data);
-                            oContext.setParameter("fileName", filename);
-                            oContext.setParameter("fieldNames", that.fieldNamesMaterialTitle);
-        
-                            oContext.execute().then(function () {
-                                sap.ui.getCore().byId("dialog").close();
-                                response = oContext.getBoundContext().getObject();
-        
-                                if (response?.message) {
-                                    var oResponse = response.message;
-                                    var aSuccess = oResponse.success,
-                                        aError = oResponse.error,
-                                        aWarning = oResponse.warning;
-        
-                                    if (aError?.length) {
-                                        MessageBox.error('Click the below link for more details', {
-                                            details: JSON.stringify(aError),
-                                            title: 'Errors occurred',
-                                            actions: MessageBox.Action.OK,
-                                            emphasizedAction: MessageBox.Action.OK,
-                                            onClose: function (oAction) {
-                                                if (oAction === MessageBox.Action.OK) {
-                                                    that.Obj.fieldCancel();
-                                                }
+
+                        onConfirmUpload: function () {
+                            const file = that._selectedFile;
+                            const fileName = that._selectedFileName;
+                            const fieldNames = that.fieldNamesMaterialTitle;
+                            const oModel = oView.getModel();
+
+                            if (!file) {
+                                MessageToast.show("Please select a file first.");
+                                return;
+                            }
+
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const base64Data = e.target.result.split(',')[1];
+                                oView.setBusy(true);
+
+                                $.ajax({
+                                    url: `${oModel.sServiceUrl}MassUploadManageMaterialTitle`,
+                                    type: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({
+                                        fileData: base64Data,
+                                        fileName: fileName,
+                                        fieldNames: fieldNames
+                                    }),
+                                    success: function (response) {
+                                        that._oUploadDialog?.close(); // ✅ fixed: use main controller's reference
+                                        oView.setBusy(false);
+
+                                        const summaryList = [];
+                                        if (response && response.message) {
+                                            const { success = [], error = [], warning = [] } = response.message;
+
+                                            const formatEntry = (entry, status) => ({
+                                                title: entry.RowData?.OriginalTitleName || entry.TitleID || "N/A",
+                                                status: status,
+                                                description: entry.Message || "No message",
+                                                cause: entry.Error || "",
+                                                rowData: entry.RowData
+                                            });
+
+                                            success.forEach(item => summaryList.push(formatEntry(item, "Success")));
+                                            error.forEach(item => summaryList.push(formatEntry(item, "Error")));
+                                            warning.forEach(item => summaryList.push(formatEntry(item, "Warning")));
+
+                                            const oSummaryModel = new JSONModel({ results: summaryList });
+                                            if (!that._oUploadSummaryDialog) {
+                                                Fragment.load({
+                                                    id: oView.getId(),
+                                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.UploadSummaryDialog",
+                                                    controller: {
+                                                        onCancelSummary: function () {
+                                                            console.log("summary cancel");
+                                                            that._oUploadSummaryDialog?.close(); // ✅ fixed
+                                                        }
+                                                    }
+                                                }).then(function (oDialog) {
+                                                    that._oUploadSummaryDialog = oDialog;
+                                                    oView.addDependent(oDialog);
+                                                    oDialog.setModel(oSummaryModel, "uploadSummary");
+                                                    oDialog.open();
+                                                });
                                             }
-                                        });
-                                    }
-        
-                                    if (aWarning?.length) {
-                                        MessageBox.warning('Click the below link for more details', {
-                                            details: JSON.stringify(aWarning),
-                                            title: 'Warnings occurred',
-                                            actions: MessageBox.Action.OK,
-                                            emphasizedAction: MessageBox.Action.OK,
-                                            onClose: function (oAction) {
-                                                if (oAction === MessageBox.Action.OK) {
-                                                    that.Obj.fieldCancel();
-                                                }
+                                            if (error.length) {
+                                                MessageBox.error("Some entries failed to upload.");
                                             }
-                                        });
-                                    }
-        
-                                    if (aSuccess?.length) {
-                                        MessageBox.success('Click the below link for more details', {
-                                            details: JSON.stringify(aSuccess),
-                                            title: 'Following operations have been executed successfully',
-                                            actions: MessageBox.Action.OK,
-                                            emphasizedAction: MessageBox.Action.OK,
-                                            onClose: function (oAction) {
-                                                if (oAction === MessageBox.Action.OK) {
-                                                    that.Obj.fieldCancel();
-                                                }
+                                            if (success.length) {
+                                                MessageToast.show("Upload successful.");
                                             }
-                                        });
-                                    }
-        
-                                    batchModel.refresh();
-                                    oView.setBusy(false);
-                                }
-                            }, function (oErr) {
-                                var errorCode = uploadFailed + "\n" + (oErr.error?.message || oErr.message);
-                                MessageBox.error(errorCode, {
-                                    title: uploadErrorTitle,
-                                    actions: MessageBox.Action.OK,
-                                    emphasizedAction: MessageBox.Action.OK,
-                                    onClose: function (oAction) {
-                                        if (oAction === MessageBox.Action.OK) {
-                                            that.Obj.fieldCancel();
                                         }
+
+                                        oModel.refresh();
+                                    },
+
+                                    error: function (xhr, status, error) {
+                                        console.error("Mass upload failed:", status, error, xhr.responseText);
+                                        oView.setBusy(false);
+                                        MessageBox.error("Upload failed.");
                                     }
                                 });
-                                batchModel.refresh();
-                                oView.setBusy(false);
-                            });
+                            };
+
+                            reader.readAsDataURL(file);
                         },
-        
+
                         onCancelUpload: function () {
-                            if (that._oUploadDialog) {
-                                that._oUploadDialog.close();
-                            }
+                            that._oUploadDialog?.close(); // ✅ fixed
                         }
+
+
                     }
                 }).then(function (oDialog) {
                     that._oUploadDialog = oDialog;
@@ -469,7 +460,7 @@ sap.ui.define([
             } else {
                 this._oUploadDialog.open();
             }
-        }
-         
+        },
+
     };
 });
