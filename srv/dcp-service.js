@@ -740,7 +740,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType;
-            oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
+            // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
 
             oResponseStatus.distroSpecData = distroSpecData;
             // oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
