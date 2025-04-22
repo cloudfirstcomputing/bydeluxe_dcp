@@ -475,7 +475,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             //     return;
             // }
             sSalesOrder = oFeedDBData?.SalesOrder;
-            var aRemediatedDeliveryMethods = oFeedDBData.DeliveryMethod?.split(","), iRemediationCounter = oFeedDBData.RemediationCounter;
+            var aRemediatedDeliveryMethods = oFeedDBData.DeliveryMethod?.split(", "), iRemediationCounter = oFeedDBData.RemediationCounter;
 
             var oSalesorderItem_PayLoad = {};
             var aSalesOrderItem = await s4h_sohv2_Txn.run(SELECT.from(S4H_SalesOrderItem_V2).columns(["*"]).where({ SalesOrder: sSalesOrder }));
@@ -519,6 +519,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         `Remediation is not possible any more as all ${iRemediationCounter} Delivery methods are utilized for remediation`);
                     return;
                 }
+                
+                if(aRemediatedDeliveryMethods?.filter((remDel)=>{
+                    return (remDel === '03'|| sDelSeq === '10') //RULE 11.2
+                })?.length){
+                    req.reject(400,
+                        `Remediation is completed for the selected entry`);
+                    return;
+                }
                 for (var i in aRemediatedDeliveryMethods) { //Removing the Delivery methods which are already remediated
                     aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader.filter((seq) => {
                         return seq !== aRemediatedDeliveryMethods[i];
@@ -532,12 +540,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
                     for (var j in aDeliverySeqFromDistHeader) {
                         var sDelSeq = aDeliverySeqFromDistHeader[j];
-                        if (sDelSeq === '03' || sDelSeq === '10') { //RULE 11.2
-                            req.reject(400,
-                                `Remediation is completed for the selected entry as the delivery sequence has reached till shipping condition: ${sDelSeq}`);
-                            return;
-                        }
-                        else if (sDelSeq) {
+                        if (sDelSeq) {
                             oContentPackages = aContentPackages.find((pkg) => {
                                 return (
                                     pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
