@@ -36,7 +36,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
-        let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
+        // let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
         var oSalesParameterConfig, oResponseStatus = { "error": [], "success": [], "warning": [] };
         // var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
         //     SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
@@ -566,7 +566,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
 
             oResponseStatus.distroSpecData = distroSpecData;
-            oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
+            // oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
+            oPayLoad.SalesOrderType = "TA";
             if (sErrorMessage) {
                 await UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oFeedData.BookingID, IsActive: "Y" });
             }
@@ -1434,24 +1435,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.reject(400, "Booking ID was not sent for processing");
                 return;
             }
-            else if (!aConfig) {
-                req.reject(400,
-                    `Parameter table not configured. Maintain the Following entries:
-                        Material_GT24
-                        Material_LT24
-                        SoldTo_SPIRITWORLD
-                        SalesOrg_SPIRITWORLD
-                        DistChannel_SPIRITWORLD
-                        Division_SPIRITWORLD
-                        SOType_SPIRITWORLD
-                        PartnerFunc_SPIRITWORLD`);
-                return;
-            }
-
         };
-        this.on(['READ'], S4_Parameters, async (req) => {
-            return s4h_param_Txn.run(req.query);
-        });
+        // this.on(['READ'], S4_Parameters, async (req) => {
+        //     return s4h_param_Txn.run(req.query);
+        // });
 
         this.on(['READ'], S4_Plants, async req => {
             return await s4h_planttx.run(req.query);
