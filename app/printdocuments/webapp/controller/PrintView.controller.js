@@ -278,6 +278,13 @@ sap.ui.define([
                 //     this.byId("docTable2").getBinding("items").filter(null, null, null);
                 // }
             }
+            else if (this.byId("selectFormName").getSelectedKey() === '6') {
+                var sKey = this.byId("documentKey").getValue();
+                if (sKey) {
+                    aFilters.push(new Filter("BillingDocument", FilterOperator.EQ, sKey))
+                    // this.byId("docTable2").getBinding("items").filter(oFilter, FilterOperator.EQ, sKey);
+                }
+            }
             else if (this.byId("selectFormName").getSelectedKey() === '1') {
                 var sKey = this.byId("documentKey").getValue();
                 if (sKey) {
@@ -308,10 +315,6 @@ sap.ui.define([
             var dStartDate = this.byId("startDate").getDateValue();
             var dEndDate = this.byId("endDate").getDateValue();
             
-            var formattedStartDate = formatDateForFilter(dStartDate);
-            var formattedEndDate = formatDateForFilter(dEndDate);
-
-           
 
             // // Optional: Remove time part to avoid time zone shift
             // dStartDate.setHours(0, 0, 0, 0);
@@ -321,6 +324,8 @@ sap.ui.define([
             if (dStartDate && dStartDate != '') {
                 // var sFormatedStart = new Date(formattedStartDate).toISOString().split("T")[0];
                 // var sFormatedEnd = new Date(formattedEndDate).toISOString().split("T")[0];
+                var formattedStartDate = formatDateForFilter(dStartDate);
+                var formattedEndDate = formatDateForFilter(dEndDate);
                 if (this.byId("selectFormName").getSelectedKey() === '1'){
                     aFilters.push(new Filter("to_MaterialDocumentHeader/PostingDate", FilterOperator.BT, formattedStartDate, formattedEndDate))
                 }else{

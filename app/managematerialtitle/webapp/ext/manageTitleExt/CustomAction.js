@@ -448,7 +448,54 @@ sap.ui.define([
 
                         onCancelUpload: function () {
                             that._oUploadDialog?.close(); // ✅ fixed
-                        }
+                        },
+                        onDownloadTemplate: function () {
+                            // Step 1: Define columns (headers)
+                            const aCols = [                              
+                              { label: "Material Master Title ID", property: "MaterialMasterTitleID", type: "string" },
+                              { label: "Local Title Id", property: "LocalTitleId", type: "string" },
+                              { label: "Original Title Name", property: "OriginalTitleName", type: "string" },
+                              { label: "Title Type", property: "TitleType", type: "string" },
+                              { label: "Title Category", property: "TitleCategory", type: "string" },
+                              { label: "Deleted", property: "Deleted", type: "string" },
+                              { label: "Regional Title Name", property: "RegionalTitleName", type: "string" },
+                              { label: "Short Title", property: "ShortTitle", type: "string" },
+                              { label: "Security Title", property: "SecurityTitle", type: "string" },
+                              { label: "Region Code", property: "RegionCode", type: "string" },
+                              { label: "Language Code", property: "LanguageCode", type: "string" },
+                              { label: "Release Date", property: "ReleaseDate",type: "date" },
+                              { label: "Repertory Date", property: "RepertoryDate",type: "date" },
+                              { label: "Format", property: "Format", type: "string" }, 
+                              { label: "Release Size", property: "ReleaseSize", type: "string" },
+                              { label: "Ratings", property: "Ratings", type: "string" },
+                              { label: "Reel Count (Estimated)", property: "ReelCountEstimated", type: "number" },
+                              { label: "Asset Vault Title Id", property: "AssetVaultTitleId", type: "string" },
+                              { label: "IMDB ID", property: "ImdbId", type: "string" },
+                              { label: "Studio Title Id", property: "StudioTitleId", type: "string" },
+                              { label: "Studio/Distributor", property: "StudioDistributor", type: "string" },
+                              { label: "Gofilex Title Id", property: "GofilexTitleId", type: "string" },
+                              { label: "ID", property: "Id", type: "string" },
+                              { label: "Use Secure Name", property: "UseSecureName", type: "string" }                                                           
+                            ];
+                      const adata = [
+                        { }
+                      ];
+                                    
+                            // Step 3: Create Spreadsheet
+                            const oSettings = {
+                              workbook: {
+                                columns: aCols,
+                                
+                              },
+                              dataSource: adata,
+                              fileName: "ExportedData.xlsx",
+                              worker: false // set to true for large files
+                            };
+                      
+                            new Spreadsheet(oSettings).build().finally(() => {
+                              sap.m.MessageToast.show("Excel exported successfully!");
+                            });
+                          }                    
 
 
                     }

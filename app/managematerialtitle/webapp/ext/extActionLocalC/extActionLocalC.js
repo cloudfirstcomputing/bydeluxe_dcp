@@ -164,24 +164,42 @@ sap.ui.define([
                             }
                             oData.TitleType = "Local"; // Setting Title Type to Local
                             oData.MaterialMasterTitleID = oData.MaterialMasterTitleID.toString(); //Conversion
-                            var updateCall = $.ajax({
-                                url: `${oModel.sServiceUrl}Titles`,
-                                type: "POST",
+                            var oCheckUrl = `${oModel.sServiceUrl}Titles?$filter=MaterialMasterTitleID eq '${oData.MaterialMasterTitleID}' and RegionCode eq '${oData.RegionCode}' and LanguageCode eq '${oData.LanguageCode}'`;
+
+                            $.ajax({
+                                url: oCheckUrl,
+                                type: "GET",
                                 contentType: "application/json",
-                                data: JSON.stringify(oData),
-                                success: function (response) {
-                                    console.log("Update successful:", response);
-                                    oView.getModel().refresh();
-                                    if (that._oDialogL) {
-                                        that._oDialogL.close();
+                                success: function (checkData) {
+                                    if (checkData.value.length > 0) {
+                                        MessageBox.error("Local Title already exists.");
+                                        return;
                                     }
 
+                                    $.ajax({
+                                        url: `${oModel.sServiceUrl}Titles`,
+                                        type: "POST",
+                                        contentType: "application/json",
+                                        data: JSON.stringify(oData),
+                                        success: function (response) {
+                                            console.log("Save successful:", response);
+                                            oView.getModel().refresh();
+                                            if (that._oDialogL) {
+                                                that._oDialogL.close();
+                                            }
+                                            MessageToast.show("Local Title saved successfully.");
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.error("Save failed:", status, error, xhr.responseText);
+                                            MessageBox.error("Failed to save Local Title.");
+                                        }
+                                    });
                                 },
                                 error: function (xhr, status, error) {
-                                    console.error("Update failed:", status, error, xhr.responseText);
+                                    console.error("Check failed:", status, error, xhr.responseText);
+                                    MessageBox.error("Error checking for duplicate Local Title.");
                                 }
                             });
-
                         }.bind(that),
                     }
                 }).then(function (oDialog) {

@@ -49,6 +49,9 @@
 			            </suggestionItems>
 		            </Input>
 
+                    <Label id="lblShortTitle" text="Short Title"/>
+                    <Input id="inputShortTitle" value="{formModel>/ShortTitle}"/>
+
                     <Label id="lblReleaseDate1" text="Release Date"/>
                     <DatePicker id="datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
 

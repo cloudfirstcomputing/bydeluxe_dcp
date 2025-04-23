@@ -10,25 +10,38 @@
     contentWidth="400px"
     contentHeight="200px">
 
-    <VBox id="_IDGenVBox1" class="sapUiSmallMargin">
+    <VBox id="uploadVBox" class="sapUiSmallMargin">
       <u:FileUploader
         id="fileUploader"
         name="excelUpload"
-        
         tooltip="Upload your Excel file"
-        uploadComplete=".onUploadComplete"
-        change=".onFileChange"
+        change="onFileChange"
+        uploadComplete="onUploadComplete"
         fileType="xlsx,xls"
-        uploadUrl="/upload"
         style="Emphasized"
         width="100%" />
     </VBox>
 
-    <beginButton>
-      <Button id="_IDGenButton2" text="Upload" press=".onConfirmUpload" />
-    </beginButton>
-    <endButton>
-      <Button id="_IDGenButton3" text="Cancel" press=".onCancelUpload" />
-    </endButton>
+    <buttons>
+      <Button
+        id="btnDownloadTemplate"
+        type="Transparent"
+        icon="sap-icon://download"
+        text="Download Template"
+        press="onDownloadTemplate" />
+
+      <Button
+        id="btnUpload"
+        type="Emphasized"
+        icon="sap-icon://upload"
+        text="Upload"
+        press="onConfirmUpload" />
+
+      <Button
+        id="btnCancel"
+        type="Transparent"
+        text="Cancel"
+        press="onCancelUpload" />
+    </buttons>
   </Dialog>
 </core:FragmentDefinition>

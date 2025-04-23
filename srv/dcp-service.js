@@ -64,105 +64,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: aResponse
             });
         });
-        this.on("MassUploadManageMaterialTitle", async (req) => {
-            const { Titles } = this.entities;
-            const db = await cds.connect.to('db');
+        const { Titles } = this.entities;
 
-            const uploadedFile = req.data.fileData;
-            const fileName = req.data.fileName;
-            const fieldNames = req.data.fieldNames;
-
-            if (!uploadedFile) {
-                req.error(400, 'No file data provided');
-            }
-
-            const workbook = XLSX.read(uploadedFile, { type: 'buffer' });
-            const sheetName = workbook.SheetNames[0];
-            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-            let result = {
-                success: [],
-                error: [],
-                warning: []
-            };
-
-            for (const row of sheetData) {
-                try {
-                    // Step 1: Prepare Product Payload
-                    const productPayload = {
-                        ProductGroup: row.TitleCategory,
-                        ProductType: "SERV",
-                        BaseUnit: "EA",
-                        ProductManufacturerNumber: "",
-                        to_ProductBasicText: [
-                            { Language: "EN", LongText: row.OriginalTitleName }
-                        ],
-                        to_Description: [
-                            { Language: "EN", ProductDescription: row.OriginalTitleName }
-                        ]
-                    };
-
-                    const createProductResponse = await cds
-                        .transaction(req)
-                        .run([
-                            INSERT.into("BookingOrderService.createProduct").entries({ input: productPayload })
-                        ]);
-
-                    const createdProductID = createProductResponse[0]?.Product;
-                    if (!createdProductID) {
-                        throw new Error("Product creation failed.");
-                    }
-
-                    // Step 2: Prepare Title Payload
-                    const titlePayload = {
-                        ID: uuidv4(),
-                        MaterialMasterTitleID: createdProductID,
-                        TitleType: row.TitleType,
-                        RegionCode: row.RegionCode,
-                        ReleaseDate: row.ReleaseDate ? new Date(row.ReleaseDate) : null,
-                        ImdbId: row.ImdbId,
-                        OriginalTitleName: row.OriginalTitleName,
-                        RegionalTitleName: row.RegionalTitleName,
-                        ShortTitle: row.ShortTitle,
-                        SecurityTitle: row.SecurityTitle,
-                        LanguageCode: row.LanguageCode,
-                        RepertoryDate: row.RepertoryDate ? new Date(row.RepertoryDate) : null,
-                        Format: row.Format,
-                        ReleaseSize: row.ReleaseSize,
-                        Ratings: row.Ratings,
-                        ReelCountEstimated: row.ReelCountEstimated,
-                        AssetVaultTitleId: row.AssetVaultTitleId,
-                        GofilexTitleId: row.GofilexTitleId,
-                        StudioTitleId: row.StudioTitleId,
-                        StudioDistributor: row.StudioDistributor,
-                        UseSecureName: row.UseSecureName === 'TRUE',
-                        IsMarkedForDeletion: row.IsMarkedForDeletion === 'TRUE',
-                    };
-
-                    await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
-
-                    result.success.push({
-                        TitleID: createdProductID,
-                        Message: `Title created with ID ${createdProductID}`
-                    });
-                } catch (err) {
-                    console.error("Error processing row:", row, err.message);
-                    result.error.push({
-                        RowData: row,
-                        Error: err.message
-                    });
-                }
-            }
-
-            return {
-                message: result
-            };
-        });
+        // Define the mass upload action
         this.on("MassUploadManageMaterialTitle", async (req) => {
             const uploadedFile = req.data.fileData;
             const fileName = req.data.fileName;
             const fieldNames = req.data.fieldNames;
-            
+            console.log(req);
+
+
+            console.log("erfd");
             if (!uploadedFile) {
                 req.error(400, "No file data provided");
                 return;
@@ -172,9 +84,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             const workbook = XLSX.read(binaryData, { type: "buffer" });
 
             const sheetName = workbook.SheetNames[0];
-            
+            console.log("workbook", workbook);
+            console.log("sheetName", sheetName);
             const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-            
+            console.log("sheetData preview", JSON.stringify(sheetData, null, 2));
+
+            console.log("sheet", workbook.Sheets[sheetName]);
+            console.log("sheetData", sheetData);
             let result = {
                 success: [],
                 error: [],
@@ -253,25 +169,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
                         ]
                     };
-                    const inputReq = {
-                            "ProductGroup": "Z007",
-                            "ProductType": "SERV",
-                            "BaseUnit": "EA",
-                            "ProductManufacturerNumber": "",
-                            "to_ProductBasicText": [
-                                {
-                                    "Language": "EN",
-                                    "LongText": "Wookies1"
-                                }
-                            ],
-                            "to_Description": [
-                                {
-                                    "Language": "EN",
-                                    "ProductDescription": "Wookies1"
-                                }
-                            ]
-                    };
-                    console.log(inputReq);
+                    
                     const createProductResponse = await s4h_products_Crt.run(
                         INSERT.into(Products).entries(productPayload)
                     );
@@ -336,6 +234,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 message: result
             };
         });
+
+
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
@@ -2626,19 +2526,20 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                                             "Title": "Product Group A"
                                         }
                                     ],
-                                    "Items": [
-                                        {
-                                            "SrNo": "1",
-                                            "Title": "A",
-                                            "Qty": "10",
-                                            "UOM": "pcs",
-                                            "Cur": "USD",
-                                            "Price": 100.000,
-                                            "Discount": 5.000,
-                                            "Extended": 950.000,
-                                            "Tax": 7.500
-                                        }
-                                    ]
+                                    "Items":aItems,
+                                    // "Items": [
+                                    //     {
+                                    //         "SrNo": "1",
+                                    //         "Title": "A",
+                                    //         "Qty": "10",
+                                    //         "UOM": "pcs",
+                                    //         "Cur": "USD",
+                                    //         "Price": 100.000,
+                                    //         "Discount": 5.000,
+                                    //         "Extended": 950.000,
+                                    //         "Tax": 7.500
+                                    //     }
+                                    // ]
                                 }
                             ]
                         },
