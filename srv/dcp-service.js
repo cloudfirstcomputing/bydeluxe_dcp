@@ -2444,7 +2444,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oBillingDocumentPartner = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'RE' })
                 )
-
+                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run( SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
                 const aBillingDocumentItem = await srv_BillingDocument.run(
                     SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument })
                 )
@@ -2498,7 +2498,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "PaymentDueDate": "2025-05-22"
                         },
                         "BillTo": {
-                            "BillToAddress": "456 Client Rd",
+                            "BillToAddress": oBusinessPartnerAddrfromS4.FullName +","+oBusinessPartnerAddrfromS4.HouseNumber+","+oBusinessPartnerAddrfromS4.StreetName+","+oBusinessPartnerAddrfromS4.CityName+","+oBusinessPartnerAddrfromS4.PostalCode+","+oBusinessPartnerAddrfromS4.Region+","+oBusinessPartnerAddrfromS4.Country,
                             "CustomerAccountNo": oBillingDocumentPartner.Customer,
                             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
                             "CustomerContact": "JSM",
