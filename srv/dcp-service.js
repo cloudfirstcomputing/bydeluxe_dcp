@@ -603,7 +603,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 if (bReconcile) {
                     var sID = data[i].ID;
-                    await UPDATE(hanatable).set({ ErrorMessage: data[i].ErrorMessage, SalesOrder: data[i].SalesOrder }).where({
+                    await UPDATE(hanatable).set({ ErrorMessage: data[i].ErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID }).where({
                         ID: sID
                     });
                 }
