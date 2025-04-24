@@ -564,7 +564,7 @@ sap.ui.define([
                                 }  
 
                             }, function (oErr) {
-                                var errorCode = uploadFailed + "\n" + oErr.error.message;
+                                var errorCode = uploadFailed + "\n" + oErr?.cause?.message;
                                 MessageBox.error(errorCode, {
                                     title: uploadErrorTitle,
                                     actions: MessageBox.Action.OK,

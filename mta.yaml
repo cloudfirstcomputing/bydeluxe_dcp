@@ -67,6 +67,7 @@ modules:
           ServiceInstanceName: bydeluxe-auth
           ServiceKeyName: bydeluxe-auth-key
           sap.cloud.service: bydeluxe
+          HTML5.Timeout: 600000
         existing_destinations_policy: update
   build-parameters:
     no-source: true
@@ -243,7 +244,8 @@ resources:
             Name: ui5
             ProxyType: Internet
             Type: HTTP
-            URL: https://ui5.sap.com
+            URL: https://ui5.sap.com            
+            HTML5.Timeout: 600000
           - Authentication: NoAuthentication
             HTML5.DynamicDestination: true
             HTML5.ForwardAuthToken: true
@@ -251,6 +253,7 @@ resources:
             ProxyType: Internet
             Type: HTTP
             URL: ~{srv-api/srv-url}
+            HTML5.Timeout: 600000
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
@@ -277,6 +280,7 @@ resources:
             ProxyType: Internet
             Type: HTTP
             URL: https://ui5.sap.com
+            HTML5.Timeout: 600000
           - Authentication: NoAuthentication
             HTML5.DynamicDestination: true
             HTML5.ForwardAuthToken: true
@@ -284,6 +288,7 @@ resources:
             ProxyType: Internet
             Type: HTTP
             URL: ~{srv-api/srv-url}
+            HTML5.Timeout: 600000
           existing_destinations_policy: update
     service: destination
     service-plan: lite
