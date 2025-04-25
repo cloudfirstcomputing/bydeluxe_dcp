@@ -962,7 +962,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         else if (ReleaseDate && dStartDate < ReleaseDate) {
                             sMode = 'PreRelease';
                         }
-                        else if (ReleaseDate && dStartDate === ReleaseDate) {
+                        else if (ReleaseDate && dStartDate?.getTime() == ReleaseDate?.getTime()) {
                             sMode = 'Release';
                         }
                         else if (ReleaseDate && dStartDate > ReleaseDate) {
