@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch } = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch ,Company} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -28,6 +28,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");
         var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_country = await cds.connect.to("API_COUNTRY_SRV");
+        var s4h_Company = await cds.connect.to("API_COMPANYCODE_SRV")
 
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
@@ -2087,7 +2088,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             header.to_MaterialDocumentItem();
                     }).where({ MaterialDocument: oMaterialDocument.MaterialDocument, MaterialDocumentYear: oMaterialDocument.MaterialDocumentYear })
                 );
-
+                console.log("materialDocument",materialDocument);
                 // If no document found, return empty response
                 if (!materialDocument.length) {
                     console.log("No material document found for", sMaterialDocument);
@@ -2436,7 +2437,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         header.BillingDocumentDate,
                             header.BillingDocumentCategory,
                             header.BillingDocumentType,
-
+                            header.CompanyCode,
                             header.to_Item()
                     }).where({ BillingDocument: oBillingDocument.BillingDocument })
                 );
@@ -2460,6 +2461,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B' }));
                 const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionIsForStatistics: false }));
                 const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionInactiveReason: { '<>': '' } }));
+                const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode}))
+                const oBusinessPartnerAddrCompanyCode = await s4h_bp_Txn.run( SELECT.one.from(S4H_BusinessPartnerAddress).where({ AddressID: aCompanyCode.AddressID }));
                 for (var index in aBillingDocumentItem) {
                     aItems.push({
                         "SrNo": index,
@@ -2490,7 +2493,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const billingDataNode = {
                     "TaxInvoiceNode": {
                         "Header": {
-                            "CompanyAddress": "123 Corp Lane",
+                            "CompanyAddress": oBusinessPartnerAddrCompanyCode === undefined ? '' : (oBusinessPartnerAddrCompanyCode?.FullName+","+oBusinessPartnerAddrCompanyCode?.HouseNumber+","+oBusinessPartnerAddrCompanyCode?.StreetName+","+oBusinessPartnerAddrCompanyCode?.CityName+","+oBusinessPartnerAddrCompanyCode?.PostalCode+","+oBusinessPartnerAddrCompanyCode?.Region+","+oBusinessPartnerAddrCompanyCode?.Country),
                             "PageNo": "1",
                             "InvoiceNo": "INV-20250422",
                             "InvoiceDate": "2025-04-22",
@@ -2498,7 +2501,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "PaymentDueDate": "2025-05-22"
                         },
                         "BillTo": {
-                            "BillToAddress": oBusinessPartnerAddrfromS4.FullName +","+oBusinessPartnerAddrfromS4.HouseNumber+","+oBusinessPartnerAddrfromS4.StreetName+","+oBusinessPartnerAddrfromS4.CityName+","+oBusinessPartnerAddrfromS4.PostalCode+","+oBusinessPartnerAddrfromS4.Region+","+oBusinessPartnerAddrfromS4.Country,
+                            "BillToAddress": oBusinessPartnerAddrfromS4?.FullName+","+oBusinessPartnerAddrfromS4?.HouseNumber+","+oBusinessPartnerAddrfromS4?.StreetName+","+oBusinessPartnerAddrfromS4?.CityName+","+oBusinessPartnerAddrfromS4?.PostalCode+","+oBusinessPartnerAddrfromS4?.Region+","+oBusinessPartnerAddrfromS4?.Country,
                             "CustomerAccountNo": oBillingDocumentPartner.Customer,
                             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
                             "CustomerContact": "JSM",
