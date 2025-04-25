@@ -1600,8 +1600,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 "Z007": "Confirmed/Known Title"
             }
             if (dbData.length > 0) {
-                const countryCodes = [...new Set(dbData.map(row => row.RegionCode))]
-                const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor))]
+                const countryCodes = [...new Set(dbData.map(row => row.RegionCode != null ? row.RegionCode : ''))]
+                const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor != null ? row.StudioDistributor : ''))]
                 const aLanguage = [...new Set(dbData.map(row => row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''))]
 
                 const countryTexts = await s4h_country.run(
