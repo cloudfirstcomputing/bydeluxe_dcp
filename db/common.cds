@@ -20,55 +20,59 @@ using {API_PRODUCTGROUP_SRV as prdgrp} from '../srv/external/API_PRODUCTGROUP_SR
 using {YY1_ADDITIONALMATERIALGRP1_CDS as prdgrp1} from '../srv/external/YY1_ADDITIONALMATERIALGRP1_CDS';
 using {API_BILLING_DOCUMENT_SRV as Billing} from '../srv/external/API_BILLING_DOCUMENT_SRV';
 using {Distrospec_SRV as Distro} from '../srv/external/Distrospec_SRV';
-using { YY1_CUSTOMERCOMPANYBYPLANT_CDS as custplant } from '../srv/external/YY1_CUSTOMERCOMPANYBYPLANT_CDS';
-using { YY1_SLSORGANIZATIONDISTRCH_CDS as slsdist } from '../srv/external/YY1_SLSORGANIZATIONDISTRCH_CDS';
-using { API_COMPANYCODE_SRV as company } from '../srv/external/API_COMPANYCODE_SRV';
+using {YY1_CUSTOMERCOMPANYBYPLANT_CDS as custplant} from '../srv/external/YY1_CUSTOMERCOMPANYBYPLANT_CDS';
+using {YY1_SLSORGANIZATIONDISTRCH_CDS as slsdist} from '../srv/external/YY1_SLSORGANIZATIONDISTRCH_CDS';
+using {API_COMPANYCODE_SRV as company} from '../srv/external/API_COMPANYCODE_SRV';
+using {YY1_CLFNCHARACTERISTIC_CDS as charac} from '../srv/external/YY1_CLFNCHARACTERISTIC_CDS';
 
 context api {
 
-    entity Regions                as projection on region.ZI_Region;
-    entity ShippingConditions     as projection on shipcond.ZI_ShippingCondition;
+    entity Regions                      as projection on region.ZI_Region;
+    entity ShippingConditions           as projection on shipcond.ZI_ShippingCondition;
 
-    entity BusinessPartners       as
+    entity BusinessPartners             as
         projection on bupa.A_BusinessPartner {
             key BusinessPartner,
                 BusinessPartnerType,
                 BusinessPartnerFullName
         }
-     entity BusinessPartnersV1       as
+
+    entity BusinessPartnersV1           as
         projection on bupa.A_BusinessPartner {
             key BusinessPartner,
                 BusinessPartnerType,
                 BusinessPartnerFullName
         }
-    entity Products               as projection on product.A_Product;
-    entity ProductGroup           as projection on prdgrp.A_ProductGroup;
-    entity ProductGroup1          as projection on prdgrp1.YY1_AdditionalMaterialGrp1;
-    entity DeliveryPriority       as projection on delvprior.YY1_DeliveryPriority;
-    entity CustomerGroup          as projection on custgrp.A_CustomerGroup;
-    entity Country                as projection on country.A_Country;
-    entity CountryText            as projection on country.A_CountryText;
-    entity Plants                 as projection on plant.A_Plant;
-    entity StorageLocations       as projection on sloc.YY1_StorageLocation;
-    entity SalesOrganizations     as projection on salesorg.A_SalesOrganization;
-    entity DistributionChannels   as projection on distch.A_DistributionChannel;
-    entity SalesOrderHeader       as projection on salesorderv2.A_SalesOrder;
-    entity SalesDistricts         as projection on salesdist.A_SalesDistrict;
-    entity SalesOrderItem         as projection on salesorderv2.A_SalesOrderItem;
-    entity ShippingType_VH        as projection on S4_ShippingType.YY1_I_ShippingType;
-    entity ShippingPoint_VH       as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
-    entity Parameters             as projection on Parameter.YY1_PARAMETER;
-    entity MaterialDocumentHeader as projection on MaterialDoc.A_MaterialDocumentHeader;
-    entity MaterialDocumentItem as projection on MaterialDoc.A_MaterialDocumentItem;
-    entity ProductionOrder        as projection on s4_productionOrder.A_ProductionOrder_2;
-    entity BillingDocument        as projection on Billing.A_BillingDocument;
-    entity BillingDocumentItem        as projection on Billing.A_BillingDocumentItem;
-    entity CountriesApi       as projection on Distro.Countries;
-    entity BillingDocumentPartner        as projection on Billing.A_BillingDocumentPartner;
-    entity BillingDocumentItemText        as projection on Billing.A_BillingDocumentItemText;
+
+    entity Products                     as projection on product.A_Product;
+    entity ProductGroup                 as projection on prdgrp.A_ProductGroup;
+    entity ProductGroup1                as projection on prdgrp1.YY1_AdditionalMaterialGrp1;
+    entity DeliveryPriority             as projection on delvprior.YY1_DeliveryPriority;
+    entity CustomerGroup                as projection on custgrp.A_CustomerGroup;
+    entity Country                      as projection on country.A_Country;
+    entity CountryText                  as projection on country.A_CountryText;
+    entity Plants                       as projection on plant.A_Plant;
+    entity StorageLocations             as projection on sloc.YY1_StorageLocation;
+    entity SalesOrganizations           as projection on salesorg.A_SalesOrganization;
+    entity DistributionChannels         as projection on distch.A_DistributionChannel;
+    entity SalesOrderHeader             as projection on salesorderv2.A_SalesOrder;
+    entity SalesDistricts               as projection on salesdist.A_SalesDistrict;
+    entity SalesOrderItem               as projection on salesorderv2.A_SalesOrderItem;
+    entity ShippingType_VH              as projection on S4_ShippingType.YY1_I_ShippingType;
+    entity ShippingPoint_VH             as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
+    entity Parameters                   as projection on Parameter.YY1_PARAMETER;
+    entity MaterialDocumentHeader       as projection on MaterialDoc.A_MaterialDocumentHeader;
+    entity MaterialDocumentItem         as projection on MaterialDoc.A_MaterialDocumentItem;
+    entity ProductionOrder              as projection on s4_productionOrder.A_ProductionOrder_2;
+    entity BillingDocument              as projection on Billing.A_BillingDocument;
+    entity BillingDocumentItem          as projection on Billing.A_BillingDocumentItem;
+    entity CountriesApi                 as projection on Distro.Countries;
+    entity BillingDocumentPartner       as projection on Billing.A_BillingDocumentPartner;
+    entity BillingDocumentItemText      as projection on Billing.A_BillingDocumentItemText;
     entity BillingDocumentItemPrcgElmnt as projection on Billing.A_BillingDocumentItemPrcgElmnt
-    entity CustomerCompany as projection on bupa.A_CustomerCompany;
-    entity CustomerPlant as projection on custplant.YY1_CustomerCompanyByPlant;
-    entity SalesOrgDistCh as projection on slsdist.YY1_SlsOrganizationDistrCh;
-    entity Company as projection on company.A_CompanyCode;
+    entity CustomerCompany              as projection on bupa.A_CustomerCompany;
+    entity CustomerPlant                as projection on custplant.YY1_CustomerCompanyByPlant;
+    entity SalesOrgDistCh               as projection on slsdist.YY1_SlsOrganizationDistrCh;
+    entity Company                      as projection on company.A_CompanyCode;
+    entity Characteristic               as projection on charac.YY1_ClfnCharacteristic
 }

@@ -1759,11 +1759,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability1',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability1,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability1,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1772,11 +1778,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability2',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability2,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability2,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1785,11 +1797,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability3',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability3,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability3,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1798,11 +1816,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability4',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability4,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability4,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1811,11 +1835,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability5',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability5,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability5,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1824,11 +1854,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability6',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability6,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability6,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1837,11 +1873,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability7',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability7,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability7,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1850,11 +1892,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability8',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability8,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability8,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -1863,11 +1911,17 @@ annotate service.DistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability9',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability9,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability9,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );

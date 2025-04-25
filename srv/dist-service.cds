@@ -86,6 +86,9 @@ service DistributionService {
     entity SalesDistricts       as projection on api.SalesDistricts;
 
     @readonly
+    entity Characteristic       as projection on api.Characteristic;
+
+    @readonly
     entity DeliveryPriority     as projection on api.DeliveryPriority;
 
     entity CPLDetail            as projection on db.CPLDetail
@@ -100,15 +103,15 @@ service DistributionService {
     entity DistroSpec           as projection on db.DistroSpec;
     entity DCPMaterials         as projection on db.DCPMaterials;
     entity Parameters           as projection on api.Parameters;
-    entity PlayBackCapability1  as projection on api.Parameters;
-    entity PlayBackCapability2  as projection on api.Parameters;
-    entity PlayBackCapability3  as projection on api.Parameters;
-    entity PlayBackCapability4  as projection on api.Parameters;
-    entity PlayBackCapability5  as projection on api.Parameters;
-    entity PlayBackCapability6  as projection on api.Parameters;
-    entity PlayBackCapability7  as projection on api.Parameters;
-    entity PlayBackCapability8  as projection on api.Parameters;
-    entity PlayBackCapability9  as projection on api.Parameters;
+    entity PlayBackCapability1  as projection on api.Characteristic;
+    entity PlayBackCapability2  as projection on api.Characteristic;
+    entity PlayBackCapability3  as projection on api.Characteristic;
+    entity PlayBackCapability4  as projection on api.Characteristic;
+    entity PlayBackCapability5  as projection on api.Characteristic;
+    entity PlayBackCapability6  as projection on api.Characteristic;
+    entity PlayBackCapability7  as projection on api.Characteristic;
+    entity PlayBackCapability8  as projection on api.Characteristic;
+    entity PlayBackCapability9  as projection on api.Characteristic;
     entity PlayBackCapability10 as projection on api.Parameters;
     entity DCPMaterialMapping   as projection on db.DCPMaterialMapping;
     annotate DistroSpec with @odata.draft.enabled;

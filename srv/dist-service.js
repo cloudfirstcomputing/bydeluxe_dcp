@@ -2,7 +2,7 @@ const cds = require("@sap/cds");
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, ShippingType, Regions, Plants, DistributionDcp, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
+        const { DistroSpec, ShippingType, Regions, Plants, Characteristic, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
             StorageLocations, ProductGroup, ProductGroup1, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
@@ -22,6 +22,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const shiptyptx = await cds.connect.to("YY1_I_SHIPPINGTYPE_CDS_0001");
         const prdgrptx = await cds.connect.to("API_PRODUCTGROUP_SRV");
         const prdgrp1tx = await cds.connect.to("YY1_ADDITIONALMATERIALGRP1_CDS");
+        const charactx = await cds.connect.to("YY1_CLFNCHARACTERISTIC_CDS");
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -402,6 +403,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return bptx.run(SELECT.from(Theaters).where`BusinessPartnerType = 'Z003'`)
         })
 
+        this.on('READ', Characteristic, async req => {
+            return charactx.run(req.query)
+        })
+
         this.on('READ', ShippingConditions, async req => {
             return sctx.run(req.query)
         })
@@ -455,31 +460,31 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         this.on('READ', 'PlayBackCapability1', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability1' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'ASPECT_RATIO' }))
         })
         this.on('READ', 'PlayBackCapability2', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability2' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'DIGITAL_3D_TYPE' }))
         })
         this.on('READ', 'PlayBackCapability3', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability3' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'DIGITAL_3D_GLASSES' }))
         })
         this.on('READ', 'PlayBackCapability4', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability4' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'MOTION_SEATINGTYPE' }))
         })
         this.on('READ', 'PlayBackCapability5', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability5' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'SOUND_FORMAT' }))
         })
         this.on('READ', 'PlayBackCapability6', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability6' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'FILM_FORMAT' }))
         })
         this.on('READ', 'PlayBackCapability7', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability7' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'SCREEN_TYPE' }))
         })
         this.on('READ', 'PlayBackCapability8', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability8' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'MAX_FRAME_RATE_SUPPORTED' }))
         })
         this.on('READ', 'PlayBackCapability9', () => {
-            return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability9' }))
+            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'LIGHT_LEVEL' }))
         })
         this.on('READ', 'PlayBackCapability10', () => {
             return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability10' }))
