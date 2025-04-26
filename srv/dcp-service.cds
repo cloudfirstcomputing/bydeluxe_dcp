@@ -474,6 +474,7 @@ service BookingOrderService {
                 BillingQuantity,
                 BillingQuantityUnit,
                 TransactionCurrency,
+                NetAmount,
                 to_BillingDocument : redirected to BillingDocument
         }
 

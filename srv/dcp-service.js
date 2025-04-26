@@ -2463,7 +2463,11 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionInactiveReason: { '<>': '' } }));
                 const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode}))
                 const oBusinessPartnerAddrCompanyCode = await s4h_bp_Txn.run( SELECT.one.from(S4H_BusinessPartnerAddress).where({ AddressID: aCompanyCode.AddressID }));
+                const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false}));
+                var iNetAmount=0,iDiscountItem=0;
                 for (var index in aBillingDocumentItem) {
+                     iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
+                     iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
                     aItems.push({
                         "SrNo": index,
                         "Title": aItemList[index]?.LongText,
@@ -2555,7 +2559,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "RoutingNoACH": "011000015",
                             "RoutingNoWire": "021000021",
                             "SwitchAddress": "Bank XYZ",
-                            "SubTotal": 1000.000,
+                            "SubTotal": iNetAmount,
                             "SalesTax1": 75.000,
                             "SalesTax2": 25.000,
                             "Discount": 50.000,
