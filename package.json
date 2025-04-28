@@ -393,6 +393,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "ZCL_INVFORM": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZCL_INVFORM",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/ZCL_INVFORM",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

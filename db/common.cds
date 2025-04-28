@@ -24,6 +24,7 @@ using {YY1_CUSTOMERCOMPANYBYPLANT_CDS as custplant} from '../srv/external/YY1_CU
 using {YY1_SLSORGANIZATIONDISTRCH_CDS as slsdist} from '../srv/external/YY1_SLSORGANIZATIONDISTRCH_CDS';
 using {API_COMPANYCODE_SRV as company} from '../srv/external/API_COMPANYCODE_SRV';
 using {YY1_CLFNCHARACTERISTIC_CDS as charac} from '../srv/external/YY1_CLFNCHARACTERISTIC_CDS';
+using {ZCL_INVFORM as invoice} from '../srv/external/ZCL_INVFORM';
 
 context api {
 
@@ -74,5 +75,6 @@ context api {
     entity CustomerPlant                as projection on custplant.YY1_CustomerCompanyByPlant;
     entity SalesOrgDistCh               as projection on slsdist.YY1_SlsOrganizationDistrCh;
     entity Company                      as projection on company.A_CompanyCode;
-    entity Characteristic               as projection on charac.YY1_ClfnCharacteristic
+    entity Characteristic               as projection on charac.YY1_ClfnCharacteristic;
+    entity AddressPostal               as projection on invoice.AddressPostal;
 }

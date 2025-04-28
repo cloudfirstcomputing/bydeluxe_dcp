@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company } = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company ,AddressPostal} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -29,6 +29,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_country = await cds.connect.to("API_COUNTRY_SRV");
         var s4h_Company = await cds.connect.to("API_COMPANYCODE_SRV")
+          var invformAPI = await cds.connect.to("ZCL_INVFORM");
 
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
@@ -2470,7 +2471,10 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oBillingDocumentPartner = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'RE' })
                 )
-                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
+                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress,(header)=>{
+                    header.FullName, header.HouseNumber,header.StreetName,header.CityName,header.PostalCode, header.Region,header.Country,
+                    header.to_EmailAddress()
+                }).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
                 const aBillingDocumentItem = await srv_BillingDocument.run(
                     SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument })
                 )
@@ -2487,14 +2491,14 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionIsForStatistics: false }));
                 const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionInactiveReason: { '<>': '' } }));
                 const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode }))
-                const oBusinessPartnerAddrCompanyCode = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ AddressID: aCompanyCode.AddressID }));
+                const oAddrCompanyCode = await invformAPI.run(SELECT.one.from(AddressPostal).where({ AddressID: aCompanyCode.AddressID }));
                 const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
                 var iNetAmount = 0, iDiscountItem = 0;
                 for (var index in aBillingDocumentItem) {
                     iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
                     //  iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
                     aItems.push({
-                        "SrNo": index,
+                        "SrNo": index+1,
                         "Title": aItemList[index]?.LongText,
                         "Qty": aBillingDocumentItem[index].BillingQuantity,
                         "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
@@ -2591,7 +2595,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const billingDataNode = {
                     "TaxInvoiceNode": {
                         "Header": {
-                            "CompanyAddress": oBusinessPartnerAddrCompanyCode === undefined ? '' : (oBusinessPartnerAddrCompanyCode?.FullName + "," + oBusinessPartnerAddrCompanyCode?.HouseNumber + "," + oBusinessPartnerAddrCompanyCode?.StreetName + "," + oBusinessPartnerAddrCompanyCode?.CityName + "," + oBusinessPartnerAddrCompanyCode?.PostalCode + "," + oBusinessPartnerAddrCompanyCode?.Region + "," + oBusinessPartnerAddrCompanyCode?.Country),
+                            "CompanyAddress": oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.Street + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country),
                             "PageNo": "1",
                             "InvoiceNo": billingHeader.to_Item[0].BillingDocument,
                             "InvoiceDate": billingHeader.BillingDocumentDate,
@@ -2604,7 +2608,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
                             "CustomerContact": "JSM",
                             "DeluxContact": "delux@example.com",
-                            "DeliverInvoiceByMailTo": "billing@client.com"
+                            "DeliverInvoiceByMailTo": oBusinessPartnerAddrfromS4?.to_EmailAddress[0]?.EmailAddress
                         },
                         "Table": {
                             "TabHeader": [
