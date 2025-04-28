@@ -2072,7 +2072,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
             }
         });
 
-        this.on("formGR_LABEL", async (req, res) => {
+       this.on("formGR_LABEL", async (req, res) => {
 
             try {
                 var form_name = req.data.form;
@@ -2316,6 +2316,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 req.error(502, e)
             }
         });
+
         /* this.on("SDBIL_CI_STANDARD_US_E", async (req, res) => {
             try {
                 var form_name = req.data.form;
@@ -2467,7 +2468,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 var iNetAmount=0,iDiscountItem=0;
                 for (var index in aBillingDocumentItem) {
                      iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
-                     iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
+                    //  iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
                     aItems.push({
                         "SrNo": index,
                         "Title": aItemList[index]?.LongText,
@@ -2475,7 +2476,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
                         "Cur": aBillingDocumentItem[index].TransactionCurrency,
                         "Price": aPriceItem[index].ConditionRateValue,
-                        "Discount": aDiscountItem[index]?.ConditionAmount,
+                        "Discount": 0,
                         "Extended": "",
                         "Tax": 0.0
                     })
