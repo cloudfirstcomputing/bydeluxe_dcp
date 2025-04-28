@@ -730,11 +730,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     if (!sErrorMessage && aContentPackages?.length) { //For Content Package
                         var oContentPackages;
+                        let sDeliveryMethodFromPackage = '';   //This stored teh actual delivery method used for SO creation       
                         if (!aContentPackages?.length) {
                             sErrorMessage = `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order`;
                         }
                         else { //RULE 2.3 => Lookup package ID Delivery method
-                            // These rules are applicable only for content           
+                            // These rules are applicable only for content 
                             for (var j in aDeliverySeqFromDistHeader) {
                                 var sDelSeq = aDeliverySeqFromDistHeader[j];
                                 if (sDelSeq) {
@@ -748,6 +749,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                     if (oContentPackages) { //Delivery sequence is found in the delivery method maintained                                  
                                         var oFilteredContentPackage = oContentPackages;
+                                        sDeliveryMethodFromPackage = sDelSeq; //Assign the del method found as per sequence
                                         aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction
                                         break;
                                     }
@@ -855,13 +857,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oFilteredContentPackage = oBPPackage;
                             }
                         }
-                        sContentDeliveryMethod = oFilteredContentPackage.DeliveryMethod1_ShippingCondition ? oFilteredContentPackage.DeliveryMethod1_ShippingCondition :
-                            oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
-                                oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
-                                    oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
-                                        oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
-                                            oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
-                                                oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
+                        // sContentDeliveryMethod = oFilteredContentPackage.DeliveryMethod1_ShippingCondition ? oFilteredContentPackage.DeliveryMethod1_ShippingCondition :
+                        //     oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
+                        //         oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
+                        //             oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
+                        //                 oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
+                        //                     oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
+                        //                         oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
+                        sContentDeliveryMethod = sDeliveryMethodFromPackage;
 
                         //RULE 7.1 => Shipping Type for Content
                         if (sContentDeliveryMethod) {
