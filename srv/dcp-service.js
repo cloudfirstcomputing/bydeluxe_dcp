@@ -584,6 +584,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else {
+                    
+                    if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
+                        var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                        if (entry_Active) {
+                            data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                            recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
+                        }
+                    }
+                    else{
+                        var oExistingData = await SELECT.one.from(hanatable).where({BookingID: data[i].BookingID });
+                        if(oExistingData){
+                            oResponseStatus.error.push({
+                                "message": `| Booking ID ${data[i].BookingID} already exists|`,
+                                "errorMessage": `Booking ID ${data[i].BookingID} already exists`
+                            }); 
+                            continue;                           
+                        }
+                    }
                     var oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
                     if (oLocalResponse?.success?.length && !oLocalResponse?.error?.length) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
@@ -608,15 +626,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         ID: sID
                     });
                 }
-                else {
-                    if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
-                        var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                        if (entry_Active) {
-                            data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                            recordsToBeUpdated.push(entry_Active);
-                        }
-                    }
+                else {                    
                     recordsToBeInserted.push(data[i]); //INSERT is always required
+                    // if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
+                    //     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                    //     if (entry_Active) {
+                    //         data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                    //         recordsToBeUpdated.push(entry_Active);
+                    //     }
+                    // }
+                    // recordsToBeInserted.push(data[i]); //INSERT is always required
                 }
             }
             if (!bReconcile) {
