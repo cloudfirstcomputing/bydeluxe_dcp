@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch ,Company} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -99,7 +99,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             };
 
             for (const row of sheetData) {
-                console.log("row",row);
+                console.log("row", row);
                 try {
 
                     const normalizedRow = {};
@@ -137,7 +137,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         mappedRow[targetKey] = normalizedRow[excelKey];
                     }
 
-                    console.log("mappedRow",mappedRow);
+                    console.log("mappedRow", mappedRow);
 
                     const requiredFields = ["OriginalTitleName", "TitleCategory", "TitleType"];
                     const missingFields = requiredFields.filter(field => !mappedRow[field]?.toString().trim());
@@ -170,11 +170,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
                         ]
                     };
-                    
+
                     const createProductResponse = await s4h_products_Crt.run(
                         INSERT.into(Products).entries(productPayload)
                     );
-                    
+
                     //const response = await s4h_products_Crt.run(INSERT.into(Products).entries(input))
                     const createdProductID = createProductResponse?.Product;
                     if (!createdProductID) {
@@ -196,7 +196,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "LanguageCode": mappedRow.LanguageCode || "",
                         "ReleaseDate": mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
                         "RepertoryDate": mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
-                        "Format":mappedRow.Format || "",
+                        "Format": mappedRow.Format || "",
                         "ReleaseSize": mappedRow.ReleaseSize || "",
                         "Ratings": mappedRow.Ratings || "",
                         "ReelCountEstimated": mappedRow.ReelCountEstimated || null,
@@ -208,7 +208,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "ExternalTitleIDs_Ass": [],  //not present
                         "GofilexTitleId": mappedRow.GofilexTitleId || "",
                     };
-                    
+
                     await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
 
                     result.success.push({
@@ -420,10 +420,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         `Remediation is not possible any more as all ${iRemediationCounter} Delivery methods are utilized for remediation`);
                     return;
                 }
-                
-                if(aRemediatedDeliveryMethods?.filter((remDel)=>{
-                    return (remDel === '03'|| sDelSeq === '10') //RULE 11.2
-                })?.length){
+
+                if (aRemediatedDeliveryMethods?.filter((remDel) => {
+                    return (remDel === '03' || sDelSeq === '10') //RULE 11.2
+                })?.length) {
                     req.reject(400,
                         `Remediation is completed for the selected entry`);
                     return;
@@ -2072,7 +2072,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
             }
         });
 
-       this.on("formGR_LABEL", async (req, res) => {
+        this.on("formGR_LABEL", async (req, res) => {
 
             try {
                 var form_name = req.data.form;
@@ -2088,7 +2088,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             header.to_MaterialDocumentItem();
                     }).where({ MaterialDocument: oMaterialDocument.MaterialDocument, MaterialDocumentYear: oMaterialDocument.MaterialDocumentYear })
                 );
-                console.log("materialDocument",materialDocument);
+                console.log("materialDocument", materialDocument);
                 // If no document found, return empty response
                 if (!materialDocument.length) {
                     console.log("No material document found for", sMaterialDocument);
@@ -2443,10 +2443,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     }).where({ BillingDocument: oBillingDocument.BillingDocument })
                 );
 
+                const aBillingItems = billingDocument[0].to_Item || [];
+
                 const oBillingDocumentPartner = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'RE' })
                 )
-                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run( SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
+                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
                 const aBillingDocumentItem = await srv_BillingDocument.run(
                     SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument })
                 )
@@ -2462,12 +2464,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B' }));
                 const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionIsForStatistics: false }));
                 const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionInactiveReason: { '<>': '' } }));
-                const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode}))
-                const oBusinessPartnerAddrCompanyCode = await s4h_bp_Txn.run( SELECT.one.from(S4H_BusinessPartnerAddress).where({ AddressID: aCompanyCode.AddressID }));
-                const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false}));
-                var iNetAmount=0,iDiscountItem=0;
+                const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode }))
+                const oBusinessPartnerAddrCompanyCode = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ AddressID: aCompanyCode.AddressID }));
+                const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
+                var iNetAmount = 0, iDiscountItem = 0;
                 for (var index in aBillingDocumentItem) {
-                     iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
+                    iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
                     //  iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
                     aItems.push({
                         "SrNo": index,
@@ -2494,19 +2496,88 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const billingHeader = billingDocument[0]; // header
                 const item = billingHeader.to_Item.find(it => it.BillingDocumentItem === oBillingDocument.BillingDocumentItem); // item
 
+                //Populating Sales Order Data for Items
+                const aDtlItems = [];
+
+                for (const item of aBillingItems) {
+                    const sSalesOrder = item.SalesDocument;
+                    const sSalesOrderItem = item.SalesDocumentItem;
+
+                    // Fetch Sales Order V2 expanded details
+                    const oSalesOrderv2 = await s4h_sohv2_Txn.run(
+                        SELECT.one.from(S4H_SOHeader_V2)
+                            .columns([
+                                '*',
+                                { ref: ['to_Item'], expand: ['*'] },
+                                { ref: ['to_Partner'], expand: ['*'] }
+                            ])
+                            .where({ SalesOrder: sSalesOrder })
+                    );
+
+                    if (!oSalesOrderv2) continue; // skip if no sales order
+
+                    // Find PartnerFunction = 'SH' from Partner node
+                    const partnerSH = oSalesOrderv2.to_Partner?.find(p => p.PartnerFunction === 'SH');
+                    const sCustomerId = partnerSH?.Customer;
+
+                    let sTheatreName = '';
+                    let sCity = '';
+                    let sRegion = '';
+                    let sPostalCode = '';
+
+                    // if (sCustomerId) {
+                    //     const oCustomerAddress = await s4h_bp_Txn.run(
+                    //         SELECT.one.from(A_BusinessPartner)
+                    //             .columns([{ ref: ['to_BusinessPartnerAddress'], expand: ['FullName', 'CityName', 'Region', 'PostalCode'] }])
+                    //             .where({ BusinessPartner: sCustomerId })
+                    //     );
+
+                    //     if (oCustomerAddress?.to_BusinessPartnerAddress?.length > 0) {
+                    //         const address = oCustomerAddress.to_BusinessPartnerAddress[0];
+                    //         sTheatreName = address.FullName;
+                    //         sCity = address.CityName;
+                    //         sRegion = address.Region;
+                    //         sPostalCode = address.PostalCode;
+                    //     }
+                    // }
+
+                    // // Fetch Custom Studio Feed for Request, Order, Booker, Start/End
+                    // const oStudioData = await studioFeed_Txn.run(
+                    //     SELECT.one.from(CustomStudioFeed)
+                    //         .where({
+                    //             SalesOrder: sSalesOrder,
+                    //             SalesOrderItem: sSalesOrderItem
+                    //         })
+                    // );
+
+                    // Final push into DtlItems array
+                    aDtlItems.push({
+                        SONo: item.SalesDocument,
+                        CustThr: sCustomerId || '',
+                        TheatreName: oBusinessPartnerAddrfromS4?.FullName || '',
+                        City: oBusinessPartnerAddrfromS4?.StreetName || '',
+                        StZIP: (sRegion && sPostalCode) ? `${sRegion}/${sPostalCode}` : '',
+                        RequestNo: '',
+                        OrderNo: '',
+                        Booker: '',
+                        Start: '00:00:00',
+                        End: '00:00:00'
+                    });
+                }
+
 
                 const billingDataNode = {
                     "TaxInvoiceNode": {
                         "Header": {
-                            "CompanyAddress": oBusinessPartnerAddrCompanyCode === undefined ? '' : (oBusinessPartnerAddrCompanyCode?.FullName+","+oBusinessPartnerAddrCompanyCode?.HouseNumber+","+oBusinessPartnerAddrCompanyCode?.StreetName+","+oBusinessPartnerAddrCompanyCode?.CityName+","+oBusinessPartnerAddrCompanyCode?.PostalCode+","+oBusinessPartnerAddrCompanyCode?.Region+","+oBusinessPartnerAddrCompanyCode?.Country),
+                            "CompanyAddress": oBusinessPartnerAddrCompanyCode === undefined ? '' : (oBusinessPartnerAddrCompanyCode?.FullName + "," + oBusinessPartnerAddrCompanyCode?.HouseNumber + "," + oBusinessPartnerAddrCompanyCode?.StreetName + "," + oBusinessPartnerAddrCompanyCode?.CityName + "," + oBusinessPartnerAddrCompanyCode?.PostalCode + "," + oBusinessPartnerAddrCompanyCode?.Region + "," + oBusinessPartnerAddrCompanyCode?.Country),
                             "PageNo": "1",
-                            "InvoiceNo": "INV-20250422",
-                            "InvoiceDate": "2025-04-22",
+                            "InvoiceNo": billingHeader.to_Item[0].BillingDocument,
+                            "InvoiceDate": billingHeader.BillingDocumentDate,
                             "Terms": "Net 30",
                             "PaymentDueDate": "2025-05-22"
                         },
                         "BillTo": {
-                            "BillToAddress": oBusinessPartnerAddrfromS4?.FullName+","+oBusinessPartnerAddrfromS4?.HouseNumber+","+oBusinessPartnerAddrfromS4?.StreetName+","+oBusinessPartnerAddrfromS4?.CityName+","+oBusinessPartnerAddrfromS4?.PostalCode+","+oBusinessPartnerAddrfromS4?.Region+","+oBusinessPartnerAddrfromS4?.Country,
+                            "BillToAddress": oBusinessPartnerAddrfromS4?.FullName + "," + oBusinessPartnerAddrfromS4?.HouseNumber + "," + oBusinessPartnerAddrfromS4?.StreetName + "," + oBusinessPartnerAddrfromS4?.CityName + "," + oBusinessPartnerAddrfromS4?.PostalCode + "," + oBusinessPartnerAddrfromS4?.Region + "," + oBusinessPartnerAddrfromS4?.Country,
                             "CustomerAccountNo": oBillingDocumentPartner.Customer,
                             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
                             "CustomerContact": "JSM",
@@ -2534,7 +2605,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                                             "Title": "Product Group A"
                                         }
                                     ],
-                                    "Items":aItems,
+                                    "Items": aItems,
                                     // "Items": [
                                     //     {
                                     //         "SrNo": "1",
@@ -2586,20 +2657,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                                     "End": "2025-04-15T00:00:00"
                                 }
                             ],
-                            "DtlItems": [
-                                {
-                                    "SONo": "SO123",
-                                    "CustThr": "CT456",
-                                    "TheatreName": "Main Stage",
-                                    "City": "New York",
-                                    "StZIP": "10001",
-                                    "RequestNo": "REQ001",
-                                    "OrderNo": "ORD789",
-                                    "Booker": "John Smith",
-                                    "Start": "2025-04-01T00:00:00",
-                                    "End": "2025-04-15T00:00:00"
-                                }
-                            ]
+                            "DtlItems": aDtlItems
                         }
                     }
                 }
