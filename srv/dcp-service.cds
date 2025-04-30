@@ -442,6 +442,8 @@ service BookingOrderService {
             key MaterialDocument,
             key MaterialDocumentItem,
                 QuantityInBaseUnit,
+                QuantityInEntryUnit,
+                EntryUnit,
                 Material,
                 Plant,
                 Supplier,

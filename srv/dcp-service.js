@@ -2200,7 +2200,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             OrderPriceUnit: "EA",
                             OrderQuantityUnit: "1500",
                             Plant: "AT21",
-                            QtyInPurchaseOrderPriceUnit:item.QuantityInBaseUnit
+                            QtyInPurchaseOrderPriceUnit:item.QuantityInEntryUnit
                             // ProductDescription: productMap[item.Material]?.ProductDescription || "",
                             // ProductManufacturerNumber: productMap[item.Material]?.ProductManufacturerNumber || "",
                             // YY1_CustomerDes_PRD: productMap[item.Material]?.YY1_CustomerDes_PRD || "",
