@@ -2024,16 +2024,18 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     var convertedBytes = await convertBytes(oAssetVault?.AssetMapFileSize);
                     TotalSize = convertedBytes;
 
-                    var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
-                        dist.DistroSpecUUID,
-                            dist.DistroSpecID,
-                            dist.Title_Product,
-                            dist.Name,
-                            dist.to_StudioKey((studio) => {
-                                studio.Studio_BusinessPartner
-                            })
-                    }).where({ Title_Product: DCPBarcode });
-                    var sBupa = distroSpecData?.to_StudioKey?.[0]?.Studio_BusinessPartner;
+                    // var distroSpecData = await SELECT.one.from('DistributionService.DistroSpec', (dist) => {
+                    //     dist.DistroSpecUUID,
+                    //         dist.DistroSpecID,
+                    //         dist.Title_Product,
+                    //         dist.Name,
+                    //         dist.to_StudioKey((studio) => {
+                    //             studio.Studio_BusinessPartner
+                    //         })
+                    // }).where({ Title_Product: DCPBarcode });
+                    // var sBupa = distroSpecData?.to_StudioKey?.[0]?.Studio_BusinessPartner;
+                    let oTitle = await SELECT.one.from(TitleV).where({MaterialMasterTitleID: Product, TitleType: 'Parent'});
+                    var sBupa = oTitle?.StudioDistributor;
 
                     if (sBupa) {
                         var oBupa = await s4h_bp_Txn.run(SELECT.one.columns(['BusinessPartnerFullName']).from(S4H_BuisnessPartner).where({ BusinessPartner: sBupa }));
