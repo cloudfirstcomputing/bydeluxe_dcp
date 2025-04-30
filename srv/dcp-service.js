@@ -2144,7 +2144,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const productMap = {};
                 productData.forEach((product) => {
                     productMap[product.Product] = {
-                        ProductDescription: product.ProductDescription,
+                        ProductDescription: product.to_Description[0].ProductDescription,
                         ProductManufacturerNumber: product.ProductManufacturerNumber,
                         YY1_CustomerDes_PRD: product.YY1_CustomerDes_PRD,
                         YY1_matcust_PRD: product.YY1_matcust_PRD
@@ -2187,12 +2187,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             ManufacturingOrder: "",
                             MasterFixedAsset: "",
                             // Material: item.Material,
-                            Material: productData[0]?.to_Description[0].ProductDescription,
+                            Material: productMap[item.Material]?.ProductDescription || "Unknown Material",
                             MaterialDocument: item.MaterialDocument,
                             MaterialDocumentItem: item.MaterialDocumentItem,
                             MaterialDocumentYear: item.MaterialDocumentYear,
                             MaterialGrossWeight: 13.0,
-                            MaterialName: productMap[item.Material]?.ProductDescription || "Unknown Material",
+                            MaterialName: productMap[item.Material]?.ProductManufacturerNumber == '' ? productMap[item.Material]?.to_Description[0].ProductDescription : productMap[item.Material]?.ProductManufacturerNumber, // Barcode text,
                             MaterialNetWeight: 12.0,
                             MaterialSizeOrderDimensionDesc: "",
                             MaterialVolume: 0.0,
@@ -2224,7 +2224,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             MaterialDocumentHeaderText: productData[0]?.YY1_CustomerDes_PRD,
                             MaterialDocumentItem: oMaterialDocument.MaterialDocument,
                             MaterialDocumentYear: oMaterialDocument.MaterialDocument,
-                            PrinterIsCapableBarCodes: productData[0]?.ProductManufacturerNumber == '' ? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
+                            PrinterIsCapableBarCodes: GRMatItemNode[0]?.MaterialName, // Barcode text
                             ReferenceDocument: productData[0]?.YY1_CustomerDes_PRD,
                             GRMI: {
                                 GRMatItemNode
