@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company ,AddressPostal} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -29,7 +29,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_country = await cds.connect.to("API_COUNTRY_SRV");
         var s4h_Company = await cds.connect.to("API_COMPANYCODE_SRV")
-          var invformAPI = await cds.connect.to("ZCL_INVFORM");
+        var invformAPI = await cds.connect.to("ZCL_INVFORM");
 
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
@@ -585,7 +585,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else {
-                    
+
                     if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
@@ -593,14 +593,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
                         }
                     }
-                    else{
-                        var oExistingData = await SELECT.one.from(hanatable).where({BookingID: data[i].BookingID });
-                        if(oExistingData){
+                    else {
+                        var oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
+                        if (oExistingData) {
                             oResponseStatus.error.push({
                                 "message": `| Booking ID ${data[i].BookingID} already exists|`,
                                 "errorMessage": `Booking ID ${data[i].BookingID} already exists`
-                            }); 
-                            continue;                           
+                            });
+                            continue;
                         }
                     }
                     var oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
@@ -627,7 +627,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         ID: sID
                     });
                 }
-                else {                    
+                else {
                     recordsToBeInserted.push(data[i]); //INSERT is always required
                     // if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                     //     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
@@ -2202,7 +2202,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             OrderPriceUnit: "EA",
                             OrderQuantityUnit: "1500",
                             Plant: "AT21",
-                            QtyInPurchaseOrderPriceUnit:item.QuantityInEntryUnit
+                            QtyInPurchaseOrderPriceUnit: item.QuantityInEntryUnit
                             // ProductDescription: productMap[item.Material]?.ProductDescription || "",
                             // ProductManufacturerNumber: productMap[item.Material]?.ProductManufacturerNumber || "",
                             // YY1_CustomerDes_PRD: productMap[item.Material]?.YY1_CustomerDes_PRD || "",
@@ -2232,6 +2232,18 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         }
                     }
                 };
+                // const formData = {
+                //     Form: {
+                //         "GRLabel": {
+                //             "Client": productData[0]?.YY1_CustomerDes_PRD,
+                //             "BarCode": productData[0]?.ProductManufacturerNumber == '' ? productData[0]?.to_Description[0].ProductDescription : productData[0]?.ProductManufacturerNumber, // Barcode text
+                //             "Quantity": item.QuantityInEntryUnit,
+                //             "Unit": item.EntryUnit,
+                //             "Description": productData[0]?.to_Description[0].ProductDescription,
+                //             "ReceiptDate": materialDocument[0].PostingDate
+                //         }
+                //     }
+                // };
 
                 console.log(JSON.stringify(formData, null, 2));
 
@@ -2474,9 +2486,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oBillingDocumentPartner = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'RE' })
                 )
-                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress,(header)=>{
-                    header.FullName, header.HouseNumber,header.StreetName,header.CityName,header.PostalCode, header.Region,header.Country,
-                    header.to_EmailAddress()
+                const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress, (header) => {
+                    header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
+                        header.to_EmailAddress()
                 }).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
                 const aBillingDocumentItem = await srv_BillingDocument.run(
                     SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument })
@@ -2501,7 +2513,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
                     //  iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
                     aItems.push({
-                        "SrNo": index+1,
+                        "SrNo": index + 1,
                         "Title": aItemList[index]?.LongText,
                         "Qty": aBillingDocumentItem[index].BillingQuantity,
                         "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
