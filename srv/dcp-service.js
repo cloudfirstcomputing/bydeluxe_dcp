@@ -2165,7 +2165,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             DebitCreditCode: oMaterialDocument.MaterialDocument,
                             DeliveryQuantityUnit: oMaterialDocument.MaterialDocument,
                             DocumentItemText: productMap[item.Material]?.ProductDescription || "Unknown Material",
-                            EntryUnit: "EA",
+                            EntryUnit: item.EntryUnit,
                             Equipment: oMaterialDocument.MaterialDocument,
                             FixedAsset: "",
                             GoodsMovementRefDocType: "",
