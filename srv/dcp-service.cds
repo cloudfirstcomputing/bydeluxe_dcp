@@ -38,6 +38,7 @@ service BookingOrderService {
     entity S4H_SalesOrderItem_V2        as projection on api.SalesOrderItem;
     entity S4H_BusinessPartnerapi       as projection on api.BusinessPartnersV1;
     entity S4H_BusinessPartnerAddress   as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
+    entity S4H_ProductGroup1            as projection on api.ProductGroup1;
 
     entity S4H_Country                  as
         projection on api.Country {

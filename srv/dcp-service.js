@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID package
 const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
-        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping,
+        const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping, S4H_ProductGroup1,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal } = this.entities;
@@ -28,7 +28,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_salesparam_Txn = await cds.connect.to("YY1_SALESPARAMETERS_CDS_0001");
         var s4h_bp_vh = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_country = await cds.connect.to("API_COUNTRY_SRV");
-        var s4h_Company = await cds.connect.to("API_COMPANYCODE_SRV")
+        var s4h_Company = await cds.connect.to("API_COMPANYCODE_SRV");
+        var prdgrp1tx = await cds.connect.to("YY1_ADDITIONALMATERIALGRP1_CDS");
         var invformAPI = await cds.connect.to("ZCL_INVFORM");
 
 
@@ -237,7 +238,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             };
         });
 
-
+        this.on('READ', S4H_ProductGroup1, async (req)=>{
+            return prdgrp1tx.run(SELECT.from(S4H_ProductGroup1).where({ Language: req.locale.toUpperCase() }))
+        })
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
@@ -1269,9 +1272,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                 }
                 if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9
-                    var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
+                    // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
+                    var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
                     if (oProdGroup) {
-                        await updateItemTextForSalesOrder(req, "Z002", `${sPackageName} ${oProdGroup?.MaterialGroupName}`, oResponseStatus, oSalesOrderItem, oContentData);
+                        await updateItemTextForSalesOrder(req, "Z002", `${sPackageName} ${oProdGroup?.AdditionalMaterialGroup1Name}`, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
                 Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
