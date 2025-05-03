@@ -238,7 +238,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             };
         });
 
-        this.on('READ', S4H_ProductGroup1, async (req)=>{
+        this.on('READ', S4H_ProductGroup1, async (req) => {
             return prdgrp1tx.run(SELECT.from(S4H_ProductGroup1).where({ Language: req.locale.toUpperCase() }))
         })
         this.on('MassUploadStudioFeed', async (req, res) => {
@@ -2038,7 +2038,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     //         })
                     // }).where({ Title_Product: DCPBarcode });
                     // var sBupa = distroSpecData?.to_StudioKey?.[0]?.Studio_BusinessPartner;
-                    let oTitle = await SELECT.one.from(TitleV).where({MaterialMasterTitleID: Product, TitleType: 'Parent'});
+                    let oTitle = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: Product, TitleType: 'Parent' });
                     var sBupa = oTitle?.StudioDistributor;
 
                     if (sBupa) {
@@ -2513,21 +2513,74 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oAddrCompanyCode = await invformAPI.run(SELECT.one.from(AddressPostal).where({ AddressID: aCompanyCode.AddressID }));
                 const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
                 var iNetAmount = 0, iDiscountItem = 0;
+                const itemMap = {};
                 for (var index in aBillingDocumentItem) {
+
+                    const key = aBillingDocumentItem[index].PricingReferenceMaterial || 'NO_KEY';
                     iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
                     //  iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
-                    aItems.push({
-                        "SrNo": index + 1,
-                        "Title": aItemList[index]?.LongText,
-                        "Qty": aBillingDocumentItem[index].BillingQuantity,
-                        "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
-                        "Cur": aBillingDocumentItem[index].TransactionCurrency,
-                        "Price": aPriceItem[index].ConditionRateValue,
-                        "Discount": 0,
-                        "Extended": "",
-                        "Tax": 0.0
+
+
+                    if (!itemMap[key]) {
+                        itemMap[key] = []
+                        itemMap[key].push({
+                            "SrNo": 0,
+                            "Title": aItemList[index]?.LongText,
+                            "Qty": aBillingDocumentItem[index].BillingQuantity,
+                            "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
+                            "Cur": aBillingDocumentItem[index].TransactionCurrency,
+                            "Price": aPriceItem[index].ConditionRateValue,
+                            "Discount": 0,
+                            "Extended": "",
+                            "Tax": 0.0
+                        });
+                    }
+                    else {
+                        itemMap[key].push({
+                            "SrNo": 0,
+                            "Title": aItemList[index]?.LongText,
+                            "Qty": aBillingDocumentItem[index].BillingQuantity,
+                            "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
+                            "Cur": aBillingDocumentItem[index].TransactionCurrency,
+                            "Price": aPriceItem[index].ConditionRateValue,
+                            "Discount": 0,
+                            "Extended": "",
+                            "Tax": 0.0
+                        });
+                    }
+                    // aItems.push({
+                    //     "SrNo": index + 1,
+                    //     "Title": aItemList[index]?.LongText,
+                    //     "Qty": aBillingDocumentItem[index].BillingQuantity,
+                    //     "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
+                    //     "Cur": aBillingDocumentItem[index].TransactionCurrency,
+                    //     "Price": aPriceItem[index].ConditionRateValue,
+                    //     "Discount": 0,
+                    //     "Extended": "",
+                    //     "Tax": 0.0
+                    // })
+                }
+
+                // Rebuild grouped array with proper SrNo
+                var aTableRow = []
+                let srNoCounter = 1;
+
+                for (const key in itemMap) {
+                    const groupedList = itemMap[key];
+                    for (const item of groupedList) {
+                        item.SrNo = srNoCounter++;
+                    }
+                    aTableRow.push({
+                        "Title": [
+                            {
+                                "Title": key
+                            }
+                        ],
+                        "Items": groupedList
+
                     })
                 }
+
 
 
                 const oSalesOrder = await s4h_so_Txn.run(
@@ -2612,7 +2665,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
 
                 const billingDataNode = {
-                    "TaxInvoiceNode": {
+                    "TaxInvoice": {
                         "Header": {
                             "CompanyAddress": oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.Street + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country),
                             "PageNo": "1",
@@ -2643,46 +2696,69 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                                     "Tax": 7.500
                                 }
                             ],
-                            "TabRow": [
-                                {
-                                    "Title": [
-                                        {
-                                            "Title": "Product Group A"
-                                        }
-                                    ],
-                                    "Items": aItems,
-                                    // "Items": [
-                                    //     {
-                                    //         "SrNo": "1",
-                                    //         "Title": "A",
-                                    //         "Qty": "10",
-                                    //         "UOM": "pcs",
-                                    //         "Cur": "USD",
-                                    //         "Price": 100.000,
-                                    //         "Discount": 5.000,
-                                    //         "Extended": 950.000,
-                                    //         "Tax": 7.500
-                                    //     }
-                                    // ]
-                                }
-                            ]
+                            "TabRow":aTableRow,
+                            //  [
+                            //     {
+                            //         "Title": [
+                            //             {
+                            //                 "Title": "Product Group A"
+                            //             }
+                            //         ],
+                            //         "Items": aItems,
+                            //         // "Items": [
+                            //         //     {
+                            //         //         "SrNo": "1",
+                            //         //         "Title": "A",
+                            //         //         "Qty": "10",
+                            //         //         "UOM": "pcs",
+                            //         //         "Cur": "USD",
+                            //         //         "Price": 100.000,
+                            //         //         "Discount": 5.000,
+                            //         //         "Extended": 950.000,
+                            //         //         "Tax": 7.500
+                            //         //     }
+                            //         // ]
+                            //     }
+                            // ]
                         },
                         "PaymentInfo": {
-                            "Payee": "Example Corp",
-                            "LockBoxNo": "LB12345",
-                            "Address": "789 Payment Way",
-                            "Beneficiary": "Example Corp",
-                            "AccountNo": "987654321",
-                            "RoutingNoACH": "011000015",
-                            "RoutingNoWire": "021000021",
-                            "SwitchAddress": "Bank XYZ",
-                            "SubTotal": iNetAmount,
-                            "SalesTax1": 75.000,
-                            "SalesTax2": 25.000,
-                            "Discount": 50.000,
-                            "GrandTotalDue": 1050.000,
-                            "SalexTax1Type": "State",
-                            "SalesTax2Type": "City"
+                            "PayTable": {
+                                "PayTableRow": [
+                                    {
+                                        "Cell1": "Payee",
+                                        "Cell2": "USD",
+                                        "Cell3": "Beneficary",
+                                        "Cell4": ""
+                                    },
+                                    {
+                                        "Cell1": "Lockbox #",
+                                        "Cell2": "USD",
+                                        "Cell3": "Account #",
+                                        "Cell4": "0.00"
+                                    },
+                                    {
+                                        "Cell1": "Total",
+                                        "Cell2": "USD",
+                                        "Cell3": "525.00",
+                                        "Cell4": ""
+                                    }
+                                ]
+                            },
+                            "TaxTable": {
+                                "TaxTableRow": [
+                                    {
+                                        "Cell1": "Sales Tax",
+                                        "Cell2": 25.00
+                                    }
+                                ]
+                            },
+                            "TaxTypeTable": {
+                                "TaxTypeTableRow": [
+                                    {
+                                        "Cell1": "Standard Rate"
+                                    }
+                                ]
+                            }
                         },
                         "Footer": {
                             "FooterText": "Thank you for your business!"
