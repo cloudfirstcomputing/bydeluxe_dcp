@@ -507,5 +507,5 @@ service BookingOrderService {
     entity AddressPostal as projection on api.AddressPostal;
     entity HouseBank as projection on api.HouseBank;
 
-    entity BankDetails as projection on api.Bank;
+    entity Bank as projection on api.Bank;
 }
