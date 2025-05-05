@@ -11,6 +11,194 @@
    "@sap.message.scope.supported": "true",
    "@sap.supported.formats": "atom json xlsx"
   },
+  "ZCL_INVFORM.AddlCompanyCodeInformation": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Address Company Code Interface view",
+   "elements": {
+    "CompanyCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Company Code",
+     "notNull": true
+    },
+    "CompanyCodeParameterType": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Parameter type",
+     "notNull": true
+    },
+    "CompanyCodeParameterValue": {
+     "type": "cds.String",
+     "length": 48,
+     "@sap.label": "Parameter value"
+    }
+   }
+  },
+  "ZCL_INVFORM.AddressEmailAddress": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Address with Email Interface view",
+   "elements": {
+    "AddressID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Address Number",
+     "notNull": true
+    },
+    "AddressPersonID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Person Number",
+     "notNull": true
+    },
+    "CommMediumSequenceNumber": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Sequence Number",
+     "notNull": true
+    },
+    "EmailAddress": {
+     "type": "cds.String",
+     "length": 241,
+     "@sap.label": "Email Address"
+    },
+    "EmailAddressIsCurrentDefault": {
+     "type": "cds.Boolean",
+     "@sap.label": "Email is Cur Dflt",
+     "@sap.quickinfo": "Indicator : Current Default Email Address"
+    },
+    "CommLineNotForUnsolicitedCntct": {
+     "type": "cds.Boolean",
+     "@sap.label": "Do not use",
+     "@sap.quickinfo": "Communication line is not to be used for unsolicited contact"
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date"
+    },
+    "ValidityEndDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date"
+    }
+   }
+  },
+  "ZCL_INVFORM.AddressPhoneNumber": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Address with Phone Number Interface view",
+   "elements": {
+    "AddressID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Address Number",
+     "notNull": true
+    },
+    "AddressPersonID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Person Number",
+     "notNull": true
+    },
+    "CommMediumSequenceNumber": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Sequence Number",
+     "notNull": true
+    },
+    "PhoneNumberCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Country/Region",
+     "@sap.quickinfo": "Country/Region for Telephone/Fax Number"
+    },
+    "PhNmbrIsCurrentOverallDefault": {
+     "type": "cds.Boolean",
+     "@sap.label": "Ph is cur ovrl Dflt",
+     "@sap.quickinfo": "Indicator : Current Overall Default Phone Number"
+    },
+    "CommLineNotForUnsolicitedCntct": {
+     "type": "cds.Boolean",
+     "@sap.label": "Do not use",
+     "@sap.quickinfo": "Communication line is not to be used for unsolicited contact"
+    },
+    "PhoneAreaCodeSubscriberNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Telephone",
+     "@sap.quickinfo": "Telephone No.: Dialing Code and Number"
+    },
+    "PhoneExtensionNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Extension",
+     "@sap.quickinfo": "Telephone no.: Extension"
+    },
+    "InternationalPhoneNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Telephone Number",
+     "@sap.quickinfo": "Complete Number: Dialing Code+Number+Extension"
+    },
+    "PhoneIsSMSEnabled": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "SMS-Enab.",
+     "@sap.quickinfo": "Indicator: Telephone is SMS-Enabled"
+    },
+    "PhoneNumberType": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Phone number type",
+     "@sap.quickinfo": "Phone Number Type"
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date"
+    },
+    "ValidityEndDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date"
+    }
+   }
+  },
   "ZCL_INVFORM.AddressPostal": {
    "kind": "entity",
    "@cds.external": true,
@@ -395,6 +583,275 @@
      "@odata.Precision": 7,
      "@sap.label": "Changed On",
      "@sap.quickinfo": "Last Change Date Time"
+    }
+   }
+  },
+  "ZCL_INVFORM.CoCodeCountryVATReg": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Coutry code Interface view",
+   "elements": {
+    "CompanyCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Company Code",
+     "notNull": true
+    },
+    "VATRegistrationCountry": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Country/Region Key",
+     "notNull": true
+    },
+    "VATRegistration": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "VAT Registration No.",
+     "@sap.quickinfo": "VAT Registration Number"
+    },
+    "CompanyCodeName": {
+     "type": "cds.String",
+     "length": 25,
+     "@sap.label": "Company Name",
+     "@sap.quickinfo": "Name of Company Code or Company"
+    },
+    "AddressID": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Address"
+    }
+   }
+  },
+  "ZCL_INVFORM.HouseBank": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom House bank Interface",
+   "elements": {
+    "CompanyCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Company Code",
+     "notNull": true
+    },
+    "HouseBank": {
+     "key": true,
+     "type": "cds.String",
+     "length": 5,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "House Bank",
+     "@sap.quickinfo": "Short Key for a House Bank",
+     "notNull": true
+    },
+    "BankCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Bank Country/Region",
+     "@sap.quickinfo": "Bank Country/Region Key"
+    },
+    "BankInternalID": {
+     "type": "cds.String",
+     "length": 15,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Bank Key",
+     "@sap.quickinfo": "Bank Keys"
+    },
+    "PhoneNumber1": {
+     "type": "cds.String",
+     "length": 16,
+     "@sap.label": "Telephone 1",
+     "@sap.quickinfo": "First telephone number"
+    },
+    "TaxID1": {
+     "type": "cds.String",
+     "length": 16,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Tax Number 1"
+    },
+    "ContactPersonName": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.label": "Contact Person",
+     "@sap.quickinfo": "Name of contact person"
+    },
+    "Language": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.label": "Language Key"
+    },
+    "BusinessPlace": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Business Place"
+    },
+    "EDIPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "EDI Partner Number",
+     "@sap.quickinfo": "House Bank Partner Number"
+    },
+    "EDISignatureType": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Type of Signature"
+    },
+    "DataMediumExchangeBank": {
+     "type": "cds.String",
+     "length": 5,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Alternative Bank ID",
+     "@sap.quickinfo": "DME Bank Identification"
+    },
+    "DataMediumReceivingBank": {
+     "type": "cds.String",
+     "length": 15,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Bank Receiving DME",
+     "@sap.quickinfo": "Bank Number of the Bank Receiving the Data Medium"
+    },
+    "CustomerByHouseBank": {
+     "type": "cds.String",
+     "length": 18,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Customer Number",
+     "@sap.quickinfo": "Customer ID at House Bank"
+    },
+    "BankControlKey": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Bank Control Key"
+    },
+    "DataExchangeInstruction": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Instruction Key",
+     "@sap.quickinfo": "Instruction Key for Data Medium Exchange"
+    },
+    "ExecutionLeadDays": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Lead Days",
+     "@sap.quickinfo": "Lead Days for Date of Execution"
+    },
+    "CentralBankReportIsRequired": {
+     "type": "cds.Boolean",
+     "@sap.label": "Create Central Bank Report"
+    },
+    "RegionByCentralBank": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Area Number"
+    },
+    "PaymentIsForwardedToCentralBk": {
+     "type": "cds.Boolean",
+     "@sap.label": "Forward Pay. Data",
+     "@sap.quickinfo": "Forward Payment Data to the Central Bank"
+    },
+    "ChargeAccountCurrencyISOCode": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "ISO Currency Cde",
+     "@sap.quickinfo": "ISO Currency Code for Charge Account"
+    },
+    "ChargeAccount": {
+     "type": "cds.String",
+     "length": 35,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Account Number",
+     "@sap.quickinfo": "Account Number of the Charge Account"
+    },
+    "ChargeAccountBank": {
+     "type": "cds.String",
+     "length": 15,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Bank Number",
+     "@sap.quickinfo": "Charge Account Bank Number"
+    },
+    "OrderingCompanyByBank": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Company Number",
+     "@sap.quickinfo": "Company Number of Ordering Party"
+    },
+    "DefaultPartnerValidToDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.label": "Valid To"
+    },
+    "DefaultPartnerValidFromDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.label": "Valid From"
+    },
+    "DefaultPartnerNo": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number"
+    },
+    "RiskPartnerValidToDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.label": "Valid To"
+    },
+    "RiskPartnerValidFromDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.label": "Valid From"
+    },
+    "RiskPartnerNo": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number"
+    },
+    "DataExchangeInstructionKey": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Instruction Key",
+     "@sap.quickinfo": "Instruction Key for Data Medium Exchange"
+    },
+    "HouseBankChargeAccount": {
+     "type": "cds.String",
+     "length": 35,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Account Number",
+     "@sap.quickinfo": "Account Number of the Charge Account"
+    },
+    "HsBkIsInstantBalanceEnabled": {
+     "type": "cds.Boolean",
+     "@sap.label": "Ins. Bal. Enabled",
+     "@sap.quickinfo": "Instant Balances Enabled"
     }
    }
   }

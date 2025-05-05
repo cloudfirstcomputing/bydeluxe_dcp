@@ -77,4 +77,5 @@ context api {
     entity Company                      as projection on company.A_CompanyCode;
     entity Characteristic               as projection on charac.YY1_ClfnCharacteristic;
     entity AddressPostal               as projection on invoice.AddressPostal;
+    entity HouseBank               as projection on invoice.HouseBank;
 }

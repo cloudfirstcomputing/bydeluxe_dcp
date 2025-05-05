@@ -503,5 +503,6 @@ service BookingOrderService {
     entity Batch  as projection on db.Batch;
     entity Company as projection on api.Company;
 
-    entity AddressPostal as projection on api.AddressPostal
+    entity AddressPostal as projection on api.AddressPostal;
+    entity HouseBank as projection on api.HouseBank;
 }

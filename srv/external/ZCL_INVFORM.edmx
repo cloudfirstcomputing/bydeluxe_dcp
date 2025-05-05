@@ -34,6 +34,50 @@
 </edmx:Reference>
 <edmx:DataServices m:DataServiceVersion="2.0">
 <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="cds_zcl_invform" xml:lang="en" sap:schema-version="1">
+<EntityType Name="AddlCompanyCodeInformationType" sap:label="Custom Address Company Code Interface view" sap:content-version="1">
+<Key>
+<PropertyRef Name="CompanyCode"/>
+<PropertyRef Name="CompanyCodeParameterType"/>
+</Key>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
+<Property Name="CompanyCodeParameterType" Type="Edm.String" Nullable="false" MaxLength="6" sap:display-format="UpperCase" sap:label="Parameter type"/>
+<Property Name="CompanyCodeParameterValue" Type="Edm.String" MaxLength="48" sap:label="Parameter value"/>
+</EntityType>
+<EntityType Name="AddressEmailAddressType" sap:label="Custom Address with Email Interface view" sap:content-version="1">
+<Key>
+<PropertyRef Name="AddressID"/>
+<PropertyRef Name="AddressPersonID"/>
+<PropertyRef Name="CommMediumSequenceNumber"/>
+</Key>
+<Property Name="AddressID" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Address Number"/>
+<Property Name="AddressPersonID" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Person Number"/>
+<Property Name="CommMediumSequenceNumber" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="NonNegative" sap:label="Sequence Number"/>
+<Property Name="EmailAddress" Type="Edm.String" MaxLength="241" sap:label="Email Address"/>
+<Property Name="EmailAddressIsCurrentDefault" Type="Edm.Boolean" sap:label="Email is Cur Dflt" sap:quickinfo="Indicator : Current Default Email Address"/>
+<Property Name="CommLineNotForUnsolicitedCntct" Type="Edm.Boolean" sap:label="Do not use" sap:quickinfo="Communication line is not to be used for unsolicited contact"/>
+<Property Name="ValidityStartDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
+<Property Name="ValidityEndDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
+</EntityType>
+<EntityType Name="AddressPhoneNumberType" sap:label="Custom Address with Phone Number Interface view" sap:content-version="1">
+<Key>
+<PropertyRef Name="AddressID"/>
+<PropertyRef Name="AddressPersonID"/>
+<PropertyRef Name="CommMediumSequenceNumber"/>
+</Key>
+<Property Name="AddressID" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Address Number"/>
+<Property Name="AddressPersonID" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Person Number"/>
+<Property Name="CommMediumSequenceNumber" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="NonNegative" sap:label="Sequence Number"/>
+<Property Name="PhoneNumberCountry" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Country/Region" sap:quickinfo="Country/Region for Telephone/Fax Number"/>
+<Property Name="PhNmbrIsCurrentOverallDefault" Type="Edm.Boolean" sap:label="Ph is cur ovrl Dflt" sap:quickinfo="Indicator : Current Overall Default Phone Number"/>
+<Property Name="CommLineNotForUnsolicitedCntct" Type="Edm.Boolean" sap:label="Do not use" sap:quickinfo="Communication line is not to be used for unsolicited contact"/>
+<Property Name="PhoneAreaCodeSubscriberNumber" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase" sap:label="Telephone" sap:quickinfo="Telephone No.: Dialing Code and Number"/>
+<Property Name="PhoneExtensionNumber" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Extension" sap:quickinfo="Telephone no.: Extension"/>
+<Property Name="InternationalPhoneNumber" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase" sap:label="Telephone Number" sap:quickinfo="Complete Number: Dialing Code+Number+Extension"/>
+<Property Name="PhoneIsSMSEnabled" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="SMS-Enab." sap:quickinfo="Indicator: Telephone is SMS-Enabled"/>
+<Property Name="PhoneNumberType" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Phone number type" sap:quickinfo="Phone Number Type"/>
+<Property Name="ValidityStartDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
+<Property Name="ValidityEndDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
+</EntityType>
 <EntityType Name="AddressPostalType" sap:label="Custom Address Interface view" sap:content-version="1">
 <Key>
 <PropertyRef Name="AddressID"/>
@@ -100,14 +144,154 @@
 <Property Name="AddressChangedByUser" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Changed By" sap:quickinfo="Last Changed By User"/>
 <Property Name="AddressChangedOnDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Changed On" sap:quickinfo="Last Change Date Time"/>
 </EntityType>
+<EntityType Name="CoCodeCountryVATRegType" sap:label="Custom Coutry code Interface view" sap:content-version="1">
+<Key>
+<PropertyRef Name="CompanyCode"/>
+<PropertyRef Name="VATRegistrationCountry"/>
+</Key>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
+<Property Name="VATRegistrationCountry" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="UpperCase" sap:label="Country/Region Key"/>
+<Property Name="VATRegistration" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="VAT Registration No." sap:quickinfo="VAT Registration Number"/>
+<Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name" sap:quickinfo="Name of Company Code or Company"/>
+<Property Name="AddressID" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Address"/>
+</EntityType>
+<EntityType Name="HouseBankType" sap:label="Custom House bank Interface" sap:content-version="1">
+<Key>
+<PropertyRef Name="CompanyCode"/>
+<PropertyRef Name="HouseBank"/>
+</Key>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
+<Property Name="HouseBank" Type="Edm.String" Nullable="false" MaxLength="5" sap:display-format="UpperCase" sap:label="House Bank" sap:quickinfo="Short Key for a House Bank"/>
+<Property Name="BankCountry" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Bank Country/Region" sap:quickinfo="Bank Country/Region Key"/>
+<Property Name="BankInternalID" Type="Edm.String" MaxLength="15" sap:display-format="UpperCase" sap:label="Bank Key" sap:quickinfo="Bank Keys"/>
+<Property Name="PhoneNumber1" Type="Edm.String" MaxLength="16" sap:label="Telephone 1" sap:quickinfo="First telephone number"/>
+<Property Name="TaxID1" Type="Edm.String" MaxLength="16" sap:display-format="UpperCase" sap:label="Tax Number 1"/>
+<Property Name="ContactPersonName" Type="Edm.String" MaxLength="30" sap:label="Contact Person" sap:quickinfo="Name of contact person"/>
+<Property Name="Language" Type="Edm.String" MaxLength="2" sap:label="Language Key"/>
+<Property Name="BusinessPlace" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Business Place"/>
+<Property Name="EDIPartner" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="EDI Partner Number" sap:quickinfo="House Bank Partner Number"/>
+<Property Name="EDISignatureType" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Type of Signature"/>
+<Property Name="DataMediumExchangeBank" Type="Edm.String" MaxLength="5" sap:display-format="UpperCase" sap:label="Alternative Bank ID" sap:quickinfo="DME Bank Identification"/>
+<Property Name="DataMediumReceivingBank" Type="Edm.String" MaxLength="15" sap:display-format="UpperCase" sap:label="Bank Receiving DME" sap:quickinfo="Bank Number of the Bank Receiving the Data Medium"/>
+<Property Name="CustomerByHouseBank" Type="Edm.String" MaxLength="18" sap:display-format="UpperCase" sap:label="Customer Number" sap:quickinfo="Customer ID at House Bank"/>
+<Property Name="BankControlKey" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase" sap:label="Bank Control Key"/>
+<Property Name="DataExchangeInstruction" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase" sap:label="Instruction Key" sap:quickinfo="Instruction Key for Data Medium Exchange"/>
+<Property Name="ExecutionLeadDays" Type="Edm.String" MaxLength="2" sap:display-format="NonNegative" sap:label="Lead Days" sap:quickinfo="Lead Days for Date of Execution"/>
+<Property Name="CentralBankReportIsRequired" Type="Edm.Boolean" sap:label="Create Central Bank Report"/>
+<Property Name="RegionByCentralBank" Type="Edm.String" MaxLength="2" sap:display-format="NonNegative" sap:label="Area Number"/>
+<Property Name="PaymentIsForwardedToCentralBk" Type="Edm.Boolean" sap:label="Forward Pay. Data" sap:quickinfo="Forward Payment Data to the Central Bank"/>
+<Property Name="ChargeAccountCurrencyISOCode" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="ISO Currency Cde" sap:quickinfo="ISO Currency Code for Charge Account"/>
+<Property Name="ChargeAccount" Type="Edm.String" MaxLength="35" sap:display-format="UpperCase" sap:label="Account Number" sap:quickinfo="Account Number of the Charge Account"/>
+<Property Name="ChargeAccountBank" Type="Edm.String" MaxLength="15" sap:display-format="UpperCase" sap:label="Bank Number" sap:quickinfo="Charge Account Bank Number"/>
+<Property Name="OrderingCompanyByBank" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Company Number" sap:quickinfo="Company Number of Ordering Party"/>
+<Property Name="DefaultPartnerValidToDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Valid To"/>
+<Property Name="DefaultPartnerValidFromDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Valid From"/>
+<Property Name="DefaultPartnerNo" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Business Partner" sap:quickinfo="Business Partner Number"/>
+<Property Name="RiskPartnerValidToDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Valid To"/>
+<Property Name="RiskPartnerValidFromDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Valid From"/>
+<Property Name="RiskPartnerNo" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Business Partner" sap:quickinfo="Business Partner Number"/>
+<Property Name="DataExchangeInstructionKey" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase" sap:label="Instruction Key" sap:quickinfo="Instruction Key for Data Medium Exchange"/>
+<Property Name="HouseBankChargeAccount" Type="Edm.String" MaxLength="35" sap:display-format="UpperCase" sap:label="Account Number" sap:quickinfo="Account Number of the Charge Account"/>
+<Property Name="HsBkIsInstantBalanceEnabled" Type="Edm.Boolean" sap:label="Ins. Bal. Enabled" sap:quickinfo="Instant Balances Enabled"/>
+</EntityType>
 <EntityContainer Name="cds_zcl_invform_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+<EntitySet Name="AddlCompanyCodeInformation" EntityType="cds_zcl_invform.AddlCompanyCodeInformationType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="AddressEmailAddress" EntityType="cds_zcl_invform.AddressEmailAddressType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="AddressPhoneNumber" EntityType="cds_zcl_invform.AddressPhoneNumberType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="AddressPostal" EntityType="cds_zcl_invform.AddressPostalType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="CoCodeCountryVATReg" EntityType="cds_zcl_invform.CoCodeCountryVATRegType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="HouseBank" EntityType="cds_zcl_invform.HouseBankType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 </EntityContainer>
 <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
 <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities">
 <Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
 </Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/AddlCompanyCodeInformation">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/AddressEmailAddress">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/AddressPhoneNumber">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
 <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/AddressPostal">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/CoCodeCountryVATReg">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/HouseBank">
 <Annotation Term="Capabilities.DeleteRestrictions">
 <Record>
 <PropertyValue Property="Deletable" Bool="false"/>
