@@ -12,7 +12,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, BookingSalesOrder, BookingStatus, DCPMaterialMapping, S4H_ProductGroup1,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal ,HouseBank} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, BankDetails } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -31,6 +31,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var s4h_Company = await cds.connect.to("API_COMPANYCODE_SRV");
         var prdgrp1tx = await cds.connect.to("YY1_ADDITIONALMATERIALGRP1_CDS");
         var invformAPI = await cds.connect.to("ZCL_INVFORM");
+        var bankAPI = await cds.connect.to("CE_BANK_0003");
 
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
@@ -2599,7 +2600,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
                 for (const item of aBillingItems) {
                     const sSalesOrder = item.SalesDocument;
-                    const sSalesOrderItem = item.SalesDocumentItem;
+                    const sSalesOrderItem = item.BillingDocumentItem;
 
                     // Fetch Sales Order V2 expanded details
                     const oSalesOrderv2 = await s4h_sohv2_Txn.run(
@@ -2623,30 +2624,17 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     let sRegion = '';
                     let sPostalCode = '';
 
-                    // if (sCustomerId) {
-                    //     const oCustomerAddress = await s4h_bp_Txn.run(
-                    //         SELECT.one.from(A_BusinessPartner)
-                    //             .columns([{ ref: ['to_BusinessPartnerAddress'], expand: ['FullName', 'CityName', 'Region', 'PostalCode'] }])
-                    //             .where({ BusinessPartner: sCustomerId })
-                    //     );
+                    const sSalesOrder1 = item.SalesDocument;
+                    //const sSalesOrderItem1 = item.SalesDocumentItem;
 
-                    //     if (oCustomerAddress?.to_BusinessPartnerAddress?.length > 0) {
-                    //         const address = oCustomerAddress.to_BusinessPartnerAddress[0];
-                    //         sTheatreName = address.FullName;
-                    //         sCity = address.CityName;
-                    //         sRegion = address.Region;
-                    //         sPostalCode = address.PostalCode;
-                    //     }
-                    // }
+                    const oStudioFeed = await SELECT.one.from(StudioFeed).where({
+                        SalesOrder: sSalesOrder1
+                    });
 
-                    // // Fetch Custom Studio Feed for Request, Order, Booker, Start/End
-                    // const oStudioData = await studioFeed_Txn.run(
-                    //     SELECT.one.from(CustomStudioFeed)
-                    //         .where({
-                    //             SalesOrder: sSalesOrder,
-                    //             SalesOrderItem: sSalesOrderItem
-                    //         })
-                    // );
+                    const oBookingItem = await SELECT.one.from(BookingSalesorderItem).where({
+                        SalesOrder: sSalesOrder1,
+                        SalesOrderItem: sSalesOrderItem
+                    });
 
                     // Final push into DtlItems array
                     aDtlItems.push({
@@ -2655,13 +2643,75 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         TheatreName: oBusinessPartnerAddrfromS4?.FullName || '',
                         City: oBusinessPartnerAddrfromS4?.StreetName || '',
                         StZIP: (sRegion && sPostalCode) ? `${sRegion}/${sPostalCode}` : '',
-                        RequestNo: '',
-                        OrderNo: '',
-                        Booker: '',
-                        Start: '00:00:00',
-                        End: '00:00:00'
+                        RequestNo: oStudioFeed?.RequestId || '',
+                        OrderNo: oStudioFeed?.OrderID || '',
+                        Booker: oStudioFeed?.BookerName || '',
+                        Start: oBookingItem?.PlayStartDate && oBookingItem?.StartTime
+                            ? `${oBookingItem.PlayStartDate}T${oBookingItem.StartTime}`
+                            : '',
+                        End: oBookingItem?.PlayEndDate && oBookingItem?.EndTime
+                            ? `${oBookingItem.PlayEndDate}T${oBookingItem.EndTime}`
+                            : ''
                     });
                 }
+
+                //Fetching bank Details
+
+                const sCompanyCode = billingDocument[0]?.CompanyCode;
+
+                // 2. Get HouseBank using CompanyCode
+                const oHouseBank = await invformAPI.run(
+                    SELECT.one.from(HouseBank).where({
+                        CompanyCode: sCompanyCode
+                    })
+                );
+
+
+                // 3. Get Bank Details using BankCountry + BankInternalID
+                const oBankDetails = await bankAPI.run(
+                    SELECT.one.from(BankDetails).where({
+                        BankCountry: oHouseBank?.BankCountry,
+                        BankInternalID: oHouseBank?.BankInternalID
+                    })
+                );
+
+                // 4. Get Bank Address via navigation: /Bank/{BankCountry}/{BankInternalID}/_BankAddress
+                const oBankAddress = await bankAPI.run(
+                    bankAPI.Bank(oHouseBank?.BankCountry, oHouseBank?.BankInternalID)._BankAddress()
+                );
+
+                var PayTableRow1 = [
+                    {
+                        Cell1: "Payee:",
+                        Cell2: oHouseBank?.ContactPersonName || "",       // e.g., "Deluxe Media Inc."
+                        Cell3: "Beneficiary:",
+                        Cell4: oHouseBank?.ContactPersonName || ""
+                    },
+                    {
+                        Cell1: "Lockbox #:",
+                        Cell2: oBankAddress?.CompanyPostalCode || "", // e.g., "103374"
+                        Cell3: "Account #:",
+                        Cell4: oBankDetails?.BankNumber || ""         // e.g., "953238612"
+                    },
+                    {
+                        Cell1: "Address:",
+                        Cell2: `${oBankAddress?.StreetName || ""}`,
+                        Cell3: "Routing # ACH:",
+                        Cell4: oHouseBank?.CustomerIDAtHouseBank || ""    // e.g., "124001545"
+                    },
+                    {
+                        Cell1: "",                                         // second line of address
+                        Cell2: `${oBankAddress?.CityName || ""}, ${oBankAddress?.Region || ""} ${oBankAddress?.PostalCode || ""}`,
+                        Cell3: "Routing # Wire:",
+                        Cell4: oHouseBank?.CompanyNumber || ""            // e.g., "021000021"
+                    },
+                    {
+                        Cell1: "",
+                        Cell2: "",
+                        Cell3: "Swift Address:",
+                        Cell4: oBankDetails?.SWIFTCode || ""          // e.g., "CHASUS33"
+                    }
+                ];
 
 
                 const billingDataNode = {
@@ -2696,7 +2746,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                                     "Tax": 7.500
                                 }
                             ],
-                            "TabRow":aTableRow,
+                            "TabRow": aTableRow,
                             //  [
                             //     {
                             //         "Title": [
@@ -2723,26 +2773,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         },
                         "PaymentInfo": {
                             "PayTable": {
-                                "PayTableRow": [
-                                    {
-                                        "Cell1": "Payee",
-                                        "Cell2": "USD",
-                                        "Cell3": "Beneficary",
-                                        "Cell4": ""
-                                    },
-                                    {
-                                        "Cell1": "Lockbox #",
-                                        "Cell2": "USD",
-                                        "Cell3": "Account #",
-                                        "Cell4": "0.00"
-                                    },
-                                    {
-                                        "Cell1": "Total",
-                                        "Cell2": "USD",
-                                        "Cell3": "525.00",
-                                        "Cell4": ""
-                                    }
-                                ]
+                                "PayTableRow": PayTableRow1
                             },
                             "TaxTable": {
                                 "TaxTableRow": [

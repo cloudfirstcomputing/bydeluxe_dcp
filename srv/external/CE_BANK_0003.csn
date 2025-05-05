@@ -1,0 +1,1132 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.8.2"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "CE_BANK_0003.SAP__Message": {
+   "kind": "type",
+   "@cds.external": true,
+   "elements": {
+    "code": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "message": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "target": {
+     "type": "cds.LargeString"
+    },
+    "additionalTargets": {
+     "items": {
+      "type": "cds.LargeString",
+      "notNull": true
+     }
+    },
+    "transition": {
+     "type": "cds.Boolean",
+     "notNull": true
+    },
+    "numericSeverity": {
+     "type": "cds.Integer",
+     "@odata.Type": "Edm.Byte",
+     "notNull": true
+    },
+    "longtextUrl": {
+     "type": "cds.LargeString"
+    }
+   }
+  },
+  "CE_BANK_0003": {
+   "kind": "service",
+   "@cds.external": true,
+   "@Common.ApplyMultiUnitBehaviorForSortingAndFiltering": true,
+   "@Capabilities.FilterFunctions": [
+    "eq",
+    "ne",
+    "gt",
+    "ge",
+    "lt",
+    "le",
+    "and",
+    "or",
+    "contains",
+    "startswith",
+    "endswith",
+    "any",
+    "all"
+   ],
+   "@Capabilities.SupportedFormats": [
+    "application/json",
+    "application/pdf"
+   ],
+   "@PDF.Features": {
+    "DocumentDescriptionReference": "../../../../default/iwbep/common/0001/$metadata",
+    "DocumentDescriptionCollection": "MyDocumentDescriptions",
+    "ArchiveFormat": true,
+    "Border": true,
+    "CoverPage": true,
+    "FitToPage": true,
+    "FontName": true,
+    "FontSize": true,
+    "HeaderFooter": true,
+    "IANATimezoneFormat": true,
+    "Margin": true,
+    "Padding": true,
+    "ResultSizeDefault": 20000,
+    "ResultSizeMaximum": 20000,
+    "Signature": true,
+    "TextDirectionLayout": true,
+    "Treeview": true,
+    "UploadToFileShare": true
+   },
+   "@Capabilities.KeyAsSegmentSupported": true,
+   "@Capabilities.AsynchronousRequestsSupported": true
+  },
+  "CE_BANK_0003.Bank": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BankCountry": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Country/Region",
+     "@Common.Heading": "C/R",
+     "@Common.QuickInfo": "Bank Country/Region Key",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKS"
+    },
+    "BankInternalID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Key",
+     "@Common.QuickInfo": "Bank Keys",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKK"
+    },
+    "LongBankName": {
+     "type": "cds.String",
+     "length": 80,
+     "notNull": true,
+     "@Common.FieldControl": {
+      "#": "Mandatory"
+     },
+     "@Common.Label": "Bank Name"
+    },
+    "LongBankBranch": {
+     "type": "cds.String",
+     "length": 80,
+     "notNull": true,
+     "@Common.Label": "Bank Branch"
+    },
+    "SWIFTCode": {
+     "type": "cds.String",
+     "length": 11,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "SWIFT/BIC",
+     "@Common.QuickInfo": "SWIFT/BIC for International Payments",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SWIFT"
+    },
+    "BankNetworkGrouping": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Group",
+     "@Common.QuickInfo": "Bank Group (Bank Network)"
+    },
+    "IsMarkedForDeletion": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.Label": "Deletion Indicator",
+     "@Common.Heading": "DlI",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LOEVM"
+    },
+    "BankNumber": {
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKL"
+    },
+    "BankCategory": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Internal Bank Category"
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "CE_BANK_0003.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_BankAddress": {
+     "type": "cds.Composition",
+     "target": "CE_BANK_0003.BankAddress",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Composition": true
+    }
+   },
+   "@Common.Label": "Bank",
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.NavigationRestrictions.RestrictedProperties": [
+    {
+     "NavigationProperty": {
+      "=": "_BankAddress"
+     },
+     "InsertRestrictions": {
+      "Insertable": true
+     }
+    }
+   ],
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.RequiredProperties": [
+    "BankCountry",
+    "BankInternalID"
+   ],
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_BankAddress"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true
+  },
+  "CE_BANK_0003.BankAddress": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BankCountry": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Country/Region",
+     "@Common.Heading": "C/R",
+     "@Common.QuickInfo": "Bank Country/Region Key",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKS"
+    },
+    "BankInternalID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Key",
+     "@Common.QuickInfo": "Bank Keys",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKK"
+    },
+    "StreetName": {
+     "type": "cds.String",
+     "length": 60,
+     "notNull": true,
+     "@Common.Label": "Street",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STREET"
+    },
+    "HouseNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "House Number",
+     "@Common.Heading": "House No.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_HSNM1"
+    },
+    "HouseNumberSupplementText": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Supplement",
+     "@Common.QuickInfo": "House number supplement",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_HSNM2"
+    },
+    "CityName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "City",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_CITY1"
+    },
+    "PostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Postal Code",
+     "@Common.Heading": "Post. Code",
+     "@Common.QuickInfo": "City Postal Code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PSTCD1"
+    },
+    "Country": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Country/Region Key",
+     "@Common.Heading": "C/R",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LAND1"
+    },
+    "Region": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Region",
+     "@Common.Heading": "Rg",
+     "@Common.QuickInfo": "Region (State, Province, County)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=REGIO"
+    },
+    "CorrespondenceLanguage": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.Label": "Language Key",
+     "@Common.Heading": "Language",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SPRAS"
+    },
+    "DistrictName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "District",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_CITY2"
+    },
+    "VillageName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Different City",
+     "@Common.Heading": "City (Diff. from Postal City)",
+     "@Common.QuickInfo": "City (different from postal city)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_CITY3"
+    },
+    "CompanyPostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Company Postal Code",
+     "@Common.Heading": "Postl Code",
+     "@Common.QuickInfo": "Company Postal Code (for Large Customers)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PSTCD3"
+    },
+    "StreetAddrNonDeliverableReason": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Undeliverable",
+     "@Common.QuickInfo": "Street Address Undeliverable Flag",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NO_USES"
+    },
+    "StreetPrefixName1": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STRSPP1"
+    },
+    "StreetPrefixName2": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 3",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STRSPP2"
+    },
+    "StreetSuffixName1": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 4",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STRSPP3"
+    },
+    "StreetSuffixName2": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 5",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_LCTN"
+    },
+    "Building": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Common.Label": "Building Code",
+     "@Common.Heading": "Building",
+     "@Common.QuickInfo": "Building (Number or Code)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_BLDNG"
+    },
+    "Floor": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Floor",
+     "@Common.QuickInfo": "Floor in building",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_FLOOR"
+    },
+    "RoomNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Room Number",
+     "@Common.Heading": "Room No.",
+     "@Common.QuickInfo": "Room or Apartment Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_ROOMNUM"
+    },
+    "FormOfAddress": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Title Key",
+     "@Common.Heading": "Key",
+     "@Common.QuickInfo": "Form-of-Address Key",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TITLE"
+    },
+    "TaxJurisdiction": {
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Jurisdiction",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TXJCD"
+    },
+    "TransportZone": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Transportation Zone",
+     "@Common.Heading": "TranspZone",
+     "@Common.QuickInfo": "Transportation zone to or from which the goods are delivered",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LZONE"
+    },
+    "POBox": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBX"
+    },
+    "POBoxAddrNonDeliverableReason": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Undeliverable",
+     "@Common.QuickInfo": "PO Box Address Undeliverable Flag",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NO_USEP"
+    },
+    "POBoxIsWithoutNumber": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.Label": "PO Box w/o No.",
+     "@Common.Heading": "PO",
+     "@Common.QuickInfo": "Flag: PO Box Without Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXNUM"
+    },
+    "POBoxPostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box Postal Code",
+     "@Common.Heading": "Postl Code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PSTCD2"
+    },
+    "POBoxLobbyName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "PO Box Lobby",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PO_BOX_LBY"
+    },
+    "POBoxDeviatingCityName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "PO Box City",
+     "@Common.QuickInfo": "PO Box city",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXLOC"
+    },
+    "POBoxDeviatingRegion": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box Region",
+     "@Common.Heading": "PO Region",
+     "@Common.QuickInfo": "Region for PO Box (Country/Region, State, Province, ...)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXREG"
+    },
+    "POBoxDeviatingCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box Ctry/Region",
+     "@Common.Heading": "PO C/R",
+     "@Common.QuickInfo": "PO Box of Country/Region",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXCTY"
+    },
+    "CareOfName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "c/o",
+     "@Common.Heading": "c/o name",
+     "@Common.QuickInfo": "c/o name",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NAME_CO"
+    },
+    "DeliveryServiceTypeCode": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Delvry Serv Type",
+     "@Common.QuickInfo": "Type of Delivery Service",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_DELIVERY_SERVICE_TYPE"
+    },
+    "DeliveryServiceNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Delivery Service No.",
+     "@Common.Heading": "Delivery Service Number",
+     "@Common.QuickInfo": "Number of Delivery Service",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_DELIVERY_SERVICE_NUMBER"
+    },
+    "AddressTimeZone": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Time Zone",
+     "@Common.Heading": "Zone",
+     "@Common.QuickInfo": "Address Time Zone",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TZONE"
+    },
+    "SecondaryRegionName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "County",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_COUNTY"
+    },
+    "TertiaryRegionName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Township",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TOWNSHIP"
+    },
+    "AddressRepresentationCode": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Address Version",
+     "@Common.Heading": "Version",
+     "@Common.QuickInfo": "Version ID for International Addresses",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NATION"
+    },
+    "AddressSearchTerm1": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Search Term 1",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_SORT1"
+    },
+    "AddressSearchTerm2": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Search Term 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_SORT2"
+    },
+    "InternationalPhoneNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Telephone Number",
+     "@Common.QuickInfo": "Complete Number: Dialing Code+Number+Extension",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TELNRLG"
+    },
+    "InternationalMobilePhoneNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Mobile"
+    },
+    "InternationalFaxNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Fax Number",
+     "@Common.QuickInfo": "Complete Number: Dialing Code+Number+Extension",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_FXNRLNG"
+    },
+    "EmailAddress": {
+     "type": "cds.String",
+     "length": 241,
+     "notNull": true,
+     "@Common.Label": "Email Address",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_SMTPADR"
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "CE_BANK_0003.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_Bank": {
+     "type": "cds.Association",
+     "target": "CE_BANK_0003.Bank",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "_BankScriptVariant": {
+     "type": "cds.Composition",
+     "target": "CE_BANK_0003.BankScriptedAddress",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": [],
+     "@Common.Composition": true
+    }
+   },
+   "@Common.Label": "Bank Address",
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.NavigationRestrictions.RestrictedProperties": [
+    {
+     "NavigationProperty": {
+      "=": "_BankScriptVariant"
+     },
+     "InsertRestrictions": {
+      "Insertable": true
+     }
+    }
+   ],
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_Bank",
+    "_BankScriptVariant"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true,
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "EmailAddress"
+     },
+     "AllowedExpressions": "MultiValue"
+    }
+   ]
+  },
+  "CE_BANK_0003.BankScriptedAddress": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "BankCountry": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Country/Region",
+     "@Common.Heading": "C/R",
+     "@Common.QuickInfo": "Bank Country/Region Key",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKS"
+    },
+    "BankInternalID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Bank Key",
+     "@Common.QuickInfo": "Bank Keys",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BANKK"
+    },
+    "AddressRepresentationCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Address Version",
+     "@Common.Heading": "Version",
+     "@Common.QuickInfo": "Version ID for International Addresses",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NATION"
+    },
+    "LongBankName": {
+     "type": "cds.String",
+     "length": 80,
+     "notNull": true,
+     "@Common.Label": "Bank Name"
+    },
+    "LongBankBranch": {
+     "type": "cds.String",
+     "length": 80,
+     "notNull": true,
+     "@Common.Label": "Bank Branch"
+    },
+    "StreetName": {
+     "type": "cds.String",
+     "length": 60,
+     "notNull": true,
+     "@Common.Label": "Street",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STREET"
+    },
+    "HouseNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "House Number",
+     "@Common.Heading": "House No.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_HSNM1"
+    },
+    "HouseNumberSupplementText": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Supplement",
+     "@Common.QuickInfo": "House number supplement",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_HSNM2"
+    },
+    "CityName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "City",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_CITY1"
+    },
+    "PostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Postal Code",
+     "@Common.Heading": "Post. Code",
+     "@Common.QuickInfo": "City Postal Code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PSTCD1"
+    },
+    "Country": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Country/Region Key",
+     "@Common.Heading": "C/R",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LAND1"
+    },
+    "Region": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Region",
+     "@Common.Heading": "Rg",
+     "@Common.QuickInfo": "Region (State, Province, County)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=REGIO"
+    },
+    "CorrespondenceLanguage": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Language Key",
+     "@Common.Heading": "Language",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SPRAS"
+    },
+    "DistrictName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "District",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_CITY2"
+    },
+    "VillageName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Different City",
+     "@Common.Heading": "City (Diff. from Postal City)",
+     "@Common.QuickInfo": "City (different from postal city)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_CITY3"
+    },
+    "CompanyPostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Company Postal Code",
+     "@Common.Heading": "Postl Code",
+     "@Common.QuickInfo": "Company Postal Code (for Large Customers)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PSTCD3"
+    },
+    "StreetAddrNonDeliverableReason": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Undeliverable",
+     "@Common.QuickInfo": "Street Address Undeliverable Flag",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NO_USES"
+    },
+    "StreetPrefixName1": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STRSPP1"
+    },
+    "StreetPrefixName2": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 3",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STRSPP2"
+    },
+    "StreetSuffixName1": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 4",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_STRSPP3"
+    },
+    "StreetSuffixName2": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Street 5",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_LCTN"
+    },
+    "Building": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Common.Label": "Building Code",
+     "@Common.Heading": "Building",
+     "@Common.QuickInfo": "Building (Number or Code)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_BLDNG"
+    },
+    "Floor": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Floor",
+     "@Common.QuickInfo": "Floor in building",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_FLOOR"
+    },
+    "RoomNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.Label": "Room Number",
+     "@Common.Heading": "Room No.",
+     "@Common.QuickInfo": "Room or Apartment Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_ROOMNUM"
+    },
+    "FormOfAddress": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Title Key",
+     "@Common.Heading": "Key",
+     "@Common.QuickInfo": "Form-of-Address Key",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TITLE"
+    },
+    "TaxJurisdiction": {
+     "type": "cds.String",
+     "length": 15,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tax Jurisdiction",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TXJCD"
+    },
+    "TransportZone": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Transportation Zone",
+     "@Common.Heading": "TranspZone",
+     "@Common.QuickInfo": "Transportation zone to or from which the goods are delivered",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=LZONE"
+    },
+    "POBox": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBX"
+    },
+    "POBoxAddrNonDeliverableReason": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Undeliverable",
+     "@Common.QuickInfo": "PO Box Address Undeliverable Flag",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NO_USEP"
+    },
+    "POBoxIsWithoutNumber": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "PO Box w/o No.",
+     "@Common.Heading": "PO",
+     "@Common.QuickInfo": "Flag: PO Box Without Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXNUM"
+    },
+    "POBoxPostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box Postal Code",
+     "@Common.Heading": "Postl Code",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PSTCD2"
+    },
+    "POBoxLobbyName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "PO Box Lobby",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_PO_BOX_LBY"
+    },
+    "POBoxDeviatingCityName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "PO Box City",
+     "@Common.QuickInfo": "PO Box city",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXLOC"
+    },
+    "POBoxDeviatingRegion": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box Region",
+     "@Common.Heading": "PO Region",
+     "@Common.QuickInfo": "Region for PO Box (Country/Region, State, Province, ...)",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXREG"
+    },
+    "POBoxDeviatingCountry": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "PO Box Ctry/Region",
+     "@Common.Heading": "PO C/R",
+     "@Common.QuickInfo": "PO Box of Country/Region",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_POBXCTY"
+    },
+    "CareOfName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "c/o",
+     "@Common.Heading": "c/o name",
+     "@Common.QuickInfo": "c/o name",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_NAME_CO"
+    },
+    "DeliveryServiceTypeCode": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Delvry Serv Type",
+     "@Common.QuickInfo": "Type of Delivery Service",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_DELIVERY_SERVICE_TYPE"
+    },
+    "DeliveryServiceNumber": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Delivery Service No.",
+     "@Common.Heading": "Delivery Service Number",
+     "@Common.QuickInfo": "Number of Delivery Service",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_DELIVERY_SERVICE_NUMBER"
+    },
+    "AddressTimeZone": {
+     "type": "cds.String",
+     "length": 6,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Time Zone",
+     "@Common.Heading": "Zone",
+     "@Common.QuickInfo": "Address Time Zone",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TZONE"
+    },
+    "SecondaryRegionName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "County",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_COUNTY"
+    },
+    "TertiaryRegionName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Township",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TOWNSHIP"
+    },
+    "AddressSearchTerm1": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Search Term 1",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_SORT1"
+    },
+    "AddressSearchTerm2": {
+     "type": "cds.String",
+     "length": 20,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Search Term 2",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_SORT2"
+    },
+    "InternationalPhoneNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Telephone Number",
+     "@Common.QuickInfo": "Complete Number: Dialing Code+Number+Extension",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_TELNRLG"
+    },
+    "InternationalMobilePhoneNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Mobile"
+    },
+    "InternationalFaxNumber": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Fax Number",
+     "@Common.QuickInfo": "Complete Number: Dialing Code+Number+Extension",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_FXNRLNG"
+    },
+    "EmailAddress": {
+     "type": "cds.String",
+     "length": 241,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Email Address",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AD_SMTPADR"
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "CE_BANK_0003.SAP__Message",
+      "notNull": true
+     }
+    },
+    "_Bank": {
+     "type": "cds.Association",
+     "target": "CE_BANK_0003.Bank",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "_BankAddress": {
+     "type": "cds.Association",
+     "target": "CE_BANK_0003.BankAddress",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@Common.Label": "Scripted Addresses",
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.RequiredProperties": [
+    "AddressRepresentationCode"
+   ],
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties": [
+    "_Bank",
+    "_BankAddress"
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true,
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "EmailAddress"
+     },
+     "AllowedExpressions": "MultiValue"
+    }
+   ]
+  }
+ }
+}

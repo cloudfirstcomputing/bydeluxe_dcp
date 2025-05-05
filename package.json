@@ -404,6 +404,10 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "CE_BANK_0003": {
+        "kind": "odata",
+        "model": "srv/external/CE_BANK_0003"
       }
     }
   },

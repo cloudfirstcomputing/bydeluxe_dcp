@@ -8,6 +8,7 @@ using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_00
 using {YY1_SALESPARAMETERS_CDS_0001 as S4_Sales_Param} from './external/YY1_SALESPARAMETERS_CDS_0001';
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
 using {API_PRODUCTGROUP_SRV as S4_prodGroup} from '../srv/external/API_PRODUCTGROUP_SRV.csn';
+
 using api from '../db/common';
 
 service BookingOrderService {
@@ -111,8 +112,8 @@ service BookingOrderService {
     action test(bookingIDs : array of String)                                                              returns String;
     entity BookingStatus                as projection on db.BookingStatus;
     entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
-    entity ShippingTypeMaster           as projection on db.ShippingTypeMaster;
-
+    entity ShippingTypeMaster           as projection on db.ShippingTypeMaster;  //S4_Bank
+    
     type RemediateType {
         bookingID         : String;
         salesOrder        : String;
@@ -505,4 +506,6 @@ service BookingOrderService {
 
     entity AddressPostal as projection on api.AddressPostal;
     entity HouseBank as projection on api.HouseBank;
+
+    entity BankDetails as projection on api.Bank;
 }

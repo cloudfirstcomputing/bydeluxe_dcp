@@ -25,6 +25,7 @@ using {YY1_SLSORGANIZATIONDISTRCH_CDS as slsdist} from '../srv/external/YY1_SLSO
 using {API_COMPANYCODE_SRV as company} from '../srv/external/API_COMPANYCODE_SRV';
 using {YY1_CLFNCHARACTERISTIC_CDS as charac} from '../srv/external/YY1_CLFNCHARACTERISTIC_CDS';
 using {ZCL_INVFORM as invoice} from '../srv/external/ZCL_INVFORM';
+using {CE_BANK_0003 as S4_Bank} from '../srv/external/CE_BANK_0003.csn';
 
 context api {
 
@@ -78,4 +79,5 @@ context api {
     entity Characteristic               as projection on charac.YY1_ClfnCharacteristic;
     entity AddressPostal               as projection on invoice.AddressPostal;
     entity HouseBank               as projection on invoice.HouseBank;
+    entity Bank               as projection on S4_Bank.Bank;
 }
