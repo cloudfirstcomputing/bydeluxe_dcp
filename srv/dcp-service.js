@@ -2755,7 +2755,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "TaxTypeTable": {
                                 "TaxTypeTableRow": [
                                     {
-                                        "Cell1": "Standard Rate"
+                                        "Cell1": "1"
                                     }
                                 ]
                             }
