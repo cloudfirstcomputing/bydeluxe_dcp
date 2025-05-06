@@ -2744,14 +2744,14 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     }
                 ];
 
-                const sCompanyAddress = oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.Street + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country)+","
-                + "Tel : " + oAddrPhone.PhoneAreaCodeSubscriberNumber+","+ "Email : " + oAddrEmail.EmailAddress+","+ "Fedral Tax ID : " + (oAddrCompanyCodendfo.CompanyCodeParameterValue === '' ||oAddrCompanyCodendfo.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg.VATRegistration  : oAddrCompanyCodendfo.CompanyCodeParameterValue
-                +"Code Destination";
+                var sCompanyAddress = oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.Street + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country);
+                 var sTelFax = oAddrPhone == undefined  && oAddrEmail== undefined && oAddrCoCodeCountryVATReg==undefined? '' : ("Tel : " + oAddrPhone?.PhoneAreaCodeSubscriberNumber+","+ "Email : " + oAddrEmail?.EmailAddress+","+ "Fedral Tax ID : " + (oAddrCompanyCodendfo?.CompanyCodeParameterValue === '' || oAddrCompanyCodendfo?.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg?.VATRegistration  : oAddrCompanyCodendfo?.CompanyCodeParameterValue
+                 +"Code Destination");
 
                 const billingDataNode = {
                     "TaxInvoice": {
                         "Header": {
-                            "CompanyAddress": sCompanyAddress,
+                            "CompanyAddress": sCompanyAddress + "  " + sTelFax,
                             "PageNo": "",
                             "InvoiceNo": billingHeader.to_Item[0].BillingDocument,
                             "InvoiceDate": billingHeader.BillingDocumentDate,
