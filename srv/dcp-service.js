@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, 
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank ,BankAddress ,AddressPhoneNumber,AddressEmailAddress,AddlCompanyCodeInformation,CoCodeCountryVATReg,
-            PaymentTermsText ,JournalEntryItem} = this.entities;
+            PaymentTermsText ,JournalEntryItem,PricingConditionTypeText} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -2529,13 +2529,15 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 })
 
                 var sMapBillingDocumentItem = [...new Set(aBillingDocumentItem.map(row => row.BillingDocumentItem))];
-
+                var sMapPricingReference = [...new Set(aBillingDocumentItem.map(row => row.PricingReferenceMaterial))];
+               
                 // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
                 // const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},LongTextID:"Z002"}));
-                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem } }));
-                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B' }));
+                const aProductBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : sMapPricingReference}}));
+                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem } ,LongTextID:'Z002'}));
+                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B' , ConditionInactiveReason: '' ,ConditionIsForStatistics: false}));
                 const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionIsForStatistics: false }));
-                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionInactiveReason: { '<>': '' } }));
+                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B', ConditionInactiveReason: '' ,ConditionIsForStatistics: false }));
                 const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode }))
                 const oAddrCompanyCode = await invformAPI.run(SELECT.one.from(AddressPostal).where({ AddressID: aCompanyCode.AddressID }));
                 const oAddrPhone = await invformAPI.run(SELECT.one.from(AddressPhoneNumber).where({ AddressID: aCompanyCode.AddressID }));
@@ -2545,40 +2547,53 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oJournalEntryItem = await invformAPI.run(SELECT.one.from(JournalEntryItem).where({ ReferenceDocument:oBillingDocument.BillingDocument, FiscalYear:billingDocument[0].FiscalYear ,CompanyCode :billingDocument[0].CompanyCode }));
                 const oPaymentTermsText = await invformAPI.run(SELECT.one.from(PaymentTermsText).where({ PaymentTerms: billingDocument[0].CustomerPaymentTerms ,Language :'EN' }));
                  const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
-                var iNetAmount = 0, iDiscountItem = 0;
+                 
+                 var sMapPricingTypeText = [...new Set(aTaxamount.map(row => row.ConditionType))];
+                 const aPricingConditionTypeText =  await invformAPI.run(SELECT.from(PricingConditionTypeText).where({ConditionType:{in : sMapPricingTypeText} , Language :'EN',ConditionApplication :'TX' }));
+                
+                 
+
+                 for (var index in aTaxamount){
+                    var oPriceBasedCondition;
+                    [oPriceBasedCondition] = aPricingConditionTypeText.filter(item=>{return item.ConditionType == aTaxamount[index].ConditionType })
+                    aTaxamount[index]["ConditionTypeName"] = oPriceBasedCondition?.ConditionTypeName;
+                 }
+                 var oTaxObjectforForm = generateTaxTables(aTaxamount);
+                 var iNetAmount = 0, iDiscountItem = 0;
                 const itemMap = {};
                 for (var index in aBillingDocumentItem) {
 
                     const key = aBillingDocumentItem[index].PricingReferenceMaterial || 'NO_KEY';
-                    iNetAmount += parseInt(aBillingDocumentItem[index].NetAmount);
-                    //  iDiscountItem += parseInt(aDiscountItem[index].ConditionAmount)
-
+                    iNetAmount += parseInt(aBillingDocumentItem[index]?.NetAmount);
+                     iDiscountItem += parseInt(aDiscountItem[index]?.ConditionAmount)
+                    var oTaxSerial;
+                     [oTaxSerial] = oTaxObjectforForm.TaxforMainTable.filter(item=>{return item.ConditionRateValue ===  aTaxamount[index]?.ConditionRateValue})
 
                     if (!itemMap[key]) {
                         itemMap[key] = []
                         itemMap[key].push({
                             "SrNo": 0,
                             "Title": aItemList[index]?.LongText,
-                            "Qty": aBillingDocumentItem[index].BillingQuantity,
-                            "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
-                            "Cur": aBillingDocumentItem[index].TransactionCurrency,
-                            "Price": aPriceItem[index].ConditionRateValue,
-                            "Discount": 0,
-                            "Extended": "",
-                            "Tax": 0.0
+                            "Qty": aBillingDocumentItem[index]?.BillingQuantity,
+                            "UOM": aBillingDocumentItem[index]?.BillingQuantityUnit,
+                            "Cur": aBillingDocumentItem[index]?.TransactionCurrency,
+                            "Price": aPriceItem[index]?.ConditionRateValue,
+                            "Discount": aDiscountItem[index]?.ConditionAmount,
+                            "Extended": aExtendedAmount[index]?.ConditionAmount,
+                            "Tax": oTaxSerial?.SerialNo
                         });
                     }
                     else {
                         itemMap[key].push({
                             "SrNo": 0,
                             "Title": aItemList[index]?.LongText,
-                            "Qty": aBillingDocumentItem[index].BillingQuantity,
-                            "UOM": aBillingDocumentItem[index].BillingQuantityUnit,
-                            "Cur": aBillingDocumentItem[index].TransactionCurrency,
-                            "Price": aPriceItem[index].ConditionRateValue,
-                            "Discount": 0,
-                            "Extended": "",
-                            "Tax": 0.0
+                            "Qty": aBillingDocumentItem[index]?.BillingQuantity,
+                            "UOM": aBillingDocumentItem[index]?.BillingQuantityUnit,
+                            "Cur": aBillingDocumentItem[index]?.TransactionCurrency,
+                            "Price": aPriceItem[index]?.ConditionRateValue,
+                            "Discount": aDiscountItem[index]?.ConditionAmount,
+                            "Extended": aExtendedAmount[index]?.ConditionAmount,
+                            "Tax": oTaxSerial?.SerialNo
                         });
                     }
                     // aItems.push({
@@ -2603,10 +2618,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     for (const item of groupedList) {
                         item.SrNo = srNoCounter++;
                     }
+                    var sKeyText ;
+                    [sKeyText] = aProductBasicText.filter(item=>{return item.Product === key })
                     aTableRow.push({
                         "Title": [
                             {
-                                "Title": key
+                                "Title": "Title: "+sKeyText.LongText
                             }
                         ],
                         "Items": groupedList
@@ -2732,13 +2749,13 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         Cell1: "Address:",
                         Cell2: `${oBankAddress?.StreetName || ""}`,
                         Cell3: "Routing # ACH:",
-                        Cell4: oHouseBank?.CustomerIDAtHouseBank || ""    // e.g., "124001545"
+                        Cell4: oHouseBank?.CustomerByHouseBank || ""    // e.g., "124001545"
                     },
                     {
                         Cell1: "",                                         // second line of address
                         Cell2: `${oBankAddress?.CityName || ""}, ${oBankAddress?.Region || ""} ${oBankAddress?.PostalCode || ""}`,
                         Cell3: "Routing # Wire:",
-                        Cell4: oHouseBank?.CompanyNumber || ""            // e.g., "021000021"
+                        Cell4: oHouseBank?.OrderingCompanyByBank || ""            // e.g., "021000021"
                     },
                     {
                         Cell1: "",
@@ -2748,9 +2765,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     }
                 ];
 
-                var sCompanyAddress = oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.Street + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country);
+                var sCompanyAddress = oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.StreetName + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country);
                  var sTelFax = oAddrPhone == undefined  && oAddrEmail== undefined && oAddrCoCodeCountryVATReg==undefined? '' : ("Tel : " + oAddrPhone?.PhoneAreaCodeSubscriberNumber+","+ "Email : " + oAddrEmail?.EmailAddress+","+ "Fedral Tax ID : " + (oAddrCompanyCodendfo?.CompanyCodeParameterValue === '' || oAddrCompanyCodendfo?.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg?.VATRegistration  : oAddrCompanyCodendfo?.CompanyCodeParameterValue
                  +"Code Destination");
+
+                 var sFooterText = "Deluxe Digital Cinema is a wholly owned subsidiary of Deluxe Media Inc.," +" " + sCompanyAddress  +"  "
+                  + "Deluxe Standard terms and conditions apply. These can be accessed at http://bydeluxe.com/tands" +"  "+ "This document has no tax value as per article 21 (Presidential Decree 633/72) since it has already been sent through the interchange system of the Revenue Agency."
 
                 const billingDataNode = {
                     "TaxInvoice": {
@@ -2813,24 +2833,11 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "PayTable": {
                                 "PayTableRow": PayTableRow1
                             },
-                            "TaxTable": {
-                                "TaxTableRow": [
-                                    {
-                                        "Cell1": "Sales Tax",
-                                        "Cell2": 25.00
-                                    }
-                                ]
-                            },
-                            "TaxTypeTable": {
-                                "TaxTypeTableRow": [
-                                    {
-                                        "Cell1": "1"
-                                    }
-                                ]
-                            }
+                            "TaxTable": oTaxObjectforForm.TaxTable,
+                            "TaxTypeTable": oTaxObjectforForm.TaxTypeTable
                         },
                         "Footer": {
-                            "FooterText": "Thank you for your business!"
+                            "FooterText": sFooterText
                         },
                         "DetailTable": {
                             "DtlTabHeader": [
@@ -2955,6 +2962,58 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 req.error(502, e);
             }
         });
+
+        function  generateTaxTables(aTaxamount) {
+            const grouped = {};
+          
+            aTaxamount.forEach(item => {
+              const key = item.ConditionRateValue;
+          
+              if (!grouped[key]) {
+                grouped[key] = {
+                    ConditionRateValue:item.ConditionRateValue,
+                  ConditionTypeName: (item.ConditionTypeName === '' ?item.ConditionType :item.ConditionTypeName) +" "+item.ConditionRateValue.toFixed(2),
+                  ConditionQuantityUnit: "%",
+                  TotalConditionAmount: 0
+                };
+              }
+          
+              grouped[key].TotalConditionAmount += item.ConditionAmount;
+            });
+          
+            const taxTableRows = [];
+            const taxTypeTableRows = [];
+
+            const aTaxforMainTable = []
+          
+            Object.values(grouped).forEach((entry, index) => {
+              const serialNo = index + 1;
+          
+              taxTableRows.push({
+                Cell1: entry.ConditionTypeName+entry.ConditionQuantityUnit,
+                Cell2: "     "+entry.TotalConditionAmount
+              });
+          
+              taxTypeTableRows.push({
+                Cell1: serialNo.toString()
+              });
+
+              aTaxforMainTable.push({
+                ConditionRateValue:entry.ConditionRateValue,
+                SerialNo:serialNo.toString()
+              })
+            });
+          
+            return {
+              TaxTable: {
+                TaxTableRow: taxTableRows
+              },
+              TaxTypeTable: {
+                TaxTypeTableRow: taxTypeTableRows
+              },
+              TaxforMainTable:aTaxforMainTable
+            };
+          };
 
         this.on("createContent", async (req, res) => {
             var aResult = await createBookingFeed(req, "C");

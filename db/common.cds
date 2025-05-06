@@ -71,7 +71,7 @@ context api {
     entity CountriesApi                 as projection on Distro.Countries;
     entity BillingDocumentPartner       as projection on Billing.A_BillingDocumentPartner;
     entity BillingDocumentItemText      as projection on Billing.A_BillingDocumentItemText;
-    entity BillingDocumentItemPrcgElmnt as projection on Billing.A_BillingDocumentItemPrcgElmnt
+    entity BillingDocumentItemPrcgElmnt as projection on Billing.A_BillingDocumentItemPrcgElmnt;
     entity CustomerCompany              as projection on bupa.A_CustomerCompany;
     entity CustomerPlant                as projection on custplant.YY1_CustomerCompanyByPlant;
     entity SalesOrgDistCh               as projection on slsdist.YY1_SlsOrganizationDistrCh;
@@ -85,6 +85,7 @@ context api {
     entity PaymentTermsText               as projection on invoice.PaymentTermsText;
     entity JournalEntryItem               as projection on invoice.JournalEntryItem;
     entity HouseBank               as projection on invoice.HouseBank;
+    entity PricingConditionTypeText               as projection on invoice.PricingConditionTypeText
     entity Bank               as projection on S4_Bank.Bank{
         *,
         _BankAddress

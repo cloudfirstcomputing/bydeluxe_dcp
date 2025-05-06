@@ -222,6 +222,17 @@
 <Property Name="PaymentTermsName" Type="Edm.String" MaxLength="30" sap:label="Description" sap:quickinfo="Description of terms of payment"/>
 <Property Name="PaymentTermsDescription" Type="Edm.String" MaxLength="1024" sap:display-format="UpperCase" sap:label="Payment Terms" sap:quickinfo="Payment Terms Description"/>
 </EntityType>
+<EntityType Name="PricingConditionTypeTextType" sap:label="Custom Pricng Conditon" sap:content-version="1">
+<Key>
+<PropertyRef Name="Language"/>
+<PropertyRef Name="ConditionApplication"/>
+<PropertyRef Name="ConditionType"/>
+</Key>
+<Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Language Key"/>
+<Property Name="ConditionApplication" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:label="Application"/>
+<Property Name="ConditionType" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Condition Type"/>
+<Property Name="ConditionTypeName" Type="Edm.String" MaxLength="30" sap:label="Description"/>
+</EntityType>
 <EntityContainer Name="cds_zcl_invform_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
 <EntitySet Name="AddlCompanyCodeInformation" EntityType="cds_zcl_invform.AddlCompanyCodeInformationType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="AddressEmailAddress" EntityType="cds_zcl_invform.AddressEmailAddressType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
@@ -231,6 +242,7 @@
 <EntitySet Name="HouseBank" EntityType="cds_zcl_invform.HouseBankType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="JournalEntryItem" EntityType="cds_zcl_invform.JournalEntryItemType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="PaymentTermsText" EntityType="cds_zcl_invform.PaymentTermsTextType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="PricingConditionTypeText" EntityType="cds_zcl_invform.PricingConditionTypeTextType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 </EntityContainer>
 <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
 <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities">
@@ -356,6 +368,23 @@
 </Annotation>
 </Annotations>
 <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/PaymentTermsText">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/PricingConditionTypeText">
 <Annotation Term="Capabilities.DeleteRestrictions">
 <Record>
 <PropertyValue Property="Deletable" Bool="false"/>

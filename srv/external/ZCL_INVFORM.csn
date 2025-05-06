@@ -969,6 +969,46 @@
      "@sap.quickinfo": "Payment Terms Description"
     }
    }
+  },
+  "ZCL_INVFORM.PricingConditionTypeText": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Pricng Conditon",
+   "elements": {
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.label": "Language Key",
+     "notNull": true
+    },
+    "ConditionApplication": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Application",
+     "notNull": true
+    },
+    "ConditionType": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Condition Type",
+     "notNull": true
+    },
+    "ConditionTypeName": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.label": "Description"
+    }
+   }
   }
  }
 }

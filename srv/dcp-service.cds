@@ -512,6 +512,7 @@ service BookingOrderService {
     entity CoCodeCountryVATReg               as projection on api.CoCodeCountryVATReg;
      entity PaymentTermsText               as projection on api.PaymentTermsText;
     entity JournalEntryItem               as projection on api.JournalEntryItem;
+    entity PricingConditionTypeText               as projection on api.PricingConditionTypeText
     entity HouseBank as projection on api.HouseBank;
 
     entity Bank as projection on api.Bank;
