@@ -509,6 +509,8 @@ service BookingOrderService {
     entity AddressEmailAddress               as projection on api.AddressEmailAddress;
     entity AddlCompanyCodeInformation        as projection on api.AddlCompanyCodeInformation;
     entity CoCodeCountryVATReg               as projection on api.CoCodeCountryVATReg;
+     entity PaymentTermsText               as projection on api.PaymentTermsText;
+    entity JournalEntryItem               as projection on api.JournalEntryItem;
     entity HouseBank as projection on api.HouseBank;
 
     entity Bank as projection on api.Bank;

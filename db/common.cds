@@ -82,6 +82,8 @@ context api {
     entity AddressEmailAddress               as projection on invoice.AddressEmailAddress;
     entity AddlCompanyCodeInformation               as projection on invoice.AddlCompanyCodeInformation;
     entity CoCodeCountryVATReg               as projection on invoice.CoCodeCountryVATReg;
+    entity PaymentTermsText               as projection on invoice.PaymentTermsText;
+    entity JournalEntryItem               as projection on invoice.JournalEntryItem;
     entity HouseBank               as projection on invoice.HouseBank;
     entity Bank               as projection on S4_Bank.Bank{
         *,

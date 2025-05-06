@@ -854,6 +854,121 @@
      "@sap.quickinfo": "Instant Balances Enabled"
     }
    }
+  },
+  "ZCL_INVFORM.JournalEntryItem": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Journal entry",
+   "elements": {
+    "SourceLedger": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Source Ledger",
+     "notNull": true
+    },
+    "CompanyCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Company Code",
+     "notNull": true
+    },
+    "FiscalYear": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "NonNegative",
+     "@sap.label": "Fiscal Year",
+     "notNull": true
+    },
+    "AccountingDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Journal Entry",
+     "notNull": true
+    },
+    "LedgerGLLineItem": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Journal Entry Item",
+     "@sap.quickinfo": "General Ledger Journal Entry Line Item",
+     "notNull": true
+    },
+    "Ledger": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Ledger",
+     "@sap.quickinfo": "Ledger in General Ledger Accounting",
+     "notNull": true
+    },
+    "ReferenceDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Reference Document",
+     "@sap.quickinfo": "Reference Doc. Number"
+    },
+    "NetDueDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.label": "Net Due Date"
+    }
+   }
+  },
+  "ZCL_INVFORM.PaymentTermsText": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom PaymentTerms Text",
+   "elements": {
+    "Language": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.label": "Language Key",
+     "notNull": true
+    },
+    "PaymentTerms": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Payment Terms",
+     "@sap.quickinfo": "Terms of Payment Key",
+     "notNull": true
+    },
+    "PaymentTermsName": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.label": "Description",
+     "@sap.quickinfo": "Description of terms of payment"
+    },
+    "PaymentTermsDescription": {
+     "type": "cds.String",
+     "length": 1024,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Payment Terms",
+     "@sap.quickinfo": "Payment Terms Description"
+    }
+   }
   }
  }
 }

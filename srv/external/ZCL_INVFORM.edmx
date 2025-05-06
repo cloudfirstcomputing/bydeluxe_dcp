@@ -194,6 +194,34 @@
 <Property Name="HouseBankChargeAccount" Type="Edm.String" MaxLength="35" sap:display-format="UpperCase" sap:label="Account Number" sap:quickinfo="Account Number of the Charge Account"/>
 <Property Name="HsBkIsInstantBalanceEnabled" Type="Edm.Boolean" sap:label="Ins. Bal. Enabled" sap:quickinfo="Instant Balances Enabled"/>
 </EntityType>
+<EntityType Name="JournalEntryItemType" sap:label="Custom Journal entry" sap:content-version="1">
+<Key>
+<PropertyRef Name="SourceLedger"/>
+<PropertyRef Name="CompanyCode"/>
+<PropertyRef Name="FiscalYear"/>
+<PropertyRef Name="AccountingDocument"/>
+<PropertyRef Name="LedgerGLLineItem"/>
+<PropertyRef Name="Ledger"/>
+</Key>
+<Property Name="SourceLedger" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:label="Source Ledger"/>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
+<Property Name="FiscalYear" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="NonNegative" sap:label="Fiscal Year"/>
+<Property Name="AccountingDocument" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Journal Entry"/>
+<Property Name="LedgerGLLineItem" Type="Edm.String" Nullable="false" MaxLength="6" sap:display-format="UpperCase" sap:label="Journal Entry Item" sap:quickinfo="General Ledger Journal Entry Line Item"/>
+<Property Name="Ledger" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:label="Ledger" sap:quickinfo="Ledger in General Ledger Accounting"/>
+<Property Name="ReferenceDocument" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Reference Document" sap:quickinfo="Reference Doc. Number"/>
+<Property Name="NetDueDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Net Due Date"/>
+</EntityType>
+<EntityType Name="PaymentTermsTextType" sap:label="Custom PaymentTerms Text" sap:content-version="1">
+<Key>
+<PropertyRef Name="Language"/>
+<PropertyRef Name="PaymentTerms"/>
+</Key>
+<Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Language Key"/>
+<Property Name="PaymentTerms" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Payment Terms" sap:quickinfo="Terms of Payment Key"/>
+<Property Name="PaymentTermsName" Type="Edm.String" MaxLength="30" sap:label="Description" sap:quickinfo="Description of terms of payment"/>
+<Property Name="PaymentTermsDescription" Type="Edm.String" MaxLength="1024" sap:display-format="UpperCase" sap:label="Payment Terms" sap:quickinfo="Payment Terms Description"/>
+</EntityType>
 <EntityContainer Name="cds_zcl_invform_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
 <EntitySet Name="AddlCompanyCodeInformation" EntityType="cds_zcl_invform.AddlCompanyCodeInformationType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="AddressEmailAddress" EntityType="cds_zcl_invform.AddressEmailAddressType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
@@ -201,6 +229,8 @@
 <EntitySet Name="AddressPostal" EntityType="cds_zcl_invform.AddressPostalType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="CoCodeCountryVATReg" EntityType="cds_zcl_invform.CoCodeCountryVATRegType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 <EntitySet Name="HouseBank" EntityType="cds_zcl_invform.HouseBankType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="JournalEntryItem" EntityType="cds_zcl_invform.JournalEntryItemType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="PaymentTermsText" EntityType="cds_zcl_invform.PaymentTermsTextType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
 </EntityContainer>
 <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
 <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities">
@@ -292,6 +322,40 @@
 </Annotation>
 </Annotations>
 <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/HouseBank">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/JournalEntryItem">
+<Annotation Term="Capabilities.DeleteRestrictions">
+<Record>
+<PropertyValue Property="Deletable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.InsertRestrictions">
+<Record>
+<PropertyValue Property="Insertable" Bool="false"/>
+</Record>
+</Annotation>
+<Annotation Term="Capabilities.UpdateRestrictions">
+<Record>
+<PropertyValue Property="Updatable" Bool="false"/>
+</Record>
+</Annotation>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="cds_zcl_invform.cds_zcl_invform_Entities/PaymentTermsText">
 <Annotation Term="Capabilities.DeleteRestrictions">
 <Record>
 <PropertyValue Property="Deletable" Bool="false"/>
