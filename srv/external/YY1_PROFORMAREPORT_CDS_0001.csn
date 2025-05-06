@@ -1,0 +1,141 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.8.2"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_PROFORMAREPORT_CDS_0001": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_PROFORMAREPORT_CDS_0001.YY1_ProformaReport": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Pro forma Report",
+   "elements": {
+    "SalesDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Sales Document",
+     "notNull": true
+    },
+    "SalesDocumentItem": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "@sap.display.format": "NonNegative",
+     "@sap.required.in.filter": "false",
+     "@sap.text": "SalesDocumentItemText",
+     "@sap.label": "Sales Document Item",
+     "notNull": true
+    },
+    "CreationDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Created On",
+     "@sap.quickinfo": "Record Creation Date"
+    },
+    "LastChangeDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Changed On",
+     "@sap.quickinfo": "Last Changed On"
+    },
+    "OverallSDProcessStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Overall Status",
+     "@sap.quickinfo": "Overall Processing Status (Header/All Items)"
+    },
+    "ShippingCondition": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Shipping Conditions"
+    },
+    "Plant": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Plant",
+     "@sap.quickinfo": "Plant (Own or External)"
+    },
+    "AdditionalMaterialGroup1": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Material Group 1"
+    },
+    "PricingReferenceMaterial": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Pricing Ref. Matl",
+     "@sap.quickinfo": "Pricing Reference Material"
+    },
+    "TotalDeliveryStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Ovrl Delivery Status",
+     "@sap.quickinfo": "Overall Delivery Status (Item)"
+    },
+    "SalesDocumentItemText": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Item Description",
+     "@sap.quickinfo": "Short Text for Sales Order Item"
+    },
+    "PartnerFunction": {
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Partner Function"
+    },
+    "AddressID": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Address Number"
+    },
+    "Country": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Country/Region Key"
+    },
+    "ActualGoodsMovementDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Act. Gds Mvmnt Date",
+     "@sap.quickinfo": "Actual Goods Movement Date"
+    }
+   }
+  }
+ }
+}
