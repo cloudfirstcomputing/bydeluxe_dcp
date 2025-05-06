@@ -589,7 +589,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else {
-
                     if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
@@ -618,7 +617,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         data[i].RemediationCounter = 1;
                         data[i].Status_ID = "C";
                     }
-                    if (oLocalResponse?.error?.length) {
+                    if(oLocalResponse?.Status === 'R'){ //Status is in Review
+                        data[i].Status_ID = oLocalResponse.Status;
+                        data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
+                    }
+                    else if (oLocalResponse?.error?.length) {
                         // oResponseStatus?.error?.push(...oLocalResponse?.error);
                         data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
                         data[i].Status_ID = "D";
@@ -698,32 +701,38 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!oSoldToSalesData) {
                         sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
                     }
-                    if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
-                        var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
-                        if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
-                            sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
-                            if (sBPCustomerNumber) {
-                                sShipTo = sBPCustomerNumber;
-                                oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
+                    if(oSoldToSalesData?.CustomerPaymentTerms === '0001'){
+                        sErrorMessage = `Check Payment Terms`;
+                        oResponseStatus.Status = 'R';//For Review
+                    }
+                    if(!sErrorMessage){
+                        if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
+                            var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
+                            if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
+                                sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
+                                if (sBPCustomerNumber) {
+                                    sShipTo = sBPCustomerNumber;
+                                    oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
+                                }
+                            }
+                            else {
+                                sErrorMessage = "Partner function details not found for SH: CustomerPartnerDescription: " + sTheaterID;
                             }
                         }
                         else {
-                            sErrorMessage = "Partner function details not found for SH: CustomerPartnerDescription: " + sTheaterID;
+                            sErrorMessage = "Partner function not available";
                         }
-                    }
-                    else {
-                        sErrorMessage = "Partner function not available";
+                        if (sShipTo) {
+                            var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                            sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;
+                        }
+                        else {
+                            sErrorMessage = "Ship-To not found";
+                        }
                     }
                 }
                 else {
                     sErrorMessage = `Theater ID is not supplied in the payload`;
-                }
-                if (sShipTo) {
-                    var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                    sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;
-                }
-                else {
-                    sErrorMessage = "Ship-To not found";
                 }
                 if (!sErrorMessage) {
                     var oPackages = await performPrioritySort_OrderType_ValidityCheck(oFeedData, distroSpecData); //Contains list of valid content pakcages
@@ -1274,7 +1283,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9
                     // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
-                    var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
+                    var oProdGroup = await prdgrp1tx.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
                     if (oProdGroup) {
                         await updateItemTextForSalesOrder(req, "Z002", `${sPackageName} ${oProdGroup?.AdditionalMaterialGroup1Name}`, oResponseStatus, oSalesOrderItem, oContentData);
                     }
