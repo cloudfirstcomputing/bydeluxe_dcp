@@ -78,6 +78,15 @@ context api {
     entity Company                      as projection on company.A_CompanyCode;
     entity Characteristic               as projection on charac.YY1_ClfnCharacteristic;
     entity AddressPostal               as projection on invoice.AddressPostal;
+    entity AddressPhoneNumber               as projection on invoice. AddressPhoneNumber;
+    entity AddressEmailAddress               as projection on invoice.AddressEmailAddress;
+    entity AddlCompanyCodeInformation               as projection on invoice.AddlCompanyCodeInformation;
+    entity CoCodeCountryVATReg               as projection on invoice.CoCodeCountryVATReg;
     entity HouseBank               as projection on invoice.HouseBank;
-    entity Bank               as projection on S4_Bank.Bank;
+    entity Bank               as projection on S4_Bank.Bank{
+        *,
+        _BankAddress
+    };
+
+    entity BankAddress   as projection on S4_Bank.BankAddress;
 }

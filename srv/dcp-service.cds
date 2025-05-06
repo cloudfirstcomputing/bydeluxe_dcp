@@ -505,7 +505,12 @@ service BookingOrderService {
     entity Company as projection on api.Company;
 
     entity AddressPostal as projection on api.AddressPostal;
+    entity AddressPhoneNumber               as projection on api. AddressPhoneNumber;
+    entity AddressEmailAddress               as projection on api.AddressEmailAddress;
+    entity AddlCompanyCodeInformation        as projection on api.AddlCompanyCodeInformation;
+    entity CoCodeCountryVATReg               as projection on api.CoCodeCountryVATReg;
     entity HouseBank as projection on api.HouseBank;
 
     entity Bank as projection on api.Bank;
+     entity BankAddress   as projection on api.BankAddress;
 }

@@ -407,7 +407,14 @@
       },
       "CE_BANK_0003": {
         "kind": "odata",
-        "model": "srv/external/CE_BANK_0003"
+        "model": "srv/external/CE_BANK_0003",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata4/sap/api_bank/srvd_a2x/sap/bank/0003/",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
