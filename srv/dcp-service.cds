@@ -475,6 +475,7 @@ service BookingOrderService {
             key BillingDocument,
             key BillingDocumentItem,
                 SalesDocument,
+                SalesDocumentItem,
                 SalesDocumentItemCategory,
                 PricingReferenceMaterial,
                 BillingQuantity,
@@ -514,6 +515,10 @@ service BookingOrderService {
     entity JournalEntryItem               as projection on api.JournalEntryItem;
     entity PricingConditionTypeText               as projection on api.PricingConditionTypeText
     entity HouseBank as projection on api.HouseBank;
+    entity SalesOrderHeaderPartner               as projection on api.SalesOrderHeaderPartner;
+    entity SalesOrderItemPartners               as projection on api.SalesOrderItemPartner;
+    entity CustSalesPartnerFunc               as projection on api.CustSalesPartnerFunc;
+
 
     entity Bank as projection on api.Bank;
      entity BankAddress   as projection on api.BankAddress;

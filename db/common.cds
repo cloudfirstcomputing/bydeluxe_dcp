@@ -85,7 +85,10 @@ context api {
     entity PaymentTermsText               as projection on invoice.PaymentTermsText;
     entity JournalEntryItem               as projection on invoice.JournalEntryItem;
     entity HouseBank               as projection on invoice.HouseBank;
-    entity PricingConditionTypeText               as projection on invoice.PricingConditionTypeText
+    entity PricingConditionTypeText               as projection on invoice.PricingConditionTypeText;
+    entity SalesOrderHeaderPartner               as projection on salesorderv2.A_SalesOrderHeaderPartner;
+    entity SalesOrderItemPartner               as projection on salesorderv2.A_SalesOrderItemPartner;
+    entity CustSalesPartnerFunc               as projection on bupa.A_CustSalesPartnerFunc;
     entity Bank               as projection on S4_Bank.Bank{
         *,
         _BankAddress

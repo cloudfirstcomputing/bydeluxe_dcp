@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, 
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank ,BankAddress ,AddressPhoneNumber,AddressEmailAddress,AddlCompanyCodeInformation,CoCodeCountryVATReg,
-            PaymentTermsText ,JournalEntryItem,PricingConditionTypeText} = this.entities;
+            PaymentTermsText ,JournalEntryItem,PricingConditionTypeText,SalesOrderHeaderPartner,SalesOrderItemPartners,CustSalesPartnerFunc} = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -2515,12 +2515,13 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oBillingDocumentPartnerSoldToPart = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'AG' })
                 )
-             
+               
                 const aSalesParameter =  await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ SalesOrganization: billingDocument[0].SalesOrganization, DistributionChannel: billingDocument[0].DistributionChannel ,Division:billingDocument[0].Division, CompanyCode:billingDocument[0].CompanyCode, SoldTo:oBillingDocumentPartnerSoldToPart?.Customer ,BillTo:oBillingDocumentPartner?.Customer}));
                 const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress, (header) => {
                     header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
                         header.to_EmailAddress()
                 }).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
+
                 const aBillingDocumentItem = await srv_BillingDocument.run(
                     SELECT.from(BillingDocumentItem).where({ BillingDocument: oBillingDocument.BillingDocument })
                 )
@@ -2530,6 +2531,27 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
                 var sMapBillingDocumentItem = [...new Set(aBillingDocumentItem.map(row => row.BillingDocumentItem))];
                 var sMapPricingReference = [...new Set(aBillingDocumentItem.map(row => row.PricingReferenceMaterial))];
+                var sMapSalesDocument = [...new Set(aBillingDocumentItem.map(row => row.SalesDocument))];
+                var sMapSalesDocumentItem = [...new Set(aBillingDocumentItem.map(row => row.SalesDocumentItem))];
+                var aPartFuncList = [...new Set(['SP', 'SH'])];
+                var aOrderItemPart = await s4h_sohv2_Txn.run(SELECT.from(SalesOrderItemPartners).where({ SalesOrder : { in :sMapSalesDocument} ,SalesOrderItem : { in :sMapSalesDocumentItem} , PartnerFunction :'SH'  }));
+                var aOrderHeaderPart = await s4h_sohv2_Txn.run(SELECT.from(SalesOrderHeaderPartner).where({ SalesOrder : { in :sMapSalesDocument} , PartnerFunction : { in : aPartFuncList} }));
+                const aSalesOrderv2 = await s4h_sohv2_Txn.run(
+                    SELECT.from(S4H_SOHeader_V2) .where({ SalesOrder: { in :sMapSalesDocument} })
+                );
+
+                var sMapSalesOrg= [...new Set(aBillingDocumentItem.map(row => row.SalesOrganization))];
+                var sMapDistributionChannel = [...new Set(aBillingDocumentItem.map(row => row.DistributionChannel))];
+                var sMapOrganizationDivision = [...new Set(aBillingDocumentItem.map(row => row.OrganizationDivision))];
+                var sMapCustomerSP = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SP') return row.Customer}))];
+                var sMapCustomerTheatre = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SH') return row?.Customer})),...new Set(aOrderItemPart.map(row => {if(row.PartnerFunction === 'SH') return row.Customer}))];
+                
+                const oBusinessPartnerAddrTheatre = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress, (header) => {
+                    header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
+                        header.to_EmailAddress()
+                }).where({ BusinessPartner: {in :sMapCustomerTheatre} }));
+                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: {in : sMapCustomerSP} ,SalesOrganization:{in :sMapSalesOrg}, DistributionChannel:{in :sMapDistributionChannel} ,OrganizationDivision:{in :sMapOrganizationDivision}  }));
+                
                
                 // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
                 // const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},LongTextID:"Z002"}));
@@ -2578,7 +2600,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "UOM": aBillingDocumentItem[index]?.BillingQuantityUnit,
                             "Cur": aBillingDocumentItem[index]?.TransactionCurrency,
                             "Price": aPriceItem[index]?.ConditionRateValue,
-                            "Discount": aDiscountItem[index]?.ConditionAmount,
+                            "Discount": aDiscountItem[index]?.ConditionAmount == undefined ? '0.00' : aDiscountItem[index]?.ConditionAmount,
                             "Extended": aExtendedAmount[index]?.ConditionAmount,
                             "Tax": oTaxSerial?.SerialNo
                         });
@@ -2591,7 +2613,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "UOM": aBillingDocumentItem[index]?.BillingQuantityUnit,
                             "Cur": aBillingDocumentItem[index]?.TransactionCurrency,
                             "Price": aPriceItem[index]?.ConditionRateValue,
-                            "Discount": aDiscountItem[index]?.ConditionAmount,
+                            "Discount": aDiscountItem[index]?.ConditionAmount == undefined ? '0.00' : aDiscountItem[index]?.ConditionAmount,
                             "Extended": aExtendedAmount[index]?.ConditionAmount,
                             "Tax": oTaxSerial?.SerialNo
                         });
@@ -2651,27 +2673,35 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     const sSalesOrder = item.SalesDocument;
                     const sSalesOrderItem = item.BillingDocumentItem;
 
-                    // Fetch Sales Order V2 expanded details
-                    const oSalesOrderv2 = await s4h_sohv2_Txn.run(
-                        SELECT.one.from(S4H_SOHeader_V2)
-                            .columns([
-                                '*',
-                                { ref: ['to_Item'], expand: ['*'] },
-                                { ref: ['to_Partner'], expand: ['*'] }
-                            ])
-                            .where({ SalesOrder: sSalesOrder })
-                    );
+                    // // Fetch Sales Order V2 expanded details
+                    // const oSalesOrderv2 = await s4h_sohv2_Txn.run(
+                    //     SELECT.one.from(S4H_SOHeader_V2)
+                    //         .columns([
+                    //             '*',
+                    //             { ref: ['to_Item'], expand: ['*'] },
+                    //             { ref: ['to_Partner'], expand: ['*'] }
+                    //         ])
+                    //         .where({ SalesOrder: sSalesOrder })
+                    // );
 
-                    if (!oSalesOrderv2) continue; // skip if no sales order
+                    // if (!oSalesOrderv2) continue; // skip if no sales order
 
-                    // Find PartnerFunction = 'SH' from Partner node
-                    const partnerSH = oSalesOrderv2.to_Partner?.find(p => p.PartnerFunction === 'SH');
-                    const sCustomerId = partnerSH?.Customer;
-
-                    let sTheatreName = '';
-                    let sCity = '';
-                    let sRegion = '';
-                    let sPostalCode = '';
+                    // // Find PartnerFunction = 'SH' from Partner node
+                    // const partnerSH = oSalesOrderv2.to_Partner?.find(p => p.PartnerFunction === 'SH');
+                    // const sCustomerId = partnerSH?.Customer;
+                    var oCustItemPart,oCustHeadPartSH,oCustHeadPartSP,oSalesOrderv2,oCustomerId,oTheatreDet;
+                    
+                    [oCustItemPart] = aOrderItemPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem})
+                    [oCustHeadPartSH] = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem && item.PartnerFunction==='SH'})
+                    [oCustHeadPartSP] = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem && item.PartnerFunction==='SP'})
+                    [oSalesOrderv2] = aSalesOrderv2.filter(item=>{return item.SalesOrder === sSalesOrder})
+                    [oCustomerId] = oBusinessPartnerCustAreaSales.filter(item=>{return item.Customer == oCustHeadPartSP.Customer && item.SalesOrganization == oSalesOrderv2.SalesOrganization 
+                        && item.DistributionChannel==oSalesOrderv2.DistributionChannel && item.OrganizationDivision ==oSalesOrderv2.OrganizationDivision && item.BPCustomerNumber == (oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer) && PartnerFunction == 'SH' })
+                  [oTheatreDet] = oBusinessPartnerAddrTheatre.filter(item=>{return item.BusinessPartner===(oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer)})
+                        let sTheatreName = oTheatreDet.FullName;
+                    let sCity = oTheatreDet.CityName;
+                    let sRegion = oTheatreDet.Region;
+                    let sPostalCode = oTheatreDet.PostalCode;
 
                     const sSalesOrder1 = item.SalesDocument;
                     //const sSalesOrderItem1 = item.SalesDocumentItem;
@@ -2688,9 +2718,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     // Final push into DtlItems array
                     aDtlItems.push({
                         SONo: item.SalesDocument,
-                        CustThr: sCustomerId || '',
-                        TheatreName: oBusinessPartnerAddrfromS4?.FullName || '',
-                        City: oBusinessPartnerAddrfromS4?.StreetName || '',
+                        CustThr: oCustomerId.CustomerPartnerDescription || '',
+                        TheatreName:sTheatreName || '',
+                        City: sCity || '',
                         StZIP: (sRegion && sPostalCode) ? `${sRegion}/${sPostalCode}` : '',
                         RequestNo: oStudioFeed?.RequestId || '',
                         OrderNo: oStudioFeed?.OrderID || '',
