@@ -2518,7 +2518,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                
                 const aSalesParameter =  await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ SalesOrganization: billingDocument[0].SalesOrganization, DistributionChannel: billingDocument[0].DistributionChannel ,Division:billingDocument[0].Division, CompanyCode:billingDocument[0].CompanyCode, SoldTo:oBillingDocumentPartnerSoldToPart?.Customer ,BillTo:oBillingDocumentPartner?.Customer}));
                 const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress, (header) => {
-                    header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
+                    header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country, header.BusinessPartner,
                         header.to_EmailAddress()
                 }).where({ BusinessPartner: oBillingDocumentPartner.Customer }));
 
@@ -2540,17 +2540,17 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     SELECT.from(S4H_SOHeader_V2) .where({ SalesOrder: { in :sMapSalesDocument} })
                 );
 
-                var sMapSalesOrg= [...new Set(aBillingDocumentItem.map(row => row.SalesOrganization))];
-                var sMapDistributionChannel = [...new Set(aBillingDocumentItem.map(row => row.DistributionChannel))];
+                var sMapSalesOrg= [...new Set(aBillingDocumentItem.map(row => row.SalesOrderSalesOrganization))];
+                var sMapDistributionChannel = [...new Set(aBillingDocumentItem.map(row => row.SalesOrderDistributionChannel))];
                 var sMapOrganizationDivision = [...new Set(aBillingDocumentItem.map(row => row.OrganizationDivision))];
-                var sMapCustomerSP = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SP') return row.Customer}))];
-                var sMapCustomerTheatre = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SH') return row?.Customer})),...new Set(aOrderItemPart.map(row => {if(row.PartnerFunction === 'SH') return row.Customer}))];
+                var sMapCustomerSP = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SP') {return row.Customer}else{return ''}}))];
+                var sMapCustomerTheatre = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SH')  {return row?.Customer=== undefined ? '' : row?.Customer } else { return ''}})),...new Set(aOrderItemPart.map(row => {if(row.PartnerFunction === 'SH') {return row.Customer} else { return ''}}))];
                 
-                const oBusinessPartnerAddrTheatre = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress, (header) => {
+                const oBusinessPartnerAddrTheatre = await s4h_bp_Txn.run(SELECT.from(S4H_BusinessPartnerAddress, (header) => {
                     header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
                         header.to_EmailAddress()
                 }).where({ BusinessPartner: {in :sMapCustomerTheatre} }));
-                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: {in : sMapCustomerSP} ,SalesOrganization:{in :sMapSalesOrg}, DistributionChannel:{in :sMapDistributionChannel} ,OrganizationDivision:{in :sMapOrganizationDivision}  }));
+                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: {in : sMapCustomerSP} ,SalesOrganization:{in :sMapSalesOrg}, DistributionChannel:{in :sMapDistributionChannel} ,Division:{in :sMapOrganizationDivision}  }));
                 
                
                 // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
@@ -2691,17 +2691,17 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     // const sCustomerId = partnerSH?.Customer;
                     var oCustItemPart,oCustHeadPartSH,oCustHeadPartSP,oSalesOrderv2,oCustomerId,oTheatreDet;
                     
-                    [oCustItemPart] = aOrderItemPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem})
-                    [oCustHeadPartSH] = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem && item.PartnerFunction==='SH'})
-                    [oCustHeadPartSP] = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem && item.PartnerFunction==='SP'})
-                    [oSalesOrderv2] = aSalesOrderv2.filter(item=>{return item.SalesOrder === sSalesOrder})
-                    [oCustomerId] = oBusinessPartnerCustAreaSales.filter(item=>{return item.Customer == oCustHeadPartSP.Customer && item.SalesOrganization == oSalesOrderv2.SalesOrganization 
-                        && item.DistributionChannel==oSalesOrderv2.DistributionChannel && item.OrganizationDivision ==oSalesOrderv2.OrganizationDivision && item.BPCustomerNumber == (oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer) && PartnerFunction == 'SH' })
-                  [oTheatreDet] = oBusinessPartnerAddrTheatre.filter(item=>{return item.BusinessPartner===(oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer)})
-                        let sTheatreName = oTheatreDet.FullName;
-                    let sCity = oTheatreDet.CityName;
-                    let sRegion = oTheatreDet.Region;
-                    let sPostalCode = oTheatreDet.PostalCode;
+                    oCustItemPart = aOrderItemPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem})[0]
+                    oCustHeadPartSH = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.PartnerFunction==='SH'})[0]
+                    oCustHeadPartSP = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.PartnerFunction==='SP'})[0]
+                    oSalesOrderv2 = aSalesOrderv2.filter(item=>{return item.SalesOrder === sSalesOrder})[0]
+                    oCustomerId = oBusinessPartnerCustAreaSales.filter(item=>{return item.Customer == oCustHeadPartSP?.Customer && item.SalesOrganization == oSalesOrderv2?.SalesOrganization 
+                        && item.DistributionChannel==oSalesOrderv2?.DistributionChannel && item.Division ==oSalesOrderv2?.OrganizationDivision && item.BPCustomerNumber == (oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer) && item.PartnerFunction == 'SH' })[0]
+                  oTheatreDet = oBusinessPartnerAddrTheatre.filter(item=>{return item.BusinessPartner===(oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer)})[0]
+                        let sTheatreName = oTheatreDet?.FullName;
+                    let sCity = oTheatreDet?.CityName;
+                    let sRegion = oTheatreDet?.Region;
+                    let sPostalCode = oTheatreDet?.PostalCode;
 
                     const sSalesOrder1 = item.SalesDocument;
                     //const sSalesOrderItem1 = item.SalesDocumentItem;
@@ -2718,7 +2718,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     // Final push into DtlItems array
                     aDtlItems.push({
                         SONo: item.SalesDocument,
-                        CustThr: oCustomerId.CustomerPartnerDescription || '',
+                        CustThr: oCustomerId?.CustomerPartnerDescription || '',
                         TheatreName:sTheatreName || '',
                         City: sCity || '',
                         StZIP: (sRegion && sPostalCode) ? `${sRegion}/${sPostalCode}` : '',

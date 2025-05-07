@@ -482,6 +482,9 @@ service BookingOrderService {
                 BillingQuantityUnit,
                 TransactionCurrency,
                 NetAmount,
+                SalesOrderSalesOrganization,
+                SalesOrderDistributionChannel,
+                OrganizationDivision,
                 to_BillingDocument : redirected to BillingDocument
         }
 
