@@ -995,20 +995,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                         // RULE 5.1, 6.1 => Common for Content and Key
-                        var sMode, bItemAdded = false;
-                        if (iDifferenceInHours < 24) {
-                            sMode = 'Screening';
+                        var sMode, dAddSevenDays;
+                        // if (iDifferenceInHours < 24) {
+                        //     sMode = 'Screening';
+                        // }
+                        if(ReleaseDate){
+                            dAddSevenDays = await addDays(ReleaseDate, 7);
                         }
-                        else if (ReleaseDate && dStartDate < ReleaseDate) {
+                        if (ReleaseDate && dStartDate < ReleaseDate) {
                             sMode = 'PreRelease';
                         }
-                        else if (ReleaseDate && dStartDate?.getTime() == ReleaseDate?.getTime()) {
+                        else if (ReleaseDate && dStartDate?.getTime() === dAddSevenDays.getTime()) {
                             sMode = 'Release';
                         }
-                        else if (ReleaseDate && dStartDate > ReleaseDate) {
+                        else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime() ) {
                             sMode = 'PostBreak';
                         }
-                        else if (RepertoryDate) {
+                        else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
                             sMode = 'Repertory';
                         }
                         if (sMode) {
@@ -1088,6 +1091,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.FilteredPackage = oFinalContentPackage;
             return oResponseStatus;
         };
+        const addDays= async(date, days) => {
+            const newDate = new Date(date);
+            newDate.setDate(date.getDate() + days);
+            return newDate;
+        }
         const getDistroSpecData = async (req, oContentData, aDeliverySeqFromDistHeader) => {
             let distroSpecData;
             var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
@@ -1409,7 +1417,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return { "ContentPackage": aContentPackage, "KeyPackage": aKeyPackage };
         };
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
-            return await proformaAPI.run(req.query);
+            let aData = await proformaAPI.run(req.query);
+            for(let i in aData){
+                let oSalesOrder = await SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
+                aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
+                aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
+            }
+            
+            return aData;
         })
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
             return s4h_bp_Txn.run(req.query);

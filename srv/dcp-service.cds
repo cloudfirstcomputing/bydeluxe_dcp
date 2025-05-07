@@ -42,6 +42,13 @@ service BookingOrderService {
     entity S4H_BusinessPartnerAddress   as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
     entity S4H_ProductGroup1            as projection on api.ProductGroup1;
     entity S4H_ProformaReport           as projection on S4_proforma.YY1_ProformaReport;
+    // define view ProformaReport as select from S4H_ProformaReport as s4rep left outer join DistroSpec_Local as disspec on disspec.DistroSpecID = 6; 
+    extend projection S4H_ProformaReport with {
+        virtual null as PlayStartDate: Date,
+        virtual null as PlayEndDate: Date,
+        virtual null as RequestID: String,
+        virtual null as PackageTitle: String
+    }
     entity S4H_Country                  as
         projection on api.Country {
 
