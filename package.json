@@ -6,19 +6,20 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@cap-js-community/odata-v2-adapter": "^1.14.4",
     "@cap-js/hana": "^1",
     "@sap-cloud-sdk/http-client": "^3.24.0",
     "@sap-cloud-sdk/odata-v2": "^3.24.0",
     "@sap/cds": "^8",
     "@sap/cds-common-content": "^2.1.0",
+    "@sap/textbundle": "^5.2.0",
     "@sap/xsenv": "^5.3.0",
     "@sap/xssec": "^4",
     "express": "^4",
     "passport": "^0.7.0",
     "uuid": "^11.0.5",
-    "xml-js": "^1.6.11",
-    "@sap/textbundle": "^5.2.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@cap-js/cds-types": "^0.6",
@@ -39,7 +40,8 @@
     "watch-adobeformprinting": "cds watch --open adobeformprinting/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-printdocuments": "cds watch --open printdocuments/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-dcpmatmap": "cds watch --open dcpmatmap/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-normalizedorder": "cds watch --open normalizedorder/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-normalizedorder": "cds watch --open normalizedorder/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-proformareportweb": "cds watch --open proformareportweb/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -438,6 +440,7 @@
     "app/managematerialtitle",
     "app/adobeformprinting",
     "app/dcpmatmap",
-    "app/normalizedorder"
+    "app/normalizedorder",
+    "app/proformareportweb"
   ]
 }

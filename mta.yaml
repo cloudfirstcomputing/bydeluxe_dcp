@@ -63,11 +63,11 @@ modules:
           ServiceKeyName: bydeluxe-repo-host-key
           sap.cloud.service: bydeluxe
         - Authentication: OAuth2UserTokenExchange
+          HTML5.Timeout: 600000
           Name: bydeluxe_uaa
           ServiceInstanceName: bydeluxe-auth
           ServiceKeyName: bydeluxe-auth-key
           sap.cloud.service: bydeluxe
-          HTML5.Timeout: 600000
         existing_destinations_policy: update
   build-parameters:
     no-source: true
@@ -116,6 +116,10 @@ modules:
     - artifacts:
       - normalizedorder.zip
       name: normalizedorder
+      target-path: resources/
+    - artifacts:
+      - proformareportweb.zip
+      name: proformareportweb
       target-path: resources/
 - name: comdlxdistribution
   type: html5
@@ -207,6 +211,16 @@ modules:
     - npm install
     - npm run build:cf
     supported-platforms: []
+- name: proformareportweb
+  type: html5
+  path: app/proformareportweb
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
 resources:
 - name: bydeluxe-db
   type: com.sap.xs.hdi-container
@@ -241,19 +255,19 @@ resources:
         instance:
           destinations:
           - Authentication: NoAuthentication
+            HTML5.Timeout: 600000
             Name: ui5
             ProxyType: Internet
             Type: HTTP
-            URL: https://ui5.sap.com            
-            HTML5.Timeout: 600000
+            URL: https://ui5.sap.com
           - Authentication: NoAuthentication
             HTML5.DynamicDestination: true
             HTML5.ForwardAuthToken: true
+            HTML5.Timeout: 600000
             Name: bydeluxe-srv-api
             ProxyType: Internet
             Type: HTTP
             URL: ~{srv-api/srv-url}
-            HTML5.Timeout: 600000
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
@@ -276,19 +290,19 @@ resources:
         instance:
           destinations:
           - Authentication: NoAuthentication
+            HTML5.Timeout: 600000
             Name: ui5
             ProxyType: Internet
             Type: HTTP
             URL: https://ui5.sap.com
-            HTML5.Timeout: 600000
           - Authentication: NoAuthentication
             HTML5.DynamicDestination: true
             HTML5.ForwardAuthToken: true
+            HTML5.Timeout: 600000
             Name: bydeluxe-srv-api
             ProxyType: Internet
             Type: HTTP
             URL: ~{srv-api/srv-url}
-            HTML5.Timeout: 600000
           existing_destinations_policy: update
     service: destination
     service-plan: lite

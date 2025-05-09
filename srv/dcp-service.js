@@ -679,6 +679,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.distroSpecData = distroSpecData;
             // oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
             oPayLoad.SalesOrderType = "TA";
+            if(oFeedData.RequestedDelivDate){
+                oPayLoad.RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`
+            }
+            else{
+                sErrorMessage = 'Requested Delivery Date not available';
+            }
             if (sErrorMessage) {
                 await UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oFeedData.BookingID, IsActive: "Y" });
             }
@@ -1417,11 +1423,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return { "ContentPackage": aContentPackage, "KeyPackage": aKeyPackage };
         };
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
+            // let aWhere = req.query.SELECT.where;
+            // for(let j in aWhere){
+            //     delete aWhere[j]['func']
+            // };
+            // req.query.SELECT.where = aWhere;
             let aData = await proformaAPI.run(req.query);
             for(let i in aData){
-                let oSalesOrder = await SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
-                aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
-                aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
+                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
+                let oSalesOrder = await query;
+                if(oSalesOrder?.PlayStartDate){
+                    aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
+                }
+                if(oSalesOrder?.PlayEndDate){
+                    aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
+                }
             }
             
             return aData;
