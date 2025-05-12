@@ -669,8 +669,8 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : BookingID,
         },
-        TypeName : '',
-        TypeNamePlural : '',
+        TypeName : '{i18n>StudioFeed}',
+        TypeNamePlural : '{i18n>StudioFeeds}',
     },
 );
 

@@ -476,7 +476,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         return;
                 }                
                 var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                if(sDeliveryMethod === '03'){
+                if(sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')){
                     /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
                     Pick up Add.MatGroup from BTP Mapping table and set it in the AdditionalMaterialGroup1 of this DCP Item in S4
                     */
@@ -537,29 +537,27 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     //     });
                     // }
                     let oSalesOrderItem_Distro = oFilteredContentPackage?.to_DCPMaterial;
-                    let sMat = oSalesOrderItem_Distro[i].DCPMaterialNumber_Product;
                     for (let i in oSalesOrderItem_Distro) {
+                        let sMat = oSalesOrderItem_Distro[i].DCPMaterialNumber_Product;
                         let oSalesOrderItem = aNonKeyItems?.find((item)=>{
                             return item.Material === sMat;
                         });
-                        oSalesorderItem_PayLoad["Material"] = sMat;
-                        oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem?.RequestedQuantity}`;
-                        oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem?.RequestedQuantityISOUnit;
-                        oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem?.ProductionPlant;
-                        oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
-                        oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem?.PricingReferenceMaterial;
-                        oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                        oSalesorderItem_PayLoad["AdditionalMaterialGroup1"] = oDCPMapping?.MaterialGroup;
-    
-                        // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
-    
-                        oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
-                            "SalesOrder": sSalesOrder,
-                            "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
-                            "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
-                        }];
+                        oSalesorderItem_PayLoad = {
+                                        "Material": sMat,
+                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                        "RequestedQuantity": '1',
+                                        "RequestedQuantityISOUnit": 'EA',
+                                        "ShippingType": sShippingType,
+                                        "ItemBillingBlockReason": "03",
+                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                        "DeliveryPriority":"04"
+                                    };
+                        // oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
+                        //     "SalesOrder": sSalesOrder,
+                        //     "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
+                        //     "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
+                        // }];
                         
-                        oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
                         await s4h_sohv2_Txn.send({
                             method: 'POST',
                             path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
@@ -608,7 +606,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = distroSpecData?.Title_Product;
                     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                    oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
+                    // oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
                         path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
@@ -1085,7 +1083,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oPayLoad.to_Item = [];
 
                         var sLongText;
-                        if ((oFinalContentPackage) && sShippingType == '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
+                        if ((oFinalContentPackage) && sShippingType === '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             if (oFinalContentPackage?.to_DCPMaterial) {
                                 for (var j in oFinalContentPackage.to_DCPMaterial) {
                                     var oMatRecord = oFinalContentPackage.to_DCPMaterial[j];
