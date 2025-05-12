@@ -375,14 +375,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.reject(501, "Please Select an entry where Sales Order is available for remediation");
                 return;
             }
-            // if (!oFeedDBData.DeliveryMethod) {
-            //     req.reject(501, "Initial Delivery method was not captured for this entry, hence cannot be remediated");
-            //     return;
-            // }
-            // else if (!oFeedDBData.RemediationCounter) {
-            //     req.reject(501, "Remediation counterfor this entry, hence cannot be remediated");
-            //     return;
-            // }
             sSalesOrder = oFeedDBData?.SalesOrder;
             var aRemediatedDeliveryMethods = oFeedDBData.DeliveryMethod?.split(", "), iRemediationCounter = oFeedDBData.RemediationCounter;
 
@@ -429,68 +421,194 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     return;
                 }
 
-                if (aRemediatedDeliveryMethods?.filter((remDel) => {
-                    return (remDel === '03' || sDelSeq === '10') //RULE 11.2
-                })?.length) {
-                    req.reject(400,
-                        `Remediation is completed for the selected entry`);
-                    return;
-                }
+                // if (aRemediatedDeliveryMethods?.filter((remDel) => {
+                //     return (remDel === '03' || sDelSeq === '10') //RULE 11.2
+                // })?.length) {
+                //     req.reject(400,
+                //         `Remediation is completed for the selected entry`);
+                //     return;
+                // }
+                var sStartDate = oFeedDBData?.PlayStartDate;
+                var sStartTime = oFeedDBData?.PlayStartTime;
+                var sEndDate = oFeedDBData?.PlayEndDate;
+                var sEndTime = oFeedDBData?.PlayEndTime;
+                var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(`${sStartDate}T00:00:00`);
+                var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(`${sEndDate}T00:00:00`);
+                var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
+                var sReleaseDate = distroSpecData?.ReleaseDate;
+                var ReleaseDate = sReleaseDate ? new Date(`${sReleaseDate}T00:00:00`) : undefined;
+                var sRepertoryDate = distroSpecData?.RepertoryDate;
+                var RepertoryDate = sRepertoryDate ? new Date(`${sRepertoryDate}T00:00:00`) : undefined;
                 for (var i in aRemediatedDeliveryMethods) { //Removing the Delivery methods which are already remediated
                     aDeliverySeqFromDistHeader = aDeliverySeqFromDistHeader.filter((seq) => {
                         return seq !== aRemediatedDeliveryMethods[i];
                     }
                     );
                 }
-                for (var i in aNonKeyItems) {
-                    var oSalesOrderItem = aNonKeyItems[i];
-                    oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
-
-                    var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
-                    for (var j in aDeliverySeqFromDistHeader) {
-                        var sDelSeq = aDeliverySeqFromDistHeader[j];
-                        if (sDelSeq) {
-                            oContentPackages = aContentPackages.find((pkg) => {
-                                return (
-                                    pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
-                                    pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
-                            });
-                            if (oContentPackages) {
-                                oFilteredContentPackage = oContentPackages;
-                                aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction;
-                                sDeliveryMethod = sDelSeq;
-                                break;
-                            }
+                var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
+                for (var j in aDeliverySeqFromDistHeader) {
+                    var sDelSeq = aDeliverySeqFromDistHeader[j];
+                    if (sDelSeq) {
+                        oContentPackages = aContentPackages.find((pkg) => {
+                            return (
+                                pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
+                                pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
+                                pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
+                                pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
+                                pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
+                        });
+                        if (oContentPackages) {
+                            oFilteredContentPackage = oContentPackages;
+                            aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction;
+                            sDeliveryMethod = sDelSeq;
+                            break;
                         }
                     }
-                    if (!oFilteredContentPackage) {
-                        req.reject(400, `No suitable package with Delivery Method ${sDelSeq} found for remediation`);
-                        return;
-                    }
-                    oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
-                    oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
-                    oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
-                    oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
-                    oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
-                    oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-
-                    // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
-
-                    oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
-                        "SalesOrder": sSalesOrder,
-                        "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
-                        "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
-                    }];
-                    var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
+                }
+                if (!oFilteredContentPackage) {
+                    req.reject(400, `No suitable package with Delivery Method ${sDelSeq} found for remediation`);
+                    return;
+                }
+                var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
                     var sShippingType = oShippingTypeMapping.ShippingType;
                     if (!sShippingType) {
                         req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
                         return;
+                }                
+                var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
+                if(sDeliveryMethod === '03'){
+                    /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
+                    Pick up Add.MatGroup from BTP Mapping table and set it in the AdditionalMaterialGroup1 of this DCP Item in S4
+                    */
+                    // for (var i in aNonKeyItems) {
+                    //     var oSalesOrderItem = aNonKeyItems[i];
+                    //     oSalesorderItem_PayLoad["Material"] = oSalesOrderItem.Material;
+                    //     oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem.RequestedQuantity}`;
+                    //     oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem.RequestedQuantityISOUnit;
+                    //     oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem.ProductionPlant;
+                    //     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
+                    //     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
+                    //     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
+                    //     oSalesorderItem_PayLoad["AdditionalMaterialGroup1"] = oDCPMapping?.MaterialGroup;
+    
+                    //     // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
+    
+                    //     oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
+                    //         "SalesOrder": sSalesOrder,
+                    //         "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
+                    //         "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
+                    //     }];
+                        
+                    //     oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
+                    //     await s4h_sohv2_Txn.send({
+                    //         method: 'POST',
+                    //         path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
+                    //         data: oSalesorderItem_PayLoad
+                    //     }).catch((err) => {
+                    //         aResponseStatus.push({
+                    //             "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
+                    //             "status": "E"
+                    //         });
+                    //     }).then(async (result) => {
+                    //         if (result) {
+                    //             oFeedDBData.DeliveryMethod = oFeedDBData.DeliveryMethod + ", " + sDeliveryMethod;
+                    //             oFeedDBData.RemediationCounter = iRemediationCounter + 1;
+                    //             oFeedDBData.Remediation = oFeedDBData.Remediation ? (oFeedDBData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
+                    //             let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oFeedDBData.Remediation}`, DeliveryMethod: oFeedDBData.DeliveryMethod, RemediationCounter: oFeedDBData.RemediationCounter }).where({ ID: sID })
+    
+                    //             var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
+                    //             let oNewBTPItem = {};
+                    //             if (oBTPItem) {
+                    //                 oNewBTPItem = oBTPItem;
+                    //             }
+                    //             oNewBTPItem.SalesOrder = result?.SalesOrder;
+                    //             oNewBTPItem.SalesOrderItem = result?.SalesOrderItem;
+                    //             oNewBTPItem.Product = result?.Material;
+                    //             oNewBTPItem.ShippingPoint = result?.ShippingPoint;
+                    //             oNewBTPItem.ProductGroup = result?.MaterialGroup;
+                    //             oNewBTPItem.ShippingType_ID = result?.ShippingType;
+    
+                    //             let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
+                    //             aResponseStatus.push({
+                    //                 "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
+                    //                 "status": "S"
+                    //             });
+                    //         }
+                    //     });
+                    // }
+                    let oSalesOrderItem_Distro = oFilteredContentPackage?.to_DCPMaterial;
+                    let sMat = oSalesOrderItem_Distro[i].DCPMaterialNumber_Product;
+                    for (let i in oSalesOrderItem_Distro) {
+                        let oSalesOrderItem = aNonKeyItems?.find((item)=>{
+                            return item.Material === sMat;
+                        });
+                        oSalesorderItem_PayLoad["Material"] = sMat;
+                        oSalesorderItem_PayLoad["RequestedQuantity"] = `${oSalesOrderItem?.RequestedQuantity}`;
+                        oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = oSalesOrderItem?.RequestedQuantityISOUnit;
+                        oSalesorderItem_PayLoad["ProductionPlant"] = oSalesOrderItem?.ProductionPlant;
+                        oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
+                        oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem?.PricingReferenceMaterial;
+                        oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
+                        oSalesorderItem_PayLoad["AdditionalMaterialGroup1"] = oDCPMapping?.MaterialGroup;
+    
+                        // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
+    
+                        oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
+                            "SalesOrder": sSalesOrder,
+                            "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
+                            "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
+                        }];
+                        
+                        oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
+                        await s4h_sohv2_Txn.send({
+                            method: 'POST',
+                            path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
+                            data: oSalesorderItem_PayLoad
+                        }).catch((err) => {
+                            aResponseStatus.push({
+                                "message": `| Remediation failed for Sales Order: ${sSalesOrder}: ${err.message} |`,
+                                "status": "E"
+                            });
+                        }).then(async (result) => {
+                            if (result) {
+                                oFeedDBData.DeliveryMethod = oFeedDBData.DeliveryMethod + ", " + sDeliveryMethod;
+                                oFeedDBData.RemediationCounter = iRemediationCounter + 1;
+                                oFeedDBData.Remediation = oFeedDBData.Remediation ? (oFeedDBData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
+                                let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oFeedDBData.Remediation}`, DeliveryMethod: oFeedDBData.DeliveryMethod, RemediationCounter: oFeedDBData.RemediationCounter }).where({ ID: sID })
+    
+                                var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
+                                let oNewBTPItem = {};
+                                if (oBTPItem) {
+                                    oNewBTPItem = oBTPItem;
+                                }
+                                oNewBTPItem.SalesOrder = result?.SalesOrder;
+                                oNewBTPItem.SalesOrderItem = result?.SalesOrderItem;
+                                oNewBTPItem.Product = result?.Material;
+                                oNewBTPItem.ShippingPoint = result?.ShippingPoint;
+                                oNewBTPItem.ProductGroup = result?.MaterialGroup;
+                                oNewBTPItem.ShippingType_ID = result?.ShippingType;
+    
+                                let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
+                                aResponseStatus.push({
+                                    "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
+                                    "status": "S"
+                                });
+                            }
+                        });
                     }
-                    oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
+                }
+                else if(oDCPMapping){
+                    /*As per what is discussed with Pranav, For Shipping conditions other than 03, only pick up Generic Material. 
+                    Pricing Ref Material for this item should be set as Title maintained in DistroSpec..
+                    */
+                    oSalesorderItem_PayLoad["Material"] = oDCPMapping?.Material;
+                    oSalesorderItem_PayLoad["AdditionalMaterialGroup1"] = oDCPMapping?.MaterialGroup;
+                    oSalesorderItem_PayLoad["RequestedQuantity"] = '1';
+                    oSalesorderItem_PayLoad["RequestedQuantityISOUnit"] = 'EA';
+                    oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
+                    oSalesorderItem_PayLoad["PricingReferenceMaterial"] = distroSpecData?.Title_Product;
+                    oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
+                    oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
                         path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
@@ -507,7 +625,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             oFeedDBData.Remediation = oFeedDBData.Remediation ? (oFeedDBData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
                             let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oFeedDBData.Remediation}`, DeliveryMethod: oFeedDBData.DeliveryMethod, RemediationCounter: oFeedDBData.RemediationCounter }).where({ ID: sID })
 
-                            var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
+                            var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: result?.SalesOrderItem })
                             let oNewBTPItem = {};
                             if (oBTPItem) {
                                 oNewBTPItem = oBTPItem;
@@ -880,13 +998,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oFilteredContentPackage = oBPPackage;
                             }
                         }
-                        // sContentDeliveryMethod = oFilteredContentPackage.DeliveryMethod1_ShippingCondition ? oFilteredContentPackage.DeliveryMethod1_ShippingCondition :
-                        //     oFilteredContentPackage.DeliveryMethod2_ShippingCondition ? oFilteredContentPackage.DeliveryMethod2_ShippingCondition :
-                        //         oFilteredContentPackage.DeliveryMethod3_ShippingCondition ? oFilteredContentPackage.DeliveryMethod3_ShippingCondition : oFilteredContentPackage.DeliveryMethod4_ShippingCondition ?
-                        //             oFilteredContentPackage.DeliveryMethod4_ShippingCondition : oFilteredContentPackage.DeliveryMethod5_ShippingCondition ? oFilteredContentPackage.DeliveryMethod5_ShippingCondition :
-                        //                 oFilteredContentPackage.DeliveryMethod6_ShippingCondition ? oFilteredContentPackage.DeliveryMethod6_ShippingCondition : oFilteredContentPackage.DeliveryMethod7_ShippingCondition ?
-                        //                     oFilteredContentPackage.DeliveryMethod7_ShippingCondition : oFilteredContentPackage.DeliveryMethod8_ShippingCondition ? oFilteredContentPackage.DeliveryMethod8_ShippingCondition :
-                        //                         oFilteredContentPackage.DeliveryMethod9_ShippingCondition ? oFilteredContentPackage.DeliveryMethod9_ShippingCondition : oFilteredContentPackage.DeliveryMethod10_ShippingCondition;
                         sContentDeliveryMethod = sDeliveryMethodFromPackage;
 
                         //RULE 7.1 => Shipping Type for Content
@@ -972,6 +1083,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var sRepertoryDate = distroSpecData?.RepertoryDate;
                         var RepertoryDate = sRepertoryDate ? new Date(`${sRepertoryDate}T00:00:00`) : undefined;
                         oPayLoad.to_Item = [];
+
                         var sLongText;
                         if ((oFinalContentPackage) && sShippingType == '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             if (oFinalContentPackage?.to_DCPMaterial) {
@@ -1000,66 +1112,47 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 sErrorMessage = "DCP Material not available";
                             }
                         }
-                        // RULE 5.1, 6.1 => Common for Content and Key
-                        var sMode, dAddSevenDays;
-                        // if (iDifferenceInHours < 24) {
-                        //     sMode = 'Screening';
-                        // }
-                        if(ReleaseDate){
-                            dAddSevenDays = await addDays(ReleaseDate, 7);
-                        }
-                        if (ReleaseDate && dStartDate < ReleaseDate) {
-                            sMode = 'PreRelease';
-                        }
-                        else if (ReleaseDate && dStartDate?.getTime() === dAddSevenDays.getTime()) {
-                            sMode = 'Release';
-                        }
-                        else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime() ) {
-                            sMode = 'PostBreak';
-                        }
-                        else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
-                            sMode = 'Repertory';
-                        }
-                        if (sMode) {
-                            var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
-                        }
-                        if (oFinalContentPackage) { //Applicable only for Content
-                            if (oDCPMapping) {
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": sShippingType
-                                });
+
+                        if(oPayLoad?.ShippingCondition !== '03'){ // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
+                            var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
+                            if (oFinalContentPackage) { //Applicable only for Content.                                
+                                if (oDCPMapping) {
+                                    oPayLoad.to_Item.push({
+                                        "Material": oDCPMapping?.Material,
+                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                        "RequestedQuantity": '1',
+                                        "RequestedQuantityISOUnit": "EA",
+                                        // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
+                                        "DeliveryPriority": `1`,
+                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                        "ShippingType": sShippingType
+                                    });
+                                }
+                                else {
+                                    oResponseStatus.warning.push({
+                                        "message": `| DCP Material Mapping not maintained for Shipping Type: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                        "errorMessage": sErrorMessage
+                                    })
+                                }
                             }
-                            else {
-                                oResponseStatus.warning.push({
-                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
-                                    "errorMessage": sErrorMessage
-                                })
-                            }
-                        }
-                        if (oFinalKeyPackage) { //This indicates Key is also applicable
-                            if (oDCPMapping) {
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": '07'
-                                });
-                            }
-                            else {
-                                oResponseStatus.warning.push({
-                                    "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
-                                    "errorMessage": sErrorMessage
-                                })
+                            if (oFinalKeyPackage ) { //This indicates Key is also applicable
+                                if (oDCPMapping) {
+                                    oPayLoad.to_Item.push({
+                                        "Material": oDCPMapping?.Material,
+                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                        "RequestedQuantity": '1',
+                                        "RequestedQuantityISOUnit": "EA",
+                                        "DeliveryPriority": `1`,
+                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                        "ShippingType": '07'
+                                    });
+                                }
+                                else {
+                                    oResponseStatus.warning.push({
+                                        "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                        "errorMessage": sErrorMessage
+                                    })
+                                }
                             }
                         }
                     }
@@ -1097,6 +1190,33 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.FilteredPackage = oFinalContentPackage;
             return oResponseStatus;
         };
+        const getVariableBasedDCPMapping = async(ReleaseDate, dStartDate, RepertoryDate, sShippingType)=>{
+            
+                        // RULE 5.1, 6.1 => Common for Content and Key
+                        var sMode, dAddSevenDays;
+                        // if (iDifferenceInHours < 24) {
+                        //     sMode = 'Screening';
+                        // }
+                        if(ReleaseDate){
+                            dAddSevenDays = await addDays(ReleaseDate, 7);
+                        }
+                        if (ReleaseDate && dStartDate < ReleaseDate) {
+                            sMode = 'PreRelease';
+                        }
+                        else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime() ) {
+                            sMode = 'PostBreak';
+                        }
+                        else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
+                            sMode = 'Release';
+                        }
+                        else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
+                            sMode = 'Repertory';
+                        }
+                        if (sMode) {
+                            var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                        }
+                        return oDCPMapping;
+        }
         const addDays= async(date, days) => {
             const newDate = new Date(date);
             newDate.setDate(date.getDate() + days);
