@@ -1541,12 +1541,70 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return { "ContentPackage": aContentPackage, "KeyPackage": aKeyPackage };
         };
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
-            // let aWhere = req.query.SELECT.where;
-            // for(let j in aWhere){
-            //     delete aWhere[j]['func']
-            // };
-            // req.query.SELECT.where = aWhere;
+            let aWhere = req.query.SELECT.where, aWhere_V2 = [];
+            // if(!aWhere){
+            //     req.reject(400, "Set atleast one filter before search");
+            //     return;
+            // }
+            if(aWhere?.find((cond)=>  cond.xpr)){
+                for(let i in aWhere){
+                    if(aWhere[i].xpr){
+                        let aTemp = aWhere[i].xpr
+                        for(let j in aTemp){
+                            if(aTemp[j]?.args?.[0]){
+                                aWhere_V2.push(aTemp[j].args[0]);
+                            }
+                            else{
+                                aWhere_V2.push(aTemp[j]);
+                            }                        
+                        }
+                    }
+                    else{
+                        aWhere_V2.push(aWhere[i]);
+                    }
+                } 
+            } 
+            else if(aWhere){
+                for(let j in aWhere){
+                    if(aWhere[j]?.args?.[0]){
+                        aWhere_V2.push(aWhere[j].args[0]);
+                    }
+                    else{
+                        aWhere_V2.push(aWhere[j]);
+                    }                        
+                }
+            }      
+            if(aWhere_V2?.length)
+                req.query.SELECT.where = aWhere_V2;
+            if(req.data){
+                // let oData = req.data;
+                // let aKeys = Object.keys(oData);
+                // let aValues = Object.values(oData);
+                // let sQuery = ``;
+                // for(let i=0; i< aKeys.length ; i++){
+                //     sQuery = sQuery+ `${aKeys[i]} = '${aValues[i]}'`;
+                //     if(i+1 < aKeys.length){
+                //         sQuery = sQuery+' and ';
+                //     }
+                // }
+                // if(sQuery){
+                //     aWhere_V2 = cds.parse.expr (sQuery);
+                //     req.query.SELECT.where = [aWhere_V2];
+                // }
+                
+            }
             let aData = await proformaAPI.run(req.query);
+            if(typeof(aData) === 'object'){ //Object Page
+                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData["SalesDocument"]});
+                let oSalesOrder = await query;
+                if(oSalesOrder?.PlayStartDate){
+                    aData["PlayStartDate"] = oSalesOrder?.PlayStartDate;
+                }
+                if(oSalesOrder?.PlayEndDate){
+                    aData["PlayEndDate"] = oSalesOrder?.PlayEndDate;
+                }
+            }
+            else
             for(let i in aData){
                 let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
                 let oSalesOrder = await query;

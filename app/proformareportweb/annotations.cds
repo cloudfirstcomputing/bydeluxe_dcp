@@ -88,6 +88,106 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         CreationDate,
         SalesDocument,
     ],
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>GeneralInfo}',
+            ID : 'i18nGeneralInfo',
+            Target : '@UI.FieldGroup#i18nGeneralInfo',
+        },
+    ],
+    UI.FieldGroup #i18nGeneralInfo : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : ActualGoodsMovementDate,
+                Label : 'ActualGoodsMovementDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : AdditionalMaterialGroup1,
+                Label : 'AdditionalMaterialGroup1',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : AddressID,
+                Label : 'AddressID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Country,
+                Label : 'Country',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : CreationDate,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : LastChangeDate,
+                Label : 'LastChangeDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : OverallSDProcessStatus,
+                Label : 'OverallSDProcessStatus',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PackageTitle,
+                Label : 'PackageTitle',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PartnerFunction,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Plant,
+                Label : 'Plant',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayEndDate,
+                Label : 'PlayEndDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayStartDate,
+                Label : 'PlayStartDate',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PricingReferenceMaterial,
+                Label : 'PricingReferenceMaterial',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : RequestID,
+                Label : 'RequestID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SalesDocument,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : SalesDocumentItem,
+                Label : 'SalesDocumentItem',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ShippingCondition,
+                Label : 'ShippingCondition',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : TotalDeliveryStatus,
+                Label : 'TotalDeliveryStatus',
+            },
+        ],
+    },
 );
 
 annotate BookingOrderService.S4H_ProformaReport with {
