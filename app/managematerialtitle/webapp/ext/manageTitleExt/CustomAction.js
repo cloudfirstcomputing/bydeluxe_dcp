@@ -198,7 +198,7 @@ sap.ui.define([
 
                             var oDataS4API = {
                                 ProductGroup: oData.TitleCategory,
-                                ProductType: "SERV", //TitleType
+                                ProductType: "ZTLS", //TitleType
                                 BaseUnit: "EA",
                                 ProductManufacturerNumber: "",
                                 to_ProductBasicText: [

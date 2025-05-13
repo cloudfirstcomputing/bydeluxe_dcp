@@ -236,7 +236,7 @@ sap.ui.define([
                 var oPatchData = {
                     Product: Product,  //Cut to 40 char   
                     ProductGroup: oData.TitleCategory,
-                    ProductType: "SERV", //TitleType
+                    ProductType: "ZTLS", //TitleType
                     BaseUnit: "EA",
                     ProductManufacturerNumber: "",
                     to_ProductBasicText: [

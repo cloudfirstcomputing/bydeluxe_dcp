@@ -166,7 +166,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                     const productPayload = {
                         ProductGroup: mappedRow.TitleCategory,
-                        ProductType: "SERV",
+                        ProductType: "ZTLS",
                         BaseUnit: "EA",
                         ProductManufacturerNumber: "",
                         to_ProductBasicText: [
