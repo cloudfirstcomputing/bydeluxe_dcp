@@ -1706,15 +1706,29 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 
             }
             let aData = await proformaAPI.run(req.query);
-            for(let i in aData){
-                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
+            if(typeof(aData) === 'object'){ //For Object Page
+                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData['SalesDocument']});
                 let oSalesOrder = await query;
                 if (oSalesOrder?.PlayStartDate) {
-                    aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
+                    aData['PlayStartDate'] = oSalesOrder?.PlayStartDate;
                 }
                 if (oSalesOrder?.PlayEndDate) {
-                    aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
+                    aData['PlayEndDate'] = oSalesOrder?.PlayEndDate;
                 }
+
+            }
+            else{
+                for(let i in aData){
+                    let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
+                    let oSalesOrder = await query;
+                    if (oSalesOrder?.PlayStartDate) {
+                        aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
+                    }
+                    if (oSalesOrder?.PlayEndDate) {
+                        aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
+                    }
+                }
+
             }
 
             return aData;
