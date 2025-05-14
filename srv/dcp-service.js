@@ -103,10 +103,33 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 error: [],
                 warning: []
             };
+            const seenOriginalTitlesInFile = new Set();
 
             for (const row of sheetData) {
                 console.log("row", row);
                 try {
+                    const originalTitle = row["Original Title Name"]?.toString().trim();
+                    if (!originalTitle) {
+                        result.warning.push({
+                            TitleID: "",
+                            Message: "Original Title Name is missing or empty",
+                            Error: "Validation error",
+                            RowData: row
+                        });
+                        continue;
+                    }
+            
+                    const normalizedTitle = originalTitle.toLowerCase();
+                    if (seenOriginalTitlesInFile.has(normalizedTitle)) {
+                        result.error.push({
+                            TitleID: "",
+                            Message: `Duplicate Original Title Name within uploaded file: ${originalTitle}`,
+                            Error: "Duplicate in file",
+                            RowData: row
+                        });
+                        continue;
+                    }
+                    seenOriginalTitlesInFile.add(originalTitle);
 
                     const normalizedRow = {};
                     Object.keys(row).forEach(k => {
@@ -142,7 +165,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     const mappedRow = {};
                     for (const [excelKey, targetKey] of Object.entries(fieldMap)) {
                         let value = normalizedRow[excelKey];
-                    
+
                         if (value === undefined || value === null) {
                             mappedRow[targetKey] = "";
                         } else if (typeof value === "object") {
@@ -163,7 +186,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     const missingFields = requiredFields.filter(field => {
                         const val = mappedRow[field];
                         return typeof val !== 'string' ? !val?.toString()?.trim() : !val.trim();
-                    });                 
+                    });
                     if (missingFields.length) {
                         throw new Error(`Missing required field(s): ${missingFields.join(", ")}`);
                     }
@@ -184,6 +207,20 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 TitleID: "",
                                 Message: "Cannot create Parent title with MaterialMasterTitleID",
                                 Error: "Invalid TitleType for MaterialMasterTitleID",
+                                RowData: mappedRow
+                            });
+                            continue;
+                        }
+                        const masterTitleExists = await SELECT.one.from(Titles).where({
+                            MaterialMasterTitleID: mappedRow.MaterialMasterTitleID,
+                            TitleType: 'Parent'
+                        });
+                    
+                        if (!masterTitleExists) {
+                            result.error.push({
+                                TitleID: "",
+                                Message: `Material Master Title ID ${mappedRow.MaterialMasterTitleID} does not exist.`,
+                                Error: "Invalid MaterialMasterTitleID",
                                 RowData: mappedRow
                             });
                             continue;
@@ -262,80 +299,80 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                         continue; // Skip the rest of the loop for local titles
                     }
-                   // need add else part here for parent 
-                   else {
-                    const duplicateCheck = await SELECT.one.from(Titles).where({ OriginalTitleName: mappedRow.OriginalTitleName });
-                    if (duplicateCheck) {
-                        result.warning.push({
-                            TitleID: "",
-                            Message: `Skipped duplicate: ${mappedRow.OriginalTitleName}`,
-                            Error: "Duplicate found",
+                    // need add else part here for parent 
+                    else {
+                        const duplicateCheck = await SELECT.one.from(Titles).where({ OriginalTitleName: mappedRow.OriginalTitleName });
+                        if (duplicateCheck) {
+                            result.warning.push({
+                                TitleID: "",
+                                Message: `Skipped duplicate: ${mappedRow.OriginalTitleName}`,
+                                Error: "Duplicate found",
+                                RowData: mappedRow
+                            });
+                            continue; // Skip this row
+                        }
+
+
+                        const productPayload = {
+                            ProductGroup: mappedRow.TitleCategory,
+                            ProductType: "ZTLS",
+                            BaseUnit: "EA",
+                            ProductManufacturerNumber: "",
+                            to_ProductBasicText: [
+                                { Language: "EN", LongText: mappedRow.OriginalTitleName }
+                            ],
+                            to_Description: [
+                                { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
+                            ]
+                        };
+
+                        const createProductResponse = await s4h_products_Crt.run(
+                            INSERT.into(Products).entries(productPayload)
+                        );
+
+                        //const response = await s4h_products_Crt.run(INSERT.into(Products).entries(input))
+                        const createdProductID = createProductResponse?.Product;
+                        if (!createdProductID) {
+                            throw new Error("Product creation failed.");
+                        }
+
+
+                        const titlePayload = {
+                            ID: uuidv4(),
+                            "MaterialMasterTitleID": createdProductID,
+                            "LocalTitleId": "",     //not present
+                            "RegionCode": mappedRow.RegionCode || "",
+                            "OriginalTitleName": mappedRow.OriginalTitleName || "",
+                            "TitleType": mappedRow.TitleType || "",
+                            "TitleCategory": mappedRow.TitleCategory || "",    //not present
+                            "RegionalTitleName": mappedRow.RegionalTitleName || "",
+                            "ShortTitle": mappedRow.ShortTitle || "",
+                            "SecurityTitle": mappedRow.SecurityTitle || "",
+                            "LanguageCode": mappedRow.LanguageCode || "",
+                            "ReleaseDate": mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
+                            "RepertoryDate": mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
+                            "Format": mappedRow.Format || "",
+                            "ReleaseSize": mappedRow.ReleaseSize || "",
+                            "Ratings": mappedRow.Ratings || "",
+                            "ReelCountEstimated": mappedRow.ReelCountEstimated || null,
+                            "AssetVaultTitleId": mappedRow.AssetVaultTitleId || "",
+                            "ImdbId": mappedRow.ImdbId || "",
+                            "StudioTitleId": mappedRow.StudioTitleId || "",
+                            "StudioDistributor": mappedRow.StudioDistributor || "",
+                            "Ratings_Ass": [],          //not present
+                            "ExternalTitleIDs_Ass": [],  //not present
+                            "GofilexTitleId": mappedRow.GofilexTitleId || "",
+                        };
+
+                        await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
+
+                        result.success.push({
+                            TitleID: createdProductID,
+                            Message: `Title created with Product ID ${createdProductID}`,
+                            Error: "",
                             RowData: mappedRow
                         });
-                        continue; // Skip this row
                     }
-
-
-                    const productPayload = {
-                        ProductGroup: mappedRow.TitleCategory,
-                        ProductType: "ZTLS",
-                        BaseUnit: "EA",
-                        ProductManufacturerNumber: "",
-                        to_ProductBasicText: [
-                            { Language: "EN", LongText: mappedRow.OriginalTitleName }
-                        ],
-                        to_Description: [
-                            { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
-                        ]
-                    };
-
-                    const createProductResponse = await s4h_products_Crt.run(
-                        INSERT.into(Products).entries(productPayload)
-                    );
-
-                    //const response = await s4h_products_Crt.run(INSERT.into(Products).entries(input))
-                    const createdProductID = createProductResponse?.Product;
-                    if (!createdProductID) {
-                        throw new Error("Product creation failed.");
-                    }
-
-
-                    const titlePayload = {
-                        ID: uuidv4(),
-                        "MaterialMasterTitleID": createdProductID,
-                        "LocalTitleId": "",     //not present
-                        "RegionCode": mappedRow.RegionCode || "",
-                        "OriginalTitleName": mappedRow.OriginalTitleName || "",
-                        "TitleType": mappedRow.TitleType || "",
-                        "TitleCategory": mappedRow.TitleCategory || "",    //not present
-                        "RegionalTitleName": mappedRow.RegionalTitleName || "",
-                        "ShortTitle": mappedRow.ShortTitle || "",
-                        "SecurityTitle": mappedRow.SecurityTitle || "",
-                        "LanguageCode": mappedRow.LanguageCode || "",
-                        "ReleaseDate": mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
-                        "RepertoryDate": mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
-                        "Format": mappedRow.Format || "",
-                        "ReleaseSize": mappedRow.ReleaseSize || "",
-                        "Ratings": mappedRow.Ratings || "",
-                        "ReelCountEstimated": mappedRow.ReelCountEstimated || null,
-                        "AssetVaultTitleId": mappedRow.AssetVaultTitleId || "",
-                        "ImdbId": mappedRow.ImdbId || "",
-                        "StudioTitleId": mappedRow.StudioTitleId || "",
-                        "StudioDistributor": mappedRow.StudioDistributor || "",
-                        "Ratings_Ass": [],          //not present
-                        "ExternalTitleIDs_Ass": [],  //not present
-                        "GofilexTitleId": mappedRow.GofilexTitleId || "",
-                    };
-
-                    await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
-
-                    result.success.push({
-                        TitleID: createdProductID,
-                        Message: `Title created with Product ID ${createdProductID}`,
-                        Error: "",
-                        RowData: mappedRow
-                    });
-                }
                 } catch (err) {
                     console.error("Error processing row:", row, err.message);
                     result.error.push({
@@ -347,7 +384,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 }
             }
-          // need to add end of else part
+            // need to add end of else part
 
             return {
                 message: result
