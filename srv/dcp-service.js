@@ -12,9 +12,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, S4H_ProformaReport, BookingStatus, DCPMaterialMapping, S4H_ProductGroup1,
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
-            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country, 
-            CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank ,BankAddress ,AddressPhoneNumber,AddressEmailAddress,AddlCompanyCodeInformation,CoCodeCountryVATReg,
-            PaymentTermsText ,JournalEntryItem,PricingConditionTypeText,SalesOrderHeaderPartner,SalesOrderItemPartners,CustSalesPartnerFunc} = this.entities;
+            StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
+            CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -133,25 +133,137 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "gofilex title id": "GofilexTitleId",
                         "studio title id": "StudioTitleId",
                         "studio/distributor": "StudioDistributor",
-                        "use secure name": "UseSecureName"
+                        "use secure name": "UseSecureName",
+                        "material master title id": "MaterialMasterTitleID"
                     };
 
 
 
                     const mappedRow = {};
                     for (const [excelKey, targetKey] of Object.entries(fieldMap)) {
-                        mappedRow[targetKey] = normalizedRow[excelKey];
+                        let value = normalizedRow[excelKey];
+                    
+                        if (value === undefined || value === null) {
+                            mappedRow[targetKey] = "";
+                        } else if (typeof value === "object") {
+                            // If it's a date object or other object, convert to ISO string or custom format
+                            if (value instanceof Date) {
+                                mappedRow[targetKey] = value.toISOString().split("T")[0]; // e.g., "2024-05-14"
+                            } else {
+                                mappedRow[targetKey] = JSON.stringify(value); // or set it to empty string if not acceptable
+                            }
+                        } else {
+                            mappedRow[targetKey] = value.toString().trim();
+                        }
                     }
 
                     console.log("mappedRow", mappedRow);
 
                     const requiredFields = ["OriginalTitleName", "TitleCategory", "TitleType"];
-                    const missingFields = requiredFields.filter(field => !mappedRow[field]?.toString().trim());
+                    const missingFields = requiredFields.filter(field => {
+                        const val = mappedRow[field];
+                        return typeof val !== 'string' ? !val?.toString()?.trim() : !val.trim();
+                    });                 
                     if (missingFields.length) {
                         throw new Error(`Missing required field(s): ${missingFields.join(", ")}`);
                     }
+                    // If the material master title ID is given then it should be considered as local create and title type should be Local
+                    // If the material master title ID is given and TitleType : Parent then it goes to Error
+                    // This if material master title ID is given then run the local create logic
+                    // Local create logic
+                    // 1. Get Title ID eg : 6053
+                    // 2. Get Latest title in Local and Increment  eg: 6053-0002
+                    // 3. Concatnate  Eg: 6053-0002,6053-0003
+                    // 4. Update Titles DB directly for local
+                    // All the above functions are available at extActionLocalC refer this
 
+                    // Handle Local Title creation if MaterialMasterTitleID is provided
+                    if (mappedRow.MaterialMasterTitleID) {
+                        if (mappedRow.TitleType === "Parent") {
+                            result.error.push({
+                                TitleID: "",
+                                Message: "Cannot create Parent title with MaterialMasterTitleID",
+                                Error: "Invalid TitleType for MaterialMasterTitleID",
+                                RowData: mappedRow
+                            });
+                            continue;
+                        }
 
+                        // Get existing local titles for this MaterialMasterTitleID
+                        const existingTitles = await SELECT.from(Titles).where({
+                            MaterialMasterTitleID: mappedRow.MaterialMasterTitleID
+                        });
+
+                        // Generate new LocalTitleId
+                        let newLocalId;
+                        const existingIds = existingTitles
+                            .map(item => item.LocalTitleId)
+                            .filter(id => id)
+                            .map(id => parseInt(id.split('-')[1], 10));
+
+                        if (existingIds.length > 0) {
+                            const maxId = Math.max(...existingIds);
+                            newLocalId = `${mappedRow.MaterialMasterTitleID}-${String(maxId + 1).padStart(4, "0")}`;
+                        } else {
+                            newLocalId = `${mappedRow.MaterialMasterTitleID}-0001`;
+                        }
+
+                        // Check for duplicate (same MaterialMasterTitleID, RegionCode and LanguageCode)
+                        const duplicateCheck = await SELECT.one.from(Titles).where({
+                            MaterialMasterTitleID: mappedRow.MaterialMasterTitleID,
+                            RegionCode: mappedRow.RegionCode,
+                            LanguageCode: mappedRow.LanguageCode
+                        });
+
+                        if (duplicateCheck) {
+                            result.warning.push({
+                                TitleID: "",
+                                Message: `Skipped duplicate local title for MaterialMasterTitleID ${mappedRow.MaterialMasterTitleID}`,
+                                Error: "Duplicate found",
+                                RowData: mappedRow
+                            });
+                            continue;
+                        }
+
+                        // Create Local Title
+                        const titlePayload = {
+                            ID: uuidv4(),
+                            MaterialMasterTitleID: mappedRow.MaterialMasterTitleID,
+                            LocalTitleId: newLocalId,
+                            RegionCode: mappedRow.RegionCode || "",
+                            OriginalTitleName: mappedRow.OriginalTitleName || "",
+                            TitleType: "Local", // Force Local type
+                            TitleCategory: mappedRow.TitleCategory || "",
+                            RegionalTitleName: mappedRow.RegionalTitleName || "",
+                            ShortTitle: mappedRow.ShortTitle || "",
+                            SecurityTitle: mappedRow.SecurityTitle || "",
+                            LanguageCode: mappedRow.LanguageCode || "",
+                            ReleaseDate: mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
+                            RepertoryDate: mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
+                            Format: mappedRow.Format || "",
+                            ReleaseSize: mappedRow.ReleaseSize || "",
+                            Ratings: mappedRow.Ratings || "",
+                            ReelCountEstimated: mappedRow.ReelCountEstimated || null,
+                            AssetVaultTitleId: mappedRow.AssetVaultTitleId || "",
+                            ImdbId: mappedRow.ImdbId || "",
+                            StudioTitleId: mappedRow.StudioTitleId || "",
+                            StudioDistributor: mappedRow.StudioDistributor || "",
+                            GofilexTitleId: mappedRow.GofilexTitleId || "",
+                        };
+
+                        await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
+
+                        result.success.push({
+                            TitleID: newLocalId,
+                            Message: `Local title created with ID ${newLocalId}`,
+                            Error: "",
+                            RowData: mappedRow
+                        });
+
+                        continue; // Skip the rest of the loop for local titles
+                    }
+                   // need add else part here for parent 
+                   else {
                     const duplicateCheck = await SELECT.one.from(Titles).where({ OriginalTitleName: mappedRow.OriginalTitleName });
                     if (duplicateCheck) {
                         result.warning.push({
@@ -223,7 +335,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         Error: "",
                         RowData: mappedRow
                     });
-
+                }
                 } catch (err) {
                     console.error("Error processing row:", row, err.message);
                     result.error.push({
@@ -235,7 +347,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                 }
             }
-
+          // need to add end of else part
 
             return {
                 message: result
@@ -470,13 +582,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     return;
                 }
                 var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sDeliveryMethod });
-                    var sShippingType = oShippingTypeMapping.ShippingType;
-                    if (!sShippingType) {
-                        req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
-                        return;
-                }                
+                var sShippingType = oShippingTypeMapping.ShippingType;
+                if (!sShippingType) {
+                    req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
+                    return;
+                }
                 var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                if(sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')){
+                if (sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')) {
                     /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
                     Pick up Add.MatGroup from BTP Mapping table and set it in the AdditionalMaterialGroup1 of this DCP Item in S4
                     */
@@ -490,15 +602,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     //     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = oSalesOrderItem.PricingReferenceMaterial;
                     //     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
                     //     oSalesorderItem_PayLoad["AdditionalMaterialGroup1"] = oDCPMapping?.MaterialGroup;
-    
+
                     //     // oSalesorderItem_PayLoad["RequestedDeliveryDate"] = `/Date(${new Date().getTime()})/`;
-    
+
                     //     oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
                     //         "SalesOrder": sSalesOrder,
                     //         "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
                     //         "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
                     //     }];
-                        
+
                     //     oSalesorderItem_PayLoad["ShippingType"] = sShippingType;
                     //     await s4h_sohv2_Txn.send({
                     //         method: 'POST',
@@ -515,7 +627,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     //             oFeedDBData.RemediationCounter = iRemediationCounter + 1;
                     //             oFeedDBData.Remediation = oFeedDBData.Remediation ? (oFeedDBData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
                     //             let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oFeedDBData.Remediation}`, DeliveryMethod: oFeedDBData.DeliveryMethod, RemediationCounter: oFeedDBData.RemediationCounter }).where({ ID: sID })
-    
+
                     //             var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
                     //             let oNewBTPItem = {};
                     //             if (oBTPItem) {
@@ -527,7 +639,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     //             oNewBTPItem.ShippingPoint = result?.ShippingPoint;
                     //             oNewBTPItem.ProductGroup = result?.MaterialGroup;
                     //             oNewBTPItem.ShippingType_ID = result?.ShippingType;
-    
+
                     //             let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
                     //             aResponseStatus.push({
                     //                 "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
@@ -539,25 +651,25 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     let oSalesOrderItem_Distro = oFilteredContentPackage?.to_DCPMaterial;
                     for (let i in oSalesOrderItem_Distro) {
                         let sMat = oSalesOrderItem_Distro[i].DCPMaterialNumber_Product;
-                        let oSalesOrderItem = aNonKeyItems?.find((item)=>{
+                        let oSalesOrderItem = aNonKeyItems?.find((item) => {
                             return item.Material === sMat;
                         });
                         oSalesorderItem_PayLoad = {
-                                        "Material": sMat,
-                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "RequestedQuantity": '1',
-                                        "RequestedQuantityISOUnit": 'EA',
-                                        "ShippingType": sShippingType,
-                                        "ItemBillingBlockReason": "03",
-                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                        "DeliveryPriority":"04"
-                                    };
+                            "Material": sMat,
+                            "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                            "RequestedQuantity": '1',
+                            "RequestedQuantityISOUnit": 'EA',
+                            "ShippingType": sShippingType,
+                            "ItemBillingBlockReason": "03",
+                            "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                            "DeliveryPriority": "04"
+                        };
                         // oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
                         //     "SalesOrder": sSalesOrder,
                         //     "SalesOrderItem": oSalesOrderItem?.SalesOrderItem,
                         //     "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`
                         // }];
-                        
+
                         await s4h_sohv2_Txn.send({
                             method: 'POST',
                             path: `/A_SalesOrder('${sSalesOrder}')/to_Item`,
@@ -573,7 +685,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oFeedDBData.RemediationCounter = iRemediationCounter + 1;
                                 oFeedDBData.Remediation = oFeedDBData.Remediation ? (oFeedDBData.Remediation + ', ' + result?.SalesOrderItem) : result?.SalesOrderItem;
                                 let updateRes = await UPDATE(hanaDBTable).set({ Remediation: `${oFeedDBData.Remediation}`, DeliveryMethod: oFeedDBData.DeliveryMethod, RemediationCounter: oFeedDBData.RemediationCounter }).where({ ID: sID })
-    
+
                                 var oBTPItem = await SELECT.one.from(BookingSalesorderItem).where({ SalesOrder: sSalesOrder, SalesOrderItem: oSalesOrderItem?.SalesOrderItem })
                                 let oNewBTPItem = {};
                                 if (oBTPItem) {
@@ -585,7 +697,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oNewBTPItem.ShippingPoint = result?.ShippingPoint;
                                 oNewBTPItem.ProductGroup = result?.MaterialGroup;
                                 oNewBTPItem.ShippingType_ID = result?.ShippingType;
-    
+
                                 let insertResult = await INSERT.into(BookingSalesorderItem).entries(oNewBTPItem);
                                 aResponseStatus.push({
                                     "message": `| Sales Order: ${sSalesOrder} remediation successful. Item: ${result?.SalesOrderItem} is created |`,
@@ -595,7 +707,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         });
                     }
                 }
-                else if(oDCPMapping){
+                else if (oDCPMapping) {
                     /*As per what is discussed with Pranav, For Shipping conditions other than 03, only pick up Generic Material. 
                     Pricing Ref Material for this item should be set as Title maintained in DistroSpec..
                     */
@@ -736,7 +848,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         data[i].RemediationCounter = 1;
                         data[i].Status_ID = "C";
                     }
-                    if(oLocalResponse?.Status === 'R'){ //Status is in Review
+                    if (oLocalResponse?.Status === 'R') { //Status is in Review
                         data[i].Status_ID = oLocalResponse.Status;
                         data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
                     }
@@ -795,10 +907,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.distroSpecData = distroSpecData;
             // oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
             oPayLoad.SalesOrderType = "TA";
-            if(oFeedData.RequestedDelivDate){
+            if (oFeedData.RequestedDelivDate) {
                 oPayLoad.RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`
             }
-            else{
+            else {
                 sErrorMessage = 'Requested Delivery Date not available';
             }
             if (sErrorMessage) {
@@ -826,11 +938,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!oSoldToSalesData) {
                         sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
                     }
-                    if(oSoldToSalesData?.CustomerPaymentTerms === '0001'){
+                    if (oSoldToSalesData?.CustomerPaymentTerms === '0001') {
                         sErrorMessage = `Check Payment Terms`;
                         oResponseStatus.Status = 'R';//For Review
                     }
-                    if(!sErrorMessage){
+                    if (!sErrorMessage) {
                         if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
                             var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
                             if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
@@ -1111,7 +1223,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
 
-                        if(oPayLoad?.ShippingCondition !== '03'){ // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
+                        if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
                             var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
                             if (oFinalContentPackage) { //Applicable only for Content.                                
                                 if (oDCPMapping) {
@@ -1133,7 +1245,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     })
                                 }
                             }
-                            if (oFinalKeyPackage ) { //This indicates Key is also applicable
+                            if (oFinalKeyPackage) { //This indicates Key is also applicable
                                 if (oDCPMapping) {
                                     oPayLoad.to_Item.push({
                                         "Material": oDCPMapping?.Material,
@@ -1188,34 +1300,34 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.FilteredPackage = oFinalContentPackage;
             return oResponseStatus;
         };
-        const getVariableBasedDCPMapping = async(ReleaseDate, dStartDate, RepertoryDate, sShippingType)=>{
-            
-                        // RULE 5.1, 6.1 => Common for Content and Key
-                        var sMode, dAddSevenDays;
-                        // if (iDifferenceInHours < 24) {
-                        //     sMode = 'Screening';
-                        // }
-                        if(ReleaseDate){
-                            dAddSevenDays = await addDays(ReleaseDate, 7);
-                        }
-                        if (ReleaseDate && dStartDate < ReleaseDate) {
-                            sMode = 'PreRelease';
-                        }
-                        else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime() ) {
-                            sMode = 'PostBreak';
-                        }
-                        else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
-                            sMode = 'Release';
-                        }
-                        else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
-                            sMode = 'Repertory';
-                        }
-                        if (sMode) {
-                            var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
-                        }
-                        return oDCPMapping;
+        const getVariableBasedDCPMapping = async (ReleaseDate, dStartDate, RepertoryDate, sShippingType) => {
+
+            // RULE 5.1, 6.1 => Common for Content and Key
+            var sMode, dAddSevenDays;
+            // if (iDifferenceInHours < 24) {
+            //     sMode = 'Screening';
+            // }
+            if (ReleaseDate) {
+                dAddSevenDays = await addDays(ReleaseDate, 7);
+            }
+            if (ReleaseDate && dStartDate < ReleaseDate) {
+                sMode = 'PreRelease';
+            }
+            else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime()) {
+                sMode = 'PostBreak';
+            }
+            else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
+                sMode = 'Release';
+            }
+            else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
+                sMode = 'Repertory';
+            }
+            if (sMode) {
+                var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+            }
+            return oDCPMapping;
         }
-        const addDays= async(date, days) => {
+        const addDays = async (date, days) => {
             const newDate = new Date(date);
             newDate.setDate(date.getDate() + days);
             return newDate;
@@ -1594,28 +1706,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 
             }
             let aData = await proformaAPI.run(req.query);
-            if(typeof(aData) === 'object'){ //Object Page
-                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData["SalesDocument"]});
-                let oSalesOrder = await query;
-                if(oSalesOrder?.PlayStartDate){
-                    aData["PlayStartDate"] = oSalesOrder?.PlayStartDate;
-                }
-                if(oSalesOrder?.PlayEndDate){
-                    aData["PlayEndDate"] = oSalesOrder?.PlayEndDate;
-                }
-            }
-            else
             for(let i in aData){
                 let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
                 let oSalesOrder = await query;
-                if(oSalesOrder?.PlayStartDate){
+                if (oSalesOrder?.PlayStartDate) {
                     aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
                 }
-                if(oSalesOrder?.PlayEndDate){
+                if (oSalesOrder?.PlayEndDate) {
                     aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
                 }
             }
-            
+
             return aData;
         })
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
@@ -2706,8 +2807,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             header.CompanyCode,
                             header.SalesOrganization,
                             header.DistributionChannel
-                            header.Division
-                            header.Customer,
+                        header.Division
+                        header.Customer,
                             header.FiscalYear,
                             header.CustomerPaymentTerms,
                             header.to_Item()
@@ -2722,8 +2823,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oBillingDocumentPartnerSoldToPart = await srv_BillingDocument.run(
                     SELECT.one.from(BillingDocumentPartner).where({ BillingDocument: oBillingDocument.BillingDocument, PartnerFunction: 'AG' })
                 )
-               
-                const aSalesParameter =  await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ SalesOrganization: billingDocument[0].SalesOrganization, DistributionChannel: billingDocument[0].DistributionChannel ,Division:billingDocument[0].Division, CompanyCode:billingDocument[0].CompanyCode, SoldTo:oBillingDocumentPartnerSoldToPart?.Customer ,BillTo:oBillingDocumentPartner?.Customer}));
+
+                const aSalesParameter = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ SalesOrganization: billingDocument[0].SalesOrganization, DistributionChannel: billingDocument[0].DistributionChannel, Division: billingDocument[0].Division, CompanyCode: billingDocument[0].CompanyCode, SoldTo: oBillingDocumentPartnerSoldToPart?.Customer, BillTo: oBillingDocumentPartner?.Customer }));
                 const oBusinessPartnerAddrfromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress, (header) => {
                     header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country, header.BusinessPartner,
                         header.to_EmailAddress()
@@ -2741,62 +2842,62 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 var sMapSalesDocument = [...new Set(aBillingDocumentItem.map(row => row.SalesDocument))];
                 var sMapSalesDocumentItem = [...new Set(aBillingDocumentItem.map(row => row.SalesDocumentItem))];
                 var aPartFuncList = [...new Set(['SP', 'SH'])];
-                var aOrderItemPart = await s4h_sohv2_Txn.run(SELECT.from(SalesOrderItemPartners).where({ SalesOrder : { in :sMapSalesDocument} ,SalesOrderItem : { in :sMapSalesDocumentItem} , PartnerFunction :'SH'  }));
-                var aOrderHeaderPart = await s4h_sohv2_Txn.run(SELECT.from(SalesOrderHeaderPartner).where({ SalesOrder : { in :sMapSalesDocument} , PartnerFunction : { in : aPartFuncList} }));
+                var aOrderItemPart = await s4h_sohv2_Txn.run(SELECT.from(SalesOrderItemPartners).where({ SalesOrder: { in: sMapSalesDocument }, SalesOrderItem: { in: sMapSalesDocumentItem }, PartnerFunction: 'SH' }));
+                var aOrderHeaderPart = await s4h_sohv2_Txn.run(SELECT.from(SalesOrderHeaderPartner).where({ SalesOrder: { in: sMapSalesDocument }, PartnerFunction: { in: aPartFuncList } }));
                 const aSalesOrderv2 = await s4h_sohv2_Txn.run(
-                    SELECT.from(S4H_SOHeader_V2) .where({ SalesOrder: { in :sMapSalesDocument} })
+                    SELECT.from(S4H_SOHeader_V2).where({ SalesOrder: { in: sMapSalesDocument } })
                 );
 
-                var sMapSalesOrg= [...new Set(aBillingDocumentItem.map(row => row.SalesOrderSalesOrganization))];
+                var sMapSalesOrg = [...new Set(aBillingDocumentItem.map(row => row.SalesOrderSalesOrganization))];
                 var sMapDistributionChannel = [...new Set(aBillingDocumentItem.map(row => row.SalesOrderDistributionChannel))];
                 var sMapOrganizationDivision = [...new Set(aBillingDocumentItem.map(row => row.OrganizationDivision))];
-                var sMapCustomerSP = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SP') {return row.Customer}else{return ''}}))];
-                var sMapCustomerTheatre = [...new Set(aOrderHeaderPart.map(row => {if(row.PartnerFunction === 'SH')  {return row?.Customer=== undefined ? '' : row?.Customer } else { return ''}})),...new Set(aOrderItemPart.map(row => {if(row.PartnerFunction === 'SH') {return row.Customer} else { return ''}}))];
-                
+                var sMapCustomerSP = [...new Set(aOrderHeaderPart.map(row => { if (row.PartnerFunction === 'SP') { return row.Customer } else { return '' } }))];
+                var sMapCustomerTheatre = [...new Set(aOrderHeaderPart.map(row => { if (row.PartnerFunction === 'SH') { return row?.Customer === undefined ? '' : row?.Customer } else { return '' } })), ...new Set(aOrderItemPart.map(row => { if (row.PartnerFunction === 'SH') { return row.Customer } else { return '' } }))];
+
                 const oBusinessPartnerAddrTheatre = await s4h_bp_Txn.run(SELECT.from(S4H_BusinessPartnerAddress, (header) => {
                     header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
                         header.to_EmailAddress()
-                }).where({ BusinessPartner: {in :sMapCustomerTheatre} }));
-                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: {in : sMapCustomerSP} ,SalesOrganization:{in :sMapSalesOrg}, DistributionChannel:{in :sMapDistributionChannel} ,Division:{in :sMapOrganizationDivision}  }));
-                
-               
+                }).where({ BusinessPartner: { in: sMapCustomerTheatre } }));
+                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: { in: sMapCustomerSP }, SalesOrganization: { in: sMapSalesOrg }, DistributionChannel: { in: sMapDistributionChannel }, Division: { in: sMapOrganizationDivision } }));
+
+
                 // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
                 // const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({BillingDocument:oBillingDocument.BillingDocument, BillingDocumentItem: { in : sMapBillingDocumentItem},LongTextID:"Z002"}));
-                const aProductBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : sMapPricingReference}}));
-                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem } ,LongTextID:'Z002'}));
-                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B' , ConditionInactiveReason: '' ,ConditionIsForStatistics: false}));
+                const aProductBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in: sMapPricingReference } }));
+                const aItemList = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemText).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, LongTextID: 'Z002' }));
+                const aPriceItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B', ConditionInactiveReason: '', ConditionIsForStatistics: false }));
                 const aDiscountItem = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'A', ConditionIsForStatistics: false }));
-                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B', ConditionInactiveReason: '' ,ConditionIsForStatistics: false }));
+                const aExtendedAmount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'B', ConditionInactiveReason: '', ConditionIsForStatistics: false }));
                 const aCompanyCode = await s4h_Company.run(SELECT.one.from(Company).where({ CompanyCode: billingDocument[0].CompanyCode }))
                 const oAddrCompanyCode = await invformAPI.run(SELECT.one.from(AddressPostal).where({ AddressID: aCompanyCode.AddressID }));
                 const oAddrPhone = await invformAPI.run(SELECT.one.from(AddressPhoneNumber).where({ AddressID: aCompanyCode.AddressID }));
                 const oAddrEmail = await invformAPI.run(SELECT.one.from(AddressEmailAddress).where({ AddressID: aCompanyCode.AddressID }));
-                const oAddrCompanyCodendfo = await invformAPI.run(SELECT.one.from(AddlCompanyCodeInformation).where({ CompanyCode : aCompanyCode.AddressID ,CompanyCodeParameterType :'SAPTIN'}));
-                const oAddrCoCodeCountryVATReg = await invformAPI.run(SELECT.one.from(CoCodeCountryVATReg).where({ CompanyCode : aCompanyCode.AddressID ,VATRegistrationCountry:aCompanyCode.Country }));
-                const oJournalEntryItem = await invformAPI.run(SELECT.one.from(JournalEntryItem).where({ ReferenceDocument:oBillingDocument.BillingDocument, FiscalYear:billingDocument[0].FiscalYear ,CompanyCode :billingDocument[0].CompanyCode }));
-                const oPaymentTermsText = await invformAPI.run(SELECT.one.from(PaymentTermsText).where({ PaymentTerms: billingDocument[0].CustomerPaymentTerms ,Language :'EN' }));
-                 const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
-                 
-                 var sMapPricingTypeText = [...new Set(aTaxamount.map(row => row.ConditionType))];
-                 const aPricingConditionTypeText =  await invformAPI.run(SELECT.from(PricingConditionTypeText).where({ConditionType:{in : sMapPricingTypeText} , Language :'EN',ConditionApplication :'TX' }));
-                
-                 
+                const oAddrCompanyCodendfo = await invformAPI.run(SELECT.one.from(AddlCompanyCodeInformation).where({ CompanyCode: aCompanyCode.AddressID, CompanyCodeParameterType: 'SAPTIN' }));
+                const oAddrCoCodeCountryVATReg = await invformAPI.run(SELECT.one.from(CoCodeCountryVATReg).where({ CompanyCode: aCompanyCode.AddressID, VATRegistrationCountry: aCompanyCode.Country }));
+                const oJournalEntryItem = await invformAPI.run(SELECT.one.from(JournalEntryItem).where({ ReferenceDocument: oBillingDocument.BillingDocument, FiscalYear: billingDocument[0].FiscalYear, CompanyCode: billingDocument[0].CompanyCode }));
+                const oPaymentTermsText = await invformAPI.run(SELECT.one.from(PaymentTermsText).where({ PaymentTerms: billingDocument[0].CustomerPaymentTerms, Language: 'EN' }));
+                const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
 
-                 for (var index in aTaxamount){
+                var sMapPricingTypeText = [...new Set(aTaxamount.map(row => row.ConditionType))];
+                const aPricingConditionTypeText = await invformAPI.run(SELECT.from(PricingConditionTypeText).where({ ConditionType: { in: sMapPricingTypeText }, Language: 'EN', ConditionApplication: 'TX' }));
+
+
+
+                for (var index in aTaxamount) {
                     var oPriceBasedCondition;
-                    [oPriceBasedCondition] = aPricingConditionTypeText.filter(item=>{return item.ConditionType == aTaxamount[index].ConditionType })
+                    [oPriceBasedCondition] = aPricingConditionTypeText.filter(item => { return item.ConditionType == aTaxamount[index].ConditionType })
                     aTaxamount[index]["ConditionTypeName"] = oPriceBasedCondition?.ConditionTypeName;
-                 }
-                 var oTaxObjectforForm = generateTaxTables(aTaxamount);
-                 var iNetAmount = 0, iDiscountItem = 0;
+                }
+                var oTaxObjectforForm = generateTaxTables(aTaxamount);
+                var iNetAmount = 0, iDiscountItem = 0;
                 const itemMap = {};
                 for (var index in aBillingDocumentItem) {
 
                     const key = aBillingDocumentItem[index].PricingReferenceMaterial || 'NO_KEY';
                     iNetAmount += parseInt(aBillingDocumentItem[index]?.NetAmount);
-                     iDiscountItem += parseInt(aDiscountItem[index]?.ConditionAmount)
+                    iDiscountItem += parseInt(aDiscountItem[index]?.ConditionAmount)
                     var oTaxSerial;
-                     [oTaxSerial] = oTaxObjectforForm.TaxforMainTable.filter(item=>{return item.ConditionRateValue ===  aTaxamount[index]?.ConditionRateValue})
+                    [oTaxSerial] = oTaxObjectforForm.TaxforMainTable.filter(item => { return item.ConditionRateValue === aTaxamount[index]?.ConditionRateValue })
 
                     if (!itemMap[key]) {
                         itemMap[key] = []
@@ -2847,12 +2948,12 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     for (const item of groupedList) {
                         item.SrNo = srNoCounter++;
                     }
-                    var sKeyText ;
-                    [sKeyText] = aProductBasicText.filter(item=>{return item.Product === key })
+                    var sKeyText;
+                    [sKeyText] = aProductBasicText.filter(item => { return item.Product === key })
                     aTableRow.push({
                         "Title": [
                             {
-                                "Title": "Title: "+sKeyText.LongText
+                                "Title": "Title: " + sKeyText.LongText
                             }
                         ],
                         "Items": groupedList
@@ -2896,16 +2997,18 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     // // Find PartnerFunction = 'SH' from Partner node
                     // const partnerSH = oSalesOrderv2.to_Partner?.find(p => p.PartnerFunction === 'SH');
                     // const sCustomerId = partnerSH?.Customer;
-                    var oCustItemPart,oCustHeadPartSH,oCustHeadPartSP,oSalesOrderv2,oCustomerId,oTheatreDet;
-                    
-                    oCustItemPart = aOrderItemPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem})[0]
-                    oCustHeadPartSH = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.PartnerFunction==='SH'})[0]
-                    oCustHeadPartSP = aOrderHeaderPart.filter(item=>{return item.SalesOrder === sSalesOrder && item.PartnerFunction==='SP'})[0]
-                    oSalesOrderv2 = aSalesOrderv2.filter(item=>{return item.SalesOrder === sSalesOrder})[0]
-                    oCustomerId = oBusinessPartnerCustAreaSales.filter(item=>{return item.Customer == oCustHeadPartSP?.Customer && item.SalesOrganization == oSalesOrderv2?.SalesOrganization 
-                        && item.DistributionChannel==oSalesOrderv2?.DistributionChannel && item.Division ==oSalesOrderv2?.OrganizationDivision && item.BPCustomerNumber == (oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer) && item.PartnerFunction == 'SH' })[0]
-                  oTheatreDet = oBusinessPartnerAddrTheatre.filter(item=>{return item.BusinessPartner===(oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer :oCustItemPart?.Customer)})[0]
-                        let sTheatreName = oTheatreDet?.FullName;
+                    var oCustItemPart, oCustHeadPartSH, oCustHeadPartSP, oSalesOrderv2, oCustomerId, oTheatreDet;
+
+                    oCustItemPart = aOrderItemPart.filter(item => { return item.SalesOrder === sSalesOrder && item.SalesOrderItem === sSalesOrderItem })[0]
+                    oCustHeadPartSH = aOrderHeaderPart.filter(item => { return item.SalesOrder === sSalesOrder && item.PartnerFunction === 'SH' })[0]
+                    oCustHeadPartSP = aOrderHeaderPart.filter(item => { return item.SalesOrder === sSalesOrder && item.PartnerFunction === 'SP' })[0]
+                    oSalesOrderv2 = aSalesOrderv2.filter(item => { return item.SalesOrder === sSalesOrder })[0]
+                    oCustomerId = oBusinessPartnerCustAreaSales.filter(item => {
+                        return item.Customer == oCustHeadPartSP?.Customer && item.SalesOrganization == oSalesOrderv2?.SalesOrganization
+                            && item.DistributionChannel == oSalesOrderv2?.DistributionChannel && item.Division == oSalesOrderv2?.OrganizationDivision && item.BPCustomerNumber == (oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer : oCustItemPart?.Customer) && item.PartnerFunction == 'SH'
+                    })[0]
+                    oTheatreDet = oBusinessPartnerAddrTheatre.filter(item => { return item.BusinessPartner === (oCustItemPart?.Customer === '' || oCustItemPart?.Customer === undefined ? oCustHeadPartSH?.Customer : oCustItemPart?.Customer) })[0]
+                    let sTheatreName = oTheatreDet?.FullName;
                     let sCity = oTheatreDet?.CityName;
                     let sRegion = oTheatreDet?.Region;
                     let sPostalCode = oTheatreDet?.PostalCode;
@@ -2926,7 +3029,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     aDtlItems.push({
                         SONo: item.SalesDocument,
                         CustThr: oCustomerId?.CustomerPartnerDescription || '',
-                        TheatreName:sTheatreName || '',
+                        TheatreName: sTheatreName || '',
                         City: sCity || '',
                         StZIP: (sRegion && sPostalCode) ? `${sRegion}/${sPostalCode}` : '',
                         RequestNo: oStudioFeed?.RequestId || '',
@@ -3003,11 +3106,11 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 ];
 
                 var sCompanyAddress = oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.StreetName + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country);
-                 var sTelFax = oAddrPhone == undefined  && oAddrEmail== undefined && oAddrCoCodeCountryVATReg==undefined? '' : ("Tel : " + oAddrPhone?.PhoneAreaCodeSubscriberNumber+","+ "Email : " + oAddrEmail?.EmailAddress+","+ "Fedral Tax ID : " + (oAddrCompanyCodendfo?.CompanyCodeParameterValue === '' || oAddrCompanyCodendfo?.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg?.VATRegistration  : oAddrCompanyCodendfo?.CompanyCodeParameterValue
-                 +"Code Destination");
+                var sTelFax = oAddrPhone == undefined && oAddrEmail == undefined && oAddrCoCodeCountryVATReg == undefined ? '' : ("Tel : " + oAddrPhone?.PhoneAreaCodeSubscriberNumber + "," + "Email : " + oAddrEmail?.EmailAddress + "," + "Fedral Tax ID : " + (oAddrCompanyCodendfo?.CompanyCodeParameterValue === '' || oAddrCompanyCodendfo?.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg?.VATRegistration : oAddrCompanyCodendfo?.CompanyCodeParameterValue
+                    + "Code Destination");
 
-                 var sFooterText = "Deluxe Digital Cinema is a wholly owned subsidiary of Deluxe Media Inc.," +" " + sCompanyAddress  +"  "
-                  + "Deluxe Standard terms and conditions apply. These can be accessed at http://bydeluxe.com/tands" +"  "+ "This document has no tax value as per article 21 (Presidential Decree 633/72) since it has already been sent through the interchange system of the Revenue Agency."
+                var sFooterText = "Deluxe Digital Cinema is a wholly owned subsidiary of Deluxe Media Inc.," + " " + sCompanyAddress + "  "
+                    + "Deluxe Standard terms and conditions apply. These can be accessed at http://bydeluxe.com/tands" + "  " + "This document has no tax value as per article 21 (Presidential Decree 633/72) since it has already been sent through the interchange system of the Revenue Agency."
 
                 const billingDataNode = {
                     "TaxInvoice": {
@@ -3023,9 +3126,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "BillToAddress": oBusinessPartnerAddrfromS4?.FullName + "," + oBusinessPartnerAddrfromS4?.HouseNumber + "," + oBusinessPartnerAddrfromS4?.StreetName + "," + oBusinessPartnerAddrfromS4?.CityName + "," + oBusinessPartnerAddrfromS4?.PostalCode + "," + oBusinessPartnerAddrfromS4?.Region + "," + oBusinessPartnerAddrfromS4?.Country,
                             "CustomerAccountNo": oBillingDocumentPartner.Customer,
                             "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
-                            "CustomerContact": aSalesParameter.CustomerInvoiceContact ,
+                            "CustomerContact": aSalesParameter.CustomerInvoiceContact,
                             "DeluxContact": aSalesParameter.DeluxeContact,
-                            "DeliverInvoiceByMailTo": aSalesParameter.CustomerInvoiceContactEmail 
+                            "DeliverInvoiceByMailTo": aSalesParameter.CustomerInvoiceContactEmail
                         },
                         "Table": {
                             "TabHeader": [
@@ -3200,57 +3303,57 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
             }
         });
 
-        function  generateTaxTables(aTaxamount) {
+        function generateTaxTables(aTaxamount) {
             const grouped = {};
-          
+
             aTaxamount.forEach(item => {
-              const key = item.ConditionRateValue;
-          
-              if (!grouped[key]) {
-                grouped[key] = {
-                    ConditionRateValue:item.ConditionRateValue,
-                  ConditionTypeName: (item.ConditionTypeName === '' ?item.ConditionType :item.ConditionTypeName) +" "+item.ConditionRateValue.toFixed(2),
-                  ConditionQuantityUnit: "%",
-                  TotalConditionAmount: 0
-                };
-              }
-          
-              grouped[key].TotalConditionAmount += item.ConditionAmount;
+                const key = item.ConditionRateValue;
+
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        ConditionRateValue: item.ConditionRateValue,
+                        ConditionTypeName: (item.ConditionTypeName === '' ? item.ConditionType : item.ConditionTypeName) + " " + item.ConditionRateValue.toFixed(2),
+                        ConditionQuantityUnit: "%",
+                        TotalConditionAmount: 0
+                    };
+                }
+
+                grouped[key].TotalConditionAmount += item.ConditionAmount;
             });
-          
+
             const taxTableRows = [];
             const taxTypeTableRows = [];
 
             const aTaxforMainTable = []
-          
-            Object.values(grouped).forEach((entry, index) => {
-              const serialNo = index + 1;
-          
-              taxTableRows.push({
-                Cell1: entry.ConditionTypeName+entry.ConditionQuantityUnit,
-                Cell2: "     "+entry.TotalConditionAmount
-              });
-          
-              taxTypeTableRows.push({
-                Cell1: serialNo.toString()
-              });
 
-              aTaxforMainTable.push({
-                ConditionRateValue:entry.ConditionRateValue,
-                SerialNo:serialNo.toString()
-              })
+            Object.values(grouped).forEach((entry, index) => {
+                const serialNo = index + 1;
+
+                taxTableRows.push({
+                    Cell1: entry.ConditionTypeName + entry.ConditionQuantityUnit,
+                    Cell2: "     " + entry.TotalConditionAmount
+                });
+
+                taxTypeTableRows.push({
+                    Cell1: serialNo.toString()
+                });
+
+                aTaxforMainTable.push({
+                    ConditionRateValue: entry.ConditionRateValue,
+                    SerialNo: serialNo.toString()
+                })
             });
-          
+
             return {
-              TaxTable: {
-                TaxTableRow: taxTableRows
-              },
-              TaxTypeTable: {
-                TaxTypeTableRow: taxTypeTableRows
-              },
-              TaxforMainTable:aTaxforMainTable
+                TaxTable: {
+                    TaxTableRow: taxTableRows
+                },
+                TaxTypeTable: {
+                    TaxTypeTableRow: taxTypeTableRows
+                },
+                TaxforMainTable: aTaxforMainTable
             };
-          };
+        };
 
         this.on("createContent", async (req, res) => {
             var aResult = await createBookingFeed(req, "C");

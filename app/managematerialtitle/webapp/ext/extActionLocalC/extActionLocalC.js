@@ -8,8 +8,8 @@ sap.ui.define([
     "sap/ui/export/Spreadsheet",
     "sap/ui/export/library",
     'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary,Filter,FilterOperator) {
+    'sap/ui/model/FilterOperator'
+], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary, Filter, FilterOperator) {
     "use strict";
 
     return {
@@ -26,28 +26,28 @@ sap.ui.define([
                     id: oView.getId(),
                     name: "com.dlx.managematerialtitle.ext.extActionLocalC.CreateLocalTitle",
                     controller: {
-                        handleValueHelp : function (oEvent) {                            
+                        handleValueHelp: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._sValueHelpDialog) {
                                 this._sValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.extActionLocalC.ValueHelpDialog",  
+                                    name: "com.dlx.managematerialtitle.ext.extActionLocalC.ValueHelpDialog",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._sValueHelpDialog.then(function(oValueHelpDialog){
+                            this._sValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearch : function (oEvent) {
+
+                        _handleValueHelpSearch: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "BusinessPartnerFullName",
@@ -55,8 +55,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpClose : function (oEvent) {
+
+                        _handleValueHelpClose: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -64,28 +64,28 @@ sap.ui.define([
                             }
                             oEvent.getSource().getBinding("items").filter([]);
                         },
-                        handleValueHelplg : function (oEvent) {                            
+                        handleValueHelplg: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._tValueHelpDialog) {
                                 this._tValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.extActionLocalC.ValueHelpDialogLg",  
+                                    name: "com.dlx.managematerialtitle.ext.extActionLocalC.ValueHelpDialogLg",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._tValueHelpDialog.then(function(oValueHelpDialog){
+                            this._tValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearchlg : function (oEvent) {
+
+                        _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "name",
@@ -93,8 +93,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpCloselg : function (oEvent) {
+
+                        _handleValueHelpCloselg: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -102,28 +102,28 @@ sap.ui.define([
                             }
                             oEvent.getSource().getBinding("items").filter([]);
                         },
-                        handleValueHelprc : function (oEvent) {                            
+                        handleValueHelprc: function (oEvent) {
                             this._sInputId = oEvent.getSource().getId();
-                    
+
                             // create value help dialog
                             if (!this._uValueHelpDialog) {
                                 this._uValueHelpDialog = Fragment.load({
                                     id: oView.getId(),
-                                    name: "com.dlx.managematerialtitle.ext.extActionLocalC.ValueHelpDialogRc",  
+                                    name: "com.dlx.managematerialtitle.ext.extActionLocalC.ValueHelpDialogRc",
                                     controller: this
-                                }).then(function(oValueHelpDialog){
+                                }).then(function (oValueHelpDialog) {
                                     oView.addDependent(oValueHelpDialog);
                                     return oValueHelpDialog;
                                 });
                             }
-                    
+
                             // open value help dialog
-                            this._uValueHelpDialog.then(function(oValueHelpDialog){
+                            this._uValueHelpDialog.then(function (oValueHelpDialog) {
                                 oValueHelpDialog.open();
                             });
                         },
-                    
-                        _handleValueHelpSearchlg : function (oEvent) {
+
+                        _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
                             var oFilter = new Filter(
                                 "name",
@@ -131,8 +131,8 @@ sap.ui.define([
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
-                    
-                        _handleValueHelpCloselg : function (oEvent) {
+
+                        _handleValueHelpCloselg: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -149,12 +149,12 @@ sap.ui.define([
                             var oContext = event.getSource().getBindingContext();
                             var oModel = oView.getModel();
 
-                            var oData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));        
+                            var oData = JSON.parse(JSON.stringify(oView.getModel("formModel").getData()));
 
                             delete oData.Region;
                             delete oData.LangCodeText;
                             delete oData.TitleCategoryText;
-                            delete oData.StudioText;        
+                            delete oData.StudioText;
 
                             if (oData.ReleaseDate) {
                                 oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0];
@@ -176,30 +176,66 @@ sap.ui.define([
                                         return;
                                     }
 
-                                    $.ajax({
-                                        url: `${oModel.sServiceUrl}Titles`,
-                                        type: "POST",
-                                        contentType: "application/json",
-                                        data: JSON.stringify(oData),
-                                        success: function (response) {
-                                            console.log("Save successful:", response);
-                                            oView.getModel().refresh();
-                                            if (that._oDialogL) {
-                                                that._oDialogL.close();
+                                    // Generate new LocalTitleId if not already set
+                                    if (!oData.LocalTitleId) {
+                                        var getExistingUrl = `${oModel.sServiceUrl}Titles?$filter=MaterialMasterTitleID eq '${oData.MaterialMasterTitleID}'`;
+
+                                        $.ajax({
+                                            url: getExistingUrl,
+                                            type: "GET",
+                                            contentType: "application/json",
+                                            success: function (existingData) {
+                                                let existingIds = existingData.value
+                                                    .map(item => item.LocalTitleId)
+                                                    .filter(id => id)
+                                                    .map(id => parseInt(id.split('-')[1], 10));
+
+                                                let newLocalId;
+                                                if (existingIds.length > 0) {
+                                                    let maxId = Math.max(...existingIds);
+                                                    newLocalId = `${oData.MaterialMasterTitleID}-${String(maxId + 1).padStart(4, "0")}`;
+                                                } else {
+                                                    newLocalId = `${oData.MaterialMasterTitleID}-0001`;
+                                                }
+
+                                                oData.LocalTitleId = newLocalId;
+                                                saveLocalTitle(oData);
+                                            },
+                                            error: function (xhr, status, error) {
+                                                console.error("Error fetching existing local titles:", error);
+                                                sap.m.MessageBox.error("Error generating Local Title ID");
                                             }
-                                            MessageToast.show("Local Title saved successfully.");
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error("Save failed:", status, error, xhr.responseText);
-                                            MessageBox.error("Failed to save Local Title.");
-                                        }
-                                    });
+                                        });
+                                    } else {
+                                        saveLocalTitle(oData);
+                                    }
                                 },
                                 error: function (xhr, status, error) {
                                     console.error("Check failed:", status, error, xhr.responseText);
-                                    MessageBox.error("Error checking for duplicate Local Title.");
+                                    sap.m.MessageBox.error("Error checking for duplicate Local Title");
                                 }
                             });
+
+                            function saveLocalTitle(data) {
+                                $.ajax({
+                                    url: `${oModel.sServiceUrl}Titles`,
+                                    type: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(data),
+                                    success: function (response) {
+                                        console.log("Save successful:", response);
+                                        oView.getModel().refresh();
+                                        if (that._oDialogL) {
+                                            that._oDialogL.close();
+                                        }
+                                        sap.m.MessageToast.show("Local Title saved successfully.");
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error("Save failed:", status, error, xhr.responseText);
+                                        sap.m.MessageBox.error("Failed to save Local Title");
+                                    }
+                                });
+                            }
                         }.bind(that),
                     }
                 }).then(function (oDialog) {
@@ -222,8 +258,8 @@ sap.ui.define([
                                 .map(item => item.LocalTitleId)
                                 .filter(id => id) // Remove empty values
                                 .map(id => parseInt(id.split('-')[1], 10)); // Convert to number  // Split and extract the numeric part
-                                
-                    
+
+
                             let newLocalId;
                             let parentTitleId = oFormModel.oData.MaterialMasterTitleID;
                             if (existingIds.length > 0) {
@@ -232,9 +268,9 @@ sap.ui.define([
                                 newLocalId = `${parentTitleId}-${String(maxId + 1).padStart(4, "0")}`;
                             } else {
                                 // If no LocalTitleId exists, set to "01"
-                                newLocalId = `${parentTitleId}-0001`    ;
+                                newLocalId = `${parentTitleId}-0001`;
                             }
-                    
+
                             console.log("New LocalTitleId:", newLocalId);
                             oFormModel.oData.LocalTitleId = newLocalId;
                             oView.setModel(oFormModel, "formModel");
@@ -250,7 +286,7 @@ sap.ui.define([
                     //If no Local ID its 01
 
                     // Set the model to the view
-                    
+
                 });
             } else {
                 var oContext = that._controller._getTable()._oTable.getSelectedItem().getBindingContext();
@@ -270,7 +306,7 @@ sap.ui.define([
                             .map(item => item.LocalTitleId)
                             .filter(id => id) // Remove empty values
                             .map(id => parseInt(id.split('-')[1], 10)); // Convert to number
-                
+
                         let newLocalId;
                         let parentTitleId = oFormModel.oData.MaterialMasterTitleID;
                         if (existingIds.length > 0) {
@@ -281,7 +317,7 @@ sap.ui.define([
                             // If no LocalTitleId exists, set to "01"
                             newLocalId = `${parentTitleId}-0001`;
                         }
-                
+
                         console.log("New LocalTitleId:", newLocalId);
                         oFormModel.oData.LocalTitleId = newLocalId;
                         oView.setModel(oFormModel, "formModel");
