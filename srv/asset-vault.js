@@ -395,6 +395,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
 
                 await UPDATE(DistributionDcp, assetvault.ProjectID).with({
                     DCP: ins.Product,
+                    Title: Title,
                     CreatedinSAP: true
                 })
 
