@@ -13,7 +13,7 @@ service AssetVaultService {
                 cds.odata.bindingparameter.name: '_it',
                 Common.SideEffects             : {TargetProperties: ['_it/*']}
             )
-            action createDcp(Customer : dcpParam:Customer, Title : dcpParam:Title) returns many String;
+            action createDcp(Customer : dcpParam : Customer, Title : dcpParam : Title) returns many String;
         };
 
     entity Products           as projection on api.Products;
@@ -44,6 +44,12 @@ service AssetVaultService {
 
     @readonly
     entity Company            as projection on api.Company;
+
+    entity MaterialBOM        as projection on api.MaterialBOM;
+
+    entity ProductionVersion  as projection on api.ProductionVersion;
+
+    entity ProductionProcess as projection on db.ProductionProcess;
 
     entity MediaFiles         as projection on db.MediaFiles;
     function downloadFormADS() returns LargeString;

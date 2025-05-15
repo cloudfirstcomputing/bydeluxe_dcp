@@ -26,6 +26,8 @@ using {API_COMPANYCODE_SRV as company} from '../srv/external/API_COMPANYCODE_SRV
 using {YY1_CLFNCHARACTERISTIC_CDS as charac} from '../srv/external/YY1_CLFNCHARACTERISTIC_CDS';
 using {ZCL_INVFORM as invoice} from '../srv/external/ZCL_INVFORM';
 using {CE_BANK_0003 as S4_Bank} from '../srv/external/CE_BANK_0003.csn';
+using {API_BILL_OF_MATERIAL_SRV as matbom} from '../srv/external/API_BILL_OF_MATERIAL_SRV';
+using {PRODUCTIONVERSION as prodver} from '../srv/external/PRODUCTIONVERSION';
 
 context api {
 
@@ -77,22 +79,26 @@ context api {
     entity SalesOrgDistCh               as projection on slsdist.YY1_SlsOrganizationDistrCh;
     entity Company                      as projection on company.A_CompanyCode;
     entity Characteristic               as projection on charac.YY1_ClfnCharacteristic;
-    entity AddressPostal               as projection on invoice.AddressPostal;
-    entity AddressPhoneNumber               as projection on invoice. AddressPhoneNumber;
-    entity AddressEmailAddress               as projection on invoice.AddressEmailAddress;
-    entity AddlCompanyCodeInformation               as projection on invoice.AddlCompanyCodeInformation;
-    entity CoCodeCountryVATReg               as projection on invoice.CoCodeCountryVATReg;
-    entity PaymentTermsText               as projection on invoice.PaymentTermsText;
-    entity JournalEntryItem               as projection on invoice.JournalEntryItem;
-    entity HouseBank               as projection on invoice.HouseBank;
-    entity PricingConditionTypeText               as projection on invoice.PricingConditionTypeText;
-    entity SalesOrderHeaderPartner               as projection on salesorderv2.A_SalesOrderHeaderPartner;
-    entity SalesOrderItemPartner               as projection on salesorderv2.A_SalesOrderItemPartner;
-    entity CustSalesPartnerFunc               as projection on bupa.A_CustSalesPartnerFunc;
-    entity Bank               as projection on S4_Bank.Bank{
-        *,
-        _BankAddress
-    };
+    entity AddressPostal                as projection on invoice.AddressPostal;
+    entity AddressPhoneNumber           as projection on invoice.AddressPhoneNumber;
+    entity AddressEmailAddress          as projection on invoice.AddressEmailAddress;
+    entity AddlCompanyCodeInformation   as projection on invoice.AddlCompanyCodeInformation;
+    entity CoCodeCountryVATReg          as projection on invoice.CoCodeCountryVATReg;
+    entity PaymentTermsText             as projection on invoice.PaymentTermsText;
+    entity JournalEntryItem             as projection on invoice.JournalEntryItem;
+    entity HouseBank                    as projection on invoice.HouseBank;
+    entity PricingConditionTypeText     as projection on invoice.PricingConditionTypeText;
+    entity SalesOrderHeaderPartner      as projection on salesorderv2.A_SalesOrderHeaderPartner;
+    entity SalesOrderItemPartner        as projection on salesorderv2.A_SalesOrderItemPartner;
+    entity CustSalesPartnerFunc         as projection on bupa.A_CustSalesPartnerFunc;
 
-    entity BankAddress   as projection on S4_Bank.BankAddress;
+    entity Bank                         as
+        projection on S4_Bank.Bank {
+            *,
+            _BankAddress
+        };
+
+    entity BankAddress                  as projection on S4_Bank.BankAddress;
+    entity MaterialBOM                  as projection on matbom.MaterialBOM;
+    entity ProductionVersion            as projection on prodver.ProductionVersion;
 }

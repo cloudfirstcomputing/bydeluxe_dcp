@@ -1,3 +1,8 @@
+using {
+    managed,
+    cuid
+} from '@sap/cds/common';
+
 namespace deluxe.assetvault;
 
 entity DistributionDcp {
@@ -35,6 +40,7 @@ entity DistributionDcp {
         PublishDaysBeforePlaydate      : String(40);
         SatelliteDistributionStartDate : String(40);
         SatelliteDistributionEndDate   : String(40);
+        ProductionProcess              : Boolean;
         _Items                         : Composition of many {
                                              key ID                    : UUID;
                                                  DcpProjectID          : String(40);
@@ -65,6 +71,14 @@ entity DistributionDcp {
                                                  Download              : Boolean;
                                          }
 };
+
+entity ProductionProcess : cuid, managed {
+    Material             : String(40);
+    Plant                : String(4);
+    IsBomCreated         : Boolean;
+    IsProductionVersion1 : Boolean;
+    IsProductionVersion2 : Boolean;
+}
 
 entity MediaFiles {
     key name    : String(255);

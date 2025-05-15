@@ -19,7 +19,9 @@
     "passport": "^0.7.0",
     "uuid": "^11.0.5",
     "xlsx": "^0.18.5",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "@sap-cloud-sdk/connectivity": "^3",
+    "@sap-cloud-sdk/resilience": "^3"
   },
   "devDependencies": {
     "@cap-js/cds-types": "^0.6",
@@ -425,6 +427,28 @@
         "csrfInBatch": true,
         "credentials": {
           "path": "/sap/opu/odata/sap/YY1_PROFORMAREPORT_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "API_BILL_OF_MATERIAL_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_BILL_OF_MATERIAL_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/API_BILL_OF_MATERIAL_SRV;v=0002",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "PRODUCTIONVERSION": {
+        "kind": "odata",
+        "model": "srv/external/PRODUCTIONVERSION",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata4/sap/api_production_version/srvd_a2x/sap/productionversion/0001/",
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }

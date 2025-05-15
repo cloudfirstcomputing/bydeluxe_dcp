@@ -1,0 +1,631 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.9.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "PRODUCTIONVERSION.SAP__Message": {
+   "kind": "type",
+   "@cds.external": true,
+   "elements": {
+    "code": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "message": {
+     "type": "cds.LargeString",
+     "notNull": true
+    },
+    "target": {
+     "type": "cds.LargeString"
+    },
+    "additionalTargets": {
+     "items": {
+      "type": "cds.LargeString",
+      "notNull": true
+     }
+    },
+    "transition": {
+     "type": "cds.Boolean",
+     "notNull": true
+    },
+    "numericSeverity": {
+     "type": "cds.Integer",
+     "@odata.Type": "Edm.Byte",
+     "notNull": true
+    },
+    "longtextUrl": {
+     "type": "cds.LargeString"
+    }
+   }
+  },
+  "PRODUCTIONVERSION": {
+   "kind": "service",
+   "@cds.external": true,
+   "@CodeList.UnitsOfMeasure": {
+    "Url": "../../../../default/iwbep/common/0001/$metadata",
+    "CollectionPath": "UnitsOfMeasure"
+   },
+   "@Common.ApplyMultiUnitBehaviorForSortingAndFiltering": true,
+   "@Capabilities.FilterFunctions": [
+    "eq",
+    "ne",
+    "gt",
+    "ge",
+    "lt",
+    "le",
+    "and",
+    "or",
+    "contains",
+    "startswith",
+    "endswith",
+    "any",
+    "all"
+   ],
+   "@Capabilities.SupportedFormats": [
+    "application/json",
+    "application/pdf"
+   ],
+   "@PDF.Features": {
+    "DocumentDescriptionReference": "../../../../default/iwbep/common/0001/$metadata",
+    "DocumentDescriptionCollection": "MyDocumentDescriptions",
+    "ArchiveFormat": true,
+    "Border": true,
+    "CoverPage": true,
+    "FitToPage": true,
+    "FontName": true,
+    "FontSize": true,
+    "HeaderFooter": true,
+    "IANATimezoneFormat": true,
+    "Margin": true,
+    "Padding": true,
+    "ResultSizeDefault": 20000,
+    "ResultSizeMaximum": 20000,
+    "Signature": true,
+    "TextDirectionLayout": true,
+    "Treeview": true,
+    "UploadToFileShare": true
+   },
+   "@Capabilities.KeyAsSegmentSupported": true,
+   "@Capabilities.AsynchronousRequestsSupported": true
+  },
+  "PRODUCTIONVERSION.ProductionVersion": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "Material": {
+     "key": true,
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Material",
+     "@Common.QuickInfo": "Material Number",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MATNR"
+    },
+    "Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Plant",
+     "@Common.Heading": "Plnt",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=WERKS_D"
+    },
+    "ProductionVersion": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Immutable": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Production Version",
+     "@Common.Heading": "Ver.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VERID"
+    },
+    "ProductionVersionText": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Prodn Version Text",
+     "@Common.Heading": "Text",
+     "@Common.QuickInfo": "Short Text for Production Version",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VERS_TEXT"
+    },
+    "ChangeHistoryCount": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsDigitSequence": true,
+     "@Common.Label": "Counter",
+     "@Common.QuickInfo": "Count parameters"
+    },
+    "ChangeNumber": {
+     "type": "cds.String",
+     "length": 12,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Change Number",
+     "@Common.Heading": "Change No.",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=AENNR"
+    },
+    "CreationDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Created On",
+     "@Common.Heading": "Created",
+     "@Common.QuickInfo": "Date Record Created On",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ANDAT"
+    },
+    "CreatedByUser": {
+     "type": "cds.String",
+     "length": 12,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Created By",
+     "@Common.QuickInfo": "Created By User"
+    },
+    "LastChangeDate": {
+     "type": "cds.Date",
+     "@Core.Computed": true,
+     "@Common.Label": "Changed On",
+     "@Common.Heading": "Chngd On",
+     "@Common.QuickInfo": "Last Changed On"
+    },
+    "LastChangedByUser": {
+     "type": "cds.String",
+     "length": 12,
+     "notNull": true,
+     "@Core.Computed": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Changed By",
+     "@Common.QuickInfo": "Last Changed By User"
+    },
+    "BillOfOperationsType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "BOO Type",
+     "@Common.QuickInfo": "Bill of Operations Type"
+    },
+    "BillOfOperationsGroup": {
+     "type": "cds.String",
+     "length": 8,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "BOO Group",
+     "@Common.QuickInfo": "Bill of Operations Group"
+    },
+    "BillOfOperationsVariant": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "BOO Variant",
+     "@Common.Heading": "BOOVariant",
+     "@Common.QuickInfo": "Bill of Operations Variant"
+    },
+    "BillOfMaterialVariantUsage": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "BOM Usage",
+     "@Common.Heading": "BOM Usg",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STLAN"
+    },
+    "BillOfMaterialVariant": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Alternative BOM",
+     "@Common.Heading": "AltBOM",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=STALT"
+    },
+    "ProductionLine": {
+     "type": "cds.String",
+     "length": 8,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Production Line",
+     "@Common.Heading": "ProdLine",
+     "@Common.QuickInfo": "Production Line for Repetitive Manufacturing",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SA_LINE1"
+    },
+    "ProductionSupplyArea": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Production Supply Area"
+    },
+    "ProductionVersionGroup": {
+     "type": "cds.String",
+     "length": 8,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Production Version Group",
+     "@Common.QuickInfo": "Group of Production Versions"
+    },
+    "MainProduct": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Main Product"
+    },
+    "MaterialCostApportionmentStruc": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Apportionment Struct",
+     "@Common.Heading": "Apptn",
+     "@Common.QuickInfo": "Apportionment Structure",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CSPLIT"
+    },
+    "IssuingStorageLocation": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Issue Stor. Location",
+     "@Common.Heading": "GILc",
+     "@Common.QuickInfo": "Proposed Issue Storage Location for Components",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SA_ELPRO"
+    },
+    "ReceivingStorageLocation": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Receiving Location",
+     "@Common.Heading": "ToLoc",
+     "@Common.QuickInfo": "Receiving Storage Location for Repetitive Manufacturing",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=ALORT"
+    },
+    "OriginalBatchReferenceMaterial": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Original Batch Reference Material",
+     "@Common.QuickInfo": "Reference Material for Original Batches"
+    },
+    "QuantityDistributionKey": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Distribution Key",
+     "@Common.Heading": "DKey",
+     "@Common.QuickInfo": "Distribution key for quantity produced",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SA_VERTO"
+    },
+    "ProductionVersionStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Routing Check Status",
+     "@Common.Heading": "Check status of production version, Routing",
+     "@Common.QuickInfo": "Routing - Check status of Production Version"
+    },
+    "ProductionVersionLastCheckDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Last Check Date of Production Version",
+     "@Common.QuickInfo": "Date of Last Check of Production Version"
+    },
+    "RateBasedPlanningStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Check Status: Rate-Based Planning",
+     "@Common.QuickInfo": "Rate-Based Planning - Check Status of Production Version"
+    },
+    "PreliminaryPlanningStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Check Status: Preliminary Planning",
+     "@Common.QuickInfo": "Preliminary Planning - Check Status of Production Version"
+    },
+    "BOMCheckStatus": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Check Status: BOM",
+     "@Common.QuickInfo": "BOM - Check Status of Production Version"
+    },
+    "ValidityStartDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Validity Start Date"
+    },
+    "ValidityEndDate": {
+     "type": "cds.Date",
+     "@Common.Label": "Validity End Date"
+    },
+    "ProductionVersionLock": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Lock Status",
+     "@Common.Heading": "Production Version Lock Status",
+     "@Common.QuickInfo": "Production version is locked"
+    },
+    "ProdnVersIsAllowedForRptvMfg": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.Label": "REM Allowed",
+     "@Common.Heading": "RM",
+     "@Common.QuickInfo": "Repetitive Manufacturing Allowed for Version",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SA_VERSI"
+    },
+    "HasVersionCtrldBOMAndRouting": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.Label": "BOM/RTG Vers. Exists",
+     "@Common.Heading": "BOM and Routing Version Exists",
+     "@Common.QuickInfo": "Indicator: BOM and Routing Version Exists"
+    },
+    "PlanningAndExecutionBOMIsDiff": {
+     "type": "cds.Boolean",
+     "notNull": true,
+     "@Common.Label": "Plng Exec Mstr Diff",
+     "@Common.Heading": "Planning and Execution Master Differ",
+     "@Common.QuickInfo": "Planning and Execution Master Differ"
+    },
+    "ExecBillOfMaterialVariantUsage": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "SF BOM Usage",
+     "@Common.Heading": "Shop Floor BOM Usage",
+     "@Common.QuickInfo": "Shop Floor BOM Usage"
+    },
+    "ExecBillOfMaterialVariant": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "SF BOM Alt.",
+     "@Common.Heading": "Shop Floor BOM Alternative",
+     "@Common.QuickInfo": "Shop Floor BOM Alternative"
+    },
+    "ExecBillOfOperationsType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Task list Type",
+     "@Common.Heading": "Shop Floor Routing Task List Type",
+     "@Common.QuickInfo": "Shop Floor Routing Task List Type"
+    },
+    "ExecBillOfOperationsGroup": {
+     "type": "cds.String",
+     "length": 8,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Tasklist Group",
+     "@Common.Heading": "Shop Floor Routing Tasklist Group",
+     "@Common.QuickInfo": "Shop Floor Routing Tasklist Group"
+    },
+    "ExecBillOfOperationsVariant": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Group Counter",
+     "@Common.Heading": "Shop Floor Routing Tasklist Group Counter",
+     "@Common.QuickInfo": "Shop Floor Routing Tasklist Group Counter"
+    },
+    "EWMWarehouse": {
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Warehouse Number",
+     "@Common.Heading": "WhN",
+     "@Common.QuickInfo": "Warehouse Number/Warehouse Complex",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=%2FSCWM%2FLGNUM"
+    },
+    "DestinationStorageBin": {
+     "type": "cds.String",
+     "length": 18,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Destination Bin",
+     "@Common.Heading": "Dest. Bin",
+     "@Common.QuickInfo": "Destination Storage Bin",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=%2FSCWM%2FLTAP_NLPLA"
+    },
+    "ProcurementType": {
+     "type": "cds.String",
+     "length": 1,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Procurement Type",
+     "@Common.Heading": "ProcType",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=BESKZ"
+    },
+    "MaterialProcurementProfile": {
+     "type": "cds.String",
+     "length": 2,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Special Procurement",
+     "@Common.Heading": "Special Procurement Type",
+     "@Common.QuickInfo": "Special Procurement Type",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SOBSL"
+    },
+    "UsgeProbltyWthVersCtrlInPct": {
+     "type": "cds.Decimal",
+     "precision": 3,
+     "notNull": true,
+     "@Common.Label": "Usage Probability",
+     "@Common.QuickInfo": "Usage Probability with Version Control",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CK_EWAHR"
+    },
+    "MaterialBaseUnit": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUnit": true,
+     "@Core.Computed": true,
+     "@Common.Label": "Base Unit of Measure",
+     "@Common.Heading": "BUn",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MEINS"
+    },
+    "MaterialMinLotSizeQuantity": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Measures.Unit": {
+      "=": "MaterialBaseUnit"
+     },
+     "@Common.Label": "Minimum Lot Size",
+     "@Common.Heading": "LSzeFrom",
+     "@Common.QuickInfo": "Minimum Lot Size Quantity",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SA_LOSVN"
+    },
+    "MaterialMaxLotSizeQuantity": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Measures.Unit": {
+      "=": "MaterialBaseUnit"
+     },
+     "@Common.Label": "Maximum Lot Size",
+     "@Common.Heading": "LotSzeTo",
+     "@Common.QuickInfo": "Material Maximum Lot Size Quantity",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=SA_LOSBS"
+    },
+    "CostingLotSize": {
+     "type": "cds.Decimal",
+     "precision": 13,
+     "scale": 3,
+     "notNull": true,
+     "@Measures.Unit": {
+      "=": "MaterialBaseUnit"
+     },
+     "@Common.Label": "Costing Lot Size",
+     "@Common.QuickInfo": "Lot Size for Product Costing",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=CK_LOSGR"
+    },
+    "TargetProductionSupplyArea": {
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "Production Supply Area"
+    },
+    "MRPController": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "MRP Controller",
+     "@Common.Heading": "MRPCn",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=DISPO"
+    },
+    "MaterialName": {
+     "type": "cds.String",
+     "length": 40,
+     "notNull": true,
+     "@Common.Label": "Material Description",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=MAKTX"
+    },
+    "MRPResponsible": {
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.IsUpperCase": true,
+     "@Common.Label": "MRP Controller",
+     "@Common.Heading": "MRPCn",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=DISPO"
+    },
+    "RoutingCheckStatusText": {
+     "type": "cds.String",
+     "length": 60,
+     "notNull": true,
+     "@Common.Label": "Short Description",
+     "@Common.QuickInfo": "Short Text for Fixed Values",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VAL_TEXT"
+    },
+    "ProductionVersionLockText": {
+     "type": "cds.String",
+     "length": 60,
+     "notNull": true,
+     "@Common.Label": "Short Description",
+     "@Common.QuickInfo": "Short Text for Fixed Values",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=VAL_TEXT"
+    },
+    "BillOfOperationsTypeName": {
+     "type": "cds.String",
+     "length": 30,
+     "notNull": true,
+     "@Common.Label": "Description",
+     "@Common.QuickInfo": "Description of the Task List Type",
+     "@Common.DocumentationRef": "urn:sap-com:documentation:key?=type=DE&id=PLNTX"
+    },
+    "SAP__Messages": {
+     "items": {
+      "type": "PRODUCTIONVERSION.SAP__Message",
+      "notNull": true
+     }
+    }
+   },
+   "@Common.Label": "Production Version Header",
+   "@Common.Messages": {
+    "=": "SAP__Messages"
+   },
+   "@Capabilities.SearchRestrictions.Searchable": false,
+   "@Capabilities.InsertRestrictions.RequiredProperties": [
+    "Material",
+    "Plant",
+    "ProductionVersion",
+    "ProductionVersionText"
+   ],
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Core.OptimisticConcurrency": [
+    "ChangeHistoryCount"
+   ],
+   "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+    {
+     "Property": {
+      "=": "MaterialMinLotSizeQuantity"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "MaterialMaxLotSizeQuantity"
+     },
+     "AllowedExpressions": "MultiValue"
+    },
+    {
+     "Property": {
+      "=": "CostingLotSize"
+     },
+     "AllowedExpressions": "MultiValue"
+    }
+   ],
+   "@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported": true
+  }
+ }
+}
