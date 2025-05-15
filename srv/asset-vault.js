@@ -1,5 +1,5 @@
 const cds = require("@sap/cds");
-const { v4: uuidv4 } = require('uuid'); // Import UUID package
+const LOG = cds.log('productionProcess')
 const xmljs = require("xml-js");
 const { Readable } = require('stream');
 
@@ -22,9 +22,10 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         const prdver = await cds.connect.to('PRODUCTIONVERSION')
         const productionProcess = async x => {
             const aProductionProcess = []
+            let prdProcess = {}
             for (let index = 0; index < x.length; index++) {
                 const element = x[index];
-                let prdProcess = {
+                prdProcess = {
                     Material: x.Product,
                     Plant: x.Plant,
                     IsBomCreated: false,
@@ -32,8 +33,8 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     IsProductionVersion2: false
                 }
                 try {
-                    const insBom = await bomtx.run(INSERT.into(MaterialBOM).entries({
-                        "Material": `${ins.Product}`,
+                    await bomtx.run(INSERT.into(MaterialBOM).entries({
+                        "Material": `${element.Product}`,
                         "Plant": `${element.Plant}`,
                         "BillOfMaterialVariantUsage": "1",
                         "BOMHeaderBaseUnit": "EA",
@@ -152,8 +153,8 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                         ]
                     }))
                     prdProcess.IsBomCreated = true
-                    const insVer1 = await prdver.run(INSERT.into(ProductionVersion).entries({
-                        "Material": `${ins.Product}`,
+                    await prdver.run(INSERT.into(ProductionVersion).entries({
+                        "Material": `${element.Product}`,
                         "Plant": `${element.Plant}`,
                         "ProductionVersion": "0001",
                         "ProductionVersionText": "Replication",
@@ -169,8 +170,8 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                         "BillOfOperationsTypeName": "Routing"
                     }))
                     prdProcess.IsProductionVersion1 = true
-                    const insVer2 = await prdver.run(INSERT.into(ProductionVersion).entries({
-                        "Material": `${ins.Product}`,
+                    await prdver.run(INSERT.into(ProductionVersion).entries({
+                        "Material": `${element.Product}`,
                         "Plant": `${element.Plant}`,
                         "ProductionVersion": "0002",
                         "ProductionVersionText": "Replication-Manual",
@@ -187,6 +188,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     }))
                     prdProcess.IsProductionVersion2 = true
                 } catch (error) {
+                    LOG.error(error?.message)
                     continue
                 } finally {
                     aProductionProcess.push(prdProcess)
@@ -374,7 +376,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     },
                 }))
 
-                await INSERT.into(ProductionVersion).entries(to_Plant.map(item => {
+                await INSERT.into(ProductionProcess).entries(to_Plant.map(item => {
                     return {
                         Material: item.Product,
                         Plant: item.Plant,
