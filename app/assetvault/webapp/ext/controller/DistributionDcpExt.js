@@ -66,7 +66,7 @@ sap.ui.define([
                         callUploadAction: function (data, filename) {
                             // BusyIndicator.show();
                             that.Obj = this;
-                            var oCustomer;
+                            // var oCustomer;
                             var oTitle;
                             //     var uploadSuccess = oResourceBundle.getText("uploadSuccess"),
                             //         uploadSuccessTitle = oResourceBundle.getText("uploadSuccessTitle"),
@@ -76,10 +76,10 @@ sap.ui.define([
                             //         uploadFailed = oResourceBundle.getText("uploadFailed");
 
                             if (oView.getDependents().length === 1) {
-                                oCustomer = that.Obj.getControlLocalRun("customer");
+                                // oCustomer = that.Obj.getControlLocalRun("customer");
                                 oTitle = that.Obj.getControlLocalRun("title");
                             } else {
-                                oCustomer = that.Obj.getControlLaunchpadRun("customer");
+                                // oCustomer = that.Obj.getControlLaunchpadRun("customer");
                                 oTitle = that.Obj.getControlLaunchpadRun("title");
                             }
 
@@ -88,7 +88,7 @@ sap.ui.define([
                                 requiresNavigation: false,
                                 skipParameterDialog: true,
                                 invocationGrouping: true,
-                                parameterValues: [{ name: 'Customer', value: oCustomer.getSelectedKey() },
+                                parameterValues: [
                                 { name: 'Title', value: oTitle.getSelectedKey() }]
                             }).then((val) => {
                                 oEditFlow.getView().getModel().refresh();
@@ -103,17 +103,18 @@ sap.ui.define([
                         },
                         fieldCancel: function () {
                             that.btnAccess = this;
-                            var oCustomer;
+                            // var oCustomer;
                             var oTitle;
                             // Get FileUploader and clear the selected file
                             if (oView.getDependents().length === 1) {
-                                oCustomer = that.Obj.getControlLocalRun("customer");
+                                // oCustomer = that.Obj.getControlLocalRun("customer");
                                 oTitle = that.Obj.getControlLocalRun("title");
                             } else {
-                                oCustomer = that.Obj.getControlLaunchpadRun("customer");
+                                // oCustomer = that.Obj.getControlLaunchpadRun("customer");
                                 oTitle = that.Obj.getControlLaunchpadRun("title");
                             }
-                            oCustomer.clearSelection(); oTitle.clearSelection();
+                            // oCustomer.clearSelection(); 
+                            oTitle.clearSelection();
 
                         }
                     }

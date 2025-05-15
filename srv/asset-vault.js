@@ -7,7 +7,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
-        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations, Products,
+        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations, Products, ValuationArea,
             SalesOrganizations, CustomerPlant, SalesOrgDistCh, Company, MaterialBOM, ProductionVersion, ProductionProcess } = this.entities
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -20,6 +20,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         const comptx = await cds.connect.to('API_COMPANYCODE_SRV')
         const bomtx = await cds.connect.to('API_BILL_OF_MATERIAL_SRV')
         const prdver = await cds.connect.to('PRODUCTIONVERSION')
+        const valareatx = await cds.connect.to('YY1_VALUATIONAREA_CDS')
         const productionProcess = async x => {
             const aProductionProcess = []
             let prdProcess = {}
@@ -212,6 +213,10 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             return bptx.run(req.query)
         })
 
+        this.on('READ', [ValuationArea], async req => {
+            return valareatx.run(req.query)
+        })
+
         this.on(['READ'], CustomerPlant, req => {
             return cuspltx.run(req.query)
         })
@@ -263,6 +268,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 const plants = await planttx.run(SELECT.from(Plants))
                 const plantIds = plants.map(item => item.Plant)
                 const compIds = plants.map(item => item.CompanyCode)
+                const valArea = await valareatx.run(SELECT.from(ValuationArea).where({ CompanyCode: compIds }))
                 const slocs = await sloctx.run(SELECT.from(StorageLocations).where({ Plant: plantIds }))
                 const sorgs = await salesorgtx.run(SELECT.from(SalesOrganizations).where({ CompanyCode: compIds }))
                 const sorgIds = sorgs.map(item => item.SalesOrganization)
@@ -272,6 +278,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 for (let index = 0; index < plants.length; index++) {
                     const plant = plants[index];
                     const element = comp.find(item => item.CompanyCode === plant.CompanyCode)
+                    const valuation = valArea.find(item => item.CompanyCode === plant.CompanyCode)
                     to_Plant.push({
                         "Product": ProjectID,
                         "Plant": plant.Plant,
@@ -303,7 +310,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     to_Valuation.push({
                         "Product": ProjectID,
                         "ValuationClass": "7920",
-                        "ValuationArea": plant.ValuationArea,
+                        "ValuationArea": valuation.ValuationArea,
                         "ValuationType": "",
                         "Currency": element.Currency,
                         "PriceDeterminationControl": "2",

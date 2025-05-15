@@ -28,6 +28,7 @@ using {ZCL_INVFORM as invoice} from '../srv/external/ZCL_INVFORM';
 using {CE_BANK_0003 as S4_Bank} from '../srv/external/CE_BANK_0003.csn';
 using {API_BILL_OF_MATERIAL_SRV as matbom} from '../srv/external/API_BILL_OF_MATERIAL_SRV';
 using {PRODUCTIONVERSION as prodver} from '../srv/external/PRODUCTIONVERSION';
+using {YY1_VALUATIONAREA_CDS as valuation} from '../srv/external/YY1_VALUATIONAREA_CDS';
 
 context api {
 
@@ -62,7 +63,7 @@ context api {
     entity SalesOrderHeader             as projection on salesorderv2.A_SalesOrder;
     entity SalesDistricts               as projection on salesdist.A_SalesDistrict;
     entity SalesOrderItem               as projection on salesorderv2.A_SalesOrderItem;
-    entity SalesOrderItemText               as projection on salesorderv2.A_SalesOrderItemText;
+    entity SalesOrderItemText           as projection on salesorderv2.A_SalesOrderItemText;
     entity ShippingType_VH              as projection on S4_ShippingType.YY1_I_ShippingType;
     entity ShippingPoint_VH             as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
     entity Parameters                   as projection on Parameter.YY1_PARAMETER;
@@ -102,4 +103,5 @@ context api {
     entity BankAddress                  as projection on S4_Bank.BankAddress;
     entity MaterialBOM                  as projection on matbom.MaterialBOM;
     entity ProductionVersion            as projection on prodver.ProductionVersion;
+    entity YY1_ValuationArea            as projection on valuation.YY1_ValuationArea;
 }

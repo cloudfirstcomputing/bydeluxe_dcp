@@ -452,6 +452,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_VALUATIONAREA_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_VALUATIONAREA_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_VALUATIONAREA_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

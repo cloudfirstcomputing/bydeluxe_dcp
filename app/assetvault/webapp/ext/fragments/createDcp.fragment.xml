@@ -3,7 +3,7 @@
         <content>
             <Panel id="panel" backgroundDesign="Transparent">
                 <f:SimpleForm id="sf" layout="ResponsiveGridLayout" backgroundDesign="Transparent">
-                    <Label id="labelCustomer" text="{i18n>labelCustomer}" class="sapUiTinyMarginTop" />
+                    <!-- <Label id="labelCustomer" text="{i18n>labelCustomer}" class="sapUiTinyMarginTop" />
                     <ComboBox id="customer"
                         required="true"
                         items="{
@@ -12,7 +12,7 @@
                             sorter: { path: 'BusinessPartner' }
                         }">
                         <core:Item key="{BusinessPartner}" text="{BusinessPartnerFullName}" />
-                    </ComboBox>
+                    </ComboBox> -->
                     <Label id="labelTitle" text="{i18n>labelTitle}" class="sapUiTinyMarginTop" />
                     <ComboBox id="title" required="true"
                         items="{
