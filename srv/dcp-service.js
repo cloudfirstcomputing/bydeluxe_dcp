@@ -230,6 +230,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         const existingTitles = await SELECT.from(Titles).where({
                             MaterialMasterTitleID: mappedRow.MaterialMasterTitleID
                         });
+                        if (existingOriginalTitle) {
+                            result.warning.push({
+                                TitleID: "",
+                                Message: `Skipped Local Title creation. Original Title Name '${mappedRow.OriginalTitleName}' already exists in system.`,
+                                Error: "Duplicate Original Title Name",
+                                RowData: mappedRow
+                            });
+                            continue;
+                        }
 
                         // Generate new LocalTitleId
                         let newLocalId;
