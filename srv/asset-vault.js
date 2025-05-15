@@ -260,7 +260,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             let assetvault = await SELECT.one.from(DistributionDcp, ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
             if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
             try {
-                const plants = await cuspltx.run(SELECT.from(CustomerPlant).where({ Customer: Customer }))
+                const plants = await planttx.run(SELECT.from(Plants))
                 const plantIds = plants.map(item => item.Plant)
                 const compIds = plants.map(item => item.CompanyCode)
                 const slocs = await sloctx.run(SELECT.from(StorageLocations).where({ Plant: plantIds }))
