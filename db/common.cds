@@ -62,6 +62,7 @@ context api {
     entity SalesOrderHeader             as projection on salesorderv2.A_SalesOrder;
     entity SalesDistricts               as projection on salesdist.A_SalesDistrict;
     entity SalesOrderItem               as projection on salesorderv2.A_SalesOrderItem;
+    entity SalesOrderItemText               as projection on salesorderv2.A_SalesOrderItemText;
     entity ShippingType_VH              as projection on S4_ShippingType.YY1_I_ShippingType;
     entity ShippingPoint_VH             as projection on S4_ShippingPoint.YY1_I_ShippingPoint;
     entity Parameters                   as projection on Parameter.YY1_PARAMETER;

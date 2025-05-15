@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
-            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc } = this.entities;
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -1700,10 +1700,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
             let aWhere = req.query.SELECT.where, aWhere_V2 = [];
-            // if(!aWhere){
-            //     req.reject(400, "Set atleast one filter before search");
-            //     return;
-            // }
             if(aWhere?.find((cond)=>  cond.xpr)){
                 for(let i in aWhere){
                     if(aWhere[i].xpr){
@@ -1734,36 +1730,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }      
             if(aWhere_V2?.length)
                 req.query.SELECT.where = aWhere_V2;
-            if(req.data){
-                // let oData = req.data;
-                // let aKeys = Object.keys(oData);
-                // let aValues = Object.values(oData);
-                // let sQuery = ``;
-                // for(let i=0; i< aKeys.length ; i++){
-                //     sQuery = sQuery+ `${aKeys[i]} = '${aValues[i]}'`;
-                //     if(i+1 < aKeys.length){
-                //         sQuery = sQuery+' and ';
-                //     }
-                // }
-                // if(sQuery){
-                //     aWhere_V2 = cds.parse.expr (sQuery);
-                //     req.query.SELECT.where = [aWhere_V2];
-                // }
-                
-            }
             let aData = await proformaAPI.run(req.query);
-            if(typeof(aData) === 'object'){ //For Object Page
-                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData['SalesDocument']});
-                let oSalesOrder = await query;
-                if (oSalesOrder?.PlayStartDate) {
-                    aData['PlayStartDate'] = oSalesOrder?.PlayStartDate;
-                }
-                if (oSalesOrder?.PlayEndDate) {
-                    aData['PlayEndDate'] = oSalesOrder?.PlayEndDate;
-                }
-
-            }
-            else{
+            if(Array.isArray(aData)){
                 for(let i in aData){
                     let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
                     let oSalesOrder = await query;
@@ -1773,10 +1741,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (oSalesOrder?.PlayEndDate) {
                         aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
                     }
+                    let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData[i].SalesDocument, SalesOrderItem: aData[i].SalesDocumentItem, LongTextID: 'Z010'}));
+                    if(oPackTitleText){
+                        aData[i].PackageTitle = oPackTitleText?.LongText;
+                    }
                 }
-
             }
-
+            else{ //For Object Page
+                let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData['SalesDocument']});
+                let oSalesOrder = await query;
+                if (oSalesOrder?.PlayStartDate) {
+                    aData['PlayStartDate'] = oSalesOrder?.PlayStartDate;
+                }
+                if (oSalesOrder?.PlayEndDate) {
+                    aData['PlayEndDate'] = oSalesOrder?.PlayEndDate;
+                }
+                let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData['SalesDocument'], SalesOrderItem: aData['SalesDocumentItem'], LongTextID: 'Z010'}));
+                if(oPackTitleText){
+                    aData['PackageTitle'] = oPackTitleText?.LongText;
+                }
+            }
             return aData;
         })
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
