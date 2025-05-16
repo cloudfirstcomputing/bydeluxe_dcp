@@ -72,6 +72,7 @@ service DistributionService {
 
     entity Products             as projection on api.Products;
 
+@readonly entity GeoRegions as projection on db.GeoRegions;
     @readonly
     @cds.redirection.target
     entity DCPProducts          as projection on db.DCPMaterialVH;

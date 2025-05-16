@@ -186,16 +186,16 @@ annotate service.DistRestrictions with {
     };
     DistributionFilterRegion   @Common: {
         Label          : '{i18n>DistributionFilterRegion}',
-        Text           : DistributionFilterRegion.RegionName,
+        Text           : DistributionFilterRegion.Code,
         TextArrangement: #TextOnly,
     };
-    DistributionFilterCountry  @Common: {
-        Label          : '{i18n>DistributionFilterCountry}',
-        Text           : DistributionFilterCountry.name,
-        TextArrangement: #TextOnly,
-    };
-    DistributionFilterCity     @Common: {Label: '{i18n>DistributionFilterCity}', };
-    DistributionFilterPostal   @Common: {Label: '{i18n>DistributionFilterPostal}', };
+    // DistributionFilterCountry  @Common: {
+    //     Label          : '{i18n>DistributionFilterCountry}',
+    //     Text           : DistributionFilterCountry.name,
+    //     TextArrangement: #TextOnly,
+    // };
+    // DistributionFilterCity     @Common: {Label: '{i18n>DistributionFilterCity}', };
+    // DistributionFilterPostal   @Common: {Label: '{i18n>DistributionFilterPostal}', };
     DistributionFilterLanguage @Common: {
         Label          : '{i18n>Language}',
         Text           : DistributionFilterLanguage.name,
@@ -223,16 +223,16 @@ annotate service.KeyDistRestrictions with {
     };
     DistributionFilterRegion   @Common: {
         Label          : '{i18n>DistributionFilterRegion}',
-        Text           : DistributionFilterRegion.RegionName,
+        Text           : DistributionFilterRegion.Code,
         TextArrangement: #TextOnly,
     };
-    DistributionFilterCountry  @Common: {
-        Label          : '{i18n>DistributionFilterCountry}',
-        Text           : DistributionFilterCountry.name,
-        TextArrangement: #TextOnly,
-    };
-    DistributionFilterCity     @Common: {Label: '{i18n>DistributionFilterCity}', };
-    DistributionFilterPostal   @Common: {Label: '{i18n>DistributionFilterPostal}', };
+    // DistributionFilterCountry  @Common: {
+    //     Label          : '{i18n>DistributionFilterCountry}',
+    //     Text           : DistributionFilterCountry.name,
+    //     TextArrangement: #TextOnly,
+    // };
+    // DistributionFilterCity     @Common: {Label: '{i18n>DistributionFilterCity}', };
+    // DistributionFilterPostal   @Common: {Label: '{i18n>DistributionFilterPostal}', };
     DistributionFilterLanguage @Common: {
         Label          : '{i18n>Language}',
         Text           : DistributionFilterLanguage.name,
@@ -799,22 +799,22 @@ annotate service.KeyPackage with @(
 
 annotate service.DistRestrictions with @(
     UI.LineItem                         : [
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DistributionFilterCountry_code,
+        // },
         {
             $Type: 'UI.DataField',
-            Value: DistributionFilterCountry_code,
+            Value: DistributionFilterRegion_ID,
         },
-        {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterRegion_Region,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterCity,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterPostal,
-        },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DistributionFilterCity,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DistributionFilterPostal,
+        // },
         {
             $Type: 'UI.DataField',
             Value: Circuit_CustomerGroup,
@@ -880,22 +880,22 @@ annotate service.DistRestrictions with @(
     UI.FieldGroup #_DistRestriction     : {
         $Type: 'UI.FieldGroupType',
         Data : [
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: DistributionFilterCountry_code,
+            // },
             {
                 $Type: 'UI.DataField',
-                Value: DistributionFilterCountry_code,
+                Value: DistributionFilterRegion_ID,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: DistributionFilterRegion_Region,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: DistributionFilterCity,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: DistributionFilterPostal,
-            },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: DistributionFilterCity,
+            // },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: DistributionFilterPostal,
+            // },
             {
                 $Type: 'UI.DataField',
                 Value: Circuit_CustomerGroup,
@@ -932,22 +932,22 @@ annotate service.DistRestrictions with @(
 
 annotate service.KeyDistRestrictions with @(
     UI.LineItem                         : [
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DistributionFilterCountry_code,
+        // },
         {
             $Type: 'UI.DataField',
-            Value: DistributionFilterCountry_code,
+            Value: DistributionFilterRegion_ID,
         },
-        {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterRegion_Region,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterCity,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: DistributionFilterPostal,
-        },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DistributionFilterCity,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: DistributionFilterPostal,
+        // },
         {
             $Type: 'UI.DataField',
             Value: Circuit_CustomerGroup,
@@ -1013,22 +1013,22 @@ annotate service.KeyDistRestrictions with @(
     UI.FieldGroup #_DistRestriction     : {
         $Type: 'UI.FieldGroupType',
         Data : [
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: DistributionFilterCountry_code,
+            // },
             {
                 $Type: 'UI.DataField',
-                Value: DistributionFilterCountry_code,
+                Value: DistributionFilterRegion_ID,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: DistributionFilterRegion_Region,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: DistributionFilterCity,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: DistributionFilterPostal,
-            },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: DistributionFilterCity,
+            // },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: DistributionFilterPostal,
+            // },
             {
                 $Type: 'UI.DataField',
                 Value: Circuit_CustomerGroup,
@@ -1247,7 +1247,7 @@ annotate service.CplList with @(UI.LineItem: [
 ]);
 
 annotate service.StudioKey with {
-    Studio         @(
+    Studio @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'Studios',
@@ -1266,25 +1266,25 @@ annotate service.StudioKey with {
         },
         Common.ValueListWithFixedValues: false
     );
-    // SalesTerritory @(
-    //     Common.ValueList               : {
-    //         $Type          : 'Common.ValueListType',
-    //         CollectionPath : 'SalesDistricts',
-    //         SearchSupported: false,
-    //         Parameters     : [
-    //             {
-    //                 $Type            : 'Common.ValueListParameterInOut',
-    //                 LocalDataProperty: SalesTerritory_SalesDistrict,
-    //                 ValueListProperty: 'SalesDistrict',
-    //             },
-    //             {
-    //                 $Type            : 'Common.ValueListParameterDisplayOnly',
-    //                 ValueListProperty: 'Name',
-    //             },
-    //         ],
-    //     },
-    //     Common.ValueListWithFixedValues: false
-    // );
+// SalesTerritory @(
+//     Common.ValueList               : {
+//         $Type          : 'Common.ValueListType',
+//         CollectionPath : 'SalesDistricts',
+//         SearchSupported: false,
+//         Parameters     : [
+//             {
+//                 $Type            : 'Common.ValueListParameterInOut',
+//                 LocalDataProperty: SalesTerritory_SalesDistrict,
+//                 ValueListProperty: 'SalesDistrict',
+//             },
+//             {
+//                 $Type            : 'Common.ValueListParameterDisplayOnly',
+//                 ValueListProperty: 'Name',
+//             },
+//         ],
+//     },
+//     Common.ValueListWithFixedValues: false
+// );
 };
 
 annotate service.DistroSpec with {
@@ -1696,22 +1696,21 @@ annotate service.DistRestrictions with {
     DistributionFilterRegion @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'Regions',
+            CollectionPath : 'GeoRegions',
             SearchSupported: false,
             Parameters     : [
                 {
-                    $Type            : 'Common.ValueListParameterIn',
-                    LocalDataProperty: DistributionFilterCountry_code,
-                    ValueListProperty: 'Country',
-                },
-                {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: DistributionFilterRegion_Region,
-                    ValueListProperty: 'Region',
+                    LocalDataProperty: DistributionFilterRegion_ID,
+                    ValueListProperty: 'ID',
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'RegionName',
+                    ValueListProperty: 'Code',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Description',
                 },
             ],
         },
@@ -1945,22 +1944,21 @@ annotate service.KeyDistRestrictions with {
     DistributionFilterRegion @(
         Common.ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'Regions',
+            CollectionPath : 'GeoRegions',
             SearchSupported: false,
             Parameters     : [
                 {
-                    $Type            : 'Common.ValueListParameterIn',
-                    LocalDataProperty: DistributionFilterCountry_code,
-                    ValueListProperty: 'Country',
-                },
-                {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: DistributionFilterRegion_Region,
-                    ValueListProperty: 'Region',
+                    LocalDataProperty: DistributionFilterRegion_ID,
+                    ValueListProperty: 'ID',
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'RegionName',
+                    ValueListProperty: 'Code',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Description',
                 },
             ],
         },

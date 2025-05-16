@@ -128,10 +128,10 @@ entity Package {
 entity DistRestrictions : cuid {
     Theater                    : Association to one TheaterVH;
     Circuit                    : Association to one api.CustomerGroup;
-    DistributionFilterRegion   : Association to one api.Regions;
-    DistributionFilterCountry  : Country;
-    DistributionFilterCity     : String;
-    DistributionFilterPostal   : String;
+    DistributionFilterRegion   : Association to one GeoRegions;
+    // DistributionFilterCountry  : Country;
+    // DistributionFilterCity     : String;
+    // DistributionFilterPostal   : String;
     DistributionFilterLanguage : Language;
     PlayBackCapability1        : String(40);
     PlayBackCapability2        : String(40);
@@ -155,10 +155,10 @@ entity DistRestrictions : cuid {
 entity KeyDistRestrictions : cuid {
     Theater                    : Association to one TheaterVH;
     Circuit                    : Association to one api.CustomerGroup;
-    DistributionFilterRegion   : Association to one api.Regions;
-    DistributionFilterCountry  : Country;
-    DistributionFilterCity     : String;
-    DistributionFilterPostal   : String;
+    DistributionFilterRegion   : Association to one GeoRegions;
+    // DistributionFilterCountry  : Country;
+    // DistributionFilterCity     : String;
+    // DistributionFilterPostal   : String;
     DistributionFilterLanguage : Language;
     PlayBackCapability1        : String(40);
     PlayBackCapability2        : String(40);
@@ -216,3 +216,10 @@ entity DCPMaterialMapping : cuid, managed {
     Country       : Country;
     ProfitCenter  : String(10);
 }
+
+entity GeoRegions {
+    key ID          : Integer;
+        Code        : String(10);
+        Description : String(100);
+        _Territory  : Association to one GeoRegions;
+};

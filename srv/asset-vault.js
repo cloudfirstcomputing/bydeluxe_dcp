@@ -265,7 +265,8 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             let assetvault = await SELECT.one.from(DistributionDcp, ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
             if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
             try {
-                const plants = await planttx.run(SELECT.from(Plants))
+                const plants1 = await planttx.run(SELECT.from(Plants))
+                const plants = plants1.filter(item => item.Plant.startsWith('9') === false)
                 const plantIds = plants.map(item => item.Plant)
                 const compIds = plants.map(item => item.CompanyCode)
                 const valArea = await valareatx.run(SELECT.from(ValuationArea).where({ CompanyCode: compIds }))
@@ -278,6 +279,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 for (let index = 0; index < plants.length; index++) {
                     const plant = plants[index];
                     const element = comp.find(item => item.CompanyCode === plant.CompanyCode)
+                    if (!['US', 'CA'].includes(element.Country)) continue
                     const valuation = valArea.find(item => item.CompanyCode === plant.CompanyCode)
                     to_Plant.push({
                         "Product": ProjectID,
@@ -322,6 +324,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 for (let k = 0; k < sorgs.length; k++) {
                     const salesorg = sorgs[k];
                     const element = comp.find(item => item.CompanyCode === salesorg.CompanyCode)
+                    if (!['US', 'CA'].includes(element.Country)) continue
                     to_SalesDelivery = sorgdist.filter(item => item.SalesOrganization === salesorg.SalesOrganization)
                         .map(item => {
                             return {
