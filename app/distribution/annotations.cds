@@ -1266,25 +1266,25 @@ annotate service.StudioKey with {
         },
         Common.ValueListWithFixedValues: false
     );
-    SalesTerritory @(
-        Common.ValueList               : {
-            $Type          : 'Common.ValueListType',
-            CollectionPath : 'SalesDistricts',
-            SearchSupported: false,
-            Parameters     : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: SalesTerritory_SalesDistrict,
-                    ValueListProperty: 'SalesDistrict',
-                },
-                {
-                    $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'Name',
-                },
-            ],
-        },
-        Common.ValueListWithFixedValues: false
-    );
+    // SalesTerritory @(
+    //     Common.ValueList               : {
+    //         $Type          : 'Common.ValueListType',
+    //         CollectionPath : 'SalesDistricts',
+    //         SearchSupported: false,
+    //         Parameters     : [
+    //             {
+    //                 $Type            : 'Common.ValueListParameterInOut',
+    //                 LocalDataProperty: SalesTerritory_SalesDistrict,
+    //                 ValueListProperty: 'SalesDistrict',
+    //             },
+    //             {
+    //                 $Type            : 'Common.ValueListParameterDisplayOnly',
+    //                 ValueListProperty: 'Name',
+    //             },
+    //         ],
+    //     },
+    //     Common.ValueListWithFixedValues: false
+    // );
 };
 
 annotate service.DistroSpec with {
