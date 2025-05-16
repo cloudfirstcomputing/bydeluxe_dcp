@@ -33,9 +33,9 @@ entity DistroSpec : managed {
         DeliverySequence10 : Association to api.ShippingConditions;
         FieldControl       : Int16                      @odata.Type: 'Edm.Byte' enum {
             Inapplicable = 0;
-            ReadOnly     = 1;
-            Optional     = 3;
-            Mandatory    = 7;
+            ReadOnly = 1;
+            Optional = 3;
+            Mandatory = 7;
         };
         to_Package         : Composition of many Package
                                  on to_Package.to_DistroSpec = $self;
@@ -46,23 +46,23 @@ entity DistroSpec : managed {
 };
 
 entity StudioKey {
-    key StudioKeyUUID        : UUID;
-        Studio               : Association to one StudioVH;
-        KeyStartTime         : Time;
-        KeyEndTime           : Time;
-        InitialKeyDuration   : Integer;
-        NextKeyDuration      : Integer;
-        OffsetBPD            : Integer;
-        OffsetEPD            : Integer;
-        AggregateKey         : Boolean;
-        ProcessKDMS          : Integer;
-        ProcessScreeningKDMS : Integer;
-        MaxKDMSDuration      : Integer;
-        StudioHoldOverRule   : String(10);
-        SalesTerritory       : Association to one api.SalesDistricts;
-        to_DistroSpec        : Association to DistroSpec;
-        to_CustomerRef       : Composition of many CustomerRef
-                                   on to_CustomerRef.to_StudioKey = $self;
+    key StudioKeyUUID      : UUID;
+        Studio             : Association to one StudioVH;
+        KeyStartTime       : Time;
+        KeyEndTime         : Time;
+        InitialKeyDuration : Integer;
+        NextKeyDuration    : Integer;
+        OffsetBPD          : Integer;
+        OffsetEPD          : Integer;
+        // AggregateKey         : Boolean;
+        ProcessKDMS        : Integer;
+        // ProcessScreeningKDMS : Integer;
+        // MaxKDMSDuration      : Integer;
+        // StudioHoldOverRule   : String(10);
+        // SalesTerritory       : Association to one api.SalesDistricts;
+        to_DistroSpec      : Association to DistroSpec;
+        to_CustomerRef     : Composition of many CustomerRef
+                                 on to_CustomerRef.to_StudioKey = $self;
 };
 
 entity CustomerRef {
@@ -83,8 +83,8 @@ entity KeyPackage {
         ValidTo            : Date       @mandatory;
         OrderType          : String(1) enum {
             Content = 'C';
-            Keys    = 'K';
-            Both    = 'B';
+            Keys = 'K';
+            Both = 'B';
         };
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
@@ -102,12 +102,12 @@ entity Package {
         ]  @mandatory;
         OrderType          : String(1) enum {
             Content = 'C';
-            Keys    = 'K';
-            Both    = 'B';
+            Keys = 'K';
+            Both = 'B';
         };
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
-        GofilexTitleID     : String;                 
+        GofilexTitleID     : String;
         DeliveryMethod1    : Association to api.ShippingConditions;
         DeliveryMethod2    : Association to api.ShippingConditions;
         DeliveryMethod3    : Association to api.ShippingConditions;
@@ -145,8 +145,8 @@ entity DistRestrictions : cuid {
     PlayBackCapability10       : String(40);
     TrailMixSub                : String(1) enum {
         Monthly = 'M';
-        Weekly  = 'W';
-        NA      = '0';
+        Weekly = 'W';
+        NA = '0';
     };
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
@@ -172,40 +172,40 @@ entity KeyDistRestrictions : cuid {
     PlayBackCapability10       : String(40);
     TrailMixSub                : String(1) enum {
         Monthly = 'M';
-        Weekly  = 'W';
-        NA      = '0';
+        Weekly = 'W';
+        NA = '0';
     };
     to_KeyPackage              : Association to KeyPackage;
     to_DistroSpec              : Association to DistroSpec;
 };
 
 entity CPLDetail : cuid {
-    CPLUUID          : String(40) @mandatory;
-    virtual CTT      : String;
-    virtual Email    : Boolean;
-    virtual Download : Boolean;
-    to_KeyPackage    : Association to KeyPackage;
+            CPLUUID       : String(40) @mandatory;
+    virtual CTT           : String;
+    virtual Email         : Boolean;
+    virtual Download      : Boolean;
+            to_KeyPackage : Association to KeyPackage;
 }
 
 entity DCPMaterials {
-    key DCPMaterialUUID          : UUID;
-        DCPMaterialNumber        : Association to one DCPMaterialVH @mandatory;
-        PublishDateOffset        : Integer                          @assert.range: [
-            0,
-            999
-        ];
-        virtual CTT              : String;
-        virtual CPLUUID          : String;
-        RevealPublishGlobalDate  : Date;
-        RevealPublishGlobalTime  : Time;
-        RevealPublishLocalDate   : Date;
-        RevealPublishLocalTime   : Time;
-        SatelliteFlightStartDate : Date;
-        SatelliteFlightStartTime : Time;
-        SatelliteFlightEndDate   : Date;
-        SatelliteFlightEndTime   : Time;
-        to_Package               : Association to Package;
-        to_DistroSpec            : Association to DistroSpec;
+    key     DCPMaterialUUID          : UUID;
+            DCPMaterialNumber        : Association to one DCPMaterialVH @mandatory;
+            PublishDateOffset        : Integer                          @assert.range: [
+                0,
+                999
+            ];
+    virtual CTT                      : String;
+    virtual CPLUUID                  : String;
+            RevealPublishGlobalDate  : Date;
+            RevealPublishGlobalTime  : Time;
+            RevealPublishLocalDate   : Date;
+            RevealPublishLocalTime   : Time;
+            SatelliteFlightStartDate : Date;
+            SatelliteFlightStartTime : Time;
+            SatelliteFlightEndDate   : Date;
+            SatelliteFlightEndTime   : Time;
+            to_Package               : Association to Package;
+            to_DistroSpec            : Association to DistroSpec;
 }
 
 entity DCPMaterialMapping : cuid, managed {
@@ -213,4 +213,6 @@ entity DCPMaterialMapping : cuid, managed {
     Variable      : String(200);
     Material      : String(40);
     MaterialGroup : String(10);
+    Country       : Country;
+    ProfitCenter  : String(10);
 }

@@ -93,16 +93,16 @@ annotate service.StudioKey with {
     NextKeyDuration      @Common: {Label: '{i18n>NextKeyDuration}', };
     OffsetBPD            @Common: {Label: '{i18n>OffsetBPD}', };
     OffsetEPD            @Common: {Label: '{i18n>OffsetEPD}', };
-    AggregateKey         @Common: {Label: '{i18n>AggregateKey}', };
+    // AggregateKey         @Common: {Label: '{i18n>AggregateKey}', };
     ProcessKDMS          @Common: {Label: '{i18n>ProcessKDMS}', };
-    ProcessScreeningKDMS @Common: {Label: '{i18n>ProcessScreeningKDMS}', };
-    MaxKDMSDuration      @Common: {Label: '{i18n>MaxKDMSDuration}', };
-    StudioHoldOverRule   @Common: {Label: '{i18n>StudioHoldOverRule}', };
-    SalesTerritory       @Common: {
-        Label          : '{i18n>SalesTerritory}',
-        Text           : SalesTerritory.Name,
-        TextArrangement: #TextOnly,
-    };
+    // ProcessScreeningKDMS @Common: {Label: '{i18n>ProcessScreeningKDMS}', };
+    // MaxKDMSDuration      @Common: {Label: '{i18n>MaxKDMSDuration}', };
+    // StudioHoldOverRule   @Common: {Label: '{i18n>StudioHoldOverRule}', };
+    // SalesTerritory       @Common: {
+    //     Label          : '{i18n>SalesTerritory}',
+    //     Text           : SalesTerritory.Name,
+    //     TextArrangement: #TextOnly,
+    // };
 };
 
 annotate service.CustomerRef with {
@@ -496,30 +496,30 @@ annotate service.StudioKey with @(
                 $Type: 'UI.DataField',
                 Value: OffsetEPD,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: AggregateKey,
-            },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: AggregateKey,
+            // },
             {
                 $Type: 'UI.DataField',
                 Value: ProcessKDMS,
             },
-            {
-                $Type: 'UI.DataField',
-                Value: ProcessScreeningKDMS,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: MaxKDMSDuration,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: StudioHoldOverRule,
-            },
-            {
-                $Type: 'UI.DataField',
-                Value: SalesTerritory_SalesDistrict,
-            },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: ProcessScreeningKDMS,
+            // },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: MaxKDMSDuration,
+            // },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: StudioHoldOverRule,
+            // },
+            // {
+            //     $Type: 'UI.DataField',
+            //     Value: SalesTerritory_SalesDistrict,
+            // },
         ],
     },
     UI.LineItem             : [{

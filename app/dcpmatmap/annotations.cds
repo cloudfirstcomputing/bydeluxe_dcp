@@ -16,6 +16,8 @@ annotate service.DCPMaterialMapping with {
     Variable      @Common: {Label: '{i18n>Variable}', };
     Material      @Common: {Label: '{i18n>Material}', };
     MaterialGroup @Common: {Label: '{i18n>MaterialGroup}', };
+    Country;
+    ProfitCenter  @Common: {Label: '{i18n>ProfitCenter}', };
 };
 
 
@@ -51,6 +53,14 @@ annotate service.DCPMaterialMapping with @(
                 $Type: 'UI.DataField',
                 Value: MaterialGroup,
             },
+            {
+                $Type: 'UI.DataField',
+                Value: Country_code,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ProfitCenter,
+            },
         ],
     },
     UI.Facets                    : [{
@@ -75,6 +85,14 @@ annotate service.DCPMaterialMapping with @(
         {
             $Type: 'UI.DataField',
             Value: MaterialGroup,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Country_code,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: ProfitCenter,
         },
 
     ],

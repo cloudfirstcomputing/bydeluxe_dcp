@@ -58,7 +58,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.on("READ", `StudioKey`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Studio_BusinessPartner", "SalesTerritory_SalesDistrict"]
+            const fields = ["Studio_BusinessPartner"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -78,14 +78,14 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
                         break;
 
-                    case "SalesTerritory_SalesDistrict":
-                        const rec = asArray(await salesdisttx.run(SELECT.from(SalesDistricts)
-                            .columns(["SalesDistrict", { "ref": ["to_Text"], "expand": ["*"] }])
-                            .where({ SalesDistrict: ids })))
-                        records = rec.map(item => {
-                            return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
-                        })
-                        break;
+                    // case "SalesTerritory_SalesDistrict":
+                    //     const rec = asArray(await salesdisttx.run(SELECT.from(SalesDistricts)
+                    //         .columns(["SalesDistrict", { "ref": ["to_Text"], "expand": ["*"] }])
+                    //         .where({ SalesDistrict: ids })))
+                    //     records = rec.map(item => {
+                    //         return { SalesDistrict: item.SalesDistrict, Name: item.to_Text.find(text => text.Language === req.locale.toUpperCase()).SalesDistrictName }
+                    //     })
+                    //     break;
 
                     default:
                         break;

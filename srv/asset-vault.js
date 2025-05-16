@@ -282,7 +282,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     to_Plant.push({
                         "Product": ProjectID,
                         "Plant": plant.Plant,
-                        "ProfitCenter": "100402",
+                        // "ProfitCenter": "100402",
                         "AvailabilityCheckType": "SR",
                         "MRPType": "PD",
                         "MRPResponsible": "001",

@@ -82,6 +82,7 @@ annotate service.DistributionDcp with @(
             Value: AssetMapIDDescription,
         },
     },
+    UI.SelectionFields           : [CreatedinSAP],
     UI.FieldGroup #GeneratedGroup: {
         $Type: 'UI.FieldGroupType',
         Data : [
