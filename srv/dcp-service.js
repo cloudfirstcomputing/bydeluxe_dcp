@@ -708,7 +708,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             "ShippingType": sShippingType,
                             "ItemBillingBlockReason": "03",
                             "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                            "DeliveryPriority": "04"
+                            "DeliveryPriority": "04",
+                            "ProfitCenter": oDCPMapping?.ProfitCenter
                         };
                         // oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
                         //     "SalesOrder": sSalesOrder,
@@ -764,6 +765,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = distroSpecData?.Title_Product;
                     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
+                    oSalesorderItem_PayLoad["ProfitCenter"= oDCPMapping?.ProfitCenter;
                     // oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
@@ -1282,7 +1284,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": sShippingType
+                                        "ShippingType": sShippingType,
+                                        "ProfitCenter": oDCPMapping?.ProfitCenter
                                     });
                                 }
                                 else {
@@ -1302,7 +1305,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "RequestedQuantityISOUnit": "EA",
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": '07'
+                                        "ShippingType": '07',
+                                        "ProfitCenter": oDCPMapping?.ProfitCenter
                                     });
                                 }
                                 else {
