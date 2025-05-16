@@ -6,7 +6,8 @@ using DistributionService as service from '../../srv/dist-service';
         $Type              : 'UI.SelectionPresentationVariantType',
         PresentationVariant: {
             $Type         : 'UI.PresentationVariantType',
-            Visualizations: ['@UI.LineItem', ],
+            Visualizations: ['@UI.LineItem',
+            ],
             SortOrder     : [{
                 $Type     : 'Common.SortOrderType',
                 Property  : DistroSpecID,
@@ -82,27 +83,27 @@ annotate service.DistroSpec with {
 };
 
 annotate service.StudioKey with {
-    Studio               @Common: {
+    Studio             @Common: {
         Label          : '{i18n>Studio}',
         Text           : Studio.BusinessPartnerFullName,
         TextArrangement: #TextOnly,
     };
-    KeyStartTime         @Common: {Label: '{i18n>KeyStartTime}', };
-    KeyEndTime           @Common: {Label: '{i18n>KeyEndTime}', };
-    InitialKeyDuration   @Common: {Label: '{i18n>InitialKeyDuration}', };
-    NextKeyDuration      @Common: {Label: '{i18n>NextKeyDuration}', };
-    OffsetBPD            @Common: {Label: '{i18n>OffsetBPD}', };
-    OffsetEPD            @Common: {Label: '{i18n>OffsetEPD}', };
+    KeyStartTime       @Common: {Label: '{i18n>KeyStartTime}', };
+    KeyEndTime         @Common: {Label: '{i18n>KeyEndTime}', };
+    InitialKeyDuration @Common: {Label: '{i18n>InitialKeyDuration}', };
+    NextKeyDuration    @Common: {Label: '{i18n>NextKeyDuration}', };
+    OffsetBPD          @Common: {Label: '{i18n>OffsetBPD}', };
+    OffsetEPD          @Common: {Label: '{i18n>OffsetEPD}', };
     // AggregateKey         @Common: {Label: '{i18n>AggregateKey}', };
-    ProcessKDMS          @Common: {Label: '{i18n>ProcessKDMS}', };
-    // ProcessScreeningKDMS @Common: {Label: '{i18n>ProcessScreeningKDMS}', };
-    // MaxKDMSDuration      @Common: {Label: '{i18n>MaxKDMSDuration}', };
-    // StudioHoldOverRule   @Common: {Label: '{i18n>StudioHoldOverRule}', };
-    // SalesTerritory       @Common: {
-    //     Label          : '{i18n>SalesTerritory}',
-    //     Text           : SalesTerritory.Name,
-    //     TextArrangement: #TextOnly,
-    // };
+    ProcessKDMS        @Common: {Label: '{i18n>ProcessKDMS}', };
+// ProcessScreeningKDMS @Common: {Label: '{i18n>ProcessScreeningKDMS}', };
+// MaxKDMSDuration      @Common: {Label: '{i18n>MaxKDMSDuration}', };
+// StudioHoldOverRule   @Common: {Label: '{i18n>StudioHoldOverRule}', };
+// SalesTerritory       @Common: {
+//     Label          : '{i18n>SalesTerritory}',
+//     Text           : SalesTerritory.Name,
+//     TextArrangement: #TextOnly,
+// };
 };
 
 annotate service.CustomerRef with {
@@ -504,22 +505,22 @@ annotate service.StudioKey with @(
                 $Type: 'UI.DataField',
                 Value: ProcessKDMS,
             },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: ProcessScreeningKDMS,
-            // },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: MaxKDMSDuration,
-            // },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: StudioHoldOverRule,
-            // },
-            // {
-            //     $Type: 'UI.DataField',
-            //     Value: SalesTerritory_SalesDistrict,
-            // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: ProcessScreeningKDMS,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: MaxKDMSDuration,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: StudioHoldOverRule,
+        // },
+        // {
+        //     $Type: 'UI.DataField',
+        //     Value: SalesTerritory_SalesDistrict,
+        // },
         ],
     },
     UI.LineItem             : [{
@@ -2008,11 +2009,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability1',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability1,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability1,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2021,11 +2028,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability2',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability2,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability2,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2034,11 +2047,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability3',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability3,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability3,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2047,11 +2066,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability4',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability4,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability4,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2060,11 +2085,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability5',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability5,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability5,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2073,11 +2104,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability6',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability6,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability6,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2086,11 +2123,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability7',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability7,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability7,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2099,11 +2142,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability8',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability8,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability8,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
@@ -2112,11 +2161,17 @@ annotate service.KeyDistRestrictions with {
             $Type          : 'Common.ValueListType',
             CollectionPath : 'PlayBackCapability9',
             SearchSupported: false,
-            Parameters     : [{
-                $Type            : 'Common.ValueListParameterInOut',
-                LocalDataProperty: PlayBackCapability9,
-                ValueListProperty: 'VariableValue',
-            }, ],
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: PlayBackCapability9,
+                    ValueListProperty: 'CharcValue',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Characteristic',
+                },
+            ],
         },
         Common.ValueListWithFixedValues: false
     );
