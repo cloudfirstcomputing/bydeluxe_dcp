@@ -1,9 +1,9 @@
 ID;Code;Description;_Territory_ID
-1013;ANT;Antartica
-1009;APAC;Asia Pacific
-1005;EMEA;Europe, Middle East and Africa
-1004;LATAM;Latin America
-1000;NORAM;North America
+1013;ANT;Antartica;
+1009;APAC;Asia Pacific;
+1005;EMEA;Europe, Middle East and Africa;
+1004;LATAM;Latin America;
+1000;NORAM;North America;
 1001;US;United States Territories;1000
 1003;CARIB;Caribbean;1004
 1002;CENTAM;Central America;1004
