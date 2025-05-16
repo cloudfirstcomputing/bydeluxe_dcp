@@ -364,7 +364,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                         {
                             "Product": ProjectID,
                             "Language": "EN",
-                            "ProductDescription": assetvault.VolumeName
+                            "ProductDescription": assetvault.VolumeName.substring(0, 40)
                         }
                     ],
                     "to_ProductBasicText": [
