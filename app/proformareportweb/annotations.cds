@@ -204,7 +204,17 @@ annotate BookingOrderService.S4H_ProformaReport with @(
 );
 
 annotate BookingOrderService.S4H_ProformaReport with {
-    CreationDate @Common.Label : '{i18n>Creationdate}'
+    CreationDate @Common.Label : '{i18n>Creationdate}';     
+    Plant @(
+            Common.Text: {
+            $value                : PlantName,
+          ![@UI.TextArrangement]: #TextFirst,
+        },
+            Common.Label : '{i18n>Plant}',
+        );
+    
+    TransactionCurrency @Semantics.currencyCode: true;
+    NetAmount @Semantics.amount.currencyCode: 'TransactionCurrency'
 };
 
 annotate BookingOrderService.S4H_ProformaReport with {

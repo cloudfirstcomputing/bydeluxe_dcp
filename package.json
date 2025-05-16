@@ -420,17 +420,6 @@
           "requestTimeout": 1000000
         }
       },
-      "YY1_PROFORMAREPORT_CDS_0001": {
-        "kind": "odata-v2",
-        "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001",
-        "csrf": true,
-        "csrfInBatch": true,
-        "credentials": {
-          "path": "/sap/opu/odata/sap/YY1_PROFORMAREPORT_CDS",
-          "destination": "S4HC_DEV",
-          "requestTimeout": 1000000
-        }
-      },
       "API_BILL_OF_MATERIAL_SRV": {
         "kind": "odata-v2",
         "model": "srv/external/API_BILL_OF_MATERIAL_SRV",
@@ -460,6 +449,17 @@
         "csrfInBatch": true,
         "credentials": {
           "path": "/sap/opu/odata/sap/YY1_VALUATIONAREA_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_PROFORMAREPORTAPI_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_PROFORMAREPORTAPI_CDS_0001",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_PROFORMAREPORTAPI_CDS",
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }

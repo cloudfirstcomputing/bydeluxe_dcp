@@ -34,7 +34,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var prdgrp1tx = await cds.connect.to("YY1_ADDITIONALMATERIALGRP1_CDS");
         var invformAPI = await cds.connect.to("ZCL_INVFORM");
         var bankAPI = await cds.connect.to("CE_BANK_0003");
-        var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORT_CDS_0001");
+        var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORTAPI_CDS_0001");
 
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
@@ -1737,9 +1737,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }      
             if(aWhere_V2?.length)
                 req.query.SELECT.where = aWhere_V2;
-            // if(req.query.SELECT.orderBy){
-            //     req.query.SELECT.orderBy = undefined;
-            // }
+            if(req.query.SELECT.orderBy){
+                req.query.SELECT.orderBy = undefined;
+            }
             let aData = await proformaAPI.run(req.query);
             if(Array.isArray(aData)){
                 for(let i in aData){
@@ -1751,6 +1751,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (oSalesOrder?.PlayEndDate) {
                         aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
                     }
+                    aData[i].RequestID = oSalesOrder?.RequestId;
+                    aData[i].BookerName = oSalesOrder?.BookerName;
                     let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData[i].SalesDocument, SalesOrderItem: aData[i].SalesDocumentItem, LongTextID: 'Z010'}));
                     if(oPackTitleText){
                         aData[i].PackageTitle = oPackTitleText?.LongText;
@@ -1766,9 +1768,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 if (oSalesOrder?.PlayEndDate) {
                     aData['PlayEndDate'] = oSalesOrder?.PlayEndDate;
                 }
-                let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData['SalesDocument'], SalesOrderItem: aData['SalesDocumentItem'], LongTextID: 'Z010'}));
-                if(oPackTitleText){
-                    aData['PackageTitle'] = oPackTitleText?.LongText;
+                aData['RequestID'] = oSalesOrder?.RequestId;
+                aData['BookerName'] = oSalesOrder?.BookerName;
+                if(aData['SalesDocument'] && aData['SalesDocumentItem']){
+                    let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData['SalesDocument'], SalesOrderItem: aData['SalesDocumentItem'], LongTextID: 'Z010'}));
+                    if(oPackTitleText){
+                        aData['PackageTitle'] = oPackTitleText?.LongText;
+                    }
+
                 }
             }
             return aData;
