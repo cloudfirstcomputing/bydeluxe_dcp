@@ -765,7 +765,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = distroSpecData?.Title_Product;
                     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                    oSalesorderItem_PayLoad["ProfitCenter"= oDCPMapping?.ProfitCenter;
+                    oSalesorderItem_PayLoad["ProfitCenter"] = oDCPMapping?.ProfitCenter;
                     // oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
