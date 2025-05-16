@@ -1028,10 +1028,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!sErrorMessage && aContentPackages?.length) { //For Content Package
                         var oContentPackages;
                         let sDeliveryMethodFromPackage = '';   //This stored teh actual delivery method used for SO creation       
-                        if (!aContentPackages?.length) {
-                            sErrorMessage = `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order`;
-                        }
-                        else { //RULE 2.3 => Lookup package ID Delivery method
+                        // if (!aContentPackages?.length) {
+                        //     sErrorMessage = `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order`;
+                        // }
+                        // else 
+                        { //RULE 2.3 => Lookup package ID Delivery method
                             // These rules are applicable only for content 
                             for (var j in aDeliverySeqFromDistHeader) {
                                 var sDelSeq = aDeliverySeqFromDistHeader[j];
@@ -1128,9 +1129,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         sErrorMessage = `No Playback Capability match found`;
                                     }
                                 }
-                                else {
-                                    sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
-                                }
+                                // else {
+                                //     sErrorMessage = `Sales Data not maintained for Ship To Customer ${sShipTo}-${SalesOrganization}/${DistributionChannel}/${Division}`;
+                                // }
                             }
                             else {
                                 sErrorMessage = `No Package matches found for the delivery method`;
@@ -1285,8 +1286,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                 }
                                 else {
+                                    sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType}: ${sMode}, hence this item not created ` 
                                     oResponseStatus.warning.push({
-                                        "message": `| DCP Material Mapping not maintained for Shipping Type: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                        "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
                                     })
                                 }
@@ -1304,8 +1306,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                 }
                                 else {
+                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created`;
                                     oResponseStatus.warning.push({
-                                        "message": `| DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created |`,
+                                        "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
                                     })
                                 }
@@ -1730,6 +1733,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }      
             if(aWhere_V2?.length)
                 req.query.SELECT.where = aWhere_V2;
+            // if(req.query.SELECT.orderBy){
+            //     req.query.SELECT.orderBy = undefined;
+            // }
             let aData = await proformaAPI.run(req.query);
             if(Array.isArray(aData)){
                 for(let i in aData){
