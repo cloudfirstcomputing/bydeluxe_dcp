@@ -72,7 +72,9 @@ service DistributionService {
 
     entity Products             as projection on api.Products;
 
-@readonly entity GeoRegions as projection on db.GeoRegions;
+    @readonly
+    entity GeoRegions           as projection on db.GeoRegions;
+
     @readonly
     @cds.redirection.target
     entity DCPProducts          as projection on db.DCPMaterialVH;
@@ -119,8 +121,9 @@ service DistributionService {
     annotate DCPMaterialMapping with @odata.draft.enabled;
 
     extend projection DCPMaterials with {
-        to_DCPDetail : Association to many CplList on DCPMaterialNumber.Product = to_DCPDetail.DCP
-    }
+        to_DCPDetail : Association to many CplList
+                           on DCPMaterialNumber.Product = to_DCPDetail.DCP
+        }
 
     extend projection CustomerGroup with {
         virtual null as Name : String

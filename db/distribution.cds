@@ -218,7 +218,7 @@ entity DCPMaterialMapping : cuid, managed {
 }
 
 entity GeoRegions {
-    key ID          : Integer;
+    key ID          : String(4);
         Code        : String(10);
         Description : String(100);
         _Territory  : Association to one GeoRegions;
