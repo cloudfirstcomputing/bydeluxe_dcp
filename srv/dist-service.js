@@ -1,4 +1,5 @@
 const cds = require("@sap/cds");
+const { uuid } = cds.utils
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
@@ -55,6 +56,36 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.DistroSpecID = ++maxID
             req.data.FieldControl = 1
         })
+
+        this.before("NEW", `StudioKey.drafts`, async (req) => {
+            req.data.Studio_BusinessPartner = '1000011'
+            req.data.KeyStartTime = '00:01:00'
+            req.data.KeyEndTime = '02:00:00'
+            req.data.OffsetBPD = 24
+            req.data.OffsetEPD = 24
+            req.data.InitialKeyDuration = 13
+            req.data.NextKeyDuration = 6
+            req.data.ProcessKDMS = 24
+        })
+        // this.on('CREATE', DistroSpec.drafts, async req => {
+        //     debugger;
+        //     let id = uuid()
+        //     const date = new Date();
+        //     // await cds.run(`INSERT INTO DRAFT_DRAFTADMINISTRATIVEDATA 
+        //     //     (DRAFTUUID,CREATEDBYUSER,DRAFTISCREATEDBYME,LASTCHANGEDBYUSER,INPROCESSBYUSER,DRAFTISPROCESSEDBYME) VALUES 
+        //     //     ('${id}','${req.user.id}',true,'${req.user.id}','${req.user.id}',true)`)
+
+        //     // await cds.run(`INSERT INTO DISTRIBUTIONSERVICE_STUDIOKEY_DRAFTS (DRAFTADMINISTRATIVEDATA_DRAFTUUID, HASACTIVEENTITY, STUDIOKEYUUID, STUDIO_BUSINESSPARTNER) VALUES ('${id}', false, '${uuid()}', '1000011');`)
+        //     // req.to_StudioKey = [{ StudioKeyUUID: id, Studio: '1000011' }]
+        //     // return req
+        //     await cds.tx(async () => {
+        //         await cds.run(`INSERT INTO DRAFT_DRAFTADMINISTRATIVEDATA 
+        //         (DRAFTUUID,CREATEDBYUSER,DRAFTISCREATEDBYME,LASTCHANGEDBYUSER,INPROCESSBYUSER,DRAFTISPROCESSEDBYME) VALUES 
+        //         ('${id}','${req.user.id}',true,'${req.user.id}','${req.user.id}',true)`)
+        //         // await INSERT.into(`DRAFT_DRAFTADMINISTRATIVEDATA`).entries([{ DRAFTUUID: id }])
+        //         // await INSERT.into(`DistributionService.StudioKey.drafts`).entries([{ Studio_BusinessPartner: '1000011', DRAFTADMINISTRATIVEDATA_DRAFTUUID: id }])
+        //     })
+        // })
 
         this.on("READ", `StudioKey`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
