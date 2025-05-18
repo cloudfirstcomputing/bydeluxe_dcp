@@ -76,66 +76,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         // Define the mass upload action
         this.on("MassUploadManageMaterialTitle", async (req) => {
             const uploadedFile = req.data.fileData;
-            const fileName = req.data.fileName;
-            const fieldNames = req.data.fieldNames;
-            console.log(req);
-
-
-            console.log("erfd");
-            if (!uploadedFile) {
-                req.error(400, "No file data provided");
-                return;
-            }
-
-            const binaryData = Buffer.from(uploadedFile, 'base64');
-            const workbook = XLSX.read(binaryData, { type: "buffer" });
-
-            const sheetName = workbook.SheetNames[0];
-            console.log("workbook", workbook);
-            console.log("sheetName", sheetName);
-            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-            console.log("sheetData preview", JSON.stringify(sheetData, null, 2));
-
-            console.log("sheet", workbook.Sheets[sheetName]);
-            console.log("sheetData", sheetData);
-            let result = {
-                success: [],
-                error: [],
-                warning: []
-            };
-            const seenOriginalTitlesInFile = new Set();
-
+            const workbook = XLSX.read(Buffer.from(uploadedFile, 'base64'), { type: "buffer" });
+        
+            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            let result = { success: [], error: [], warning: [] };
+        
             for (const row of sheetData) {
-                console.log("row", row);
                 try {
-                    const originalTitle = row["Original Title Name"]?.toString().trim();
-                    if (!originalTitle) {
-                        result.warning.push({
-                            TitleID: "",
-                            Message: "Original Title Name is missing or empty",
-                            Error: "Validation error",
-                            RowData: row
-                        });
-                        continue;
-                    }
-            
-                    const normalizedTitle = originalTitle.toLowerCase();
-                    if (seenOriginalTitlesInFile.has(normalizedTitle)) {
-                        result.error.push({
-                            TitleID: "",
-                            Message: `Duplicate Original Title Name within uploaded file: ${originalTitle}`,
-                            Error: "Duplicate in file",
-                            RowData: row
-                        });
-                        continue;
-                    }
-                    seenOriginalTitlesInFile.add(originalTitle);
-
                     const normalizedRow = {};
-                    Object.keys(row).forEach(k => {
-                        normalizedRow[k.trim().toLowerCase()] = row[k];
-                    });
-
+                    Object.keys(row).forEach(k => normalizedRow[k.trim().toLowerCase()] = row[k]);
+        
                     const fieldMap = {
                         "original title name": "OriginalTitleName",
                         "title type": "TitleType",
@@ -159,127 +109,88 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "use secure name": "UseSecureName",
                         "material master title id": "MaterialMasterTitleID"
                     };
-
-
-
+        
                     const mappedRow = {};
                     for (const [excelKey, targetKey] of Object.entries(fieldMap)) {
                         let value = normalizedRow[excelKey];
-
-                        if (value === undefined || value === null) {
-                            mappedRow[targetKey] = "";
-                        } else if (typeof value === "object") {
-                            // If it's a date object or other object, convert to ISO string or custom format
-                            if (value instanceof Date) {
-                                mappedRow[targetKey] = value.toISOString().split("T")[0]; // e.g., "2024-05-14"
-                            } else {
-                                mappedRow[targetKey] = JSON.stringify(value); // or set it to empty string if not acceptable
-                            }
-                        } else {
-                            mappedRow[targetKey] = value.toString().trim();
-                        }
+                        mappedRow[targetKey] = (value === undefined || value === null) ? "" : value.toString().trim();
                     }
-
-                    console.log("mappedRow", mappedRow);
-
+        
                     const requiredFields = ["OriginalTitleName", "TitleCategory", "TitleType"];
-                    const missingFields = requiredFields.filter(field => {
-                        const val = mappedRow[field];
-                        return typeof val !== 'string' ? !val?.toString()?.trim() : !val.trim();
-                    });
+                    const missingFields = requiredFields.filter(field => !mappedRow[field]);
                     if (missingFields.length) {
                         throw new Error(`Missing required field(s): ${missingFields.join(", ")}`);
                     }
-                    // If the material master title ID is given then it should be considered as local create and title type should be Local
-                    // If the material master title ID is given and TitleType : Parent then it goes to Error
-                    // This if material master title ID is given then run the local create logic
-                    // Local create logic
-                    // 1. Get Title ID eg : 6053
-                    // 2. Get Latest title in Local and Increment  eg: 6053-0002
-                    // 3. Concatnate  Eg: 6053-0002,6053-0003
-                    // 4. Update Titles DB directly for local
-                    // All the above functions are available at extActionLocalC refer this
-
-                    // Handle Local Title creation if MaterialMasterTitleID is provided
-                    if (mappedRow.MaterialMasterTitleID) {
-                        if (mappedRow.TitleType === "Parent") {
+        
+                    if (mappedRow.TitleType === "Local") {
+                        // Local must have a MaterialMasterTitleID
+                        if (!mappedRow.MaterialMasterTitleID) {
                             result.error.push({
                                 TitleID: "",
-                                Message: "Cannot create Parent title with MaterialMasterTitleID",
-                                Error: "Invalid TitleType for MaterialMasterTitleID",
+                                Message: "Material Master Title ID is required for Local Title",
+                                Error: "Missing MaterialMasterTitleID",
                                 RowData: mappedRow
                             });
                             continue;
                         }
-                        const masterTitleExists = await SELECT.one.from(Titles).where({
+        
+                        // Check if Parent title exists for this MaterialMasterTitleID
+                        const parentTitle = await SELECT.one.from(Titles).where({
                             MaterialMasterTitleID: mappedRow.MaterialMasterTitleID,
                             TitleType: 'Parent'
                         });
-                    
-                        if (!masterTitleExists) {
+        
+                        if (!parentTitle) {
                             result.error.push({
                                 TitleID: "",
-                                Message: `Material Master Title ID ${mappedRow.MaterialMasterTitleID} does not exist.`,
-                                Error: "Invalid MaterialMasterTitleID",
+                                Message: `Parent title not found for MaterialMasterTitleID ${mappedRow.MaterialMasterTitleID}`,
+                                Error: "Parent title missing",
                                 RowData: mappedRow
                             });
                             continue;
                         }
-
-                        // Get existing local titles for this MaterialMasterTitleID
-                        const existingTitles = await SELECT.from(Titles).where({
+        
+                        // Check if Local title with same OriginalTitleName already exists
+                        const existingLocal = await SELECT.one.from(Titles).where({
+                            OriginalTitleName: mappedRow.OriginalTitleName,
+                            TitleType: 'Local'
+                        });
+        
+                        if (existingLocal) {
+                            result.error.push({
+                                TitleID: "",
+                                Message: `Original Title Name '${mappedRow.OriginalTitleName}' already exists as a Local title.`,
+                                Error: "Duplicate Original Title Name (Local)",
+                                RowData: mappedRow
+                            });
+                            continue;
+                        }
+        
+                        // Generate new LocalTitleId (incremental)
+                        const existingLocalTitles = await SELECT.from(Titles).where({
                             MaterialMasterTitleID: mappedRow.MaterialMasterTitleID
                         });
-                        if (existingOriginalTitle) {
-                            result.warning.push({
-                                TitleID: "",
-                                Message: `Skipped Local Title creation. Original Title Name '${mappedRow.OriginalTitleName}' already exists in system.`,
-                                Error: "Duplicate Original Title Name",
-                                RowData: mappedRow
-                            });
-                            continue;
-                        }
-
-                        // Generate new LocalTitleId
-                        let newLocalId;
-                        const existingIds = existingTitles
-                            .map(item => item.LocalTitleId)
-                            .filter(id => id)
-                            .map(id => parseInt(id.split('-')[1], 10));
-
-                        if (existingIds.length > 0) {
-                            const maxId = Math.max(...existingIds);
-                            newLocalId = `${mappedRow.MaterialMasterTitleID}-${String(maxId + 1).padStart(4, "0")}`;
-                        } else {
-                            newLocalId = `${mappedRow.MaterialMasterTitleID}-0001`;
-                        }
-
-                        // Check for duplicate (same MaterialMasterTitleID, RegionCode and LanguageCode)
-                        const duplicateCheck = await SELECT.one.from(Titles).where({
-                            MaterialMasterTitleID: mappedRow.MaterialMasterTitleID,
-                            RegionCode: mappedRow.RegionCode,
-                            LanguageCode: mappedRow.LanguageCode
-                        });
-
-                        if (duplicateCheck) {
-                            result.warning.push({
-                                TitleID: "",
-                                Message: `Skipped duplicate local title for MaterialMasterTitleID ${mappedRow.MaterialMasterTitleID}`,
-                                Error: "Duplicate found",
-                                RowData: mappedRow
-                            });
-                            continue;
-                        }
-
+        
+                        const maxId = Math.max(
+                            0,
+                            ...existingLocalTitles
+                                .map(t => t.LocalTitleId?.split('-')[1])
+                                .filter(n => n)
+                                .map(n => parseInt(n))
+                                .filter(n => !isNaN(n))
+                        );
+        
+                        const newLocalId = `${mappedRow.MaterialMasterTitleID}-${String(maxId + 1).padStart(4, "0")}`;
+        
                         // Create Local Title
                         const titlePayload = {
                             ID: uuidv4(),
                             MaterialMasterTitleID: mappedRow.MaterialMasterTitleID,
                             LocalTitleId: newLocalId,
-                            RegionCode: mappedRow.RegionCode || "",
-                            OriginalTitleName: mappedRow.OriginalTitleName || "",
-                            TitleType: "Local", // Force Local type
+                            OriginalTitleName: mappedRow.OriginalTitleName,
+                            TitleType: "Local",
                             TitleCategory: mappedRow.TitleCategory || "",
+                            RegionCode: mappedRow.RegionCode || "",
                             RegionalTitleName: mappedRow.RegionalTitleName || "",
                             ShortTitle: mappedRow.ShortTitle || "",
                             SecurityTitle: mappedRow.SecurityTitle || "",
@@ -296,109 +207,102 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             StudioDistributor: mappedRow.StudioDistributor || "",
                             GofilexTitleId: mappedRow.GofilexTitleId || "",
                         };
-
+        
                         await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
-
+        
                         result.success.push({
                             TitleID: newLocalId,
                             Message: `Local title created with ID ${newLocalId}`,
                             Error: "",
                             RowData: mappedRow
                         });
-
-                        continue; // Skip the rest of the loop for local titles
+                        continue;
                     }
-                    // need add else part here for parent 
-                    else {
-                        const duplicateCheck = await SELECT.one.from(Titles).where({ OriginalTitleName: mappedRow.OriginalTitleName });
-                        if (duplicateCheck) {
-                            result.warning.push({
-                                TitleID: "",
-                                Message: `Skipped duplicate: ${mappedRow.OriginalTitleName}`,
-                                Error: "Duplicate found",
-                                RowData: mappedRow
-                            });
-                            continue; // Skip this row
-                        }
-
-
-                        const productPayload = {
-                            ProductGroup: mappedRow.TitleCategory,
-                            ProductType: "ZTLS",
-                            BaseUnit: "EA",
-                            ProductManufacturerNumber: "",
-                            to_ProductBasicText: [
-                                { Language: "EN", LongText: mappedRow.OriginalTitleName }
-                            ],
-                            to_Description: [
-                                { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
-                            ]
-                        };
-
-                        const createProductResponse = await s4h_products_Crt.run(
-                            INSERT.into(Products).entries(productPayload)
-                        );
-
-                        //const response = await s4h_products_Crt.run(INSERT.into(Products).entries(input))
-                        const createdProductID = createProductResponse?.Product;
-                        if (!createdProductID) {
-                            throw new Error("Product creation failed.");
-                        }
-
-
-                        const titlePayload = {
-                            ID: uuidv4(),
-                            "MaterialMasterTitleID": createdProductID,
-                            "LocalTitleId": "",     //not present
-                            "RegionCode": mappedRow.RegionCode || "",
-                            "OriginalTitleName": mappedRow.OriginalTitleName || "",
-                            "TitleType": mappedRow.TitleType || "",
-                            "TitleCategory": mappedRow.TitleCategory || "",    //not present
-                            "RegionalTitleName": mappedRow.RegionalTitleName || "",
-                            "ShortTitle": mappedRow.ShortTitle || "",
-                            "SecurityTitle": mappedRow.SecurityTitle || "",
-                            "LanguageCode": mappedRow.LanguageCode || "",
-                            "ReleaseDate": mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
-                            "RepertoryDate": mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
-                            "Format": mappedRow.Format || "",
-                            "ReleaseSize": mappedRow.ReleaseSize || "",
-                            "Ratings": mappedRow.Ratings || "",
-                            "ReelCountEstimated": mappedRow.ReelCountEstimated || null,
-                            "AssetVaultTitleId": mappedRow.AssetVaultTitleId || "",
-                            "ImdbId": mappedRow.ImdbId || "",
-                            "StudioTitleId": mappedRow.StudioTitleId || "",
-                            "StudioDistributor": mappedRow.StudioDistributor || "",
-                            "Ratings_Ass": [],          //not present
-                            "ExternalTitleIDs_Ass": [],  //not present
-                            "GofilexTitleId": mappedRow.GofilexTitleId || "",
-                        };
-
-                        await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
-
-                        result.success.push({
-                            TitleID: createdProductID,
-                            Message: `Title created with Product ID ${createdProductID}`,
-                            Error: "",
+        
+                    // Handle Parent (new product creation)
+                    const existingParent = await SELECT.one.from(Titles).where({
+                        OriginalTitleName: mappedRow.OriginalTitleName
+                    });
+        
+                    if (existingParent) {
+                        result.warning.push({
+                            TitleID: "",
+                            Message: `Skipped duplicate Parent title '${mappedRow.OriginalTitleName}'`,
+                            Error: "Duplicate found",
                             RowData: mappedRow
                         });
+                        continue;
                     }
+        
+                    const productPayload = {
+                        ProductGroup: mappedRow.TitleCategory,
+                        ProductType: "ZTLS",
+                        BaseUnit: "EA",
+                        ProductManufacturerNumber: "",
+                        to_ProductBasicText: [
+                            { Language: "EN", LongText: mappedRow.OriginalTitleName }
+                        ],
+                        to_Description: [
+                            { Language: "EN", ProductDescription: mappedRow.OriginalTitleName }
+                        ]
+                    };
+        
+                    const createProductResponse = await s4h_products_Crt.run(INSERT.into(Products).entries(productPayload));
+                    const createdProductID = createProductResponse?.Product;
+        
+                    if (!createdProductID) {
+                        throw new Error("Product creation failed.");
+                    }
+        
+                    const titlePayload = {
+                        ID: uuidv4(),
+                        MaterialMasterTitleID: createdProductID,
+                        LocalTitleId: "",
+                        OriginalTitleName: mappedRow.OriginalTitleName,
+                        TitleType: "Parent",
+                        TitleCategory: mappedRow.TitleCategory || "",
+                        RegionCode: mappedRow.RegionCode || "",
+                        RegionalTitleName: mappedRow.RegionalTitleName || "",
+                        ShortTitle: mappedRow.ShortTitle || "",
+                        SecurityTitle: mappedRow.SecurityTitle || "",
+                        LanguageCode: mappedRow.LanguageCode || "",
+                        ReleaseDate: mappedRow.ReleaseDate ? new Date(mappedRow.ReleaseDate) : null,
+                        RepertoryDate: mappedRow.RepertoryDate ? new Date(mappedRow.RepertoryDate) : null,
+                        Format: mappedRow.Format || "",
+                        ReleaseSize: mappedRow.ReleaseSize || "",
+                        Ratings: mappedRow.Ratings || "",
+                        ReelCountEstimated: mappedRow.ReelCountEstimated || null,
+                        AssetVaultTitleId: mappedRow.AssetVaultTitleId || "",
+                        ImdbId: mappedRow.ImdbId || "",
+                        StudioTitleId: mappedRow.StudioTitleId || "",
+                        StudioDistributor: mappedRow.StudioDistributor || "",
+                        GofilexTitleId: mappedRow.GofilexTitleId || "",
+                        Ratings_Ass: [],
+                        ExternalTitleIDs_Ass: []
+                    };
+        
+                    await cds.transaction(req).run(INSERT.into(Titles).entries(titlePayload));
+        
+                    result.success.push({
+                        TitleID: createdProductID,
+                        Message: `Parent title created with ID ${createdProductID}`,
+                        Error: "",
+                        RowData: mappedRow
+                    });
+        
                 } catch (err) {
-                    console.error("Error processing row:", row, err.message);
+                    console.error("Error processing row:", err.message);
                     result.error.push({
                         TitleID: "",
                         Message: "Failed to process row",
                         Error: err.message,
                         RowData: row
                     });
-
                 }
             }
-            // need to add end of else part
-
-            return {
-                message: result
-            };
-        });
+        
+            return { message: result };
+        });        
 
         this.on('READ', S4H_ProductGroup1, async (req) => {
             return prdgrp1tx.run(SELECT.from(S4H_ProductGroup1).where({ Language: req.locale.toUpperCase() }))

@@ -7,10 +7,45 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
     "sap/ui/export/library",
-    'sap/ui/model/Filter',
-    'sap/ui/model/FilterOperator',
-], function (MessageToast, coreLibrary, MessageBox, Fragment, BusyIndicator, JSONModel, Spreadsheet, exportLibrary, Filter, FilterOperator) {
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/m/MessageView",
+    "sap/m/MessageItem",
+    "sap/m/Button",
+    "sap/m/Bar",
+    "sap/m/Title",
+    "sap/m/Popover",
+    "sap/ui/core/IconPool",
+    "sap/m/Link"
+], function (
+    MessageToast,
+    coreLibrary,
+    MessageBox,
+    Fragment,
+    BusyIndicator,
+    JSONModel,
+    Spreadsheet,
+    exportLibrary,
+    Filter,
+    FilterOperator,
+    MessageView,
+    MessageItem,
+    Button,
+    Bar,
+    Title,
+    Popover,
+    IconPool,
+    Link
+) {
     "use strict";
+    const mapStatus = (status) => {
+        switch (status.toLowerCase()) {
+            case 'error': return 'Error';
+            case 'warning': return 'Warning';
+            case 'success': return 'Success';
+            default: return null;
+        }
+    };
 
     return {
         /**
@@ -347,7 +382,7 @@ sap.ui.define([
         },
         onUploadPress: function () {
             const oView = this.getEditFlow().getView();
-            const that = this; // store reference to main controller
+            const that = this; 
 
             if (!this._oUploadDialog) {
                 Fragment.load({
@@ -387,53 +422,61 @@ sap.ui.define([
                                         fieldNames: fieldNames
                                     }),
                                     success: function (response) {
-                                        that._oUploadDialog?.close(); // ✅ fixed: use main controller's reference
+                                        that._oUploadDialog?.close();
                                         oView.setBusy(false);
-
-                                        const summaryList = [];
+                                      
                                         if (response && response.message) {
-                                            const { success = [], error = [], warning = [] } = response.message;
-
-                                            const formatEntry = (entry, status) => ({
-                                                title: entry.RowData?.OriginalTitleName || entry.TitleID || "N/A",
-                                                status: status,
-                                                description: entry.Message || "No message",
-                                                cause: entry.Error || "",
-                                                rowData: entry.RowData
+                                          const { success = [], error = [], warning = [] } = response.message;
+                                      
+                                          const successCount = success.length;
+                                          const errorCount = error.length;
+                                          const warningCount = warning.length;
+                                      
+                                          const formatEntry = (entry, status, counter = 1) => ({
+                                            type: status, // must be one of "Error", "Warning", "Success"
+                                            title: entry.RowData?.OriginalTitleName || entry.TitleID || "N/A",
+                                            description: entry.Message || "No message",
+                                            subtitle: entry.Error || "",
+                                            counter: counter
+                                          });
+                                      
+                                          const summaryList = [];
+                                          success.forEach(item => summaryList.push(formatEntry(item, "Success", successCount)));
+                                          error.forEach(item => summaryList.push(formatEntry(item, "Error", errorCount)));
+                                          warning.forEach(item => summaryList.push(formatEntry(item, "Warning", warningCount)));
+                                      
+                                          const oSummaryModel = new sap.ui.model.json.JSONModel(summaryList);
+                                      
+                                          if (!that._oUploadSummaryDialog) {
+                                            Fragment.load({
+                                              id: oView.getId(),
+                                              name: "com.dlx.managematerialtitle.ext.manageTitleExt.UploadSummaryDialog",
+                                              controller: {
+                                                onCancelSummary: function() {
+                                                  that._oUploadSummaryDialog?.close();
+                                                }
+                                              }
+                                            }).then(function(oDialog) {
+                                              that._oUploadSummaryDialog = oDialog;
+                                              oView.addDependent(oDialog);
+                                              oDialog.setModel(oSummaryModel);    // Set model here
+                                              oDialog.open();
                                             });
-
-                                            success.forEach(item => summaryList.push(formatEntry(item, "Success")));
-                                            error.forEach(item => summaryList.push(formatEntry(item, "Error")));
-                                            warning.forEach(item => summaryList.push(formatEntry(item, "Warning")));
-
-                                            const oSummaryModel = new JSONModel({ results: summaryList });
-                                            if (!that._oUploadSummaryDialog) {
-                                                Fragment.load({
-                                                    id: oView.getId(),
-                                                    name: "com.dlx.managematerialtitle.ext.manageTitleExt.UploadSummaryDialog",
-                                                    controller: {
-                                                        onCancelSummary: function () {
-                                                            console.log("summary cancel");
-                                                            that._oUploadSummaryDialog?.close(); // ✅ fixed
-                                                        }
-                                                    }
-                                                }).then(function (oDialog) {
-                                                    that._oUploadSummaryDialog = oDialog;
-                                                    oView.addDependent(oDialog);
-                                                    oDialog.setModel(oSummaryModel, "uploadSummary");
-                                                    oDialog.open();
-                                                });
-                                            }
-                                            if (error.length) {
-                                                MessageBox.error("Some entries failed to upload.");
-                                            }
-                                            if (success.length) {
-                                                MessageToast.show("Upload successful.");
-                                            }
+                                          } else {
+                                            that._oUploadSummaryDialog.setModel(oSummaryModel); // Refresh model
+                                            that._oUploadSummaryDialog.open();
+                                          }
+                                      
+                                          if (error.length) {
+                                            sap.m.MessageBox.error("Some entries failed to upload.");
+                                          }
+                                          if (success.length) {
+                                            sap.m.MessageToast.show("Upload successful.");
+                                          }
                                         }
-
+                                      
                                         oModel.refresh();
-                                    },
+                                      },
 
                                     error: function (xhr, status, error) {
                                         console.error("Mass upload failed:", status, error, xhr.responseText);
@@ -451,51 +494,51 @@ sap.ui.define([
                         },
                         onDownloadTemplate: function () {
                             // Step 1: Define columns (headers)
-                            const aCols = [                              
-                              { label: "Material Master Title ID", property: "MaterialMasterTitleID", type: "string" },
-                              { label: "Local Title Id", property: "LocalTitleId", type: "string" },
-                              { label: "Original Title Name", property: "OriginalTitleName", type: "string" },
-                              { label: "Title Type", property: "TitleType", type: "string" },
-                              { label: "Title Category", property: "TitleCategory", type: "string" },
-                              { label: "Deleted", property: "Deleted", type: "string" },
-                              { label: "Regional Title Name", property: "RegionalTitleName", type: "string" },
-                              { label: "Short Title", property: "ShortTitle", type: "string" },
-                              { label: "Security Title", property: "SecurityTitle", type: "string" },
-                              { label: "Region Code", property: "RegionCode", type: "string" },
-                              { label: "Language Code", property: "LanguageCode", type: "string" },
-                              { label: "Release Date", property: "ReleaseDate",type: "date" },
-                              { label: "Repertory Date", property: "RepertoryDate",type: "date" },
-                              { label: "Format", property: "Format", type: "string" }, 
-                              { label: "Release Size", property: "ReleaseSize", type: "string" },
-                              { label: "Ratings", property: "Ratings", type: "string" },
-                              { label: "Reel Count (Estimated)", property: "ReelCountEstimated", type: "number" },
-                              { label: "Asset Vault Title Id", property: "AssetVaultTitleId", type: "string" },
-                              { label: "IMDB ID", property: "ImdbId", type: "string" },
-                              { label: "Studio Title Id", property: "StudioTitleId", type: "string" },
-                              { label: "Studio/Distributor", property: "StudioDistributor", type: "string" },
-                              { label: "Gofilex Title Id", property: "GofilexTitleId", type: "string" },
-                              { label: "ID", property: "Id", type: "string" },
-                              { label: "Use Secure Name", property: "UseSecureName", type: "string" }                                                           
+                            const aCols = [
+                                { label: "Material Master Title ID", property: "MaterialMasterTitleID", type: "string" },
+                                { label: "Local Title Id", property: "LocalTitleId", type: "string" },
+                                { label: "Original Title Name", property: "OriginalTitleName", type: "string" },
+                                { label: "Title Type", property: "TitleType", type: "string" },
+                                { label: "Title Category", property: "TitleCategory", type: "string" },
+                                { label: "Deleted", property: "Deleted", type: "string" },
+                                { label: "Regional Title Name", property: "RegionalTitleName", type: "string" },
+                                { label: "Short Title", property: "ShortTitle", type: "string" },
+                                { label: "Security Title", property: "SecurityTitle", type: "string" },
+                                { label: "Region Code", property: "RegionCode", type: "string" },
+                                { label: "Language Code", property: "LanguageCode", type: "string" },
+                                { label: "Release Date", property: "ReleaseDate", type: "date" },
+                                { label: "Repertory Date", property: "RepertoryDate", type: "date" },
+                                { label: "Format", property: "Format", type: "string" },
+                                { label: "Release Size", property: "ReleaseSize", type: "string" },
+                                { label: "Ratings", property: "Ratings", type: "string" },
+                                { label: "Reel Count (Estimated)", property: "ReelCountEstimated", type: "number" },
+                                { label: "Asset Vault Title Id", property: "AssetVaultTitleId", type: "string" },
+                                { label: "IMDB ID", property: "ImdbId", type: "string" },
+                                { label: "Studio Title Id", property: "StudioTitleId", type: "string" },
+                                { label: "Studio/Distributor", property: "StudioDistributor", type: "string" },
+                                { label: "Gofilex Title Id", property: "GofilexTitleId", type: "string" },
+                                { label: "ID", property: "Id", type: "string" },
+                                { label: "Use Secure Name", property: "UseSecureName", type: "string" }
                             ];
-                      const adata = [
-                        { }
-                      ];
-                                    
+                            const adata = [
+                                {}
+                            ];
+
                             // Step 3: Create Spreadsheet
                             const oSettings = {
-                              workbook: {
-                                columns: aCols,
-                                
-                              },
-                              dataSource: adata,
-                              fileName: "ExportedData.xlsx",
-                              worker: false // set to true for large files
+                                workbook: {
+                                    columns: aCols,
+
+                                },
+                                dataSource: adata,
+                                fileName: "ExportedData.xlsx",
+                                worker: false // set to true for large files
                             };
-                      
+
                             new Spreadsheet(oSettings).build().finally(() => {
-                              sap.m.MessageToast.show("Excel exported successfully!");
+                                sap.m.MessageToast.show("Excel exported successfully!");
                             });
-                          }                    
+                        }
 
 
                     }
