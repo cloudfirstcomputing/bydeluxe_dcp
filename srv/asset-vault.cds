@@ -25,6 +25,9 @@ service AssetVaultService {
     entity ValuationArea      as projection on api.YY1_ValuationArea;
 
     @readonly
+    entity Parameters           as projection on api.Parameters;
+
+    @readonly
     entity StorageLocations   as projection on api.StorageLocations;
 
     @readonly

@@ -257,9 +257,9 @@
           "forwardAuthToken": true
         }
       },
-      "YY1_PARAMETER_CDS_0001": {
+      "YY1_PARAMETER_CDS": {
         "kind": "odata-v2",
-        "model": "srv/external/YY1_PARAMETER_CDS_0001",
+        "model": "srv/external/YY1_PARAMETER_CDS",
         "csrf": true,
         "csrfInBatch": true,
         "credentials": {

@@ -4,7 +4,7 @@ using {API_BUSINESS_PARTNER as S4_BuisnessPartner} from './external/API_BUSINESS
 using {DistributionService.DistroSpec as DistroSpec} from './dist-service';
 using {DistributionService as distService} from './dist-service';
 using {AssetVaultService.DistributionDcp as AssetVault} from './asset-vault';
-using {YY1_PARAMETER_CDS_0001 as S4_Param} from './external/YY1_PARAMETER_CDS_0001';
+using {YY1_PARAMETER_CDS as S4_Param} from './external/YY1_PARAMETER_CDS';
 using {YY1_SALESPARAMETERS_CDS_0001 as S4_Sales_Param} from './external/YY1_SALESPARAMETERS_CDS_0001';
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
 using {API_PRODUCTGROUP_SRV as S4_prodGroup} from '../srv/external/API_PRODUCTGROUP_SRV.csn';

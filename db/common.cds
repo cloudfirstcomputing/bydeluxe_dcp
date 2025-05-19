@@ -13,7 +13,7 @@ using {API_SALES_ORDER_V2_SRV as salesorderv2} from '../srv/external/API_SALES_O
 using {API_SALESDISTRICT_SRV as salesdist} from '../srv/external/API_SALESDISTRICT_SRV';
 using {YY1_I_SHIPPINGPOINT_CDS_0001 as S4_ShippingPoint} from '../srv/external/YY1_I_SHIPPINGPOINT_CDS_0001';
 using {YY1_I_SHIPPINGTYPE_CDS_0001 as S4_ShippingType} from '../srv/external/YY1_I_SHIPPINGTYPE_CDS_0001';
-using {YY1_PARAMETER_CDS_0001 as Parameter} from '../srv/external/YY1_PARAMETER_CDS_0001';
+using {YY1_PARAMETER_CDS as Parameter} from '../srv/external/YY1_PARAMETER_CDS';
 using {API_MATERIAL_DOCUMENT_SRV as MaterialDoc} from '../srv/external/API_MATERIAL_DOCUMENT_SRV';
 using {API_PRODUCTION_ORDER_2_SRV as s4_productionOrder} from '../srv/external/API_PRODUCTION_ORDER_2_SRV';
 using {API_PRODUCTGROUP_SRV as prdgrp} from '../srv/external/API_PRODUCTGROUP_SRV';

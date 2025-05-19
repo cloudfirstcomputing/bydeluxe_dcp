@@ -4,14 +4,14 @@
  },
  "$version": "2.0",
  "definitions": {
-  "YY1_PARAMETER_CDS_0001": {
+  "YY1_PARAMETER_CDS": {
    "kind": "service",
    "@cds.external": true,
    "@m.IsDefaultEntityContainer": "true",
    "@sap.message.scope.supported": "true",
    "@sap.supported.formats": "atom json xlsx"
   },
-  "YY1_PARAMETER_CDS_0001.P_Scbo_User": {
+  "YY1_PARAMETER_CDS.P_Scbo_User": {
    "kind": "entity",
    "@cds.external": true,
    "@cds.persistence.skip": true,
@@ -39,7 +39,7 @@
     }
    }
   },
-  "YY1_PARAMETER_CDS_0001.YY1_PARAMETER": {
+  "YY1_PARAMETER_CDS.YY1_PARAMETER": {
    "kind": "entity",
    "@cds.external": true,
    "@cds.persistence.skip": true,
@@ -124,17 +124,17 @@
     },
     "to_SAPSysAdminDataChangeUser": {
      "type": "cds.Association",
-     "target": "YY1_PARAMETER_CDS_0001.P_Scbo_User",
+     "target": "YY1_PARAMETER_CDS.P_Scbo_User",
      "keys": []
     },
     "to_SAPSysAdminDataCreateUser": {
      "type": "cds.Association",
-     "target": "YY1_PARAMETER_CDS_0001.P_Scbo_User",
+     "target": "YY1_PARAMETER_CDS.P_Scbo_User",
      "keys": []
     }
    }
   },
-  "YY1_PARAMETER_CDS_0001.YY1_PARAMETERSap_upsert": {
+  "YY1_PARAMETER_CDS.YY1_PARAMETERSap_upsert": {
    "kind": "action",
    "@cds.external": true,
    "params": {
@@ -150,7 +150,7 @@
     }
    },
    "returns": {
-    "type": "YY1_PARAMETER_CDS_0001.YY1_PARAMETER"
+    "type": "YY1_PARAMETER_CDS.YY1_PARAMETER"
    }
   }
  }

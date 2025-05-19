@@ -7,7 +7,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
 
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
-        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations, Products, ValuationArea,
+        const { DistributionDcp, Studios, Titles, CustomerCompany, Plants, StorageLocations, Parameters, Products, ValuationArea,
             SalesOrganizations, CustomerPlant, SalesOrgDistCh, Company, MaterialBOM, ProductionVersion, ProductionProcess } = this.entities
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -20,10 +20,17 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         const comptx = await cds.connect.to('API_COMPANYCODE_SRV')
         const bomtx = await cds.connect.to('API_BILL_OF_MATERIAL_SRV')
         const prdver = await cds.connect.to('PRODUCTIONVERSION')
+        const paramtx = await cds.connect.to('YY1_PARAMETER_CDS')
         const valareatx = await cds.connect.to('YY1_VALUATIONAREA_CDS')
         const productionProcess = async x => {
             const aProductionProcess = []
             let prdProcess = {}
+            const param = await paramtx.run(SELECT.from(Parameters)
+                .where({ VariableName: ['BillOfOperationsGroup1', 'BillOfOperationsGroup2', 'ProductionLine1', 'ProductionLine2'] }))
+            const bgv1 = param.find(item => item.VariableName === 'BillOfOperationsGroup1')
+            const bgv2 = param.find(item => item.VariableName === 'BillOfOperationsGroup2')
+            const plv1 = param.find(item => item.VariableName === 'ProductionLine1')
+            const plv2 = param.find(item => item.VariableName === 'ProductionLine2')
             for (let index = 0; index < x.length; index++) {
                 const element = x[index];
                 prdProcess = {
@@ -160,11 +167,11 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                         "ProductionVersion": "0001",
                         "ProductionVersionText": "Replication",
                         "BillOfOperationsType": "N",
-                        "BillOfOperationsGroup": "50000011",
+                        "BillOfOperationsGroup": bgv1.VariableValue,
                         "BillOfOperationsVariant": "1",
                         "BillOfMaterialVariantUsage": "1",
                         "BillOfMaterialVariant": "1",
-                        "ProductionLine": "REPLIFY",
+                        "ProductionLine": plv1.VariableValue,
                         "ProductionVersionStatus": "2",
                         "BOMCheckStatus": "1",
                         "ProductionVersionLockText": "Not locked",
@@ -177,11 +184,11 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                         "ProductionVersion": "0002",
                         "ProductionVersionText": "Replication-Manual",
                         "BillOfOperationsType": "N",
-                        "BillOfOperationsGroup": "50000013",
+                        "BillOfOperationsGroup": bgv2.VariableValue,
                         "BillOfOperationsVariant": "1",
                         "BillOfMaterialVariantUsage": "1",
                         "BillOfMaterialVariant": "1",
-                        "ProductionLine": "NON-REPF",
+                        "ProductionLine": plv2.VariableValue,
                         "ProductionVersionStatus": "2",
                         "BOMCheckStatus": "1",
                         "ProductionVersionLockText": "Not locked",
@@ -239,6 +246,10 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
 
         this.on(['READ'], SalesOrganizations, async req => {
             return salesorgtx.run(req.query)
+        })
+
+        this.on(['READ'], Parameters, async req => {
+            return paramtx.run(req.query)
         })
 
         this.on(['READ'], MaterialBOM, async req => {
