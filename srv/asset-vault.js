@@ -351,13 +351,13 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                         "Country": 'US',
                                         "TaxCategory": "UTXJ",
                                         "TaxClassification": "0"
-                                    },
-                                    {
-                                        "Product": ProjectID,
-                                        "Country": 'CA',
-                                        "TaxCategory": "CTXJ",
-                                        "TaxClassification": "0"
                                     }
+                           //         {
+                             //           "Product": ProjectID,
+                               //         "Country": 'CA',
+                                 //       "TaxCategory": "CTXJ",
+                                  //      "TaxClassification": "0"
+                                   // }
                                 ],
                                 "to_SalesText": [
                                     {
