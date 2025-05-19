@@ -105,7 +105,7 @@ service DistributionService {
 
     entity DistroSpec           as projection on db.DistroSpec;
     entity DCPMaterials         as projection on db.DCPMaterials;
-    entity Parameters           as projection on api.Parameters;
+    entity Parameters           as projection on api.YY1_PARAMETER;
     entity PlayBackCapability1  as projection on api.Characteristic;
     entity PlayBackCapability2  as projection on api.Characteristic;
     entity PlayBackCapability3  as projection on api.Characteristic;
@@ -115,7 +115,7 @@ service DistributionService {
     entity PlayBackCapability7  as projection on api.Characteristic;
     entity PlayBackCapability8  as projection on api.Characteristic;
     entity PlayBackCapability9  as projection on api.Characteristic;
-    entity PlayBackCapability10 as projection on api.Parameters;
+    entity PlayBackCapability10 as projection on api.YY1_PARAMETER;
     entity DCPMaterialMapping   as projection on db.DCPMaterialMapping;
     annotate DistroSpec with @odata.draft.enabled;
     annotate DCPMaterialMapping with @odata.draft.enabled;
