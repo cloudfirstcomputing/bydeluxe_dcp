@@ -344,7 +344,6 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                 "ProductDistributionChnl": item.DistributionChannel,
                                 "AccountDetnProductGroup": "03",
                                 "ItemCategoryGroup": "NORM",
-                                "SupplyingPlant": "1172",
                                 "PricingReferenceProduct": Title,
                                 "to_SalesTax": [
                                     {
