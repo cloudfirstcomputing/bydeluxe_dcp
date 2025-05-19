@@ -2,8 +2,8 @@
   <Dialog
     id="uploadSummaryDialog"
     resizable="true"
-    contentHeight="40%"
-    contentWidth="30%"
+    contentWidth="440px"
+    contentHeight="440px"
     verticalScrolling="false"
     draggable="true"
     title="Upload Summary"> 
@@ -13,15 +13,15 @@
       id="uploadSummaryMessageView"
       showDetailsPageHeader="true"
       items="{
-        path: '/'
+        path: 'uploadSummary>/results'
       }">
       <items>
         <MessageItem id="_IDGenMessageItem"
-          type="{type}"
-          title="{title}"
-          description="{description}"
-          subtitle="{subtitle}"
-          counter="{counter}" />
+          type="{uploadSummary>type}"
+      title="{uploadSummary>title}"
+      description="{uploadSummary>description}"
+      subtitle="{uploadSummary>subtitle}"
+      counter="{uploadSummary>counter}" />
       </items>
     </MessageView>
 

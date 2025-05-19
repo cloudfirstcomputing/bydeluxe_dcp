@@ -20,6 +20,15 @@ sap.ui.define([
             var oView = this.getEditFlow().getView();  // Get the view context correctly
             var that = this;
 
+            // Helper function for case-insensitive filtering
+            var _createCaseInsensitiveFilter = function(sPath, sValue) {
+                return new Filter({
+                    path: sPath,
+                    operator: FilterOperator.Contains,
+                    value1: sValue,
+                    caseSensitive: false
+                });
+            };
 
             // Load the fragment only once
             if (!this._oDialogE) {
@@ -50,9 +59,9 @@ sap.ui.define([
 
                         _handleValueHelpSearch: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
+                            var oFilter =_createCaseInsensitiveFilter(
                                 "BusinessPartnerFullName",
-                                FilterOperator.Contains, sValue
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
@@ -88,9 +97,9 @@ sap.ui.define([
 
                         _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
+                            var oFilter = _createCaseInsensitiveFilter(
                                 "name",
-                                FilterOperator.Contains, sValue
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
@@ -124,16 +133,16 @@ sap.ui.define([
                             });
                         },
 
-                        _handleValueHelpSearchlg: function (oEvent) {
+                        _handleValueHelpSearchrc: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
-                                "name",
-                                FilterOperator.Contains, sValue
+                            var oFilter = _createCaseInsensitiveFilterr(
+                                "name",// or "regionCode" based on model
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
 
-                        _handleValueHelpCloselg: function (oEvent) {
+                        _handleValueHelpCloserc: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -190,6 +199,7 @@ sap.ui.define([
                                 }.bind(this),
                                 error: function (xhr, status, error) {
                                     console.error("Update failed:", status, error, xhr.responseText);
+                                    MessageBox.error("Failed to update title");
                                     if (that._oDialogE) {
                                         that._oDialogE.close();
                                     }
@@ -214,6 +224,7 @@ sap.ui.define([
                     oView.setModel(oFormModel, "formModel");
                     oView.setModel(oViewModel, "viewModel");
                     oView.addDependent(oDialog);
+                    oDialog.open();
 
                 });
             } else {
@@ -268,6 +279,7 @@ sap.ui.define([
                     }.bind(this),
                     error: function (xhr, status, error) {
                         console.error("Product Edit failed:", status, error, xhr.responseText);
+                        MessageBox.error("Failed to update product");
                     }
                 });
             }

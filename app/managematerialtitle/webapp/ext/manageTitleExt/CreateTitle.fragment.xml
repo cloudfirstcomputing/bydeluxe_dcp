@@ -52,9 +52,9 @@
                     <Label id="lblShortTitle" text="Short Title"/>
                     <Input id="inputShortTitle" value="{formModel>/ShortTitle}"/>
 
-                    <Label id="lblReleaseDate1" text="Release Date"/>
-                    <DatePicker id="datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
-
+                    <Label id="lblReleaseDate" text="Release Date" required="true" labelFor="datePickerReleaseDate" />
+                    <DatePicker id="datePickerReleaseDate" value="{formModel>/ReleaseDate}" width="100%" />
+                    
                     <Label id="lblRepertoryDate" text="Repertory Date"/>
                     <DatePicker id="datePickerRepertoryDate" value="{formModel>/RepertoryDate}"/>
 

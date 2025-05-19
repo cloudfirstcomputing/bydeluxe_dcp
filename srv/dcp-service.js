@@ -2823,7 +2823,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
                         header.to_EmailAddress()
                 }).where({ BusinessPartner: { in: sMapCustomerTheatre } }));
-                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: { in: sMapCustomerSP }, SalesOrganization: { in: sMapSalesOrg }, DistributionChannel: { in: sMapDistributionChannel }, Division: { in: sMapOrganizationDivision } }));
+                const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: { in: sMapCustomerSP.length === 0 ? [''] : sMapCustomerSP }, SalesOrganization: { in: sMapSalesOrg.length === 0 ? [''] : sMapSalesOrg }, DistributionChannel: { in: sMapDistributionChannel.length === 0 ? [''] : sMapDistributionChannel  }, Division: { in: sMapOrganizationDivision.length === 0 ? [''] : sMapOrganizationDivision } }));
 
 
                 // const aBasicText = await s4h_products_Crt.run(SELECT.from(ProductBasicText).where({ Product: { in : mapPricingReference}}));
@@ -2918,7 +2918,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     aTableRow.push({
                         "Title": [
                             {
-                                "Title": "Title: " + sKeyText.LongText
+                                "Title": "Title: " + sKeyText?.LongText
                             }
                         ],
                         "Items": groupedList
@@ -3089,11 +3089,11 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         },
                         "BillTo": {
                             "BillToAddress": oBusinessPartnerAddrfromS4?.FullName + "," + oBusinessPartnerAddrfromS4?.HouseNumber + "," + oBusinessPartnerAddrfromS4?.StreetName + "," + oBusinessPartnerAddrfromS4?.CityName + "," + oBusinessPartnerAddrfromS4?.PostalCode + "," + oBusinessPartnerAddrfromS4?.Region + "," + oBusinessPartnerAddrfromS4?.Country,
-                            "CustomerAccountNo": oBillingDocumentPartner.Customer,
-                            "CustomerPONo": oSalesOrder.PurchaseOrderByCustomer,
-                            "CustomerContact": aSalesParameter.CustomerInvoiceContact,
-                            "DeluxContact": aSalesParameter.DeluxeContact,
-                            "DeliverInvoiceByMailTo": aSalesParameter.CustomerInvoiceContactEmail
+                            "CustomerAccountNo": oBillingDocumentPartner?.Customer,
+                            "CustomerPONo": oSalesOrder?.PurchaseOrderByCustomer,
+                            "CustomerContact": aSalesParameter?.CustomerInvoiceContact,
+                            "DeluxContact": aSalesParameter?.DeluxeContact,
+                            "DeliverInvoiceByMailTo": aSalesParameter?.CustomerInvoiceContactEmail
                         },
                         "Table": {
                             "TabHeader": [

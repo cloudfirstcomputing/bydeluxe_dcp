@@ -20,6 +20,15 @@ sap.ui.define([
             var oView = this.getEditFlow().getView();
             var that = this;
 
+            // Helper function for case-insensitive filtering
+            var _createCaseInsensitiveFilter = function(sPath, sValue) {
+                return new Filter({
+                    path: sPath,
+                    operator: FilterOperator.Contains,
+                    value1: sValue,
+                    caseSensitive: false
+                });
+            };
             // Load the fragment only once
             if (!this._oDialogL) {
                 Fragment.load({
@@ -49,9 +58,9 @@ sap.ui.define([
 
                         _handleValueHelpSearch: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
+                            var oFilter = _createCaseInsensitiveFilter(
                                 "BusinessPartnerFullName",
-                                FilterOperator.Contains, sValue
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
@@ -87,9 +96,9 @@ sap.ui.define([
 
                         _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
-                                "name",
-                                FilterOperator.Contains, sValue
+                            var oFilter =_createCaseInsensitiveFilter(
+                                "name", // or "languageCode" depending on your model
+                                 sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
@@ -123,16 +132,16 @@ sap.ui.define([
                             });
                         },
 
-                        _handleValueHelpSearchlg: function (oEvent) {
+                        _handleValueHelpSearchrc: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
-                                "name",
-                                FilterOperator.Contains, sValue
+                            var oFilter = _createCaseInsensitiveFilter(
+                                "name", // or "regionCode" depending on your model
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
 
-                        _handleValueHelpCloselg: function (oEvent) {
+                        _handleValueHelpCloserc: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -155,6 +164,11 @@ sap.ui.define([
                             delete oData.LangCodeText;
                             delete oData.TitleCategoryText;
                             delete oData.StudioText;
+
+                            if (!oData.ReleaseDate) {
+                                MessageBox.error("Please enter the Release Date.");
+                                return;
+                            } 
 
                             if (oData.ReleaseDate) {
                                 oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0];
@@ -273,6 +287,7 @@ sap.ui.define([
 
                             console.log("New LocalTitleId:", newLocalId);
                             oFormModel.oData.LocalTitleId = newLocalId;
+                            oFormModel.setProperty("/ReleaseDate", null);
                             oView.setModel(oFormModel, "formModel");
                             oView.addDependent(oDialog);
                             oDialog.open(); //First time opening

@@ -115,6 +115,7 @@ annotate service.Package with {
     PackageName      @Common: {Label: '{i18n>PackageName}', };
     Priority         @Common: {Label: '{i18n>Priority}', };
     OrderType        @Common: {Label: '{i18n>OrderType}', };
+    GofilexTitleID   @Common: {Label: '{i18n>GofilexTitleID}', };
     DeliveryMethod1  @Common: {
         Label          : '{i18n>DeliveryMethod1}',
         Text           : DeliveryMethod1.ShippingConditionName,
@@ -356,7 +357,7 @@ annotate service.DistroSpec with @(
             {
                 $Type: 'UI.DataField',
                 Value: RepertoryDate,
-            },
+            }
         ],
     },
     UI.FieldGroup #Delivery: {
@@ -594,6 +595,10 @@ annotate service.Package with @(
                 $Type: 'UI.DataField',
                 Value: OrderType,
             },
+            {
+                $Type: 'UI.DataField',
+                Value: GofilexTitleID,
+            }
         ],
     },
     UI.FieldGroup #_PackageValidityDate : {
@@ -706,6 +711,10 @@ annotate service.Package with @(
             $Type: 'UI.DataField',
             Value: OrderType,
         },
+        {
+            $Type: 'UI.DataField',
+            Value: GofilexTitleID,
+        }
     ]
 );
 

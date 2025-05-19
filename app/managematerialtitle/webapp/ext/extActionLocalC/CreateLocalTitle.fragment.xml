@@ -63,8 +63,8 @@
 			            </suggestionItems>
 		            </Input>
 
-                    <Label id="localCreate_lblReleaseDate1" text="Release Date"/>
-                    <DatePicker id="localCreate_datePickerReleaseDate" value="{formModel>/ReleaseDate}"/>
+                    <Label id="localCreate_lblReleaseDate1" text="Release Date" required="true" />
+                    <DatePicker id="localCreate_datePickerReleaseDate" value="{formModel>/ReleaseDate}" required="true" />
 
                     <Label id="lblRepertoryDate03" text="Repertory Date"/>
                     <DatePicker id="datePickerRepertoryDate04" value="{formModel>/RepertoryDate}"/>

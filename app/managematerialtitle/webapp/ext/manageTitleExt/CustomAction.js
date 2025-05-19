@@ -55,6 +55,16 @@ sap.ui.define([
             var oView = this.getEditFlow().getView();  // Get the view context correctly
             var that = this;
 
+            // Helper function for case-insensitive filtering
+            var _createCaseInsensitiveFilter = function(sPath, sValue) {
+                return new Filter({
+                    path: sPath,
+                    operator: FilterOperator.Contains,
+                    value1: sValue,
+                    caseSensitive: false
+                });
+            };
+
             // Load the fragment only once
             if (!this._oDialogC) {
                 var oFragment = Fragment.load({
@@ -84,9 +94,9 @@ sap.ui.define([
 
                         _handleValueHelpSearch: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
+                            var oFilter =  _createCaseInsensitiveFilter(
                                 "BusinessPartnerFullName",
-                                FilterOperator.Contains, sValue
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
@@ -122,9 +132,9 @@ sap.ui.define([
 
                         _handleValueHelpSearchlg: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
-                                "name",
-                                FilterOperator.Contains, sValue
+                            var oFilter =_createCaseInsensitiveFilter(
+                                "name", // or "languageCode" based on your model
+                                 sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
@@ -158,16 +168,16 @@ sap.ui.define([
                             });
                         },
 
-                        _handleValueHelpSearchlg: function (oEvent) {
+                        handleValueHelpSearchrc: function (oEvent) {
                             var sValue = oEvent.getParameter("value");
-                            var oFilter = new Filter(
-                                "name",
-                                FilterOperator.Contains, sValue
+                            var oFilter = _createCaseInsensitiveFilter(
+                                "name",// or "regionCode" based on your model
+                                sValue
                             );
                             oEvent.getSource().getBinding("items").filter([oFilter]);
                         },
 
-                        _handleValueHelpCloselg: function (oEvent) {
+                        _handleValueHelpCloserc: function (oEvent) {
                             var oSelectedItem = oEvent.getParameter("selectedItem");
                             if (oSelectedItem) {
                                 var productInput = oView.byId(this._sInputId);
@@ -221,6 +231,11 @@ sap.ui.define([
                             var oModel = oView.getModel();
 
                             var oData = oView.getModel("formModel").getData();
+
+                            if (!oData.ReleaseDate) {
+                                MessageBox.error("Release Date is required.");
+                                return; // Stop execution if validation fails
+                            }
 
                             if (oData.ReleaseDate) {
                                 oData.ReleaseDate = new Date(oData.ReleaseDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
@@ -445,7 +460,8 @@ sap.ui.define([
                                           error.forEach(item => summaryList.push(formatEntry(item, "Error", errorCount)));
                                           warning.forEach(item => summaryList.push(formatEntry(item, "Warning", warningCount)));
                                       
-                                          const oSummaryModel = new sap.ui.model.json.JSONModel(summaryList);
+                                          const oSummaryModel = new sap.ui.model.json.JSONModel({ results: summaryList });
+
                                       
                                           if (!that._oUploadSummaryDialog) {
                                             Fragment.load({
@@ -459,11 +475,11 @@ sap.ui.define([
                                             }).then(function(oDialog) {
                                               that._oUploadSummaryDialog = oDialog;
                                               oView.addDependent(oDialog);
-                                              oDialog.setModel(oSummaryModel);    // Set model here
+                                              oDialog.setModel(oSummaryModel, "uploadSummary");    
                                               oDialog.open();
                                             });
                                           } else {
-                                            that._oUploadSummaryDialog.setModel(oSummaryModel); // Refresh model
+                                            that._oUploadSummaryDialog.setModel(oSummaryModel, "uploadSummary");
                                             that._oUploadSummaryDialog.open();
                                           }
                                       
