@@ -8411,23 +8411,9 @@
   "Distrospec_SRV": {
    "kind": "service",
    "@cds.external": true,
-   "@CodeList.CurrencyCodes": {
-    "Url": "../../../../default/iwbep/common/0001/$metadata",
-    "CollectionPath": "Currencies"
-   },
    "@CodeList.UnitsOfMeasure": {
     "Url": "../../../../default/iwbep/common/0001/$metadata",
     "CollectionPath": "UnitsOfMeasure"
-   },
-   "@Aggregation.ApplySupported": {
-    "Transformations": [
-     "aggregate",
-     "groupby",
-     "filter"
-    ],
-    "Rollup": {
-     "#": "None"
-    }
    },
    "@Common.ApplyMultiUnitBehaviorForSortingAndFiltering": true,
    "@Capabilities.FilterFunctions": [
@@ -8458,14 +8444,16 @@
     "FitToPage": true,
     "FontName": true,
     "FontSize": true,
+    "HeaderFooter": true,
+    "IANATimezoneFormat": true,
     "Margin": true,
     "Padding": true,
-    "Signature": true,
-    "HeaderFooter": true,
     "ResultSizeDefault": 20000,
     "ResultSizeMaximum": 20000,
-    "IANATimezoneFormat": true,
-    "Treeview": true
+    "Signature": true,
+    "TextDirectionLayout": true,
+    "Treeview": true,
+    "UploadToFileShare": true
    },
    "@Capabilities.KeyAsSegmentSupported": true,
    "@Capabilities.AsynchronousRequestsSupported": true
