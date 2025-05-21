@@ -24,6 +24,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const prdgrptx = await cds.connect.to("API_PRODUCTGROUP_SRV");
         const prdgrp1tx = await cds.connect.to("YY1_ADDITIONALMATERIALGRP1_CDS");
         const charactx = await cds.connect.to("YY1_CLFNCHARACTERISTIC_CDS");
+        const bpstx = await cds.connect.to("ZAPI_BUSINESSPARTNERS");
+        const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -105,7 +107,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
                 switch (processedField[index]) {
                     case "Studio_BusinessPartner":
-                        records = await bptx.run(SELECT.from(Studios).where({ BusinessPartner: ids }))
+                        records = await bpstx.run(SELECT.from(Studios).where({ BusinessPartner: ids }))
 
                         break;
 
@@ -155,12 +157,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
                 switch (processedField[index]) {
                     case "Title_Product":
-                        const data = asArray(await pdtx.run(SELECT.from(Products)
-                            .columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }])
-                            .where({ Product: ids })))
-                        records = data.map(item => {
-                            return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
-                        })
+                        records = asArray(await prdtx.run(SELECT.from(Titles).where({ Product: ids })))
 
                         break;
                     case "DeliverySequence1_ShippingCondition": case "DeliverySequence2_ShippingCondition":
@@ -298,12 +295,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
                 switch (processedField[index]) {
                     case "DCPMaterialNumber_Product":
-                        const data = asArray(await pdtx.run(SELECT.from(Products)
-                            .columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }])
-                            .where({ Product: ids })))
-                        records = data.map(item => {
-                            return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
-                        })
+                        records = asArray(await prdtx.run(SELECT.from(DCPProducts).where({ Product: ids })))
 
                         break;
                     default:
@@ -403,35 +395,16 @@ module.exports = class DistributionService extends cds.ApplicationService {
             })
         })
 
-        this.on(['READ'], DCPProducts, async req => {
-            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductType: 'ZDCP' })))
-            return data.map(item => {
-                return { Product: item.Product, Name: item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription }
-            })
-        })
-
-        this.on(['READ'], DCPMapProducts, async req => {
-            const data1 = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z003' })))
-            const data2 = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z004' })))
-            const data = [...data1, ...data2]
-            return data.map(item => {
-                return { Product: item.Product, Name: item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription }
-            })
-        })
-
-        this.on(['READ'], Titles, async req => {
-            const data = _asArray(await pdtx.run(SELECT.from(Products).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z007' })))
-            return data.map(item => {
-                return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
-            })
+        this.on(['READ'], [DCPProducts, Titles, DCPMapProducts], async req => {
+            return prdtx.run(req.query)
         })
 
         this.on('READ', Studios, async req => {
-            return bptx.run(SELECT.from(Studios).where`BusinessPartnerType in ('Z001', 'Z002')`)
+            return bpstx.run(req.query)
         })
 
         this.on('READ', Theaters, async req => {
-            return bptx.run(SELECT.from(Theaters).where`BusinessPartnerType = 'Z003'`)
+            return bpstx.run(req.query)
         })
 
         this.on('READ', Characteristic, async req => {

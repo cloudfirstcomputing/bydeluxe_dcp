@@ -29,6 +29,8 @@ using {CE_BANK_0003 as S4_Bank} from '../srv/external/CE_BANK_0003.csn';
 using {API_BILL_OF_MATERIAL_SRV as matbom} from '../srv/external/API_BILL_OF_MATERIAL_SRV';
 using {PRODUCTIONVERSION as prodver} from '../srv/external/PRODUCTIONVERSION';
 using {YY1_VALUATIONAREA_CDS as valuation} from '../srv/external/YY1_VALUATIONAREA_CDS';
+using {ZAPI_BUSINESSPARTNERS as bp} from '../srv/external/ZAPI_BUSINESSPARTNERS';
+using {ZCL_PRODUCT_VH as prd} from '../srv/external/ZCL_PRODUCT_VH';
 
 context api {
 
@@ -104,4 +106,9 @@ context api {
     entity MaterialBOM                  as projection on matbom.MaterialBOM;
     entity ProductionVersion            as projection on prodver.ProductionVersion;
     entity YY1_ValuationArea            as projection on valuation.YY1_ValuationArea;
+    entity ZI_Studio                    as projection on bp.ZI_Studio;
+    entity ZI_Theater                   as projection on bp.ZI_Theater;
+    entity ZI_DCPPRODUCT_VH             as projection on prd.ZI_DCPPRODUCT_VH;
+    entity ZI_TITLES_VH                 as projection on prd.ZI_TITLES_VH;
+    entity ZI_PRODUCTKC_VH              as projection on prd.ZI_PRODUCTKC_VH;
 }

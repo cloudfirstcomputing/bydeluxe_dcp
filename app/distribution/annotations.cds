@@ -25,7 +25,7 @@ annotate service.DistroSpec with {
     Name               @Common: {Label: '{i18n>Name}', };
     Title              @Common: {
         Label          : '{i18n>Title}',
-        Text           : Title.Name,
+        Text           : Title.ProductName,
         TextArrangement: #TextOnly,
     };
     DeliverySequence1  @Common: {
@@ -301,13 +301,13 @@ annotate service.ShippingConditions with {
 };
 
 annotate service.DCPProducts with {
-    Product @Common: {Label: '{i18n>Product}', };
-    Name    @common: {Label: '{i18n>ProductDesc}'}
+    Product     @Common: {Label: '{i18n>Product}', };
+    ProductName @common: {Label: '{i18n>ProductDesc}'}
 };
 
 annotate service.Titles with {
-    Product @Common: {Label: '{i18n>Title}', };
-    Name    @Common: {Label: '{i18n>Description}'}
+    Product     @Common: {Label: '{i18n>Title}', };
+    ProductName @Common: {Label: '{i18n>Description}'}
 };
 
 annotate service.DeliveryPriority with {
@@ -1310,7 +1310,7 @@ annotate service.DistroSpec with {
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'Name',
+                    ValueListProperty: 'ProductName',
                 },
             ],
         },
@@ -2211,7 +2211,7 @@ annotate service.DCPMaterials with {
                 },
                 {
                     $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'Name',
+                    ValueListProperty: 'ProductName',
                 },
             ],
         },

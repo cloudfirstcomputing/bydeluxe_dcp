@@ -1,0 +1,440 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.9.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "ZCL_PRODUCT_VH": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "ZCL_PRODUCT_VH.ZI_CompanyCode_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.searchable": "true",
+   "@sap.content.version": "1",
+   "@sap.label": "Value Help Company Code",
+   "elements": {
+    "CompanyCode": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "CompanyCodeName",
+     "@sap.label": "Company Code",
+     "notNull": true
+    },
+    "CompanyCodeName": {
+     "type": "cds.String",
+     "length": 25,
+     "@sap.label": "Company Name",
+     "@sap.quickinfo": "Name of Company Code or Company"
+    }
+   }
+  },
+  "ZCL_PRODUCT_VH.ZI_Customer_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.searchable": "true",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Value Help for Customer",
+   "elements": {
+    "Customer": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "BPCustomerName",
+     "@sap.label": "Customer",
+     "@sap.quickinfo": "Customer Number",
+     "notNull": true
+    },
+    "OrganizationBPName1": {
+     "type": "cds.String",
+     "length": 35,
+     "@sap.label": "Customer Name 1",
+     "@sap.quickinfo": "Name"
+    },
+    "BusinessPartnerName1": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Business Partner Name 1",
+     "@sap.quickinfo": "Name 1"
+    },
+    "OrganizationBPName2": {
+     "type": "cds.String",
+     "length": 35,
+     "@sap.label": "Customer Name 2",
+     "@sap.quickinfo": "Name 2"
+    },
+    "BusinessPartnerName2": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Business Partner Name 2",
+     "@sap.quickinfo": "Name 2"
+    },
+    "Country": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Country/Region",
+     "@sap.quickinfo": "Country/Region Key"
+    },
+    "CityName": {
+     "type": "cds.String",
+     "length": 35,
+     "@sap.label": "City"
+    },
+    "BPAddrCityName": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Business Partner Address City",
+     "@sap.quickinfo": "City"
+    },
+    "StreetName": {
+     "type": "cds.String",
+     "length": 35,
+     "@sap.label": "Street",
+     "@sap.quickinfo": "Street and House Number"
+    },
+    "BPAddrStreetName": {
+     "type": "cds.String",
+     "length": 60,
+     "@sap.label": "Business Partner Address Street",
+     "@sap.quickinfo": "Street"
+    },
+    "PostalCode": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Postal Code"
+    },
+    "CustomerName": {
+     "type": "cds.String",
+     "length": 80,
+     "@sap.label": "Customer Name",
+     "@sap.quickinfo": "Name of Customer"
+    },
+    "BPCustomerName": {
+     "type": "cds.String",
+     "length": 81,
+     "@sap.label": "Business Partner Customer Name",
+     "@sap.quickinfo": "Customer Name"
+    },
+    "CustomerAccountGroup": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Account Group",
+     "@sap.quickinfo": "Customer Account Group"
+    },
+    "AuthorizationGroup": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Authorization",
+     "@sap.quickinfo": "Authorization Group"
+    },
+    "IsBusinessPurposeCompleted": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Purpose Complete Flag",
+     "@sap.quickinfo": "Business Purpose Completed Flag"
+    },
+    "IsCompetitor": {
+     "type": "cds.Boolean",
+     "@sap.label": "Competitors",
+     "@sap.quickinfo": "Indicator: Competitor"
+    },
+    "BusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number"
+    },
+    "BusinessPartnerType": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Business Partner Type"
+    },
+    "DataControllerSet": {
+     "type": "cds.String",
+     "length": 1,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Ctrlr. Set",
+     "@sap.quickinfo": "BP: Data Controller Set Flag"
+    },
+    "DataController1": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController2": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController3": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController4": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController5": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController6": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController7": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController8": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController9": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    },
+    "DataController10": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Data Controller",
+     "@sap.quickinfo": "BP: Data Controller (Internal Use Only)"
+    }
+   }
+  },
+  "ZCL_PRODUCT_VH.ZI_DCPPRODUCT_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Value Help for Product and Description",
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 18,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "Product_Text",
+     "@sap.label": "Product",
+     "@sap.quickinfo": "Product Number",
+     "notNull": true
+    },
+    "Product_Text": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "ProductName": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description"
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Product Type"
+    }
+   }
+  },
+  "ZCL_PRODUCT_VH.ZI_Plant_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Value Help for Plant",
+   "elements": {
+    "Plant": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "PlantName",
+     "@sap.label": "Plant",
+     "notNull": true
+    },
+    "PlantName": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.label": "Plant Name"
+    }
+   }
+  },
+  "ZCL_PRODUCT_VH.ZI_PRODUCTKC_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Value Help for Product and Description",
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 18,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "Product_Text",
+     "@sap.label": "Product",
+     "@sap.quickinfo": "Product Number",
+     "notNull": true
+    },
+    "Product_Text": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "ProductName": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description"
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Product Type"
+    }
+   }
+  },
+  "ZCL_PRODUCT_VH.ZI_PRODUCT_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Value Help for Product and Description",
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 18,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "Product_Text",
+     "@sap.label": "Product",
+     "@sap.quickinfo": "Product Number",
+     "notNull": true
+    },
+    "Product_Text": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "ProductName": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description"
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Product Type"
+    }
+   }
+  },
+  "ZCL_PRODUCT_VH.ZI_TITLES_VH": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Custom Value Help for Titles",
+   "elements": {
+    "Product": {
+     "key": true,
+     "type": "cds.String",
+     "length": 18,
+     "@sap.display.format": "UpperCase",
+     "@sap.text": "Product_Text",
+     "@sap.label": "Product",
+     "@sap.quickinfo": "Product Number",
+     "notNull": true
+    },
+    "Product_Text": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description",
+     "@sap.creatable": "false",
+     "@sap.updatable": "false"
+    },
+    "ProductName": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.label": "Product Description"
+    },
+    "ProductType": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "UpperCase",
+     "@sap.label": "Product Type"
+    }
+   }
+  }
+ }
+}

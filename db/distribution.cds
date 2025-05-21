@@ -9,10 +9,10 @@ using api from './common';
 
 namespace deluxe.distribution;
 
-entity DCPMaterialVH as projection on api.Products;
-entity TitleVH       as projection on api.Products;
-entity StudioVH      as projection on api.BusinessPartners;
-entity TheaterVH     as projection on api.BusinessPartners;
+entity DCPMaterialVH as projection on api.ZI_DCPPRODUCT_VH;
+entity TitleVH       as projection on api.ZI_TITLES_VH;
+entity StudioVH      as projection on api.ZI_Studio;
+entity TheaterVH     as projection on api.ZI_Theater;
 
 entity DistroSpec : managed {
     key DistroSpecUUID     : UUID;

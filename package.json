@@ -467,6 +467,28 @@
       "YY1_PROFORMAREPORT_CDS_0001": {
         "kind": "odata-v2",
         "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001"
+      },
+      "ZAPI_BUSINESSPARTNERS": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZAPI_BUSINESSPARTNERS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/ZAPI_BUSINESSPARTNERS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "ZCL_PRODUCT_VH": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZCL_PRODUCT_VH",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/ZCL_PRODUCT_VH",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },
