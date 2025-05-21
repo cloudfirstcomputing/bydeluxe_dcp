@@ -3,7 +3,7 @@ const { uuid } = cds.utils
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, ShippingType, Regions, Plants, Characteristic, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
+        const { DistroSpec, ShippingType, Regions, GeoRegions, Plants, Characteristic, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
             StorageLocations, ProductGroup, ProductGroup1, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
@@ -185,7 +185,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // DistRestrictions?$expand
         this.on("READ", [`DistRestrictions`, `KeyDistRestrictions`], async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_Region"]
+            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_ID"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -208,8 +208,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         })
                         break;
 
-                    case "DistributionFilterRegion_Region":
-                        records = await rgtx.run(SELECT.from(Regions).where({ Region: ids }))
+                    case "DistributionFilterRegion_ID":
+                        records = await SELECT.from(GeoRegions).where({ ID: ids })
 
                         break;
                     default:
@@ -220,13 +220,13 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     maps[record[element[1]]] = record;
 
                 // Add titles to result
-                for (const note of asArray(response)) {
-                    if (processedField[index] === "DistributionFilterRegion_Region") {
-                        note[element[0]] = records.find(item => item.Country === note.DistributionFilterCountry_code)
-                    } else {
-                        note[element[0]] = maps[note[processedField[index]]];
-                    }
-                }
+                // for (const note of asArray(response)) {
+                //     if (processedField[index] === "DistributionFilterRegion_ID") {
+                //         note[element[0]] = records.find(item => item.Country === note.DistributionFilterCountry_code)
+                //     } else {
+                //         note[element[0]] = maps[note[processedField[index]]];
+                //     }
+                // }
             }
 
             return response;

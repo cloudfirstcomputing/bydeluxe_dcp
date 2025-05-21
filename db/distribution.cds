@@ -2,6 +2,7 @@ using {
     managed,
     cuid,
     Country,
+    sap.common.CodeList,
     Language
 } from '@sap/cds/common';
 using from '@sap/cds-common-content';
@@ -81,11 +82,7 @@ entity KeyPackage {
         ]  @mandatory;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
-        OrderType          : String(1) enum {
-            Content = 'C';
-            Keys = 'K';
-            Both = 'B';
-        };
+        OrderType          : orderType;
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
         to_DistRestriction : Composition of many KeyDistRestrictions
@@ -100,11 +97,7 @@ entity Package {
             0,
             99
         ]  @mandatory;
-        OrderType          : String(1) enum {
-            Content = 'C';
-            Keys = 'K';
-            Both = 'B';
-        };
+        OrderType          : orderType;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
         GofilexTitleID     : String;
@@ -222,4 +215,10 @@ entity GeoRegions {
         Code        : String(10);
         Description : String(100);
         _Territory  : Association to one GeoRegions;
+};
+
+type orderType : Association to OrderType;
+
+entity OrderType : CodeList {
+    key code : String(4);
 };

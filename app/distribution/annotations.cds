@@ -262,7 +262,7 @@ annotate service.CPLDetail with {
 annotate service.DCPMaterials with {
     DCPMaterialNumber        @Common: {
         Label: '{i18n>DCPMaterial}',
-        Text : DCPMaterialNumber.Name,
+        Text : DCPMaterialNumber.ProductName,
     };
     PublishDateOffset        @Common: {Label: '{i18n>PublishDateOffset}', };
     CTT                      @Common: {Label: '{i18n>CTT}', }  @UI.MultiLineText;
@@ -409,11 +409,11 @@ annotate service.DistroSpec with @(
         {
             $Type : 'UI.CollectionFacet',
             ID    : 'PackageCollection',
-            Label : '{i18n>PackageInfo}',
+            Label : '{i18n>GeneralInfo}',
             Facets: [{
                 $Type : 'UI.ReferenceFacet',
                 ID    : 'General',
-                Label : '{i18n>GeneralInfo}',
+                // Label : '{i18n>GeneralInfo}',
                 Target: '@UI.FieldGroup#General',
             }, ],
         },
@@ -688,7 +688,7 @@ annotate service.Package with @(
         {
             $Type : 'UI.ReferenceFacet',
             ID    : '_PackageFilter',
-            Label : '{i18n>DistRestriction}',
+            Label : '{i18n>ContentRestriction}',
             Target: 'to_DistRestriction/@UI.LineItem',
         },
         {
@@ -780,7 +780,7 @@ annotate service.KeyPackage with @(
         {
             $Type : 'UI.ReferenceFacet',
             ID    : '_KeyPackageFilter',
-            Label : '{i18n>DistRestriction}',
+            Label : '{i18n>KeyRestriction}',
             Target: 'to_DistRestriction/@UI.LineItem',
         },
         {
