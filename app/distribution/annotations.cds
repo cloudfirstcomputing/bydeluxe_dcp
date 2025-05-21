@@ -593,7 +593,7 @@ annotate service.Package with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: OrderType,
+                Value: OrderType_code,
             },
             {
                 $Type: 'UI.DataField',
@@ -709,7 +709,7 @@ annotate service.Package with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: OrderType,
+            Value: OrderType_code,
         },
         {
             $Type: 'UI.DataField',
@@ -740,7 +740,7 @@ annotate service.KeyPackage with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: OrderType,
+                Value: OrderType_code,
             },
         ],
     },
@@ -801,7 +801,7 @@ annotate service.KeyPackage with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: OrderType,
+            Value: OrderType_code,
         },
     ]
 );
