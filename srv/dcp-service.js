@@ -2820,7 +2820,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 var sMapCustomerTheatre = [...new Set(aOrderHeaderPart.map(row => { if (row.PartnerFunction === 'SH') { return row?.Customer === undefined ? '' : row?.Customer } else { return '' } })), ...new Set(aOrderItemPart.map(row => { if (row.PartnerFunction === 'SH') { return row.Customer } else { return '' } }))];
 
                 const oBusinessPartnerAddrTheatre = await s4h_bp_Txn.run(SELECT.from(S4H_BusinessPartnerAddress, (header) => {
-                    header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,
+                    header.FullName, header.HouseNumber, header.StreetName, header.CityName, header.PostalCode, header.Region, header.Country,header.BusinessPartner
                         header.to_EmailAddress()
                 }).where({ BusinessPartner: { in: sMapCustomerTheatre } }));
                 const oBusinessPartnerCustAreaSales = await s4h_bp_Txn.run(SELECT.from(CustSalesPartnerFunc).where({ Customer: { in: sMapCustomerSP.length === 0 ? [''] : sMapCustomerSP }, SalesOrganization: { in: sMapSalesOrg.length === 0 ? [''] : sMapSalesOrg }, DistributionChannel: { in: sMapDistributionChannel.length === 0 ? [''] : sMapDistributionChannel  }, Division: { in: sMapOrganizationDivision.length === 0 ? [''] : sMapOrganizationDivision } }));
@@ -3077,6 +3077,14 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 var sFooterText = "Deluxe Digital Cinema is a wholly owned subsidiary of Deluxe Media Inc.," + " " + sCompanyAddress + "  "
                     + "Deluxe Standard terms and conditions apply. These can be accessed at http://bydeluxe.com/tands" + "  " + "This document has no tax value as per article 21 (Presidential Decree 633/72) since it has already been sent through the interchange system of the Revenue Agency."
 
+                     
+                     var iTypeLength = oTaxObjectforForm.TaxTable.TaxTableRow.length;
+                     var iTaxableAmount = oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2
+                     var iGrandTotal = iNetAmount+iTaxableAmount-(isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem))
+                    oTaxObjectforForm.TaxTable.TaxTableRow[0].Cell2 = iNetAmount
+                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-3].Cell2 = isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem)
+                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2 = isNaN(iGrandTotal)? 0 : parseInt(iGrandTotal)
+
                 const billingDataNode = {
                     "TaxInvoice": {
                         "Header": {
@@ -3288,8 +3296,17 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
             const taxTableRows = [];
             const taxTypeTableRows = [];
+            var iTaxableAmount=0
 
             const aTaxforMainTable = []
+            taxTableRows.push({
+                Cell1: "Sub-Total: ",
+                Cell2: ""
+            })
+
+            taxTypeTableRows.push({
+                Cell1: ""
+            });
 
             Object.values(grouped).forEach((entry, index) => {
                 const serialNo = index + 1;
@@ -3298,6 +3315,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     Cell1: entry.ConditionTypeName + entry.ConditionQuantityUnit,
                     Cell2: "     " + entry.TotalConditionAmount
                 });
+
+                iTaxableAmount += parseInt(entry.TotalConditionAmount)
 
                 taxTypeTableRows.push({
                     Cell1: serialNo.toString()
@@ -3308,6 +3327,21 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     SerialNo: serialNo.toString()
                 })
             });
+
+            taxTableRows.push({
+                Cell1: "Discount: ",
+                Cell2: ""
+            })
+
+            taxTableRows.push({
+                Cell1: "",
+                Cell2: ""
+            })
+
+            taxTableRows.push({
+                Cell1: "Grand Total Due: ",
+                Cell2: iTaxableAmount
+            })
 
             return {
                 TaxTable: {
