@@ -1294,7 +1294,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const getDistroSpecData = async (req, oContentData, aDeliverySeqFromDistHeader) => {
             let distroSpecData;
             var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
-                // dist('*'),
+                dist('*'),
                     dist.to_StudioKey((studio) => { studio('*') }),
                     dist.to_Package((pkg) => {
                         pkg('*'),
@@ -1303,7 +1303,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 dcpmat('*'),
                                     dcpmat.to_DCPDetail((dcpdet) => { dcpdet('*') })
                             })
-                    })
+                    }),
                     dist.to_KeyPackage((keyPkg) => {
                         keyPkg('*'),
                             keyPkg.to_DistRestriction((dist) => { dist('*') }),
