@@ -1297,7 +1297,23 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 dist('*'),
                     dist.to_StudioKey((studio) => { studio('*') }),
                     dist.to_Package((pkg) => {
-                        pkg('*'),
+                        // pkg('*'),
+                            pkg.PackageUUID,
+                            pkg.PackageName,
+                            pkg.Priority,
+                            pkg.ValidFrom,
+                            pkg.ValidTo,
+                            pkg.GofilexTitleID,
+                            pkg.DeliveryMethod1,
+                            pkg.DeliveryMethod2,
+                            pkg.DeliveryMethod3,
+                            pkg.DeliveryMethod4,
+                            pkg.DeliveryMethod5,
+                            pkg.DeliveryMethod6,
+                            pkg.DeliveryMethod7,
+                            pkg.DeliveryMethod8,
+                            pkg.DeliveryMethod9,
+                            pkg.DeliveryMethod10,
                             pkg.to_DistRestriction((dist) => { dist('*') }),
                             pkg.to_DCPMaterial((dcpmat) => {
                                 dcpmat('*'),
@@ -1305,7 +1321,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             })
                     }),
                     dist.to_KeyPackage((keyPkg) => {
-                        keyPkg('*'),
+                        // keyPkg('*'),
+                            keyPkg.PackageUUID,
+                            keyPkg.PackageName,
+                            keyPkg.Priority,
+                            keyPkg.ValidFrom,
+                            keyPkg.ValidTo,
                             keyPkg.to_DistRestriction((dist) => { dist('*') }),
                             keyPkg.to_CPLDetail((cpl) => { cpl('*') })
                     })
