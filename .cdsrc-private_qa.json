@@ -1,0 +1,48 @@
+{
+  "requires": {
+    "[hybrid]": {
+      "db": {
+        "binding": {
+          "type": "cf",
+          "apiEndpoint": "https://api.cf.us10-001.hana.ondemand.com",
+          "org": "Deluxe Media Inc. a Delaware corporation_quality-gsnhtkxl",
+          "space": "Quality_space",
+          "instance": "bydeluxe-db",
+          "key": "bydeluxe-db-key"
+        },
+        "kind": "hana-cloud",
+        "vcap": {
+          "name": "db"
+        }
+      },
+      "destinations": {
+        "binding": {
+          "type": "cf",
+          "apiEndpoint": "https://api.cf.us10-001.hana.ondemand.com",
+          "org": "Deluxe Media Inc. a Delaware corporation_quality-gsnhtkxl",
+          "space": "Quality_space",
+          "instance": "bydeluxe-destination",
+          "key": "bydeluxe-destination-key"
+        },
+        "kind": "destinations",
+        "vcap": {
+          "name": "destinations"
+        }
+      },
+      "auth": {
+        "binding": {
+          "type": "cf",
+          "apiEndpoint": "https://api.cf.us10-001.hana.ondemand.com",
+          "org": "Deluxe Media Inc. a Delaware corporation_quality-gsnhtkxl",
+          "space": "Quality_space",
+          "instance": "bydeluxe-auth",
+          "key": "bydeluxe-auth-key"
+        },
+        "kind": "xsuaa-auth",
+        "vcap": {
+          "name": "auth"
+        }
+      }
+    }
+  }
+}

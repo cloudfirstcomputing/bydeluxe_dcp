@@ -38,7 +38,7 @@
     },
     "VolumeName": {
      "type": "cds.String",
-     "length": 80
+     "length": 255
     },
     "AssetMapFileSize": {
      "type": "cds.String",
@@ -54,7 +54,7 @@
     },
     "VersionDescription": {
      "type": "cds.String",
-     "length": 40
+     "length": 100
     },
     "CreatedinSAP": {
      "type": "cds.Boolean",
@@ -80,7 +80,7 @@
     },
     "MaxCPLDuration": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "StartOfCredit": {
      "type": "cds.LargeString"
@@ -137,6 +137,9 @@
     "SatelliteDistributionEndDate": {
      "type": "cds.String",
      "length": 40
+    },
+    "ProductionProcess": {
+     "type": "cds.Boolean"
     },
     "_Items": {
      "type": "cds.Composition",
@@ -160,10 +163,6 @@
      "type": "cds.String",
      "length": 40,
      "notNull": true,
-     "@Common.Label": "Project",
-     "@Common.Text": {
-      "=": "AssetMapIDDescription"
-     },
      "@Common.FieldControl": {
       "#": "Mandatory"
      }
@@ -178,8 +177,7 @@
     },
     "AssetMapIDDescription": {
      "type": "cds.String",
-     "length": 80,
-     "@Common.Label": "Description"
+     "length": 80
     },
     "AnnotationText": {
      "type": "cds.LargeString"
@@ -189,7 +187,7 @@
     },
     "VolumeName": {
      "type": "cds.String",
-     "length": 80
+     "length": 255
     },
     "AssetMapFileSize": {
      "type": "cds.String",
@@ -205,7 +203,7 @@
     },
     "VersionDescription": {
      "type": "cds.String",
-     "length": 40
+     "length": 100
     },
     "CreatedinSAP": {
      "type": "cds.Boolean",
@@ -231,7 +229,7 @@
     },
     "MaxCPLDuration": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "StartOfCredit": {
      "type": "cds.LargeString"
@@ -288,6 +286,9 @@
     "SatelliteDistributionEndDate": {
      "type": "cds.String",
      "length": 40
+    },
+    "ProductionProcess": {
+     "type": "cds.Boolean"
     },
     "_Items": {
      "type": "cds.Composition",
@@ -322,11 +323,16 @@
     },
     "LinkedCTT": {
      "type": "cds.String",
-     "length": 80,
+     "length": 500,
      "@Common.Label": "CTT",
      "@Common.FieldControl": {
       "#": "Mandatory"
      }
+    },
+    "AssetMapUUID": {
+     "type": "cds.String",
+     "length": 40,
+     "@Common.Label": "Asset Map UUID"
     },
     "ProjectID": {
      "type": "cds.String",
@@ -355,6 +361,12 @@
      "$Type": "UI.DataField",
      "Value": {
       "=": "LinkedCTT"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "AssetMapUUID"
      }
     },
     {
@@ -1002,8 +1014,52 @@
     "UnitForMaxPackagingDimensions": {
      "type": "cds.String",
      "length": 3
+    },
+    "YY1_matcust_PRD": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "YY1_CustomerDes_PRD": {
+     "type": "cds.String",
+     "length": 20
     }
    }
+  },
+  "Distrospec_SRV.GeoRegions": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true
+    },
+    "Code": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "Description": {
+     "type": "cds.String",
+     "length": 100
+    },
+    "_Territory": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.GeoRegions",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    },
+    "_Territory_ID": {
+     "type": "cds.String",
+     "length": 4
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
   },
   "Distrospec_SRV.DCPProducts": {
    "kind": "entity",
@@ -1284,6 +1340,14 @@
     "UnitForMaxPackagingDimensions": {
      "type": "cds.String",
      "length": 3
+    },
+    "YY1_matcust_PRD": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "YY1_CustomerDes_PRD": {
+     "type": "cds.String",
+     "length": 20
     },
     "Name": {
      "type": "cds.LargeString",
@@ -1572,6 +1636,14 @@
     "UnitForMaxPackagingDimensions": {
      "type": "cds.String",
      "length": 3
+    },
+    "YY1_matcust_PRD": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "YY1_CustomerDes_PRD": {
+     "type": "cds.String",
+     "length": 20
     },
     "Name": {
      "type": "cds.LargeString",
@@ -1862,6 +1934,14 @@
      "type": "cds.String",
      "length": 3
     },
+    "YY1_matcust_PRD": {
+     "type": "cds.String",
+     "length": 10
+    },
+    "YY1_CustomerDes_PRD": {
+     "type": "cds.String",
+     "length": 20
+    },
     "Name": {
      "type": "cds.LargeString",
      "@Common.Label": "Description",
@@ -1888,6 +1968,36 @@
      "type": "cds.LargeString",
      "@Common.Label": "Description",
      "@Core.Computed": true
+    }
+   },
+   "@Capabilities.DeleteRestrictions.Deletable": false,
+   "@Capabilities.InsertRestrictions.Insertable": false,
+   "@Capabilities.UpdateRestrictions.Updatable": false
+  },
+  "Distrospec_SRV.Characteristic": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "CharcInternalID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "notNull": true
+    },
+    "CharcValuePositionNumber": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "notNull": true
+    },
+    "CharcValue": {
+     "type": "cds.String",
+     "length": 70
+    },
+    "Characteristic": {
+     "type": "cds.String",
+     "length": 30
     }
    },
    "@Capabilities.DeleteRestrictions.Deletable": false,
@@ -2977,7 +3087,7 @@
     {
      "$Type": "UI.ReferenceFacet",
      "ID": "StudioKey",
-     "Label": "Studio Parameters",
+     "Label": "Key Rules",
      "Target": {
       "=": "to_StudioKey.@UI.LineItem"
      }
@@ -3386,49 +3496,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3437,49 +3523,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3488,49 +3550,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3539,49 +3577,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3590,49 +3604,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3641,49 +3631,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3692,49 +3658,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3743,49 +3685,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3794,49 +3712,25 @@
    "@cds.external": true,
    "@cds.persistence.skip": true,
    "elements": {
-    "SAP_UUID": {
+    "CharcInternalID": {
      "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "SAP_CreatedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_CreatedByUser": {
      "type": "cds.String",
-     "length": 12
+     "length": 10,
+     "notNull": true
     },
-    "SAP_CreatedByUser_Text": {
+    "CharcValuePositionNumber": {
+     "key": true,
      "type": "cds.String",
-     "length": 80
+     "length": 4,
+     "notNull": true
     },
-    "SAP_LastChangedDateTime": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset"
-    },
-    "SAP_LastChangedByUser": {
+    "CharcValue": {
      "type": "cds.String",
-     "length": 12
+     "length": 70
     },
-    "SAP_LastChangedByUser_Text": {
+    "Characteristic": {
      "type": "cds.String",
-     "length": 80
-    },
-    "ID": {
-     "type": "cds.String",
-     "length": 10
-    },
-    "VariableName": {
-     "type": "cds.String",
-     "length": 50
-    },
-    "VariableValue": {
-     "type": "cds.String",
-     "length": 50
+     "length": 30
     }
    }
   },
@@ -3891,276 +3785,6 @@
     }
    }
   },
-  "Distrospec_SRV.DCPMaterialConfig": {
-   "kind": "entity",
-   "@cds.external": true,
-   "@cds.persistence.skip": true,
-   "elements": {
-    "ID": {
-     "key": true,
-     "type": "cds.UUID",
-     "notNull": true,
-     "@UI.Hidden": true,
-     "@Core.ComputedDefaultValue": true
-    },
-    "createdAt": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset",
-     "@UI.HiddenFilter": true,
-     "@UI.ExcludeFromNavigationContext": true,
-     "@Core.Immutable": true,
-     "@Core.Computed": true,
-     "@Common.Label": "Created On"
-    },
-    "createdBy": {
-     "type": "cds.String",
-     "length": 255,
-     "@UI.HiddenFilter": true,
-     "@UI.ExcludeFromNavigationContext": true,
-     "@Core.Immutable": true,
-     "@Core.Computed": true,
-     "doc": "User's unique ID",
-     "@Common.Label": "Created By"
-    },
-    "modifiedAt": {
-     "type": "cds.Timestamp",
-     "@odata.Precision": 7,
-     "@odata.Type": "Edm.DateTimeOffset",
-     "@UI.HiddenFilter": true,
-     "@UI.ExcludeFromNavigationContext": true,
-     "@Core.Computed": true,
-     "@Common.Label": "Changed On"
-    },
-    "modifiedBy": {
-     "type": "cds.String",
-     "length": 255,
-     "@UI.HiddenFilter": true,
-     "@UI.ExcludeFromNavigationContext": true,
-     "@Core.Computed": true,
-     "doc": "User's unique ID",
-     "@Common.Label": "Changed By"
-    },
-    "ProjectID": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DistributionDcp",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Project"
-    },
-    "ProjectID_ProjectID": {
-     "type": "cds.String",
-     "length": 40,
-     "@Common.Label": "Project",
-     "@Common.Text": {
-      "=": "ProjectID/AssetMapIDDescription"
-     },
-     "@Common.Text.@UI.TextArrangement": {
-      "#": "TextOnly"
-     },
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "DistributionDcpVH",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "ProjectID_ProjectID"
-        },
-        "ValueListProperty": "ProjectID"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "AssetMapIDDescription"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false,
-     "@Common.FieldControl": {
-      "#": "Mandatory"
-     }
-    },
-    "to_SalesDelivery": {
-     "type": "cds.Composition",
-     "target": "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery",
-     "cardinality": {
-      "max": "*"
-     },
-     "keys": [],
-     "@Common.Label": "Product Sales Org"
-    },
-    "to_Plant": {
-     "type": "cds.Composition",
-     "target": "Distrospec_SRV.DCPMaterialConfig_to_Plant",
-     "cardinality": {
-      "max": "*"
-     },
-     "keys": [],
-     "@Common.Label": "Plant"
-    },
-    "IsActiveEntity": {
-     "key": true,
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": true
-     },
-     "@UI.Hidden": true
-    },
-    "HasActiveEntity": {
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": false
-     },
-     "@UI.Hidden": true
-    },
-    "HasDraftEntity": {
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": false
-     },
-     "@UI.Hidden": true
-    },
-    "DraftAdministrativeData": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DraftAdministrativeData",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@UI.Hidden": true
-    },
-    "SiblingEntity": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DCPMaterialConfig",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": []
-    }
-   },
-   "actions": {
-    "draftPrepare": {
-     "kind": "action",
-     "params": {
-      "in": {
-       "type": "$self"
-      },
-      "SideEffectsQualifier": {
-       "type": "cds.LargeString"
-      }
-     },
-     "returns": {
-      "type": "Distrospec_SRV.DCPMaterialConfig"
-     }
-    },
-    "draftActivate": {
-     "kind": "action",
-     "params": {
-      "in": {
-       "type": "$self"
-      }
-     },
-     "returns": {
-      "type": "Distrospec_SRV.DCPMaterialConfig"
-     }
-    },
-    "draftEdit": {
-     "kind": "action",
-     "params": {
-      "in": {
-       "type": "$self"
-      },
-      "PreserveChanges": {
-       "type": "cds.Boolean"
-      }
-     },
-     "returns": {
-      "type": "Distrospec_SRV.DCPMaterialConfig"
-     }
-    },
-    "createDCPMaterial": {
-     "kind": "action",
-     "params": {
-      "in": {
-       "type": "$self"
-      }
-     },
-     "returns": {
-      "type": "Distrospec_SRV.Products"
-     }
-    }
-   },
-   "@UI.HeaderInfo": {
-    "$Type": "UI.HeaderInfoType",
-    "Title": {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "ProjectID_ProjectID"
-     }
-    },
-    "TypeName": "DCP Material",
-    "TypeNamePlural": "DCP Materials"
-   },
-   "@UI.FieldGroup#GeneratedGroup": {
-    "$Type": "UI.FieldGroupType",
-    "Data": [
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "ProjectID_ProjectID"
-      }
-     }
-    ]
-   },
-   "@UI.Facets": [
-    {
-     "$Type": "UI.ReferenceFacet",
-     "ID": "GeneratedFacet1",
-     "Label": "General Information",
-     "Target": {
-      "=": "@UI.FieldGroup#GeneratedGroup"
-     }
-    },
-    {
-     "$Type": "UI.ReferenceFacet",
-     "ID": "to_Plant",
-     "Target": {
-      "=": "to_Plant.@UI.LineItem"
-     }
-    },
-    {
-     "$Type": "UI.ReferenceFacet",
-     "ID": "to_SalesDelivery",
-     "Target": {
-      "=": "to_SalesDelivery.@UI.LineItem"
-     }
-    }
-   ],
-   "@UI.LineItem": [
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "ProjectID_ProjectID"
-     },
-     "@HTML5.CssDefaults": {
-      "$Type": "HTML5.CssDefaultsType",
-      "width": "auto"
-     }
-    }
-   ],
-   "@Common.DraftRoot": {
-    "$Type": "Common.DraftRootType",
-    "ActivationAction": "Distrospec_SRV.draftActivate",
-    "EditAction": "Distrospec_SRV.draftEdit",
-    "PreparationAction": "Distrospec_SRV.draftPrepare"
-   }
-  },
   "Distrospec_SRV.DCPMaterialMapping": {
    "kind": "entity",
    "@cds.external": true,
@@ -4213,26 +3837,7 @@
     "ShippingType": {
      "type": "cds.String",
      "length": 2,
-     "@Common.Label": "Shipping Type",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "ShippingType",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "ShippingType"
-        },
-        "ValueListProperty": "ShippingType"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "ShippingTypeName"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false
+     "@Common.Label": "Shipping Type"
     },
     "Variable": {
      "type": "cds.String",
@@ -4242,50 +3847,51 @@
     "Material": {
      "type": "cds.String",
      "length": 40,
-     "@Common.Label": "Material",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "DCPMapProducts",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "Material"
-        },
-        "ValueListProperty": "Product"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "Name"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false
+     "@Common.Label": "Material"
     },
     "MaterialGroup": {
      "type": "cds.String",
      "length": 10,
-     "@Common.Label": "Material Group",
+     "@Common.Label": "Material Group"
+    },
+    "Country": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Countries",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": [],
+     "@Common.Label": "Country/Region",
+     "doc": "Country/region code as specified by ISO 3166-1"
+    },
+    "Country_code": {
+     "type": "cds.String",
+     "length": 3,
+     "@Common.Label": "Country/Region",
      "@Common.ValueList": {
       "$Type": "Common.ValueListType",
-      "CollectionPath": "ProductGroup1",
-      "SearchSupported": false,
+      "Label": "Country/Region",
+      "CollectionPath": "Countries",
       "Parameters": [
        {
         "$Type": "Common.ValueListParameterInOut",
         "LocalDataProperty": {
-         "=": "MaterialGroup"
+         "=": "Country_code"
         },
-        "ValueListProperty": "AdditionalMaterialGroup1"
+        "ValueListProperty": "code"
        },
        {
         "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "AdditionalMaterialGroup1Name"
+        "ValueListProperty": "name"
        }
       ]
      },
-     "@Common.ValueListWithFixedValues": false
+     "doc": "Country/region code as specified by ISO 3166-1"
+    },
+    "ProfitCenter": {
+     "type": "cds.String",
+     "length": 10,
+     "@Common.Label": "Profit Center"
     },
     "IsActiveEntity": {
      "key": true,
@@ -4402,6 +4008,18 @@
       "Value": {
        "=": "MaterialGroup"
       }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "Country_code"
+      }
+     },
+     {
+      "$Type": "UI.DataField",
+      "Value": {
+       "=": "ProfitCenter"
+      }
      }
     ]
    },
@@ -4438,6 +4056,18 @@
      "$Type": "UI.DataField",
      "Value": {
       "=": "MaterialGroup"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "Country_code"
+     }
+    },
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "ProfitCenter"
      }
     }
    ],
@@ -4476,9 +4106,27 @@
      "@Validation.Minimum": 0,
      "@Validation.Maximum": 99
     },
-    "IncludeKey": {
-     "type": "cds.Boolean",
-     "@Common.Label": "Include Key"
+    "OrderType": {
+     "type": "cds.String",
+     "length": 1,
+     "@Common.Label": "Order Type",
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Content",
+       "Value": "C"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Keys",
+       "Value": "K"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Both",
+       "Value": "B"
+      }
+     ]
     },
     "ValidFrom": {
      "type": "cds.Date",
@@ -4493,6 +4141,9 @@
      "@Common.FieldControl": {
       "#": "Mandatory"
      }
+    },
+    "GofilexTitleID": {
+     "type": "cds.LargeString"
     },
     "DeliveryMethod1": {
      "type": "cds.Association",
@@ -4999,7 +4650,7 @@
      {
       "$Type": "UI.DataField",
       "Value": {
-       "=": "IncludeKey"
+       "=": "OrderType"
       }
      }
     ]
@@ -5113,7 +4764,7 @@
     {
      "$Type": "UI.ReferenceFacet",
      "ID": "_PackageDeliveryethod",
-     "Label": "Delivery Preferences",
+     "Label": "Delivery Methods",
      "Target": {
       "=": "@UI.FieldGroup#_PackageDeliveryethod"
      }
@@ -5151,7 +4802,7 @@
     {
      "$Type": "UI.DataField",
      "Value": {
-      "=": "IncludeKey"
+      "=": "OrderType"
      }
     }
    ],
@@ -5202,9 +4853,27 @@
       "#": "Mandatory"
      }
     },
-    "IncludeContent": {
-     "type": "cds.Boolean",
-     "@Common.Label": "Include Content"
+    "OrderType": {
+     "type": "cds.String",
+     "length": 1,
+     "@Common.Label": "Order Type",
+     "@Validation.AllowedValues": [
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Content",
+       "Value": "C"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Keys",
+       "Value": "K"
+      },
+      {
+       "$Type": "Validation.AllowedValue",
+       "@Core.SymbolicName": "Both",
+       "Value": "B"
+      }
+     ]
     },
     "to_CPLDetail": {
      "type": "cds.Composition",
@@ -5321,7 +4990,7 @@
      {
       "$Type": "UI.DataField",
       "Value": {
-       "=": "IncludeContent"
+       "=": "OrderType"
       }
      }
     ]
@@ -5400,7 +5069,7 @@
     {
      "$Type": "UI.DataField",
      "Value": {
-      "=": "IncludeContent"
+      "=": "OrderType"
      }
     }
    ],
@@ -5483,65 +5152,9 @@
      "type": "cds.Integer",
      "@Common.Label": "Offset from EPD (Hours)"
     },
-    "AggregateKey": {
-     "type": "cds.Boolean",
-     "@Common.Label": "Aggregate Key"
-    },
     "ProcessKDMS": {
      "type": "cds.Integer",
      "@Common.Label": "Process KDMS Within (Hours)"
-    },
-    "ProcessScreeningKDMS": {
-     "type": "cds.Integer",
-     "@Common.Label": "Process Screening KDMS Within (Hours)"
-    },
-    "MaxKDMSDuration": {
-     "type": "cds.Integer",
-     "@Common.Label": "Max KDMS Duration (Days)"
-    },
-    "StudioHoldOverRule": {
-     "type": "cds.String",
-     "length": 10,
-     "@Common.Label": "Studio Hold Over Rule"
-    },
-    "SalesTerritory": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.SalesDistricts",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Sales Territory"
-    },
-    "SalesTerritory_SalesDistrict": {
-     "type": "cds.String",
-     "length": 6,
-     "@Common.Label": "Sales Territory",
-     "@Common.Text": {
-      "=": "SalesTerritory/Name"
-     },
-     "@Common.Text.@UI.TextArrangement": {
-      "#": "TextOnly"
-     },
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "SalesDistricts",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "SalesTerritory_SalesDistrict"
-        },
-        "ValueListProperty": "SalesDistrict"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "Name"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false
     },
     "to_DistroSpec": {
      "type": "cds.Association",
@@ -5680,37 +5293,7 @@
      {
       "$Type": "UI.DataField",
       "Value": {
-       "=": "AggregateKey"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
        "=": "ProcessKDMS"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "ProcessScreeningKDMS"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "MaxKDMSDuration"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "StudioHoldOverRule"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "SalesTerritory_SalesDistrict"
       }
      }
     ]
@@ -5727,7 +5310,7 @@
     {
      "$Type": "UI.ReferenceFacet",
      "ID": "StudioKey1",
-     "Label": "Studio Parameters",
+     "Label": "Key Rules",
      "Target": {
       "=": "@UI.FieldGroup#StudioKey"
      }
@@ -5745,6 +5328,57 @@
     "$Type": "Common.DraftNodeType",
     "PreparationAction": "Distrospec_SRV.draftPrepare"
    }
+  },
+  "Distrospec_SRV.Countries": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "name": {
+     "type": "cds.String",
+     "length": 255,
+     "@Common.Label": "Name"
+    },
+    "descr": {
+     "type": "cds.String",
+     "length": 1000,
+     "@Common.Label": "Description"
+    },
+    "code": {
+     "key": true,
+     "type": "cds.String",
+     "length": 3,
+     "notNull": true,
+     "@Common.Text": {
+      "=": "name"
+     },
+     "@Common.Label": "Country/Region Code"
+    },
+    "texts": {
+     "type": "cds.Composition",
+     "target": "Distrospec_SRV.Countries_texts",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    },
+    "localized": {
+     "type": "cds.Association",
+     "target": "Distrospec_SRV.Countries_texts",
+     "cardinality": {
+      "max": 1
+     },
+     "keys": []
+    }
+   },
+   "@UI.Identification": [
+    {
+     "$Type": "UI.DataField",
+     "Value": {
+      "=": "name"
+     }
+    }
+   ]
   },
   "Distrospec_SRV.DistRestrictions": {
    "kind": "entity",
@@ -5831,134 +5465,46 @@
     },
     "DistributionFilterRegion": {
      "type": "cds.Association",
-     "target": "Distrospec_SRV.Regions",
+     "target": "Distrospec_SRV.GeoRegions",
      "cardinality": {
       "max": 1
      },
      "keys": [],
      "@Common.Label": "Region"
     },
-    "DistributionFilterRegion_Country": {
+    "DistributionFilterRegion_ID": {
      "type": "cds.String",
-     "length": 3,
+     "length": 4,
      "@Common.Label": "Region",
      "@Common.Text": {
-      "=": "DistributionFilterRegion/RegionName"
+      "=": "DistributionFilterRegion/Code"
      },
      "@Common.Text.@UI.TextArrangement": {
       "#": "TextOnly"
      },
      "@Common.ValueList": {
       "$Type": "Common.ValueListType",
-      "CollectionPath": "Regions",
+      "CollectionPath": "GeoRegions",
       "SearchSupported": false,
       "Parameters": [
        {
-        "$Type": "Common.ValueListParameterIn",
-        "LocalDataProperty": {
-         "=": "DistributionFilterCountry_code"
-        },
-        "ValueListProperty": "Country"
-       },
-       {
         "$Type": "Common.ValueListParameterInOut",
         "LocalDataProperty": {
-         "=": "DistributionFilterRegion_Region"
+         "=": "DistributionFilterRegion_ID"
         },
-        "ValueListProperty": "Region"
+        "ValueListProperty": "ID"
        },
        {
         "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "RegionName"
+        "ValueListProperty": "Code"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Description"
        }
       ]
      },
      "@Common.ValueListWithFixedValues": false
-    },
-    "DistributionFilterRegion_Region": {
-     "type": "cds.String",
-     "length": 3,
-     "@Common.Label": "Region",
-     "@Common.Text": {
-      "=": "DistributionFilterRegion/RegionName"
-     },
-     "@Common.Text.@UI.TextArrangement": {
-      "#": "TextOnly"
-     },
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "Regions",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterIn",
-        "LocalDataProperty": {
-         "=": "DistributionFilterCountry_code"
-        },
-        "ValueListProperty": "Country"
-       },
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "DistributionFilterRegion_Region"
-        },
-        "ValueListProperty": "Region"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "RegionName"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false
-    },
-    "DistributionFilterCountry": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.Countries",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Country",
-     "doc": "Country/region code as specified by ISO 3166-1"
-    },
-    "DistributionFilterCountry_code": {
-     "type": "cds.String",
-     "length": 3,
-     "@Common.Label": "Country",
-     "@Common.Text": {
-      "=": "DistributionFilterCountry/name"
-     },
-     "@Common.Text.@UI.TextArrangement": {
-      "#": "TextOnly"
-     },
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "Label": "Country",
-      "CollectionPath": "Countries",
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "DistributionFilterCountry_code"
-        },
-        "ValueListProperty": "code"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "name"
-       }
-      ]
-     },
-     "doc": "Country/region code as specified by ISO 3166-1"
-    },
-    "DistributionFilterCity": {
-     "type": "cds.LargeString",
-     "@Common.Label": "City"
-    },
-    "DistributionFilterPostal": {
-     "type": "cds.LargeString",
-     "@Common.Label": "Postal"
     },
     "DistributionFilterLanguage": {
      "type": "cds.Association",
@@ -6014,7 +5560,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability1"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6034,7 +5584,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability2"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6054,7 +5608,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability3"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6074,7 +5632,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability4"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6094,7 +5656,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability5"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6114,7 +5680,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability6"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6134,7 +5704,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability7"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6154,7 +5728,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability8"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6174,7 +5752,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability9"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6219,27 +5801,6 @@
        "$Type": "Validation.AllowedValue",
        "@Core.SymbolicName": "NA",
        "Value": "0"
-      }
-     ]
-    },
-    "OrderType": {
-     "type": "cds.String",
-     "length": 1,
-     "@Validation.AllowedValues": [
-      {
-       "$Type": "Validation.AllowedValue",
-       "@Core.SymbolicName": "Content",
-       "Value": "C"
-      },
-      {
-       "$Type": "Validation.AllowedValue",
-       "@Core.SymbolicName": "Keys",
-       "Value": "K"
-      },
-      {
-       "$Type": "Validation.AllowedValue",
-       "@Core.SymbolicName": "Both",
-       "Value": "B"
       }
      ]
     },
@@ -6328,25 +5889,7 @@
     {
      "$Type": "UI.DataField",
      "Value": {
-      "=": "DistributionFilterCountry_code"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "DistributionFilterRegion_Region"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "DistributionFilterCity"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "DistributionFilterPostal"
+      "=": "DistributionFilterRegion_ID"
      }
     },
     {
@@ -6444,25 +5987,7 @@
      {
       "$Type": "UI.DataField",
       "Value": {
-       "=": "DistributionFilterCountry_code"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "DistributionFilterRegion_Region"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "DistributionFilterCity"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "DistributionFilterPostal"
+       "=": "DistributionFilterRegion_ID"
       }
      },
      {
@@ -6599,134 +6124,46 @@
     },
     "DistributionFilterRegion": {
      "type": "cds.Association",
-     "target": "Distrospec_SRV.Regions",
+     "target": "Distrospec_SRV.GeoRegions",
      "cardinality": {
       "max": 1
      },
      "keys": [],
      "@Common.Label": "Region"
     },
-    "DistributionFilterRegion_Country": {
+    "DistributionFilterRegion_ID": {
      "type": "cds.String",
-     "length": 3,
+     "length": 4,
      "@Common.Label": "Region",
      "@Common.Text": {
-      "=": "DistributionFilterRegion/RegionName"
+      "=": "DistributionFilterRegion/Code"
      },
      "@Common.Text.@UI.TextArrangement": {
       "#": "TextOnly"
      },
      "@Common.ValueList": {
       "$Type": "Common.ValueListType",
-      "CollectionPath": "Regions",
+      "CollectionPath": "GeoRegions",
       "SearchSupported": false,
       "Parameters": [
        {
-        "$Type": "Common.ValueListParameterIn",
-        "LocalDataProperty": {
-         "=": "DistributionFilterCountry_code"
-        },
-        "ValueListProperty": "Country"
-       },
-       {
         "$Type": "Common.ValueListParameterInOut",
         "LocalDataProperty": {
-         "=": "DistributionFilterRegion_Region"
+         "=": "DistributionFilterRegion_ID"
         },
-        "ValueListProperty": "Region"
+        "ValueListProperty": "ID"
        },
        {
         "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "RegionName"
+        "ValueListProperty": "Code"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Description"
        }
       ]
      },
      "@Common.ValueListWithFixedValues": false
-    },
-    "DistributionFilterRegion_Region": {
-     "type": "cds.String",
-     "length": 3,
-     "@Common.Label": "Region",
-     "@Common.Text": {
-      "=": "DistributionFilterRegion/RegionName"
-     },
-     "@Common.Text.@UI.TextArrangement": {
-      "#": "TextOnly"
-     },
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "Regions",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterIn",
-        "LocalDataProperty": {
-         "=": "DistributionFilterCountry_code"
-        },
-        "ValueListProperty": "Country"
-       },
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "DistributionFilterRegion_Region"
-        },
-        "ValueListProperty": "Region"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "RegionName"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false
-    },
-    "DistributionFilterCountry": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.Countries",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Country",
-     "doc": "Country/region code as specified by ISO 3166-1"
-    },
-    "DistributionFilterCountry_code": {
-     "type": "cds.String",
-     "length": 3,
-     "@Common.Label": "Country",
-     "@Common.Text": {
-      "=": "DistributionFilterCountry/name"
-     },
-     "@Common.Text.@UI.TextArrangement": {
-      "#": "TextOnly"
-     },
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "Label": "Country",
-      "CollectionPath": "Countries",
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "DistributionFilterCountry_code"
-        },
-        "ValueListProperty": "code"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "name"
-       }
-      ]
-     },
-     "doc": "Country/region code as specified by ISO 3166-1"
-    },
-    "DistributionFilterCity": {
-     "type": "cds.LargeString",
-     "@Common.Label": "City"
-    },
-    "DistributionFilterPostal": {
-     "type": "cds.LargeString",
-     "@Common.Label": "Postal"
     },
     "DistributionFilterLanguage": {
      "type": "cds.Association",
@@ -6782,7 +6219,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability1"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6802,7 +6243,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability2"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6822,7 +6267,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability3"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6842,7 +6291,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability4"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6862,7 +6315,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability5"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6882,7 +6339,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability6"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6902,7 +6363,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability7"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6922,7 +6387,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability8"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6942,7 +6411,11 @@
         "LocalDataProperty": {
          "=": "PlayBackCapability9"
         },
-        "ValueListProperty": "VariableValue"
+        "ValueListProperty": "CharcValue"
+       },
+       {
+        "$Type": "Common.ValueListParameterDisplayOnly",
+        "ValueListProperty": "Characteristic"
        }
       ]
      },
@@ -6987,27 +6460,6 @@
        "$Type": "Validation.AllowedValue",
        "@Core.SymbolicName": "NA",
        "Value": "0"
-      }
-     ]
-    },
-    "OrderType": {
-     "type": "cds.String",
-     "length": 1,
-     "@Validation.AllowedValues": [
-      {
-       "$Type": "Validation.AllowedValue",
-       "@Core.SymbolicName": "Content",
-       "Value": "C"
-      },
-      {
-       "$Type": "Validation.AllowedValue",
-       "@Core.SymbolicName": "Keys",
-       "Value": "K"
-      },
-      {
-       "$Type": "Validation.AllowedValue",
-       "@Core.SymbolicName": "Both",
-       "Value": "B"
       }
      ]
     },
@@ -7096,25 +6548,7 @@
     {
      "$Type": "UI.DataField",
      "Value": {
-      "=": "DistributionFilterCountry_code"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "DistributionFilterRegion_Region"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "DistributionFilterCity"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "DistributionFilterPostal"
+      "=": "DistributionFilterRegion_ID"
      }
     },
     {
@@ -7212,25 +6646,7 @@
      {
       "$Type": "UI.DataField",
       "Value": {
-       "=": "DistributionFilterCountry_code"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "DistributionFilterRegion_Region"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "DistributionFilterCity"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "DistributionFilterPostal"
+       "=": "DistributionFilterRegion_ID"
       }
      },
      {
@@ -7423,57 +6839,6 @@
     "PreparationAction": "Distrospec_SRV.draftPrepare"
    }
   },
-  "Distrospec_SRV.Countries": {
-   "kind": "entity",
-   "@cds.external": true,
-   "@cds.persistence.skip": true,
-   "elements": {
-    "name": {
-     "type": "cds.String",
-     "length": 255,
-     "@Common.Label": "Name"
-    },
-    "descr": {
-     "type": "cds.String",
-     "length": 1000,
-     "@Common.Label": "Description"
-    },
-    "code": {
-     "key": true,
-     "type": "cds.String",
-     "length": 3,
-     "notNull": true,
-     "@Common.Text": {
-      "=": "name"
-     },
-     "@Common.Label": "Country/Region Code"
-    },
-    "texts": {
-     "type": "cds.Composition",
-     "target": "Distrospec_SRV.Countries_texts",
-     "cardinality": {
-      "max": "*"
-     },
-     "keys": []
-    },
-    "localized": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.Countries_texts",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": []
-    }
-   },
-   "@UI.Identification": [
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "name"
-     }
-    }
-   ]
-  },
   "Distrospec_SRV.Languages": {
    "kind": "entity",
    "@cds.external": true,
@@ -7636,14 +7001,14 @@
     },
     "LinkedCTT": {
      "type": "cds.String",
-     "length": 80,
+     "length": 500,
      "@Common.FieldControl": {
       "#": "Mandatory"
      }
     },
     "VersionDescription": {
      "type": "cds.String",
-     "length": 40
+     "length": 100
     },
     "DistributionSize": {
      "type": "cds.String",
@@ -7651,15 +7016,15 @@
     },
     "RunTime": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "StartOfCredits": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "StartOfCrawl": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "DKDMS3location": {
      "type": "cds.LargeString"
@@ -7765,14 +7130,14 @@
     },
     "LinkedCTT": {
      "type": "cds.String",
-     "length": 80,
+     "length": 500,
      "@Common.FieldControl": {
       "#": "Mandatory"
      }
     },
     "VersionDescription": {
      "type": "cds.String",
-     "length": 40
+     "length": 100
     },
     "DistributionSize": {
      "type": "cds.String",
@@ -7780,15 +7145,15 @@
     },
     "RunTime": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "StartOfCredits": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "StartOfCrawl": {
      "type": "cds.String",
-     "length": 10
+     "length": 12
     },
     "DKDMS3location": {
      "type": "cds.LargeString"
@@ -7834,510 +7199,6 @@
     "Download": {
      "type": "cds.Boolean"
     }
-   }
-  },
-  "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery": {
-   "kind": "entity",
-   "@cds.external": true,
-   "@cds.persistence.skip": true,
-   "elements": {
-    "up_": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DCPMaterialConfig",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": []
-    },
-    "up__ID": {
-     "key": true,
-     "type": "cds.UUID",
-     "notNull": true
-    },
-    "ProductSalesOrg": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.SalesOrganizations",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Product Sales Org"
-    },
-    "ProductSalesOrg_SalesOrganization": {
-     "key": true,
-     "type": "cds.String",
-     "length": 4,
-     "notNull": true,
-     "@Common.Label": "Product Sales Org",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "SalesOrganizations",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "ProductSalesOrg_SalesOrganization"
-        },
-        "ValueListProperty": "SalesOrganization"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "Name"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false,
-     "@Common.FieldControl": {
-      "#": "Mandatory"
-     }
-    },
-    "ProductDistributionChnl": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DistributionChannels",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Product Distribution Chnl"
-    },
-    "ProductDistributionChnl_DistributionChannel": {
-     "key": true,
-     "type": "cds.String",
-     "length": 2,
-     "notNull": true,
-     "@Common.Label": "Product Distribution Chnl",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "DistributionChannels",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "ProductDistributionChnl_DistributionChannel"
-        },
-        "ValueListProperty": "DistributionChannel"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "Name"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false,
-     "@Common.FieldControl": {
-      "#": "Mandatory"
-     }
-    },
-    "IsActiveEntity": {
-     "key": true,
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": true
-     },
-     "@UI.Hidden": true
-    },
-    "HasActiveEntity": {
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": false
-     },
-     "@UI.Hidden": true
-    },
-    "HasDraftEntity": {
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": false
-     },
-     "@UI.Hidden": true
-    },
-    "DraftAdministrativeData": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DraftAdministrativeData",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@UI.Hidden": true
-    },
-    "SiblingEntity": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": []
-    }
-   },
-   "actions": {
-    "draftPrepare": {
-     "kind": "action",
-     "params": {
-      "in": {
-       "type": "$self"
-      },
-      "SideEffectsQualifier": {
-       "type": "cds.LargeString"
-      }
-     },
-     "returns": {
-      "type": "Distrospec_SRV.DCPMaterialConfig_to_SalesDelivery"
-     }
-    }
-   },
-   "@UI.HeaderInfo": {
-    "$Type": "UI.HeaderInfoType",
-    "Title": {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "ProductSalesOrg_SalesOrganization"
-     }
-    },
-    "Description": {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "ProductDistributionChnl_DistributionChannel"
-     }
-    },
-    "TypeName": "Sales Org.",
-    "TypeNamePlural": "Sales Org."
-   },
-   "@UI.LineItem": [
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "ProductSalesOrg_SalesOrganization"
-     },
-     "@HTML5.CssDefaults": {
-      "$Type": "HTML5.CssDefaultsType",
-      "width": "auto"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "ProductDistributionChnl_DistributionChannel"
-     },
-     "@HTML5.CssDefaults": {
-      "$Type": "HTML5.CssDefaultsType",
-      "width": "auto"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "up__ID"
-     },
-     "@UI.Hidden": true
-    }
-   ],
-   "@UI.FieldGroup#SalesDeliveryMain": {
-    "$Type": "UI.FieldGroupType",
-    "Label": {},
-    "Data": [
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "ProductSalesOrg_SalesOrganization"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "ProductDistributionChnl_DistributionChannel"
-      }
-     }
-    ]
-   },
-   "@UI.Facets": [
-    {
-     "$Type": "UI.ReferenceFacet",
-     "ID": "GeneratedFacet1",
-     "Label": "General Information",
-     "Target": {
-      "=": "@UI.FieldGroup#SalesDeliveryMain"
-     }
-    }
-   ],
-   "@Common.DraftNode": {
-    "$Type": "Common.DraftNodeType",
-    "PreparationAction": "Distrospec_SRV.draftPrepare"
-   }
-  },
-  "Distrospec_SRV.DCPMaterialConfig_to_Plant": {
-   "kind": "entity",
-   "@cds.external": true,
-   "@cds.persistence.skip": true,
-   "elements": {
-    "up_": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DCPMaterialConfig",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": []
-    },
-    "up__ID": {
-     "key": true,
-     "type": "cds.UUID",
-     "notNull": true
-    },
-    "Plant": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.Plants",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Plant"
-    },
-    "Plant_Plant": {
-     "key": true,
-     "type": "cds.String",
-     "length": 4,
-     "notNull": true,
-     "@Common.Label": "Plant",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "Plants",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "Plant_Plant"
-        },
-        "ValueListProperty": "Plant"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "PlantName"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false,
-     "@Common.FieldControl": {
-      "#": "Mandatory"
-     }
-    },
-    "StorageLocation": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.StorageLocations",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@Common.Label": "Storage Location"
-    },
-    "StorageLocation_Plant": {
-     "type": "cds.String",
-     "length": 4,
-     "@Common.Label": "Storage Location",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "StorageLocations",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterIn",
-        "LocalDataProperty": {
-         "=": "Plant_Plant"
-        },
-        "ValueListProperty": "Plant"
-       },
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "StorageLocation_StorageLocation"
-        },
-        "ValueListProperty": "StorageLocation"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "StorageLocationName"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false,
-     "@Common.FieldControl": {
-      "#": "Mandatory"
-     }
-    },
-    "StorageLocation_StorageLocation": {
-     "type": "cds.String",
-     "length": 4,
-     "@Common.Label": "Storage Location",
-     "@Common.ValueList": {
-      "$Type": "Common.ValueListType",
-      "CollectionPath": "StorageLocations",
-      "SearchSupported": false,
-      "Parameters": [
-       {
-        "$Type": "Common.ValueListParameterIn",
-        "LocalDataProperty": {
-         "=": "Plant_Plant"
-        },
-        "ValueListProperty": "Plant"
-       },
-       {
-        "$Type": "Common.ValueListParameterInOut",
-        "LocalDataProperty": {
-         "=": "StorageLocation_StorageLocation"
-        },
-        "ValueListProperty": "StorageLocation"
-       },
-       {
-        "$Type": "Common.ValueListParameterDisplayOnly",
-        "ValueListProperty": "StorageLocationName"
-       }
-      ]
-     },
-     "@Common.ValueListWithFixedValues": false,
-     "@Common.FieldControl": {
-      "#": "Mandatory"
-     }
-    },
-    "IsActiveEntity": {
-     "key": true,
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": true
-     },
-     "@UI.Hidden": true
-    },
-    "HasActiveEntity": {
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": false
-     },
-     "@UI.Hidden": true
-    },
-    "HasDraftEntity": {
-     "type": "cds.Boolean",
-     "notNull": true,
-     "default": {
-      "val": false
-     },
-     "@UI.Hidden": true
-    },
-    "DraftAdministrativeData": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DraftAdministrativeData",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": [],
-     "@UI.Hidden": true
-    },
-    "SiblingEntity": {
-     "type": "cds.Association",
-     "target": "Distrospec_SRV.DCPMaterialConfig_to_Plant",
-     "cardinality": {
-      "max": 1
-     },
-     "keys": []
-    }
-   },
-   "actions": {
-    "draftPrepare": {
-     "kind": "action",
-     "params": {
-      "in": {
-       "type": "$self"
-      },
-      "SideEffectsQualifier": {
-       "type": "cds.LargeString"
-      }
-     },
-     "returns": {
-      "type": "Distrospec_SRV.DCPMaterialConfig_to_Plant"
-     }
-    }
-   },
-   "@UI.HeaderInfo": {
-    "$Type": "UI.HeaderInfoType",
-    "Title": {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "Plant_Plant"
-     }
-    },
-    "TypeName": "Plant",
-    "TypeNamePlural": "Plants"
-   },
-   "@UI.LineItem": [
-    {
-     "$Type": "UI.DataField",
-     "@HTML5.CssDefaults": {
-      "$Type": "HTML5.CssDefaultsType",
-      "width": "auto"
-     },
-     "Value": {
-      "=": "Plant_Plant"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "StorageLocation_StorageLocation"
-     },
-     "@HTML5.CssDefaults": {
-      "$Type": "HTML5.CssDefaultsType",
-      "width": "auto"
-     }
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "up__ID"
-     },
-     "@UI.Hidden": true
-    },
-    {
-     "$Type": "UI.DataField",
-     "Value": {
-      "=": "StorageLocation_Plant"
-     },
-     "@UI.Hidden": true
-    }
-   ],
-   "@UI.FieldGroup#PlantMain": {
-    "$Type": "UI.FieldGroupType",
-    "Label": {},
-    "Data": [
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "Plant_Plant"
-      }
-     },
-     {
-      "$Type": "UI.DataField",
-      "Value": {
-       "=": "StorageLocation_StorageLocation"
-      }
-     }
-    ]
-   },
-   "@UI.Facets": [
-    {
-     "$Type": "UI.ReferenceFacet",
-     "ID": "GeneratedFacet1",
-     "Label": "General Information",
-     "Target": {
-      "=": "@UI.FieldGroup#PlantMain"
-     }
-    }
-   ],
-   "@Common.DraftNode": {
-    "$Type": "Common.DraftNodeType",
-    "PreparationAction": "Distrospec_SRV.draftPrepare"
    }
   },
   "Distrospec_SRV.Countries_texts": {

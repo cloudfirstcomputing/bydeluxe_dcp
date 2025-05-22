@@ -1062,22 +1062,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                         }
                         sContentDeliveryMethod = sDeliveryMethodFromPackage;
-
-                        //RULE 7.1 => Shipping Type for Content
-                        if (sContentDeliveryMethod) {
-                            oPayLoad.ShippingCondition = sContentDeliveryMethod;
-                            oResponseStatus.DeliveryMethod = sContentDeliveryMethod;
-                            var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sContentDeliveryMethod });
-                            sShippingType = oShippingTypeMapping.ShippingType;
-
-                            if (!sShippingType) {
-                                sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sContentDeliveryMethod}`;
+                        if(!sErrorMessage){
+                            //RULE 7.1 => Shipping Type for Content
+                            if (sContentDeliveryMethod) {
+                                oPayLoad.ShippingCondition = sContentDeliveryMethod;
+                                oResponseStatus.DeliveryMethod = sContentDeliveryMethod;
+                                var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sContentDeliveryMethod });
+                                sShippingType = oShippingTypeMapping?.ShippingType;
+    
+                                if (!sShippingType) {
+                                    sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sContentDeliveryMethod}`;
+                                }
                             }
+                            else {
+                                sErrorMessage = `Delivery Method could not be determined for Content`;
+                            }
+                            oPackages.ContentPackage = [oFilteredContentPackage];
+
                         }
-                        else {
-                            sErrorMessage = `Delivery Method could not be determined for Content`;
-                        }
-                        oPackages.ContentPackage = [oFilteredContentPackage];
                     }
                     if (!sErrorMessage && aKeyPackages?.length) { //For Key Package
                         sKeyDeliveryMethod = "04"; //Rule 3.3 => Delivery Method for Key is Fixed
@@ -1086,22 +1088,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     for (var pk in oPackages) { //Going through both filtered content and Key packages if available
                         //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
                         var aContOrKeyPckg = oPackages[pk];
-                        var aCircuits = aContOrKeyPckg?.filter((rest) => {
+                        var aCircuits = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
                             return rest.Circuit_CustomerGroup?.length > 0;
                         });
-                        var aCountry = aContOrKeyPckg?.filter((rest) => {
+                        var aCountry = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
                             return rest.DistributionFilterCountry_code?.length > 0;
                         });
-                        var aRegion = aContOrKeyPckg?.filter((rest) => {
+                        var aRegion = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
                             return rest.DistributionFilterRegion_Countr?.length > 0;
                         });
-                        var aCity = aContOrKeyPckg?.filter((rest) => {
+                        var aCity = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
                             return rest.DistributionFilterCity?.length > 0;
                         });
-                        var aPostalCode = aContOrKeyPckg?.filter((rest) => {
+                        var aPostalCode = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
                             return rest.DistributionFilterPostal?.length > 0;
                         });
-                        var aLanguage = aContOrKeyPckg?.filter((rest) => {
+                        var aLanguage = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
                             return rest.DistributionFilterLanguage_code?.length > 0;
                         });
                         if (aContOrKeyPckg && aContOrKeyPckg.length) {
@@ -1292,7 +1294,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const getDistroSpecData = async (req, oContentData, aDeliverySeqFromDistHeader) => {
             let distroSpecData;
             var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
-                dist('*'),
+                // dist('*'),
                     dist.to_StudioKey((studio) => { studio('*') }),
                     dist.to_Package((pkg) => {
                         pkg('*'),
@@ -1301,7 +1303,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 dcpmat('*'),
                                     dcpmat.to_DCPDetail((dcpdet) => { dcpdet('*') })
                             })
-                    }),
+                    })
                     dist.to_KeyPackage((keyPkg) => {
                         keyPkg('*'),
                             keyPkg.to_DistRestriction((dist) => { dist('*') }),
@@ -1445,9 +1447,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sPackageName = oContentPackage?.PackageName;
                     oContentData.to_Item[i].DistroSpecPackageID = oContentPackage?.PackageUUID;
                     oContentData.to_Item[i].DistroSpecPackageName = oContentPackage?.PackageName;
-                    if (oAssetvault?.KrakenTitleID) { //RULE 9.3
-                        await updateItemTextForSalesOrder(req, "Z006", oAssetvault.KrakenTitleID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
-                    }
                     var aFinalCPLs = [], aFinalCTTs = [];
                     for (var c in aContentPkgCPL) {
                         var aDCPDet = aContentPkgCPL[c];
@@ -1472,6 +1471,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
+
+                if (oAssetvault?.KrakenTitleID) { //RULE 9.3(made it for both C and K as per discussion on 22nd May)
+                    await updateItemTextForSalesOrder(req, "Z006", oAssetvault.KrakenTitleID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
+                }                
+                if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9 (made it for both C and K as per discussion on 22nd May)
+                    // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
+                    var oProdGroup = await prdgrp1tx.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
+                    if (oProdGroup) {
+                        await updateItemTextForSalesOrder(req, "Z002", `${sPackageName} ${oProdGroup?.AdditionalMaterialGroup1Name}`, oResponseStatus, oSalesOrderItem, oContentData);
+                    }
+                }
                 if (distroSpecData) { //RULE 9.4, 9.7
                     await updateItemTextForSalesOrder(req, "Z008", `${distroSpecData?.DistroSpecID}`, oResponseStatus, oSalesOrderItem, oContentData);
                     await updateItemTextForSalesOrder(req, "Z011", distroSpecData?.Title_Product, oResponseStatus, oSalesOrderItem, oContentData);
@@ -1483,13 +1493,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var StudioName = oBupa?.BusinessPartnerFullName;
                     if (StudioName) { //RULE 9.8
                         await updateItemTextForSalesOrder(req, "Z012", StudioName, oResponseStatus, oSalesOrderItem, oContentData);
-                    }
-                }
-                if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9
-                    // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
-                    var oProdGroup = await prdgrp1tx.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
-                    if (oProdGroup) {
-                        await updateItemTextForSalesOrder(req, "Z002", `${sPackageName} ${oProdGroup?.AdditionalMaterialGroup1Name}`, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                 }
                 Object.assign(oContentData.to_Item[i], oSalesOrderItem); //Assigining updated field name values back
@@ -1661,6 +1664,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if(oPackTitleText){
                         aData[i].PackageTitle = oPackTitleText?.LongText;
                     }
+                    let aBP = [], sBusinessPartner = oSalesOrder?.BusinessPartner;
+                    if(sBusinessPartner){
+                        // let oBP = aBP.find((item)=>{return item.BP === sBusinessPartner});
+                        // if(!oBP){
+                        //     let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                        //     aBP.push({"BP": sBusinessPartner, "addressData": oBP?.to_BusinessPartnerAddress?.[0]});
+                        // }
+                        
+                        // let oBPAddress = oBP?.to_BusinessPartnerAddress?.[0];
+                        // if(oBPAddress){
+
+                        // }
+                        let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                        let oBPAddress = oBP?.to_BusinessPartnerAddress?.[0];
+                        if(oBPAddress){
+                            aData[i].BPStreetName = oBPAddress?.StreetName;BPCityName
+                            aData[i].BPCityName = oBPAddress?.CityName;
+                            aData[i].BPPostalCode = oBPAddress?.PostalCode;
+                            aData[i].BPRegion = oBPAddress?.Region;                                                        
+                            aData[i].BPCountry = oBPAddress?.Country; 
+                        }
+                    }
                 }
             }
             else{ //For Object Page
@@ -1680,6 +1705,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         aData['PackageTitle'] = oPackTitleText?.LongText;
                     }
 
+                }
+                let aBP = [], sBusinessPartner = aData["ReferenceBusinessPartner"];
+                if(sBusinessPartner){
+                    let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                    let oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                    if(oBPAddress){
+                        aData["BPStreetName"] = oBPAddress?.StreetName;
+                        aData["BPCityName"] = oBPAddress?.CityName;
+                        aData["BPPostalCode"] = oBPAddress?.PostalCode;
+                        aData["BPRegion"] = oBPAddress?.Region;                                                        
+                        aData["BPCountry"] = oBPAddress?.Country; 
+                    }
                 }
             }
             return aData;

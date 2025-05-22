@@ -255,6 +255,15 @@
      "@sap.required.in.filter": "false",
      "@sap.label": "AddressName",
      "@sap.quickinfo": "Name 1"
+    },
+    "ReferenceBusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.aggregation.role": "dimension",
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number"
     }
    }
   }

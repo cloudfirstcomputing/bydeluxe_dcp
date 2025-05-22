@@ -42,7 +42,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : Plant,
+            Value : PlantName,
             Label : '{i18n>Plant}',
         },
         {
@@ -70,14 +70,14 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : RequestID,
             Label : '{i18n>Requestid}',
         },
+        // {
+        //     $Type : 'UI.DataField',
+        //     Value : ActualGoodsMovementDate,
+        //     Label : '{i18n>Actualgoodsmovementdate}',
+        // },
         {
             $Type : 'UI.DataField',
-            Value : ActualGoodsMovementDate,
-            Label : '{i18n>Actualgoodsmovementdate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Country,
+            Value : BPCountry,
             Label : '{i18n>DistributionFilterCountry}',
         },
         {
@@ -131,8 +131,13 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Plant,
-                Label : '{i18n>Plant}',
+                Value : PlantName,
+                Label : '{i18n>Plantname}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : BPPostalCode,
+                Label : '{i18n>Postalcode}',
             },
             {
                 $Type : 'UI.DataField',
@@ -151,11 +156,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : ActualGoodsMovementDate,
-                Label : '{i18n>Actualgoodsmovementdate}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : AdditionalMaterialGroup1,
                 Label : '{i18n>Additionalmaterialgroup1}',
             },
@@ -166,7 +166,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Country,
+                Value : BPCountry,
                 Label : '{i18n>DistributionFilterCountry}',
             },
             {
@@ -199,7 +199,65 @@ annotate BookingOrderService.S4H_ProformaReport with @(
                 Value : TotalDeliveryStatus,
                 Label : '{i18n>Totaldeliverystatus}',
             },
+            {
+                $Type : 'UI.DataField',
+                Value : BookerName,
+                Label : '{i18n>Bookername}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : BPCityName,
+                Label : '{i18n>Cityname}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Customer,
+                Label : '{i18n>Customer}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : NetAmount,
+                Label : '{i18n>Netamount}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : TransactionCurrency,
+                Label : '{i18n>Transactioncurrency}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReferenceSDDocument,
+                Label : '{i18n>Referencesddocument1}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ReferenceBusinessPartner,
+                Label : 'Business Partner',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : BPRegion,
+                Label : '{i18n>DistributionFilterRegion}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : BPStreetName,
+                Label : '{i18n>Streetname}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ShippingPoint,
+                Label : '{i18n>Shippingpoint}',
+            },
         ],
+    },
+    UI.HeaderInfo : {
+        TypeName : '{i18n>Proforma}',
+        TypeNamePlural : '{i18n>Proforma}',
+        Title : {
+            $Type : 'UI.DataField',
+            Value : SalesDocument,
+        },
     },
 );
 

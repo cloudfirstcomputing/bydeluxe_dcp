@@ -49,7 +49,12 @@ service BookingOrderService {
         virtual null as PlayEndDate: Date,
         virtual null as RequestID: String,
         virtual null as PackageTitle: String,
-        virtual null as BookerName: String
+        virtual null as BookerName: String,
+        virtual null as BPStreetName: String,
+        virtual null as BPCityName: String,
+        virtual null as BPPostalCode: String,
+        virtual null as BPRegion: String,
+        virtual null as BPCountry: String
     }
     // extend projection S4H_ProformaReport{
     //     @Semantics.amount.currencyCode: 'TransactionCurrency'
