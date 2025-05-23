@@ -3048,7 +3048,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     const sSalesOrder1 = item.SalesDocument;
                     //const sSalesOrderItem1 = item.SalesDocumentItem;
 
-                    const oStudioFeed = await SELECT.one.from(StudioFeed).where({
+                    const oStudioFeed = await SELECT.one.from(StudioFeed, (header) => {
+                        header.RequestId, header.OrderID, header.BookerName
+                    }).where({
                         SalesOrder: sSalesOrder1
                     });
 
@@ -3137,9 +3139,8 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     }
                 ];
 
-                var sCompanyAddress = oAddrCompanyCode === undefined ? '' : (oAddrCompanyCode?.AddresseeName1 + "," + oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.StreetName + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country);
-                var sTelFax = oAddrPhone == undefined && oAddrEmail == undefined && oAddrCoCodeCountryVATReg == undefined ? '' : ("Tel : " + oAddrPhone?.PhoneAreaCodeSubscriberNumber + "," + "Email : " + oAddrEmail?.EmailAddress + "," + "Fedral Tax ID : " + (oAddrCompanyCodendfo?.CompanyCodeParameterValue === '' || oAddrCompanyCodendfo?.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg?.VATRegistration : oAddrCompanyCodendfo?.CompanyCodeParameterValue
-                    + "Code Destination");
+                var sCompanyAddress = oAddrCompanyCode === undefined ? '' : ( oAddrCompanyCode?.HouseNumber + "," + oAddrCompanyCode?.StreetName + "," + oAddrCompanyCode?.CityName + "," + oAddrCompanyCode?.PostalCode + "," + oAddrCompanyCode?.Region + "," + oAddrCompanyCode?.Country);
+            
 
                 var sFooterText = "Deluxe Digital Cinema is a wholly owned subsidiary of Deluxe Media Inc.," + " " + sCompanyAddress + "  "
                     + "Deluxe Standard terms and conditions apply. These can be accessed at http://bydeluxe.com/tands" + "  " + "This document has no tax value as per article 21 (Presidential Decree 633/72) since it has already been sent through the interchange system of the Revenue Agency."
@@ -3148,14 +3149,18 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                      var iTypeLength = oTaxObjectforForm.TaxTable.TaxTableRow.length;
                      var iTaxableAmount = oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2
                      var iGrandTotal = iNetAmount+iTaxableAmount-(isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem))
-                    oTaxObjectforForm.TaxTable.TaxTableRow[0].Cell2 = iNetAmount
-                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-3].Cell2 = isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem)
-                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2 = isNaN(iGrandTotal)? 0 : parseInt(iGrandTotal)
+                    oTaxObjectforForm.TaxTable.TaxTableRow[0].Cell2 = 'USD '+iNetAmount
+                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-3].Cell2 ='USD '+ ( isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem) )
+                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2 ='USD '+ ( isNaN(iGrandTotal)? 0 : parseInt(iGrandTotal) )
 
                 const billingDataNode = {
                     "TaxInvoice": {
                         "Header": {
-                            "CompanyAddress": sCompanyAddress + "  " + sTelFax,
+                            "CompanyName":oAddrCompanyCode === undefined ? '' : oAddrCompanyCode?.AddresseeName1,
+                            "CompanyAddress": sCompanyAddress,
+                            "Telephone":oAddrPhone == undefined ? '' : oAddrPhone?.PhoneAreaCodeSubscriberNumber,
+                            "TaxID":(oAddrCompanyCodendfo?.CompanyCodeParameterValue === '' || oAddrCompanyCodendfo?.CompanyCodeParameterValue === undefined) ? oAddrCoCodeCountryVATReg?.VATRegistration : oAddrCompanyCodendfo?.CompanyCodeParameterValue,
+                            "Email": oAddrEmail === undefined ? '' : oAddrEmail?.EmailAddress ,
                             "PageNo": "",
                             "InvoiceNo": billingHeader.to_Item[0].BillingDocument,
                             "InvoiceDate": billingHeader.BillingDocumentDate,
@@ -3354,6 +3359,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                         ConditionRateValue: item.ConditionRateValue,
                         ConditionTypeName: (item.ConditionTypeName === '' ? item.ConditionType : item.ConditionTypeName) + " " + item.ConditionRateValue.toFixed(2),
                         ConditionQuantityUnit: "%",
+                        Currency : item.TransactionCurrency ,
                         TotalConditionAmount: 0
                     };
                 }
@@ -3380,7 +3386,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
                 taxTableRows.push({
                     Cell1: entry.ConditionTypeName + entry.ConditionQuantityUnit,
-                    Cell2: "     " + entry.TotalConditionAmount
+                    Cell2: entry.Currency+ "  " + entry.TotalConditionAmount
                 });
 
                 iTaxableAmount += parseInt(entry.TotalConditionAmount)
