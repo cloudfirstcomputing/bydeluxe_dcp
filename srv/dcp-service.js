@@ -10,7 +10,7 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, S4H_ProformaReport, BookingStatus, DCPMaterialMapping, S4H_ProductGroup1,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages, S4H_ProformaDeliveryDoc,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
@@ -35,7 +35,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var invformAPI = await cds.connect.to("ZCL_INVFORM");
         var bankAPI = await cds.connect.to("CE_BANK_0003");
         var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORTAPI_CDS_0001");
-
+        var proformaDelDocAPI = await cds.connect.to("YY1_PROFORMADELIVDOCUMENT_CDS_0001");
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
@@ -1707,6 +1707,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             aData[i].BPCountry = oBPAddress?.Country; 
                         }
                     }
+                    let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData[i].SalesDocument, SalesDocumentItem: aData[i].SalesDocumentItem}));
+                    aData[i].ShipDate = oShipDetails?.ActualGoodsMovementDate;
+                    
                 }
             }
             else{ //For Object Page
@@ -1739,9 +1742,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         aData["BPCountry"] = oBPAddress?.Country; 
                     }
                 }
+                
+                let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData["SalesDocument"], SalesDocumentItem: aData["SalesDocumentItem"]}));
+                aData["ShipDate"] = oShipDetails?.ActualGoodsMovementDate;
             }
             return aData;
-        })
+        });
+        this.on('READ', S4H_ProformaDeliveryDoc , async(req)=>{
+            return await proformaDelDocAPI.run(req.query);
+        });
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
             return s4h_bp_Txn.run(req.query);
         });

@@ -9,6 +9,7 @@ using {YY1_SALESPARAMETERS_CDS_0001 as S4_Sales_Param} from './external/YY1_SALE
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
 using {API_PRODUCTGROUP_SRV as S4_prodGroup} from '../srv/external/API_PRODUCTGROUP_SRV.csn';
 using {YY1_PROFORMAREPORTAPI_CDS_0001 as S4_proforma} from '../srv/external/YY1_PROFORMAREPORTAPI_CDS_0001.csn';
+using {YY1_PROFORMADELIVDOCUMENT_CDS_0001 as S4_proforma_delivDoc} from '../srv/external/YY1_PROFORMADELIVDOCUMENT_CDS_0001';
 
 using api from '../db/common';
 
@@ -42,6 +43,7 @@ service BookingOrderService {
     entity S4H_BusinessPartnerAddress   as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
     entity S4H_ProductGroup1            as projection on api.ProductGroup1;
     entity S4H_ProformaReport           as projection on S4_proforma.YY1_ProformaReportAPI;
+    entity S4H_ProformaDeliveryDoc      as projection on S4_proforma_delivDoc.YY1_ProformaDelivDocument;
     entity S4H_SalesOrderItemText       as projection on api.SalesOrderItemText;
     // define view ProformaReport as select from S4H_ProformaReport as s4rep left outer join DistroSpec_Local as disspec on disspec.DistroSpecID = 6; 
     extend projection S4H_ProformaReport with {
@@ -54,7 +56,8 @@ service BookingOrderService {
         virtual null as BPCityName: String,
         virtual null as BPPostalCode: String,
         virtual null as BPRegion: String,
-        virtual null as BPCountry: String
+        virtual null as BPCountry: String,
+        virtual null as ShipDate: Date
     }
     // extend projection S4H_ProformaReport{
     //     @Semantics.amount.currencyCode: 'TransactionCurrency'

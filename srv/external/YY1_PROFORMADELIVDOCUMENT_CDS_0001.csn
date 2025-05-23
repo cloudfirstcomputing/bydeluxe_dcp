@@ -1,0 +1,85 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.9.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_PROFORMADELIVDOCUMENT_CDS_0001": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_PROFORMADELIVDOCUMENT_CDS_0001.YY1_ProformaDelivDocument": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "ProformaDelivDocument",
+   "elements": {
+    "SalesDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Preceding Document",
+     "@sap.quickinfo": "Preceding sales and distribution document",
+     "notNull": true
+    },
+    "SalesDocumentItem": {
+     "key": true,
+     "type": "cds.String",
+     "length": 6,
+     "@sap.display.format": "NonNegative",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Preceding Item",
+     "@sap.quickinfo": "Preceding Item of an SD Document",
+     "notNull": true
+    },
+    "DocRelationshipUUID": {
+     "key": true,
+     "type": "cds.UUID",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "DocRelationshipUUID",
+     "@sap.quickinfo": "SD Unique Document Relationship Identification",
+     "notNull": true
+    },
+    "SubsequentDocument": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Subsequent Document",
+     "@sap.quickinfo": "Subsequent Sales and Distribution Document"
+    },
+    "SubsequentDocumentItem": {
+     "type": "cds.String",
+     "length": 6,
+     "@sap.display.format": "NonNegative",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Subsequent Item",
+     "@sap.quickinfo": "Subsequent Item of an SD Document"
+    },
+    "SubsequentDocumentCategory": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Subsequent Doc. Cat.",
+     "@sap.quickinfo": "Document Category of Subsequent Document"
+    },
+    "ActualGoodsMovementDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Act. Gds Mvmnt Date",
+     "@sap.quickinfo": "Actual Goods Movement Date"
+    }
+   }
+  }
+ }
+}

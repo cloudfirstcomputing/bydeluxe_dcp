@@ -90,6 +90,11 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : TotalDeliveryStatus,
             Label : '{i18n>Totaldeliverystatus}',
         },
+        {
+            $Type : 'UI.DataField',
+            Value : ShipDate,
+            Label : '{i18n>Shipdate1}',
+        },
     ],
     UI.SelectionFields : [
         CreationDate,
@@ -248,6 +253,11 @@ annotate BookingOrderService.S4H_ProformaReport with @(
                 $Type : 'UI.DataField',
                 Value : ShippingPoint,
                 Label : '{i18n>Shippingpoint}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ShipDate,
+                Label : '{i18n>ShipDate}',
             },
         ],
     },
