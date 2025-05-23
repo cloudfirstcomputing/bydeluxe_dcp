@@ -496,6 +496,10 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_PROFORMAREPORT_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001"
       }
     }
   },
