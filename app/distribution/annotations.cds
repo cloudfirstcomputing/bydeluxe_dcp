@@ -330,7 +330,7 @@ annotate service.DistroSpec with @(
     UI.HeaderInfo          : {
         Title         : {
             $Type: 'UI.DataField',
-            Value: Title_Product,
+            Value: Name,
         },
         TypeName      : '{i18n>DistroSpec}',
         TypeNamePlural: '{i18n>DistroSpecs}',
@@ -709,12 +709,12 @@ annotate service.Package with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: OrderType_code,
+            Value: ValidFrom,
         },
         {
             $Type: 'UI.DataField',
-            Value: GofilexTitleID,
-        }
+            Value: ValidTo,
+        },
     ]
 );
 
@@ -801,7 +801,11 @@ annotate service.KeyPackage with @(
         },
         {
             $Type: 'UI.DataField',
-            Value: OrderType_code,
+            Value: ValidFrom,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: ValidTo,
         },
     ]
 );

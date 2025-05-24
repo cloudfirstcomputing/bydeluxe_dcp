@@ -1,6 +1,7 @@
 using deluxe.distribution as db from '../db/distribution';
 using api from '../db/common';
 using deluxe.assetvault as av from '../db/asset-vault';
+using dcp.db as dcp from '../db/dcp';
 
 service DistributionService {
     @Capabilities: {
@@ -86,6 +87,9 @@ service DistributionService {
     entity Titles               as projection on db.TitleVH;
 
     @readonly
+    entity TitleV               as projection on dcp.Titles;
+
+    @readonly
     entity SalesDistricts       as projection on api.SalesDistricts;
 
     @readonly
@@ -136,6 +140,7 @@ service DistributionService {
     extend projection Country with {
         virtual null as Name : String
     };
+
     extend projection SalesOrganizations with {
         virtual null as Name : String
     };

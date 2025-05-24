@@ -4,7 +4,7 @@ const { uuid } = cds.utils
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
         const { DistroSpec, ShippingType, Regions, GeoRegions, Plants, Characteristic, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
-            StorageLocations, ProductGroup, ProductGroup1, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
+            StorageLocations, ProductGroup, TitleV, ProductGroup1, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
@@ -53,6 +53,36 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         }
 
+        const uniquePriority = arr => {
+            const resArr = []
+            const lookup = arr.reduce((a, e) => {
+                a[e.Priority] = ++a[e.Priority] || 0;
+                return a;
+            }, {});
+            for (const key in lookup) {
+                if (Object.prototype.hasOwnProperty.call(lookup, key)) {
+                    const element = lookup[key];
+                    if (element > 0) {
+                        const packs = arr.filter(item => item.Priority === Number(key))
+                        for (let index = 0; index < packs.length; index++) {
+                            const pack1 = packs[index];
+                            for (let x = 0; x < packs.length; x++) {
+                                if (index === x) continue
+                                let char = String(index) + String(x)
+                                let resIndx = resArr.findIndex(item => item === char.split("").reverse().join(""))
+                                if (resIndx >= 0) continue
+                                const pack2 = packs[x];
+                                if (pack1.ValidFrom <= pack2.ValidFrom && pack2.ValidFrom <= pack1.ValidTo) {
+                                    return `${pack1.PackageName} ${pack2.PackageName}`
+                                }
+                                resArr.push(char)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         this.before('CREATE', DistroSpec, async req => {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
             req.data.DistroSpecID = ++maxID
@@ -69,25 +99,12 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.NextKeyDuration = 6
             req.data.ProcessKDMS = 24
         })
-        // this.on('CREATE', DistroSpec.drafts, async req => {
-        //     debugger;
-        //     let id = uuid()
-        //     const date = new Date();
-        //     // await cds.run(`INSERT INTO DRAFT_DRAFTADMINISTRATIVEDATA 
-        //     //     (DRAFTUUID,CREATEDBYUSER,DRAFTISCREATEDBYME,LASTCHANGEDBYUSER,INPROCESSBYUSER,DRAFTISPROCESSEDBYME) VALUES 
-        //     //     ('${id}','${req.user.id}',true,'${req.user.id}','${req.user.id}',true)`)
 
-        //     // await cds.run(`INSERT INTO DISTRIBUTIONSERVICE_STUDIOKEY_DRAFTS (DRAFTADMINISTRATIVEDATA_DRAFTUUID, HASACTIVEENTITY, STUDIOKEYUUID, STUDIO_BUSINESSPARTNER) VALUES ('${id}', false, '${uuid()}', '1000011');`)
-        //     // req.to_StudioKey = [{ StudioKeyUUID: id, Studio: '1000011' }]
-        //     // return req
-        //     await cds.tx(async () => {
-        //         await cds.run(`INSERT INTO DRAFT_DRAFTADMINISTRATIVEDATA 
-        //         (DRAFTUUID,CREATEDBYUSER,DRAFTISCREATEDBYME,LASTCHANGEDBYUSER,INPROCESSBYUSER,DRAFTISPROCESSEDBYME) VALUES 
-        //         ('${id}','${req.user.id}',true,'${req.user.id}','${req.user.id}',true)`)
-        //         // await INSERT.into(`DRAFT_DRAFTADMINISTRATIVEDATA`).entries([{ DRAFTUUID: id }])
-        //         // await INSERT.into(`DistributionService.StudioKey.drafts`).entries([{ Studio_BusinessPartner: '1000011', DRAFTADMINISTRATIVEDATA_DRAFTUUID: id }])
-        //     })
-        // })
+        this.on('UPDATE', DistroSpec.drafts, async req => {
+            if (req.data.Title) {
+
+            }
+        })
 
         this.on("READ", `StudioKey`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
@@ -359,6 +376,22 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 Email: req.data.email,
                 Download: req.data.download
             }).where({ LinkedCPLUUID: cpl.CPLUUID })
+        })
+
+        this.before('SAVE', DistroSpec, async req => {
+            const titlev = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: req.data.Title })
+            req.data.ReleaseDate = titlev?.ReleaseDate
+            req.data.RepertoryDate = titlev?.RepertoryDate
+            
+            let ret = uniquePriority(req.data.to_Package)
+            if (ret) {
+                req.error(400, `Priority should be unique in Content Package: ${ret}`)
+            }
+
+            ret = uniquePriority(req.data.to_KeyPackage)
+            if (ret) {
+                req.error(400, `Priority should be unique in Key Package: ${ret}`)
+            }
         })
 
         this.before('NEW', `Package.drafts`, req => {
