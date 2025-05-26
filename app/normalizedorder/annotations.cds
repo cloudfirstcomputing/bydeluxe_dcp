@@ -2,7 +2,6 @@ using from '../../srv/dcp-service';
 using from '../../db/dcp';
 
 annotate BookingOrderService.StudioFeed with{
-
     Status              @Common: {
         Label          : '{i18n>Status}',
         Text: {
@@ -15,6 +14,22 @@ annotate BookingOrderService.StudioFeed with{
         Text: {
 	            $value                : Origin.OriginText,
 	          ![@UI.TextArrangement]: #TextFirst,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'Origins',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Origin_OriginID,
+                    ValueListProperty: 'OriginID',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'OriginText',
+                },
+            ]
         }
     };
     OrderType              @Common: {
@@ -784,8 +799,31 @@ annotate BookingOrderService.StudioFeed with @(
         TypeName : '{i18n>StudioFeed}',
         TypeNamePlural : '{i18n>StudioFeeds}',
     },
+    UI.SelectionFields : [
+        Title_Product,
+        OrderType_code,
+        BookingID,
+        Origin_OriginID,
+    ],
 );
-
+annotate BookingOrderService.StudioFeed with @(Capabilities:{
+        SearchRestrictions:{
+            Searchable: false
+        },
+        NavigationRestrictions : {
+            $Type : 'Capabilities.NavigationRestrictionsType',
+            RestrictedProperties : [
+                {
+                    $Type : 'Capabilities.NavigationPropertyRestriction',
+                    NavigationProperty : DraftAdministrativeData,
+                    FilterRestrictions : {
+                        $Type : 'Capabilities.FilterRestrictionsType',
+                        Filterable : false,
+                    },
+                },
+            ],
+        }        
+});
 annotate BookingOrderService.BookingSalesorderItem with @(
     UI.LineItem #i18nItems : [
         {
@@ -1256,4 +1294,15 @@ annotate BookingOrderService.BookingSalesorderPartner with @(
         },
     ]
 );
+
+annotate BookingOrderService.OrderTypes with {
+    code @(
+        Common.Label : '{i18n>Ordertype}',
+        Common.Text : name,
+    )
+};
+
+annotate BookingOrderService.StudioFeed with {
+    BookingID @Common.Label : '{i18n>Bookingid}'
+};
 
