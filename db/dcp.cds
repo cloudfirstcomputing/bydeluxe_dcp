@@ -7,7 +7,6 @@ using {
 using api from './common';
 
 entity TitleVH as projection on api.Products;
-
 entity dcpcontent : managed {
         ApplicationID       : String(20) ;
     key BookingID           : String(10) ;
@@ -114,16 +113,16 @@ entity dcpkey : managed {
         ReferenceSDDocument : String                       @readonly;
         Warnings            : String
 }
-
+entity TitleCustVH       as projection on api.ZI_TITLES_VH;
 entity StudioFeed : cuid, managed {
     BookingID          : String                       ;
     SourceSystem       : String                       ;
     EntityID           : String                       ;
-    Origin             : Association to Origin        ;
+    Origin             : Association to Origins       ;
     // Origin             : String        ;
-    Studio             : String                       ;
+    Studio             : Association to api.BusinessPartnersV1                       ;
     CustomerReference  : String;
-    Title              : String                       ;
+    Title              : Association to TitleCustVH       ;
     CreatedOn          : Date;
     RequestedDelivDate : Date                         ;
     ReleaseID          : String;
@@ -185,7 +184,7 @@ entity StudioFeed : cuid, managed {
                                       on $self.SalesOrder = to_Partner.SalesOrder;                                      
 }
 
-entity Origin {
+entity Origins {
     key OriginID   : String(1) enum {
             F;
             P;

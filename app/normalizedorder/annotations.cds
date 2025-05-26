@@ -1,7 +1,91 @@
-using AssetVaultService as service from '../../srv/asset-vault';
 using from '../../srv/dcp-service';
 using from '../../db/dcp';
 
+annotate BookingOrderService.StudioFeed with{
+    Title              @Common: {
+        Label          : '{i18n>Title}',
+        // Text           : Title.ProductName,
+        // TextArrangement: #TextFirst,
+        Text: {
+	            $value                : Title.ProductName,
+	          ![@UI.TextArrangement]: #TextFirst,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'TitleCustVH',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Title_Product,
+                    ValueListProperty: 'Product',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ProductName',
+                },
+            ]
+        }
+    };
+        // Title              @(
+        // Common.ValueList               : {
+        //     $Type          : 'Common.ValueListType',
+        //     CollectionPath : 'TitleCustVH',
+        //     SearchSupported: false,
+        //     Parameters     : [
+        //         {
+        //             $Type            : 'Common.ValueListParameterInOut',
+        //             LocalDataProperty: Title_Product,
+        //             ValueListProperty: 'Product',
+        //         },
+        //         {
+        //             $Type            : 'Common.ValueListParameterDisplayOnly',
+        //             ValueListProperty: 'ProductName',
+        //         },
+        //     ],
+        // },
+        // Common.ValueListWithFixedValues: false
+    // );
+    Status              @Common: {
+        Label          : '{i18n>Status}',
+        Text: {
+	            $value                : Status.Status,
+	          ![@UI.TextArrangement]: #TextFirst,
+        }
+    };
+    Origin              @Common: {
+        Label          : '{i18n>Origin}',
+        Text: {
+	            $value                : Origin.OriginText,
+	          ![@UI.TextArrangement]: #TextFirst,
+        }
+    };
+    Studio              @Common: {
+        Label          : '{i18n>Studio}',
+        Text: {
+	            $value                : Studio.BusinessPartnerFullName,
+	          ![@UI.TextArrangement]: #TextFirst,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'S4H_BusinessPartnerapi',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Studio_BusinessPartner,
+                    ValueListProperty: 'BusinessPartner',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'BusinessPartnerFullName',
+                },
+            ]
+        }
+    };
+    
+    
+}
 annotate BookingOrderService.StudioFeed with @(
     UI.LineItem : [
         {
@@ -30,13 +114,13 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : Title,
+            Value : Title_Product,
             Label : '{i18n>Title}',
             ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
-            Value : Studio,
+            Value : Studio_BusinessPartner,
             Label : '{i18n>Studio}',
             ![@UI.Importance] : #High,
         },
@@ -341,12 +425,12 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Title,
+                Value : Title_Product,
                 Label : '{i18n>Title}',
             },
             {
                 $Type : 'UI.DataField',
-                Value : Studio,
+                Value : Studio_BusinessPartner,
                 Label : '{i18n>Studio}',
             },
             {

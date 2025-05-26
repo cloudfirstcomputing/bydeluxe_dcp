@@ -10,7 +10,7 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, S4H_ProformaReport, BookingStatus, DCPMaterialMapping, S4H_ProductGroup1,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages, S4H_ProformaDeliveryDoc,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages, S4H_ProformaDeliveryDoc, TitleCustVH,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
@@ -36,6 +36,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var bankAPI = await cds.connect.to("CE_BANK_0003");
         var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORTAPI_CDS_0001");
         var proformaDelDocAPI = await cds.connect.to("YY1_PROFORMADELIVDOCUMENT_CDS_0001");
+        const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
@@ -348,7 +349,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!element.BookingID) {
                         sValidationError = sValidationError + "BookingID is mandatory.\n";
                     }
-                    if (!element.Studio) {
+                    if (!element.Studio_BusinessPartner) {
                         sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
                     if (!element.OrderType) {
@@ -722,7 +723,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
-                let sEntityID = data[i].EntityID, sBupa = data[i].Studio;
+                let sEntityID = data[i].EntityID, sBupa = data[i].Studio_BusinessPartner;
                 oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
                 sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
                     DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
@@ -790,6 +791,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     var oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                    data[i].Title_Product = oLocalResponse?.distroSpecData?.Title_Product;
                     if (oLocalResponse?.success?.length && !oLocalResponse?.error?.length) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
                     }
@@ -850,7 +852,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         const create_S4SalesOrder_WithItems_UsingNormalizedRules = async (req, oFeedData) => {
             var oPayLoad = {}, hanaDBTable = StudioFeed,
-                sContentIndicator = oFeedData?.OrderType, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio;
+                sContentIndicator = oFeedData?.OrderType, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio_BusinessPartner;
 
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType;
@@ -1331,8 +1333,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             keyPkg.to_CPLDetail((cpl) => { cpl('*') })
                     })
             });
-            var sTitle = oContentData.Title;
-            var sBuPa = oContentData.Studio;
+            var sTitle = oContentData.Title_Product;
+            var sBuPa = oContentData.Studio_BusinessPartner;
             if (oContentData?.Origin_OriginID === "S") {
                 var sCustomerRef = oContentData.CustomerReference;
                 if (sCustomerRef) {
@@ -1633,6 +1635,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             return { "ContentPackage": aContentPackage, "KeyPackage": aKeyPackage };
         };
+        this.on('READ', TitleCustVH , async(req)=>{
+            return await prdtx.run(req.query);
+        })
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
             let aWhere = req.query.SELECT.where, aWhere_V2 = [];
             if(aWhere?.find((cond)=>  cond.xpr)){

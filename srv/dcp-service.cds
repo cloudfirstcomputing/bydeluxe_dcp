@@ -33,6 +33,8 @@ service BookingOrderService {
     action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : array of String) returns UploadResponse;
     action remediateSalesOrder(ID : String)                                    returns String;
     action reconcileStudioFeed(aBookingID : array of String)                                               returns String;
+    @readonly
+    entity TitleCustVH               as projection on db.TitleCustVH;
 
     entity S4H_SOHeader                 as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner          as projection on S4_BuisnessPartner.A_BusinessPartner;
@@ -59,6 +61,8 @@ service BookingOrderService {
         virtual null as BPCountry: String,
         virtual null as ShipDate: Date
     }
+ 
+
     // extend projection S4H_ProformaReport{
     //     @Semantics.amount.currencyCode: 'TransactionCurrency'
     //     NetAmount: Decimal(10,2),
@@ -137,6 +141,7 @@ service BookingOrderService {
     entity BookingStatus                as projection on db.BookingStatus;
     entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
     entity ShippingTypeMaster           as projection on db.ShippingTypeMaster;  //S4_Bank
+    entity Origins                      as projection on db.Origins;
     
     type RemediateType {
         bookingID         : String;
