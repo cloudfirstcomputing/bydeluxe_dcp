@@ -275,36 +275,6 @@ sap.ui.define([
                             }
                         },
 
-                        // Code to get the fileuploader control in local run
-                        getFileUploaderLocalRun: function () {
-                            var oFileUploader;
-
-                            for (var j = 0; j < oView.getDependents()[0].getContent()[0].getContent()[0].getContent().length; j++) {
-                                if (oView.getDependents()[0].getContent()[0].getContent()[0].getContent()[j].getId() === "FileUploadFileUploader") {
-                                    oFileUploader = oView.getDependents()[0].getContent()[0].getContent()[0].getContent()[j];
-                                }
-                            }
-                            return oFileUploader;
-                        },
-
-                        // Code to get the fileuploader control in local run
-                        getFileUploaderLaunchpadRun: function () {
-                            var oFileUploader;
-
-                            for (var i = 0; i < oView.getDependents().length; i++) {
-                                if (oView.getDependents()[i].getContent !== undefined) {
-                                    for (var j = 0; j < oView.getDependents()[i].getContent()[0].getContent()[0].getContent().length; j++) {
-                                        if (oView.getDependents()[i].getContent()[0].getContent()[0].getContent()[j].getId() === "FileUploadFileUploader") {
-                                            oFileUploader = oView.getDependents()[i].getContent()[0].getContent()[0].getContent()[j];
-                                        }
-                                    }
-                                } else {
-                                    continue;
-                                }
-                            }
-                            return oFileUploader;
-                        },
-
                         // Code to check extension of the file
                         handleTypeMissmatch: function (oEvent) {
                             that.btnAccess = this;
@@ -368,11 +338,7 @@ sap.ui.define([
                             var oFileUploader, file = this.file;
                             that.Obj = this;
 
-                            if (oView.getDependents().length === 1) {
-                                oFileUploader = that.Obj.getFileUploaderLocalRun();
-                            } else {
-                                oFileUploader = that.Obj.getFileUploaderLaunchpadRun();
-                            }
+                            oFileUploader = sap.ui.getCore().byId('FileUploadFileUploaderSF');
 
                             if (!oFileUploader.getValue()) {
                                 MessageBox.error(oResourceBundle.getText("noFile"));  // No file uploaded
@@ -589,13 +555,7 @@ sap.ui.define([
                         fieldCancel: function () {
                             that.btnAccess = this;
                             // Get FileUploader and clear the selected file
-                            var oFileUploader;
-
-                            if (oView.getDependents().length === 1) {
-                                oFileUploader = that.btnAccess.getFileUploaderLocalRun();
-                            } else {
-                                oFileUploader = that.btnAccess.getFileUploaderLaunchpadRun();
-                            }
+                            var oFileUploader = sap.ui.getCore().byId('FileUploadFileUploaderSF');
                             oFileUploader.clear();
 
                             // Get buttons

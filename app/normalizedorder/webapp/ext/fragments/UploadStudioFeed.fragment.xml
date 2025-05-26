@@ -5,8 +5,8 @@
                 <f:SimpleForm id="sf" layout="ResponsiveGridLayout" backgroundDesign="Transparent">
                     <Label id="label" text="{i18n>labelFileUploader}" class="sapUiTinyMarginTop" />
                     <u:FileUploader
-                        id="FileUploadFileUploader"
-                        name="FileUploadFileUploader"
+                        id="FileUploadFileUploaderSF"
+                        name="FileUploadFileUploaderStudioFeed"
                         placeholder="{i18n>placeholderFileUploader}"
                         tooltip="{i18n>tooltipFileUploader}"
                         style="Emphasized"
