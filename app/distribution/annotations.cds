@@ -280,19 +280,94 @@ annotate service.DCPMaterials with {
 annotate service.CplList with {
     LinkedCTT     @Common: {Label: '{i18n>CTT}'};
     LinkedCPLUUID @Common: {Label: '{i18n>CPL}'};
-    AssetMapUUID  @Common: {Label: '{i18n>AssetMapUUID}'};
-    Email         @Common: {Label: '{i18n>Email}'};
-    Download      @Common: {Label: '{i18n>Download}'};
+    AssetMapUUID  @Common: {Label: '{i18n>AssetMapUUID}'}  @UI.HiddenFilter;
+    Email         @Common: {Label: '{i18n>Email}'}         @UI.HiddenFilter;
+    Download      @Common: {Label: '{i18n>Download}'}      @UI.HiddenFilter;
+    ProjectID     @UI.HiddenFilter;
+
 };
 
 annotate service.Studios with {
     BusinessPartner         @Common: {Label: '{i18n>Studio}', };
     BusinessPartnerFullName @Common: {Label: '{i18n>StudioName}', };
+    BusinessPartnerType     @UI.HiddenFilter;
 };
+
+annotate service.GeoRegions with {
+    _Territory @UI.HiddenFilter;
+}
+
+annotate service.Languages with {
+    descr @UI.HiddenFilter;
+}
+
+annotate service.PlayBackCapability1 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability2 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability3 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability4 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability5 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability6 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability7 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability8 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
+
+annotate service.PlayBackCapability9 with {
+    CharcInternalID          @UI.HiddenFilter;
+    CharcValuePositionNumber @UI.HiddenFilter;
+    CharcValue;
+    Characteristic;
+}
 
 annotate service.Theaters with {
     BusinessPartner         @Common: {Label: '{i18n>Theater}', };
     BusinessPartnerFullName @Common: {Label: '{i18n>TheaterName}', };
+    BusinessPartnerType     @UI.HiddenFilter;
 };
 
 annotate service.ShippingConditions with {

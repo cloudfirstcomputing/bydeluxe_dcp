@@ -26,6 +26,15 @@ module.exports = class DistributionService extends cds.ApplicationService {
         const charactx = await cds.connect.to("YY1_CLFNCHARACTERISTIC_CDS");
         const bpstx = await cds.connect.to("ZAPI_BUSINESSPARTNERS");
         const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
+        const charsttx = await cds.connect.to("YY1_CHARACTERISTIC_ST_CDS");
+        const charsftx = await cds.connect.to("YY1_CHARACTERISTIC_SF_CDS");
+        const charmstx = await cds.connect.to("YY1_CHARACTERISTIC_MS_CDS");
+        const charmftx = await cds.connect.to("YY1_CHARACTERISTIC_MFRS_CDS");
+        const charlltx = await cds.connect.to("YY1_CHARACTERISTIC_LL_CDS");
+        const charfftx = await cds.connect.to("YY1_CHARACTERISTIC_FF_CDS");
+        const chardttx = await cds.connect.to("YY1_CHARACTERISTIC_DT_CDS");
+        const chardgtx = await cds.connect.to("YY1_CHARACTERISTIC_DG_CDS");
+        const charartx = await cds.connect.to("YY1_CHARACTERISTIC_AR_CDS");
 
         const expand = (req, fields = []) => {
             const processedField = [], lreq = req
@@ -87,6 +96,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
             req.data.DistroSpecID = ++maxID
             req.data.FieldControl = 1
+            const titlev = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: req.data.Title_Product })
+            req.data.ReleaseDate = titlev?.ReleaseDate
+            req.data.RepertoryDate = titlev?.RepertoryDate
+
         })
 
         this.before("NEW", `StudioKey.drafts`, async (req) => {
@@ -100,11 +113,11 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.ProcessKDMS = 24
         })
 
-        this.on('UPDATE', DistroSpec.drafts, async req => {
-            if (req.data.Title) {
+        // this.on('UPDATE', DistroSpec.drafts, async req => {
+        //     if (req.data.Title) {
 
-            }
-        })
+        //     }
+        // })
 
         this.on("READ", `StudioKey`, async (req, next) => {
             if (!req.query.SELECT.columns) return next();
@@ -379,10 +392,6 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         this.before('SAVE', DistroSpec, async req => {
-            const titlev = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: req.data.Title })
-            req.data.ReleaseDate = titlev?.ReleaseDate
-            req.data.RepertoryDate = titlev?.RepertoryDate
-            
             let ret = uniquePriority(req.data.to_Package)
             if (ret) {
                 req.error(400, `Priority should be unique in Content Package: ${ret}`)
@@ -496,32 +505,32 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return paramtx.run(req.query)
         })
 
-        this.on('READ', 'PlayBackCapability1', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'ASPECT_RATIO' }))
+        this.on('READ', 'PlayBackCapability1', (req) => {
+            return charartx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability2', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'DIGITAL_3D_TYPE' }))
+        this.on('READ', 'PlayBackCapability2', (req) => {
+            return chardttx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability3', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'DIGITAL_3D_GLASSES' }))
+        this.on('READ', 'PlayBackCapability3', (req) => {
+            return chardgtx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability4', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'MOTION_SEATINGTYPE' }))
+        this.on('READ', 'PlayBackCapability4', (req) => {
+            return charmstx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability5', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'SOUND_FORMAT' }))
+        this.on('READ', 'PlayBackCapability5', (req) => {
+            return charsftx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability6', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'FILM_FORMAT' }))
+        this.on('READ', 'PlayBackCapability6', (req) => {
+            return charfftx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability7', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'SCREEN_TYPE' }))
+        this.on('READ', 'PlayBackCapability7', (req) => {
+            return charsttx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability8', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'MAX_FRAME_RATE_SUPPORTED' }))
+        this.on('READ', 'PlayBackCapability8', (req) => {
+            return charmftx.run(req.query)
         })
-        this.on('READ', 'PlayBackCapability9', () => {
-            return charactx.run(SELECT.from(Characteristic).where({ Characteristic: 'LIGHT_LEVEL' }))
+        this.on('READ', 'PlayBackCapability9', (req) => {
+            return charlltx.run(req.query)
         })
         this.on('READ', 'PlayBackCapability10', () => {
             return paramtx.run(SELECT.from(Parameters).where({ VariableName: 'PlayBackCapability10' }))

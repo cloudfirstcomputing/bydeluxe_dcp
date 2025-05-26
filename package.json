@@ -500,6 +500,105 @@
       "YY1_PROFORMAREPORT_CDS_0001": {
         "kind": "odata-v2",
         "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001"
+      },
+      "YY1_CHARACTERISTIC_AR_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_AR_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_AR_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_DG_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_DG_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_DG_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_DT_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_DT_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_DT_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_FF_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_FF_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_FF_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_LL_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_LL_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_LL_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_MFRS_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_MFRS_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_MFRS_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_MS_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_MS_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_MS_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_SF_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_SF_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_SF_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_CHARACTERISTIC_ST_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_CHARACTERISTIC_ST_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_ST_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

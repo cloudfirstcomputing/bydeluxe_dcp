@@ -1,0 +1,59 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.9.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_CHARACTERISTIC_MS_CDS": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_CHARACTERISTIC_MS_CDS.YY1_CHARACTERISTIC_MS": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "Characteristic_MS",
+   "elements": {
+    "CharcInternalID": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "NonNegative",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Characteristic Internal ID",
+     "notNull": true
+    },
+    "CharcValuePositionNumber": {
+     "key": true,
+     "type": "cds.String",
+     "length": 4,
+     "@sap.display.format": "NonNegative",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Int counter values",
+     "@sap.quickinfo": "Int counter",
+     "notNull": true
+    },
+    "CharcValue": {
+     "type": "cds.String",
+     "length": 70,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Characteristic Value"
+    },
+    "Characteristic": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Characteristic Name"
+    }
+   }
+  }
+ }
+}

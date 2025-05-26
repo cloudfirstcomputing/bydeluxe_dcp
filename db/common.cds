@@ -31,6 +31,15 @@ using {PRODUCTIONVERSION as prodver} from '../srv/external/PRODUCTIONVERSION';
 using {YY1_VALUATIONAREA_CDS as valuation} from '../srv/external/YY1_VALUATIONAREA_CDS';
 using {ZAPI_BUSINESSPARTNERS as bp} from '../srv/external/ZAPI_BUSINESSPARTNERS';
 using {ZCL_PRODUCT_VH as prd} from '../srv/external/ZCL_PRODUCT_VH';
+using {YY1_CHARACTERISTIC_ST_CDS as charst} from '../srv/external/YY1_CHARACTERISTIC_ST_CDS';
+using {YY1_CHARACTERISTIC_SF_CDS as charsf} from '../srv/external/YY1_CHARACTERISTIC_SF_CDS';
+using {YY1_CHARACTERISTIC_MS_CDS as charms} from '../srv/external/YY1_CHARACTERISTIC_MS_CDS';
+using {YY1_CHARACTERISTIC_MFRS_CDS as charmfrs} from '../srv/external/YY1_CHARACTERISTIC_MFRS_CDS';
+using {YY1_CHARACTERISTIC_LL_CDS as charll} from '../srv/external/YY1_CHARACTERISTIC_LL_CDS';
+using {YY1_CHARACTERISTIC_FF_CDS as charff} from '../srv/external/YY1_CHARACTERISTIC_FF_CDS';
+using {YY1_CHARACTERISTIC_DT_CDS as chardt} from '../srv/external/YY1_CHARACTERISTIC_DT_CDS';
+using {YY1_CHARACTERISTIC_DG_CDS as chardg} from '../srv/external/YY1_CHARACTERISTIC_DG_CDS';
+using {YY1_CHARACTERISTIC_AR_CDS as charar} from '../srv/external/YY1_CHARACTERISTIC_AR_CDS';
 
 context api {
 
@@ -111,4 +120,13 @@ context api {
     entity ZI_DCPPRODUCT_VH             as projection on prd.ZI_DCPPRODUCT_VH;
     entity ZI_TITLES_VH                 as projection on prd.ZI_TITLES_VH;
     entity ZI_PRODUCTKC_VH              as projection on prd.ZI_PRODUCTKC_VH;
+    entity YY1_CHARACTERISTIC_ST        as projection on charst.YY1_CHARACTERISTIC_ST;
+    entity YY1_CHARACTERISTIC_SF        as projection on charsf.YY1_CHARACTERISTIC_SF;
+    entity YY1_CHARACTERISTIC_MS        as projection on charms.YY1_CHARACTERISTIC_MS;
+    entity YY1_CHARACTERISTIC_MFRS      as projection on charmfrs.YY1_CHARACTERISTIC_MFRS;
+    entity YY1_CHARACTERISTIC_LL        as projection on charll.YY1_CHARACTERISTIC_LL;
+    entity YY1_CHARACTERISTIC_FF        as projection on charff.YY1_CHARACTERISTIC_FF;
+    entity YY1_CHARACTERISTIC_DT        as projection on chardt.YY1_CHARACTERISTIC_DT;
+    entity YY1_CHARACTERISTIC_DG        as projection on chardg.YY1_CHARACTERISTIC_DG;
+    entity YY1_CHARACTERISTIC_AR        as projection on charar.YY1_CHARACTERISTIC_AR;
 }
