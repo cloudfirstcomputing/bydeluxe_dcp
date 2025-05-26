@@ -206,7 +206,7 @@ entity DCPMaterialMapping : cuid, managed {
     Variable      : String(200);
     Material      : String(40);
     MaterialGroup : String(10);
-    Country       : Country;
+    CompanyCode   : String(4);
     ProfitCenter  : String(10);
 }
 
