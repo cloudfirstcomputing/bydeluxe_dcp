@@ -1,0 +1,5 @@
+locale,ID,Status
+en,A,Not Processed
+en,C,Completely Processed
+en,D,Failed
+en,R,Review

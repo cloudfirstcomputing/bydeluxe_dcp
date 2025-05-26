@@ -353,7 +353,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!element.Studio_BusinessPartner) {
                         sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
-                    if (!element.OrderType) {
+                    if (!element.OrderType_code) {
                         sValidationError = sValidationError + "OrderType is mandatory.\n";
                     }
                     if (!element.PlayStartDate) {
@@ -368,7 +368,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!element.RequestedDelivDate) {
                         sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
                     }
-                    if (!element.BookingType) {
+                    if (!element.BookingType_ID) {
                         sValidationError = sValidationError + "BookingType is mandatory.\n";
                     }
                     if (!element.TheaterID) {
@@ -399,7 +399,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aBookingID = req.data?.aBookingID;
             var aFeeds = await SELECT.from(StudioFeed).where({ BookingID: { "IN": aBookingID }, IsActive: 'Y' });
             aFeeds = aFeeds?.map((feed) => {
-                feed.BookingType = 'C';
+                feed.BookingType_ID = 'C';
                 return feed
             });
             var aResponse = await createStudioFeeds(req, aFeeds, true);
@@ -774,7 +774,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else {
-                    if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
+                    if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
                             data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
@@ -832,7 +832,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 else {
                     recordsToBeInserted.push(data[i]); //INSERT is always required
-                    // if (data[i].BookingType === "U" || data[i].BookingType === "C") { //VERSION is updated only when BookingType is U or C
+                    // if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                     //     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                     //     if (entry_Active) {
                     //         data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
@@ -863,7 +863,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         const create_S4SalesOrder_WithItems_UsingNormalizedRules = async (req, oFeedData) => {
             var oPayLoad = {}, hanaDBTable = StudioFeed,
-                sContentIndicator = oFeedData?.OrderType, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio_BusinessPartner;
+                sContentIndicator = oFeedData?.OrderType_code, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio_BusinessPartner;
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType;
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
@@ -1423,7 +1423,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return distroSpecData;
         }
         const updateBTPSOItemsAndS4Texts = async (req, oContentData, oResponseStatus) => {
-            var sSalesOrder = oResponseStatus?.SalesOrder, sContentIndicator = oContentData?.OrderType;
+            var sSalesOrder = oResponseStatus?.SalesOrder, sContentIndicator = oContentData?.OrderType_code;
             var distroSpecData = oResponseStatus?.distroSpecData, oContentPackage = oResponseStatus?.ContentPackage?.[0],
                 oPayLoad = oResponseStatus?.payLoad, oKeyPackage = oResponseStatus?.KeyPackage?.[0];
             var oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }, { "ref": ["to_Partner"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
@@ -1568,7 +1568,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return oContentData;
         };
         const performPrioritySort_OrderType_ValidityCheck = async (oFeedData, distroSpecData) => {
-            var sFeedOrderType = oFeedData?.OrderType;
+            var sFeedOrderType = oFeedData?.OrderType_code;
             var aContentPackage = distroSpecData?.to_Package;
             var aKeyPackage = distroSpecData?.to_KeyPackage;
 

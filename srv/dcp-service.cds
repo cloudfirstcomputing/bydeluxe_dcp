@@ -12,6 +12,7 @@ using {YY1_PROFORMAREPORTAPI_CDS_0001 as S4_proforma} from '../srv/external/YY1_
 using {YY1_PROFORMADELIVDOCUMENT_CDS_0001 as S4_proforma_delivDoc} from '../srv/external/YY1_PROFORMADELIVDOCUMENT_CDS_0001';
 
 using api from '../db/common';
+using deluxe.distribution as dist from '../db/distribution';
 
 service BookingOrderService {
     entity dcpcontent                   as projection on db.dcpcontent;
@@ -143,7 +144,8 @@ service BookingOrderService {
     entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
     entity ShippingTypeMaster           as projection on db.ShippingTypeMaster;  //S4_Bank
     entity Origins                      as projection on db.Origins;
-    
+    entity OrderTypes as projection on dist.OrderType;
+    entity BookingTypeVH as projection on db.BookingTypeVH;
     type RemediateType {
         bookingID         : String;
         salesOrder        : String;

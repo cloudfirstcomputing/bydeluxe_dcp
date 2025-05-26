@@ -2,9 +2,11 @@ namespace dcp.db;
 
 using {
     managed,
-    cuid
+    cuid,
+    sap.common.CodeList,
 } from '@sap/cds/common';
 using api from './common';
+using deluxe.distribution as dist from './distribution';
 
 entity TitleVH as projection on api.Products;
 entity dcpcontent : managed {
@@ -129,9 +131,9 @@ entity StudioFeed : cuid, managed {
     CreatedOn          : Date;
     RequestedDelivDate : Date                         ;
     ReleaseID          : String;
-    OrderType          : String                       ;
+    OrderType          : Association to dist.OrderType                       ;
     RecordType         : String;
-    BookingType        : String;
+    BookingType        : Association to BookingTypeVH;
     TheaterID          : String;
     Circuit            : String;
     BookerName         : String;
@@ -194,18 +196,27 @@ entity Origins {
             S;
             M;
         };
-        OriginText : String;
+        OriginText : localized String;
 };
 
 entity BookingStatus {
     key ID     : String(1) enum {
-            A;
-            C;
-            D
+            A;//Not Processed
+            C;//Completedly Processed
+            D;//Failed
+            R;//Review
         };
-        Status : String;
+        Status : localized String;
 };
 
+entity BookingTypeVH {
+    key ID: String(2) enum {
+        NO; //New Order
+        C; //Cancel
+        U; //Update
+    };
+    Description: localized String;
+}
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
 @readonly
 entity BookingSalesOrder : managed {

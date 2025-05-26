@@ -2,6 +2,67 @@ using from '../../srv/dcp-service';
 using from '../../db/dcp';
 
 annotate BookingOrderService.StudioFeed with{
+
+    Status              @Common: {
+        Label          : '{i18n>Status}',
+        Text: {
+	            $value                : Status.Status,
+	          ![@UI.TextArrangement]: #TextFirst,
+        }
+    };
+    Origin              @Common: {
+        Label          : '{i18n>Origin}',
+        Text: {
+	            $value                : Origin.OriginText,
+	          ![@UI.TextArrangement]: #TextFirst,
+        }
+    };
+    OrderType              @Common: {
+        Label          : '{i18n>Ordertype}',
+        Text: {
+	            $value                : OrderType.name,
+	          ![@UI.TextArrangement]: #TextFirst,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'OrderTypes',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: OrderType_code,
+                    ValueListProperty: 'code',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'name',
+                },
+            ]
+        }
+    };
+    BookingType              @Common: {
+        Label          : '{i18n>Bookingtype}',
+        Text: {
+	            $value                : BookingType.Description,
+	          ![@UI.TextArrangement]: #TextFirst,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'BookingTypeVH',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: BookingType_ID,
+                    ValueListProperty: 'ID',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Description',
+                },
+            ]
+        }
+    };
     Title              @Common: {
         Label          : '{i18n>Title}',
         // Text           : Title.ProductName,
@@ -26,40 +87,7 @@ annotate BookingOrderService.StudioFeed with{
                 },
             ]
         }
-    };
-        // Title              @(
-        // Common.ValueList               : {
-        //     $Type          : 'Common.ValueListType',
-        //     CollectionPath : 'TitleCustVH',
-        //     SearchSupported: false,
-        //     Parameters     : [
-        //         {
-        //             $Type            : 'Common.ValueListParameterInOut',
-        //             LocalDataProperty: Title_Product,
-        //             ValueListProperty: 'Product',
-        //         },
-        //         {
-        //             $Type            : 'Common.ValueListParameterDisplayOnly',
-        //             ValueListProperty: 'ProductName',
-        //         },
-        //     ],
-        // },
-        // Common.ValueListWithFixedValues: false
-    // );
-    Status              @Common: {
-        Label          : '{i18n>Status}',
-        Text: {
-	            $value                : Status.Status,
-	          ![@UI.TextArrangement]: #TextFirst,
-        }
-    };
-    Origin              @Common: {
-        Label          : '{i18n>Origin}',
-        Text: {
-	            $value                : Origin.OriginText,
-	          ![@UI.TextArrangement]: #TextFirst,
-        }
-    };
+    };    
     Studio              @Common: {
         Label          : '{i18n>Studio}',
         Text: {
@@ -108,7 +136,7 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : OrderType,
+            Value : OrderType_code,
             Label : '{i18n>Ordertype}',
             ![@UI.Importance] : #High,
         },
@@ -185,7 +213,7 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : BookingType,
+            Value : BookingType_ID,
             Label : '{i18n>Bookingtype}',
         },
         {
@@ -440,7 +468,7 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : OrderType,
+                Value : OrderType_code,
                 Label : '{i18n>Ordertype}',
             },
             {
@@ -465,7 +493,7 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : BookingType,
+                Value : BookingType_ID,
                 Label : '{i18n>Bookingtype}',
             },
             {
