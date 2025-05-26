@@ -336,7 +336,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     const salesorg = sorgs[k];
                     const element = comp.find(item => item.CompanyCode === salesorg.CompanyCode)
                     if (!['US', 'CA'].includes(element.Country)) continue
-                    to_SalesDelivery = sorgdist.filter(item => item.SalesOrganization === salesorg.SalesOrganization)
+                    const salesData = sorgdist.filter(item => item.SalesOrganization === salesorg.SalesOrganization)
                         .map(item => {
                             return {
                                 "Product": ProjectID,
@@ -352,12 +352,12 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                         "TaxCategory": "UTXJ",
                                         "TaxClassification": "0"
                                     },
-                                   {
-                                       "Product": ProjectID,
-                                       "Country": 'CA',
-                                       "TaxCategory": "CTXJ",
-                                       "TaxClassification": "0"
-                                   }
+                                    {
+                                        "Product": ProjectID,
+                                        "Country": 'CA',
+                                        "TaxCategory": "CTXJ",
+                                        "TaxClassification": "0"
+                                    }
                                 ],
                                 "to_SalesText": [
                                     {
@@ -370,6 +370,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                 ]
                             }
                         })
+                    to_SalesDelivery.push(...salesData)
                 }
                 const ins = await pdtx.run(INSERT.into(Products).entries({
                     "ProductType": "ZDCP",
