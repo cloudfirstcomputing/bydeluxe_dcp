@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
-            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText } = this.entities;
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -37,6 +37,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORTAPI_CDS_0001");
         var proformaDelDocAPI = await cds.connect.to("YY1_PROFORMADELIVDOCUMENT_CDS_0001");
         const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
+        const bpapi = await cds.connect.to("ZAPI_BUSINESSPARTNERS");
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
@@ -791,7 +792,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     var oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
-                    data[i].Title_Product = oLocalResponse?.distroSpecData?.Title_Product;
+                    let sTitle = oLocalResponse?.distroSpecData?.Title_Product;
+                    data[i].Title_Product = sTitle;
+                    if(sTitle){
+                        let oMat = await prdtx.run(SELECT.one.from(TitleCustVH).where({Product: sTitle}));
+                        data[i].TitleText = oMat?.ProductName;
+                    }
+                    let sBupa = data[i]?.Studio_BusinessPartner;
+                    if(sBupa){
+                        let oBP = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: sBupa }));
+                        data[i].StudioText = oBP?.BusinessPartnerFullName;
+                    }
                     if (oLocalResponse?.success?.length && !oLocalResponse?.error?.length) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
                     }
@@ -853,7 +864,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const create_S4SalesOrder_WithItems_UsingNormalizedRules = async (req, oFeedData) => {
             var oPayLoad = {}, hanaDBTable = StudioFeed,
                 sContentIndicator = oFeedData?.OrderType, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio_BusinessPartner;
-
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType;
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
@@ -1639,7 +1649,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         };
         this.on('READ', TitleCustVH , async(req)=>{
             return await prdtx.run(req.query);
-        })
+        });
+        this.on('READ', StudioVH , async(req)=>{
+            return await bpapi.run(req.query);
+        });        
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
             let aWhere = req.query.SELECT.where, aWhere_V2 = [];
             if(aWhere?.find((cond)=>  cond.xpr)){

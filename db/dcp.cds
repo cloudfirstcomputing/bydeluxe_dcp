@@ -114,15 +114,18 @@ entity dcpkey : managed {
         Warnings            : String
 }
 entity TitleCustVH       as projection on api.ZI_TITLES_VH;
+entity StudioVH      as projection on api.ZI_Studio;
 entity StudioFeed : cuid, managed {
     BookingID          : String                       ;
     SourceSystem       : String                       ;
     EntityID           : String                       ;
     Origin             : Association to Origins       ;
     // Origin             : String        ;
-    Studio             : Association to api.BusinessPartnersV1                       ;
+    Studio             : Association to StudioVH                       ;
+    StudioText         : String;
     CustomerReference  : String;
     Title              : Association to TitleCustVH       ;
+    TitleText          : String;
     CreatedOn          : Date;
     RequestedDelivDate : Date                         ;
     ReleaseID          : String;

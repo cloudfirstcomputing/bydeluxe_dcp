@@ -7,7 +7,7 @@ annotate BookingOrderService.StudioFeed with{
         // Text           : Title.ProductName,
         // TextArrangement: #TextFirst,
         Text: {
-	            $value                : Title.ProductName,
+	            $value                : TitleText,
 	          ![@UI.TextArrangement]: #TextFirst,
         },        
         ValueList               : {
@@ -63,12 +63,12 @@ annotate BookingOrderService.StudioFeed with{
     Studio              @Common: {
         Label          : '{i18n>Studio}',
         Text: {
-	            $value                : Studio.BusinessPartnerFullName,
+	            $value                : StudioText,
 	          ![@UI.TextArrangement]: #TextFirst,
         },        
         ValueList               : {
             $Type          : 'Common.ValueListType',
-            CollectionPath : 'S4H_BusinessPartnerapi',
+            CollectionPath : 'StudioVH',
             SearchSupported: false,
             Parameters     : [
                 {
