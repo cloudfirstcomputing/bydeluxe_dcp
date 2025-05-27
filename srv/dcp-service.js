@@ -44,7 +44,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var srv_BillingDocument = await cds.connect.to("API_BILLING_DOCUMENT_SRV");
 
 
-        var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', BillTo = "", sErrorMessage = "";
+        var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', CompanyCode = '1170', BillTo = "", sErrorMessage = "";
         // let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
         var oSalesParameterConfig, oResponseStatus = { "error": [], "success": [], "warning": [] };
         // var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
@@ -540,6 +540,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     return;
                 }
                 var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
+                var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
                 if (sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')) {
                     /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
                     Pick up Add.MatGroup from BTP Mapping table and set it in the AdditionalMaterialGroup1 of this DCP Item in S4
@@ -615,7 +616,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             "ItemBillingBlockReason": "03",
                             "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
                             "DeliveryPriority": "04",
-                            "ProfitCenter": oDCPMapping?.ProfitCenter
+                            "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
                         };
                         // oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
                         //     "SalesOrder": sSalesOrder,
@@ -671,7 +672,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = distroSpecData?.Title_Product;
                     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                    oSalesorderItem_PayLoad["ProfitCenter"] = oDCPMapping?.ProfitCenter;
+                    oSalesorderItem_PayLoad["ProfitCenter"] = oDCPMapping_Cocode?.ProfitCenter;
                     // oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
@@ -1192,6 +1193,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                         if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
                             var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
+                            var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
                             if (oFinalContentPackage) { //Applicable only for Content.                                
                                 if (oDCPMapping) {
                                     oPayLoad.to_Item.push({
@@ -1203,7 +1205,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                         "ShippingType": sShippingType,
-                                        "ProfitCenter": oDCPMapping?.ProfitCenter
+                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
                                     });
                                 }
                                 else {
@@ -1224,7 +1226,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                         "ShippingType": '07',
-                                        "ProfitCenter": oDCPMapping?.ProfitCenter
+                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
                                     });
                                 }
                                 else {
@@ -1271,7 +1273,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.FilteredPackage = oFinalContentPackage;
             return oResponseStatus;
         };
-        const getVariableBasedDCPMapping = async (ReleaseDate, dStartDate, RepertoryDate, sShippingType) => {
+        const getVariableBasedDCPMapping = async (ReleaseDate, dStartDate, RepertoryDate, sShippingType, sCompanyCode) => {
 
             // RULE 5.1, 6.1 => Common for Content and Key
             var sMode, dAddSevenDays;
@@ -1294,7 +1296,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 sMode = 'Repertory';
             }
             if (sMode) {
-                var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                if(sCompanyCode){
+                    var oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode, CompanyCode: sCompanyCode });
+                }
+                else{
+                    oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
+                }
             }
             return oDCPMapping;
         }
@@ -1475,7 +1482,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sKeyPkgCPLUUIDs = aKeyPkgCPLUUID?.map((u) => { return u ? u : false }).join(`,`);
                         oContentData.to_Item[i].CPLUUID = sKeyPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sKeyPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
-                    }
+                    }  
                 }
                 else { //Content Order item
                     sPackageUUID = oContentPackage?.PackageUUID;
@@ -1504,12 +1511,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sContentPkgCPLUUIDs = aFinalCPLs?.map((u) => { return u ? u : false }).join(`,`);
                         oContentData.to_Item[i].CPLUUID = sContentPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
-                    }
-                }
+                    }                    
+                    if (oAssetvault?.AssetMapID) { //made it only for C as per email from Ravneet on 27th May and as discusssed with Pranav on 27th 3:17PM)
+                        await updateItemTextForSalesOrder(req, "Z013", oAssetvault.AssetMapID, oResponseStatus, oSalesOrderItem, oContentData); 
+                    }                         
+                }  
 
                 if (oAssetvault?.KrakenTitleID) { //RULE 9.3(made it for both C and K as per discussion on 22nd May)
                     await updateItemTextForSalesOrder(req, "Z006", oAssetvault.KrakenTitleID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
-                }                
+                }        
                 if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9 (made it for both C and K as per discussion on 22nd May)
                     // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
                     var oProdGroup = await prdgrp1tx.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
