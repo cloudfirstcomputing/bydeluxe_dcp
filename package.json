@@ -464,6 +464,28 @@
           "requestTimeout": 1000000
         }
       },
+      "YY1_PROFORMADELIVDOCUMENT_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_PROFORMADELIVDOCUMENT_CDS_0001",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_PROFORMADELIVDOCUMENT_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
+      "YY1_I_SALESDOCUMENTPARTNER_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_I_SALESDOCUMENTPARTNER_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_I_SALESDOCUMENTPARTNER_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
+      },
       "ZAPI_BUSINESSPARTNERS": {
         "kind": "odata-v2",
         "model": "srv/external/ZAPI_BUSINESSPARTNERS",
@@ -485,21 +507,6 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
-      },
-      "YY1_PROFORMADELIVDOCUMENT_CDS_0001": {
-        "kind": "odata-v2",
-        "model": "srv/external/YY1_PROFORMADELIVDOCUMENT_CDS_0001",
-        "csrf": true,
-        "csrfInBatch": true,
-        "credentials": {
-          "path": "/sap/opu/odata/sap/YY1_PROFORMADELIVDOCUMENT_CDS",
-          "destination": "S4HC_DEV",
-          "requestTimeout": 1000000
-        }
-      },
-      "YY1_PROFORMAREPORT_CDS_0001": {
-        "kind": "odata-v2",
-        "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001"
       },
       "YY1_CHARACTERISTIC_AR_CDS": {
         "kind": "odata-v2",
@@ -596,17 +603,6 @@
         "csrfInBatch": true,
         "credentials": {
           "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_ST_CDS",
-          "destination": "S4HC_DEV",
-          "requestTimeout": 1000000
-        }
-      },
-      "YY1_I_SALESDOCUMENTPARTNER_CDS": {
-        "kind": "odata-v2",
-        "model": "srv/external/YY1_I_SALESDOCUMENTPARTNER_CDS",
-        "csrf": true,
-        "csrfInBatch": true,
-        "credentials": {
-          "path": "/sap/opu/odata/sap/YY1_I_SALESDOCUMENTPARTNER_CDS",
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
