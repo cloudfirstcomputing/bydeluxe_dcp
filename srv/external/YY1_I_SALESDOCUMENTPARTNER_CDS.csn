@@ -1,0 +1,68 @@
+{
+ "meta": {
+  "creator": "cds-dk 8.9.3"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "YY1_I_SALESDOCUMENTPARTNER_CDS": {
+   "kind": "service",
+   "@cds.external": true,
+   "@m.IsDefaultEntityContainer": "true",
+   "@sap.message.scope.supported": "true",
+   "@sap.supported.formats": "atom json xlsx"
+  },
+  "YY1_I_SALESDOCUMENTPARTNER_CDS.YY1_I_SalesDocumentPartner": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "@sap.creatable": "false",
+   "@sap.updatable": "false",
+   "@sap.deletable": "false",
+   "@sap.content.version": "1",
+   "@sap.label": "I_SalesDocumentPartner",
+   "elements": {
+    "SalesDocument": {
+     "key": true,
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Sales Document",
+     "notNull": true
+    },
+    "PartnerFunction": {
+     "key": true,
+     "type": "cds.String",
+     "length": 2,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Partner Function",
+     "notNull": true
+    },
+    "Customer": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Customer",
+     "@sap.quickinfo": "Customer Number"
+    },
+    "AddressID": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Address Number"
+    },
+    "ReferenceBusinessPartner": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number"
+    }
+   }
+  }
+ }
+}

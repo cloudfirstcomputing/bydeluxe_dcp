@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
-            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH } = this.entities;
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -38,6 +38,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var proformaDelDocAPI = await cds.connect.to("YY1_PROFORMADELIVDOCUMENT_CDS_0001");
         const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
         const bpapi = await cds.connect.to("ZAPI_BUSINESSPARTNERS");
+        const bpsoapi = await cds.connect.to("YY1_I_SALESDOCUMENTPARTNER_CDS");
 
         var s4h_prodGroup = await cds.connect.to("API_PRODUCTGROUP_SRV");
         var deluxe_adsrestapi = await cds.connect.to("deluxe-ads-rest-api");
@@ -1163,7 +1164,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oPayLoad.to_Item = [];
 
                         var sLongText;
-                        if ((oFinalContentPackage) && sShippingType === '03' || sShippingType === '06' || sShippingType === '12') {  // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
+                        var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
+                        var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
+
+                        if ((oFinalContentPackage) && sShippingType === '03' || sShippingType === '06' || sShippingType === '12') {  
+                            // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
+                            // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                             if (oFinalContentPackage?.to_DCPMaterial) {
                                 for (var j in oFinalContentPackage.to_DCPMaterial) {
                                     var oMatRecord = oFinalContentPackage.to_DCPMaterial[j];
@@ -1180,7 +1186,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                         "ShippingType": sShippingType,
-                                        "LongText": sLongText
+                                        "LongText": sLongText,
+                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
                                     };
                                     oPayLoad.to_Item.push(oEntry);
                                 }
@@ -1190,10 +1198,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 sErrorMessage = "DCP Material not available";
                             }
                         }
-
                         if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
-                            var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                            var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
                             if (oFinalContentPackage) { //Applicable only for Content.                                
                                 if (oDCPMapping) {
                                     oPayLoad.to_Item.push({
@@ -1715,26 +1720,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if(oPackTitleText){
                         aData[i].PackageTitle = oPackTitleText?.LongText;
                     }
-                    let aBP = [], sBusinessPartner = oSalesOrder?.BusinessPartner;
+                    let oBP = await bpsoapi.run(SELECT.one.from(SalesDocumentHeaderPartner).where({SalesDocument: aData[i].SalesDocument}));
+                    let sBusinessPartner = oBP?.ReferenceBusinessPartner;
                     if(sBusinessPartner){
-                        // let oBP = aBP.find((item)=>{return item.BP === sBusinessPartner});
-                        // if(!oBP){
-                        //     let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
-                        //     aBP.push({"BP": sBusinessPartner, "addressData": oBP?.to_BusinessPartnerAddress?.[0]});
-                        // }
-                        
-                        // let oBPAddress = oBP?.to_BusinessPartnerAddress?.[0];
-                        // if(oBPAddress){
-
-                        // }
+                        aData[i].ReferenceBusinessPartner = sBusinessPartner;
                         let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
-                        let oBPAddress = oBP?.to_BusinessPartnerAddress?.[0];
+                        let oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
                         if(oBPAddress){
-                            aData[i].BPStreetName = oBPAddress?.StreetName;BPCityName
+                            aData[i].BPStreetName = oBPAddress?.StreetName;
                             aData[i].BPCityName = oBPAddress?.CityName;
                             aData[i].BPPostalCode = oBPAddress?.PostalCode;
                             aData[i].BPRegion = oBPAddress?.Region;                                                        
                             aData[i].BPCountry = oBPAddress?.Country; 
+                            aData[i].AddressID = oBPAddress?.AddressID; 
                         }
                     }
                     let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData[i].SalesDocument, SalesDocumentItem: aData[i].SalesDocumentItem}));
@@ -1760,21 +1758,27 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
 
                 }
-                let aBP = [], sBusinessPartner = aData["ReferenceBusinessPartner"];
-                if(sBusinessPartner){
-                    let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
-                    let oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
-                    if(oBPAddress){
-                        aData["BPStreetName"] = oBPAddress?.StreetName;
-                        aData["BPCityName"] = oBPAddress?.CityName;
-                        aData["BPPostalCode"] = oBPAddress?.PostalCode;
-                        aData["BPRegion"] = oBPAddress?.Region;                                                        
-                        aData["BPCountry"] = oBPAddress?.Country; 
+                // let aBP = [], sBusinessPartner = aData["ReferenceBusinessPartner"];
+                if(aData['SalesDocument']){
+                    let oBP = await bpsoapi.run(SELECT.one.from(SalesDocumentHeaderPartner).where({SalesDocument: aData['SalesDocument']}));
+                    let sBusinessPartner = oBP?.ReferenceBusinessPartner;
+                    if(sBusinessPartner){
+                        aData["ReferenceBusinessPartner"] = sBusinessPartner;
+                        let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                        let oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                        if(oBPAddress){
+                            aData["BPStreetName"] = oBPAddress?.StreetName;
+                            aData["BPCityName"] = oBPAddress?.CityName;
+                            aData["BPPostalCode"] = oBPAddress?.PostalCode;
+                            aData["BPRegion"] = oBPAddress?.Region;                                                        
+                            aData["BPCountry"] = oBPAddress?.Country; 
+                            aData["AddressID"] = oBPAddress?.AddressID;
+                        }
                     }
+                    
+                    let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData["SalesDocument"], SalesDocumentItem: aData["SalesDocumentItem"]}));
+                    aData["ShipDate"] = oShipDetails?.ActualGoodsMovementDate;
                 }
-                
-                let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData["SalesDocument"], SalesDocumentItem: aData["SalesDocumentItem"]}));
-                aData["ShipDate"] = oShipDetails?.ActualGoodsMovementDate;
             }
             return aData;
         });
@@ -1782,8 +1786,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return await proformaDelDocAPI.run(req.query);
         });
         this.on(['READ'], S4H_BusinessPartnerAddress, async (req) => {
-            return s4h_bp_Txn.run(req.query);
+            return await s4h_bp_Txn.run(req.query);
         });
+        this.on('READ',SalesDocumentHeaderPartner, async(req)=>{
+            return await bpsoapi.run(req.query);
+        })
         this.on(['READ'], S4_SalesParameter, async (req) => {
             return s4h_salesparam_Txn.run(req.query);
         });

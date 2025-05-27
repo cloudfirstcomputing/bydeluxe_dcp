@@ -599,6 +599,17 @@
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
         }
+      },
+      "YY1_I_SALESDOCUMENTPARTNER_CDS": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_I_SALESDOCUMENTPARTNER_CDS",
+        "csrf": true,
+        "csrfInBatch": true,
+        "credentials": {
+          "path": "/sap/opu/odata/sap/YY1_I_SALESDOCUMENTPARTNER_CDS",
+          "destination": "S4HC_DEV",
+          "requestTimeout": 1000000
+        }
       }
     }
   },

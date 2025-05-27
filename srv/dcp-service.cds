@@ -146,6 +146,7 @@ service BookingOrderService {
     entity Origins                      as projection on db.Origins;
     entity OrderTypes as projection on dist.OrderType;
     entity BookingTypeVH as projection on db.BookingTypeVH;
+    entity SalesDocumentHeaderPartner as projection on api.SalesDocumentHeaderPartner;
     type RemediateType {
         bookingID         : String;
         salesOrder        : String;

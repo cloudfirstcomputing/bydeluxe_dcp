@@ -186,11 +186,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : PartnerFunction,
-                Label : '{i18n>Partnerfunction}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : RequestID,
                 Label : '{i18n>Requestid}',
             },
@@ -216,11 +211,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Customer,
-                Label : '{i18n>Customer}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : NetAmount,
                 Label : '{i18n>Netamount}',
             },
@@ -237,7 +227,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             {
                 $Type : 'UI.DataField',
                 Value : ReferenceBusinessPartner,
-                Label : 'Business Partner',
+                Label : 'Ship-To BP',
             },
             {
                 $Type : 'UI.DataField',

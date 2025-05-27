@@ -40,6 +40,7 @@ using {YY1_CHARACTERISTIC_FF_CDS as charff} from '../srv/external/YY1_CHARACTERI
 using {YY1_CHARACTERISTIC_DT_CDS as chardt} from '../srv/external/YY1_CHARACTERISTIC_DT_CDS';
 using {YY1_CHARACTERISTIC_DG_CDS as chardg} from '../srv/external/YY1_CHARACTERISTIC_DG_CDS';
 using {YY1_CHARACTERISTIC_AR_CDS as charar} from '../srv/external/YY1_CHARACTERISTIC_AR_CDS';
+using {YY1_I_SALESDOCUMENTPARTNER_CDS as sdPartner}from '../srv/external/YY1_I_SALESDOCUMENTPARTNER_CDS';
 
 context api {
 
@@ -104,7 +105,7 @@ context api {
     entity SalesOrderHeaderPartner      as projection on salesorderv2.A_SalesOrderHeaderPartner;
     entity SalesOrderItemPartner        as projection on salesorderv2.A_SalesOrderItemPartner;
     entity CustSalesPartnerFunc         as projection on bupa.A_CustSalesPartnerFunc;
-
+    entity SalesDocumentHeaderPartner   as projection on sdPartner.YY1_I_SalesDocumentPartner;
     entity Bank                         as
         projection on S4_Bank.Bank {
             *,
