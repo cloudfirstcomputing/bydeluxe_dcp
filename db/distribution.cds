@@ -82,7 +82,7 @@ entity KeyPackage {
         ]  @mandatory;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
-        OrderType          : orderType;
+        OrderType          : orderType  @mandatory;
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
         to_DistRestriction : Composition of many KeyDistRestrictions
@@ -97,7 +97,7 @@ entity Package {
             0,
             99
         ]  @mandatory;
-        OrderType          : orderType;
+        OrderType          : orderType  @mandatory;
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
         GofilexTitleID     : String;
