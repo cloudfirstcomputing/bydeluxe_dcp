@@ -1464,7 +1464,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
                 var aContentPkgCPL = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
-
+                var sKeyPkgKrakens, sKeyPkgAssetIDs;
                 var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
                     sPackageUUID = oKeyPackage?.PackageUUID;
@@ -1474,8 +1474,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     for (var c in aKeyPkgCPL) {
                         if (aKeyPkgCPL[c]?.CPLUUID) {
                             aKeyPkgCPLUUID.push(aKeyPkgCPL[c]?.CPLUUID);
-                            const assetvault = await SELECT.one.from(CplList_Local).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID })
-                            aKeyPkgCTT.push(assetvault?.LinkedCTT)
+                            const assetvault = await SELECT.one.from(CplList_Local).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID });
+                            aKeyPkgCTT.push(assetvault?.LinkedCTT);
                         }
                     }
                     if (aKeyPkgCTT?.length) { //RULE 9.1
@@ -1521,10 +1521,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         await updateItemTextForSalesOrder(req, "Z013", oAssetvault.AssetMapID, oResponseStatus, oSalesOrderItem, oContentData); 
                     }                         
                 }  
-
-                if (oAssetvault?.KrakenTitleID) { //RULE 9.3(made it for both C and K as per discussion on 22nd May)
-                    await updateItemTextForSalesOrder(req, "Z006", oAssetvault.KrakenTitleID, oResponseStatus, oSalesOrderItem, oContentData); //RULE 9.3
-                }        
+       
                 if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9 (made it for both C and K as per discussion on 22nd May)
                     // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
                     var oProdGroup = await prdgrp1tx.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
@@ -1704,6 +1701,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.query.SELECT.orderBy = undefined;
             }
             let aData = await proformaAPI.run(req.query);
+            let aBPList = [];
             if(Array.isArray(aData)){
                 for(let i in aData){
                     let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
@@ -1723,9 +1721,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     let oBP = await bpsoapi.run(SELECT.one.from(SalesDocumentHeaderPartner).where({SalesDocument: aData[i].SalesDocument}));
                     let sBusinessPartner = oBP?.ReferenceBusinessPartner;
                     if(sBusinessPartner){
+                        let oBPFound = aBPList.find((item)=>{return item.bp === sBusinessPartner});
                         aData[i].ReferenceBusinessPartner = sBusinessPartner;
-                        let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
-                        let oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                        let oBPAddress;
+                        if(!oBPFound){
+                            let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                            oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                            aBPList.push({"bp":sBusinessPartner,"Address":oBPAddress});
+                        }
+                        else{
+                            oBPAddress = oBPFound.Address;
+                        }
+                        
                         if(oBPAddress){
                             aData[i].BPStreetName = oBPAddress?.StreetName;
                             aData[i].BPCityName = oBPAddress?.CityName;
@@ -1763,9 +1770,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     let oBP = await bpsoapi.run(SELECT.one.from(SalesDocumentHeaderPartner).where({SalesDocument: aData['SalesDocument']}));
                     let sBusinessPartner = oBP?.ReferenceBusinessPartner;
                     if(sBusinessPartner){
+                        let oBPFound = aBPList.find((item)=>{return item.bp === sBusinessPartner});
                         aData["ReferenceBusinessPartner"] = sBusinessPartner;
-                        let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
-                        let oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                        let oBPAddress;
+                        if(!oBPFound){
+                            let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                            oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                            aBPList.push({"bp":sBusinessPartner,"Address":oBPAddress});
+                        }
+                        else{
+                            oBPAddress = oBPFound.Address;
+                        }
                         if(oBPAddress){
                             aData["BPStreetName"] = oBPAddress?.StreetName;
                             aData["BPCityName"] = oBPAddress?.CityName;
