@@ -9,28 +9,72 @@ GET {{server}}/odata/v4/asset-vault/AssetVault
 
 ### SalesOrders
 # @name AssetVault_POST
-POST {{server}}/odata/v4/asset-vault/AssetVault
+POST {{server}}/odata/v4/asset-vault/DistributionDcp
 {{auth}}
 Content-Type: application/json
 
 {
-    "AssetVaultID": "a81bc81b-dead-4e5d-abff-90865d1e13f6",
-    "AssetMapID": "g80bc81b-dtui-4e5d-abff-90865d1e1U04",
-    "AssetMapIDDescription": "DCP Package ROBINHOOD 3D 7.1",
-    "Title":"ROBINHOOD",
-    "AnnotationText":"ROBINHOOD 3D 7.1_EN DCP",
-    "AssetMapFileSize":"1240 MB",
-    "CreatedinSAP": false,
-    "_Items":[{
-        "LinkedDCP":"",
-        "LinkedCPLUUID":"3d914ee9-4f25-447f-8337-c5e380b0e5cd",
-        "LinkedCTT":"CPL1 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024",
-        "RunTime":"01:38:46.1",
-        "StartOfCredits":"01:30:24.7",
-        "StartOfCrawl":"01:32:39.3"
-    },{
-        "LinkedDCP":"",
-        "LinkedCPLUUID":"c4cee08f-7849-4001-b5f1-33bb6d8a3636",
-        "LinkedCTT":"CPL2 - ROBINHOOD_3D_7.1_EN_DE_OV_11012024"
-    }]
+    "AnnotationText": null,
+    "ProjectID": "999988",
+    "AnyAtmos": null,
+    "AnyCCAP": null,
+    "AnyHI": null,
+    "AnyOCAP": null,
+    "AnySLV": null,
+    "AnyVI": null,
+    "AspectRatio": null,
+    "AssetMapFileSize": "250 GB",
+    "AssetMapID": "11aa544e-af8b-4f94-8b33-b68199e563ac",
+    "AssetMapIDDescription": "Antebellum",
+    "AudioFormats": null,
+    "CreatedinSAP": true,
+    "DCP": "",
+    "DcpFormats": null,
+    "EDeliveryApacTitleId": null,
+    "EDeliveryNoramTitleId": null,
+    "ExternalReference": null,
+    "KencastID": null,
+    "KrakenTitleID": "36483",
+    "MaxCPLDuration": null,
+    "PictureFormats": null,
+    "ProjectType": "2",
+    "PublishDaysBeforePlaydate": null,
+    "Resolution": null,
+    "SatelliteDistributionEndDate": null,
+    "SatelliteDistributionStartDate": null,
+    "StartOfCrawl": null,
+    "StartOfCredit": null,
+    "Title": "5919",
+    "VersionDescription": "TLR 1 DATE FLAT",
+    "VolumeName": null,
+    "_Items": [
+        {
+            "AspectRatio": null,
+            "AssetMapUUID": null,
+            "AtmosFlag": null,
+            "CPLS3location": null,
+            "ClosedCaptionsFlag": null,
+            "ContentKind": null,
+            "DCDMFlag": null,
+            "DKDMS3location": null,
+            "DcpFormatType": null,
+            "DcpProjectID": "380474",
+            "DcpResolution": null,
+            "DistributionSize": null,
+            "Download": null,
+            "Email": null,
+            "KDMFlag": null,
+            "LinkedCPLUUID": "38932bb2-c4cf-488e-822b-1ac6a6b6d647",
+            "LinkedCTT": "Antebellum_TRL-1-Date_F_EN-fr_FR_51_2K_METRO_20200226_TST_IOP_OV",
+            "LinkedDCP": null,
+            "PictureFormat": null,
+            "ProjectTypeID": "1",
+            "RunTime": "01:47:50",
+            "SignLanguageVideoFlag": null,
+            "SoundFormat": null,
+            "StartOfCrawl": "01:42:09",
+            "StartOfCredits": "01:30:21",
+            "VersionDescription": null
+        }
+    ]
 }

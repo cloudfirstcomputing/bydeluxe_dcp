@@ -2,6 +2,7 @@ const cds = require("@sap/cds");
 const LOG = cds.log('productionProcess')
 const xmljs = require("xml-js");
 const { Readable } = require('stream');
+const { executeHttpRequest } = require("@sap-cloud-sdk/http-client")
 
 module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
@@ -265,6 +266,47 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             return data.map(item => {
                 return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
             })
+        })
+
+        this.after('CREATE', DistributionDcp, async req => {
+            for (let index = 0; index < req._Items.length; index++) {
+                const element = req._Items[index];
+                const dkdm = await executeHttpRequest(
+                    {
+                        destinationName: "TDLCertificateAPI",
+                    },
+                    {
+                        method: "post",
+                        url: "/dc-asset-vault-api/v1/kdms/search",
+                        data: {
+                            "metadata":
+                            {
+                                "compositionPlaylist":
+                                {
+                                    "uuid": `${element.LinkedCPLUUID}`
+                                }
+                            }
+                        }
+                    }
+                );
+                const cpl = await executeHttpRequest(
+                    {
+                        destinationName: "TDLCertificateAPI",
+                    },
+                    {
+                        method: "get",
+                        url: `/dc-asset-vault-api/v1/assets/${element.LinkedCPLUUID}`
+                    }
+                );
+                element.DKDMS3location = dkdm.data.items[0]?.storageInformation?.locations?.find(item => item.type === 's3')?.path
+                element.CPLS3location = cpl.data?.storageInformation?.locations?.find(item => item.type === 's3')?.path
+                cds.tx(async () => {
+                    await UPDATE(`DELUXE_ASSETVAULT_DISTRIBUTIONDCP__ITEMS`)
+                        .with({ DKDMS3location: element.DKDMS3location, CPLS3location: element.CPLS3location })
+                        .where`UP__PROJECTID = ${req.ProjectID} AND ID = ${element.ID}`
+                })
+            }
+            return req
         })
 
         this.on('createDcp', async req => {
