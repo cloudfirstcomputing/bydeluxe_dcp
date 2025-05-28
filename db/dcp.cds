@@ -121,7 +121,7 @@ entity StudioFeed : cuid, managed {
     BookingID          : String                       ;
     SourceSystem       : String                       ;
     EntityID           : String                       ;
-    Origin             : Association to Origins       ;
+    Origin             : Association to Origins       @readonly;
     // Origin             : String        ;
     Studio             : Association to StudioVH                       ;
     StudioText         : String;
@@ -175,10 +175,10 @@ entity StudioFeed : cuid, managed {
     RemediationCounter : Integer                      @readonly;
     DeliveryMethod: String                            @readonly;
     Version            : Integer                      @readonly;
-    IsActive           : String(1)                    ;
+    IsActive           : String(1)                    @readonly;
     Remediation        : String                       @readonly;
-    Status             : Association to BookingStatus;
-    SalesOrder         : String                       ;
+    Status             : Association to BookingStatus @readonly;
+    SalesOrder         : String                       @readonly;
     ErrorMessage       : String                       @readonly;
     Warnings           : String                       @readonly;
 

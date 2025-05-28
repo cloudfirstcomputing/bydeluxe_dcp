@@ -1099,53 +1099,55 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sKeyDeliveryMethod = "04"; //Rule 3.3 => Delivery Method for Key is Fixed
                         sShippingType = '07'; //RULE 7.2 => Shipping Type for KEY
                     }
-                    for (var pk in oPackages) { //Going through both filtered content and Key packages if available
-                        //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
-                        var aContOrKeyPckg = oPackages[pk];
-                        var aCircuits = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                            return rest.Circuit_CustomerGroup?.length > 0;
-                        });
-                        var aCountry = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                            return rest.DistributionFilterCountry_code?.length > 0;
-                        });
-                        var aRegion = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                            return rest.DistributionFilterRegion_Countr?.length > 0;
-                        });
-                        var aCity = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                            return rest.DistributionFilterCity?.length > 0;
-                        });
-                        var aPostalCode = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                            return rest.DistributionFilterPostal?.length > 0;
-                        });
-                        var aLanguage = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                            return rest.DistributionFilterLanguage_code?.length > 0;
-                        });
-                        if (aContOrKeyPckg && aContOrKeyPckg.length) {
-                            var oDist = aContOrKeyPckg.find((dist) => {
-                                return dist.Theater_BusinessPartner || dist.Circuit_CustomerGroup || dist.DistributionFilterLanguage_code ||
-                                    dist.DistributionFilterCountry_code || dist.DistributionFilterRegion_Country || dist.DistributionFilterCity ||
-                                    dist.DistributionFilterPostal
+                    if(!sErrorMessage){
+                        for (var pk in oPackages) { //Going through both filtered content and Key packages if available
+                            //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
+                            var aContOrKeyPckg = oPackages[pk];
+                            var aCircuits = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
+                                return rest.Circuit_CustomerGroup?.length > 0;
                             });
-                            if (oDist) {
-                                var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
-                                var oDistRestriction = aContOrKeyPckg.find((dist) => {
-                                    return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
-                                        ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code) ? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
-                                        ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
-                                        ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
-                                        ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
-                                        ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
-                                    );
+                            var aCountry = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
+                                return rest.DistributionFilterCountry_code?.length > 0;
+                            });
+                            var aRegion = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
+                                return rest.DistributionFilterRegion_Countr?.length > 0;
+                            });
+                            var aCity = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
+                                return rest.DistributionFilterCity?.length > 0;
+                            });
+                            var aPostalCode = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
+                                return rest.DistributionFilterPostal?.length > 0;
+                            });
+                            var aLanguage = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
+                                return rest.DistributionFilterLanguage_code?.length > 0;
+                            });
+                            if (aContOrKeyPckg && aContOrKeyPckg.length) {
+                                var oDist = aContOrKeyPckg.find((dist) => {
+                                    return dist.Theater_BusinessPartner || dist.Circuit_CustomerGroup || dist.DistributionFilterLanguage_code ||
+                                        dist.DistributionFilterCountry_code || dist.DistributionFilterRegion_Country || dist.DistributionFilterCity ||
+                                        dist.DistributionFilterPostal
                                 });
-                                if (!oDistRestriction) {
-                                    sErrorMessage = `No relevant Package IDs identified for restrictions.
-                                    CustomerGroupFromS4:${sCustomerGroupFromS4}|
-                                    PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
+                                if (oDist) {
+                                    var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
+                                    var oDistRestriction = aContOrKeyPckg.find((dist) => {
+                                        return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
+                                            ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code) ? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
+                                            ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
+                                            ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
+                                            ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
+                                            ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
+                                        );
+                                    });
+                                    if (!oDistRestriction) {
+                                        sErrorMessage = `No relevant Package IDs identified for restrictions.
+                                        CustomerGroupFromS4:${sCustomerGroupFromS4}|
+                                        PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
+                                    }
                                 }
                             }
+                            oResponseStatus[pk] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
+                            //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - END
                         }
-                        oResponseStatus[pk] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
-                        //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - END
                     }
                     if (!sErrorMessage) {
                         var oFinalContentPackage = oResponseStatus?.ContentPackage?.[0];
@@ -1504,7 +1506,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             aFinalCPLs = aFinalCPLs?.length ? [...aFinalCPLs, ...aLinkedCPLUUIDs] : [...aLinkedCPLUUIDs];
                         }
                         if (aCTTs?.length) {
-                            aFinalCTTs = aFinalCTTs?.length ? [...aFinalCTTs, ...aLinkedCPLUUIDs] : [...aLinkedCPLUUIDs];
+                            aFinalCTTs = aFinalCTTs?.length ? [...aFinalCTTs, ...aCTTs] : [...aCTTs];
                         }
                     }
                     if (aFinalCTTs?.length) { //RULE 9.1
@@ -1597,7 +1599,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             if (sFeedOrderType === 'C' || sFeedOrderType === 'B') {  //Package check when Feed Order Type is C or B
                 //FeedOrderType = C Line 2-13 (K will not be picked from Content Package)
                 //FeedOrderType = B Line 2-5, 10-13 (C will be picked from Content Package)
-                aContentPackage = aContentPackage.filter((pkg) => {
+                aContentPackage = aContentPackage?.filter((pkg) => {
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
@@ -1611,7 +1613,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         return false;
                     }
                 });
-                aKeyPackage = aKeyPackage.filter((pkg) => { //Key package check when Feed Order Type = C
+                aKeyPackage = aKeyPackage?.filter((pkg) => { //Key package check when Feed Order Type = C
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
@@ -1627,7 +1629,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             else if (sFeedOrderType === 'K' || sFeedOrderType === 'B') { //Package check when Feed Order Type is K or B
                 //FeedOrderType = K Line 2-13 (C will not be picked from Key Package)
                 //FeedOrderType = B Line 6-13 (K Or B will be picked from Key Package)
-                aKeyPackage = aKeyPackage.filter((pkg) => {
+                aKeyPackage = aKeyPackage?.filter((pkg) => {
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
@@ -1639,7 +1641,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         return false;
                     }
                 });
-                aContentPackage = aContentPackage.filter((pkg) => {//Content package check when Feed Order Type = K
+                aContentPackage = aContentPackage?.filter((pkg) => {//Content package check when Feed Order Type = K
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));

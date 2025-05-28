@@ -546,11 +546,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : CreatedOn,
-                Label : '{i18n>Createdon}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : CTTs,
                 Label : '{i18n>Ctts}',
             },
@@ -586,16 +581,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : KeyEndDate,
-                Label : '{i18n>Keyenddate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : KeyEndTime,
-                Label : '{i18n>Keyendtime}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : KeyStartDate,
                 Label : '{i18n>Keystartdate}',
             },
@@ -603,6 +588,16 @@ annotate BookingOrderService.StudioFeed with @(
                 $Type : 'UI.DataField',
                 Value : KeyStartTime,
                 Label : '{i18n>Keystarttime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : KeyEndDate,
+                Label : '{i18n>Keyenddate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : KeyEndTime,
+                Label : '{i18n>Keyendtime}',
             },
             {
                 $Type : 'UI.DataField',
@@ -629,16 +624,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : PlayEndDate,
-                Label : '{i18n>Playenddate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayEndTime,
-                Label : '{i18n>Playendtime}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : PlayStartDate,
                 Label : '{i18n>Playstartdate}',
             },
@@ -646,6 +631,16 @@ annotate BookingOrderService.StudioFeed with @(
                 $Type : 'UI.DataField',
                 Value : PlayStartTime,
                 Label : '{i18n>Playstarttime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayEndDate,
+                Label : '{i18n>Playenddate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayEndTime,
+                Label : '{i18n>Playendtime}',
             },
             {
                 $Type : 'UI.DataField',
