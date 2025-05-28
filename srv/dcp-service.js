@@ -334,9 +334,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     error.RowNumber = row.toString()
                     // error.ID = id
                     for (const property in object) { //Iterating each columns in excel
-                        const fieldName = req.data.fieldNames.find(item => {
-                            return item?.excelColumn === property
-                        })
+                        if(property === 'Theater ID*' || property === 'TCN ID*'){
+                            var fieldName = req.data.fieldNames.find(item => {
+                                return item?.excelColumn === 'Theater ID*'
+                            });
+                            if(!fieldName){
+                                fieldName = req.data.fieldNames.find(item => {
+                                    return item?.excelColumn === 'TCN ID*'
+                                }); 
+                            }
+                        }
+                        else{
+                            fieldName = req.data.fieldNames.find(item => {
+                                return item?.excelColumn === property
+                            })
+
+                        }
                         // if (!fieldName) req.reject(400, 'invalidSheet')
                         if (fieldName?.technicalName) {
                             element[fieldName.technicalName] = typeof (object[property]) === 'string' ? object[property] : `${object[property]}`
@@ -909,21 +922,29 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oResponseStatus.Status = 'R';//For Review
                     }
                     if (!sErrorMessage) {
-                        if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
-                            var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
-                            if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
-                                sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
-                                if (sBPCustomerNumber) {
-                                    sShipTo = sBPCustomerNumber;
-                                    oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
+                        let sOrigin = oFeedData?.Origin_OriginID;
+                        if(sTheaterID && (sOrigin === 'S' || sOrigin === 'M')){ //Applicable only for Manual and Spreadsheet
+                            sShipTo = sTheaterID;
+                            oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
+                        }
+                        else{
+                            if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
+                                var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
+                                if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
+                                    sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
+                                    if (sBPCustomerNumber) {
+                                        sShipTo = sBPCustomerNumber;
+                                        oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
+                                    }
+                                }
+                                else {
+                                    sErrorMessage = "Partner function details not found for SH: CustomerPartnerDescription: " + sTheaterID;
                                 }
                             }
                             else {
-                                sErrorMessage = "Partner function details not found for SH: CustomerPartnerDescription: " + sTheaterID;
+                                sErrorMessage = "Partner function not available";
                             }
-                        }
-                        else {
-                            sErrorMessage = "Partner function not available";
+
                         }
                         if (sShipTo) {
                             var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
