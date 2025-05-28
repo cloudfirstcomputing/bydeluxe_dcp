@@ -1214,7 +1214,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                 }
                                 else {
-                                    sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType}: ${sMode}, hence this item not created ` 
+                                    sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType}, hence this item not created ` 
                                     oResponseStatus.warning.push({
                                         "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
@@ -1235,7 +1235,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                 }
                                 else {
-                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType}: ${sMode}, hence this item not created`;
+                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType}, hence this item not created`;
                                     oResponseStatus.warning.push({
                                         "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
@@ -1701,7 +1701,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.query.SELECT.orderBy = undefined;
             }
             let aData = await proformaAPI.run(req.query);
-            let aBPList = [];
+            let aBPList = [];//For BP Address Search optimization
             if(Array.isArray(aData)){
                 for(let i in aData){
                     let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
