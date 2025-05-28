@@ -308,7 +308,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                             .where`UP__PROJECTID = ${req.ProjectID} AND ID = ${element.ID}`
                     })
                 } catch (error) {
-                    locLog.error(`Error in s3 Location api: ${error}`)
+                    locLog.error(`Error in s3 Location api ${req.ProjectID}: ${error}`)
                 }
             }
             return req
