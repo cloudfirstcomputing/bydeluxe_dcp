@@ -9,6 +9,9 @@ annotate BookingOrderService.StudioFeed with{
 	          ![@UI.TextArrangement]: #TextFirst,
         }
     };
+    // PlayStartTime @UI:{
+    //     DateTimeStyle : 'long',
+    // };
     Origin              @Common: {
         Label          : '{i18n>Origin}',
         Text: {
@@ -141,7 +144,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : SourceSystem,
             Label : '{i18n>Sourcesystem}',
-            ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
@@ -189,18 +191,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : Remediation,
             Label : '{i18n>Remediation}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : DeliveryMethod,
-            Label : '{i18n>DeliveryMethod}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : RemediationCounter,
-            Label : '{i18n>RemediationCounter}',
             ![@UI.Importance] : #High,
         },
         {
@@ -666,16 +656,6 @@ annotate BookingOrderService.StudioFeed with @(
                 $Type : 'UI.DataField',
                 Value : Remediation,
                 Label : '{i18n>Remediation}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DeliveryMethod,
-                Label : '{i18n>DeliveryMethod}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : RemediationCounter,
-                Label : '{i18n>RemediationCounter}',
             },
             {
                 $Type : 'UI.DataField',

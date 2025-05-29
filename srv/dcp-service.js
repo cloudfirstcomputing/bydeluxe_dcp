@@ -881,6 +881,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 sContentIndicator = oFeedData?.OrderType_code, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio_BusinessPartner;
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType;
+            let sOrigin = oFeedData?.Origin_OriginID;
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
 
             oResponseStatus.distroSpecData = distroSpecData;
@@ -893,6 +894,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             else {
                 sErrorMessage = 'Requested Delivery Date not available';
+            }
+            if(sOrigin === 'M' || sOrigin === 'S'){//For Manual Or Spreadsheet
+                if(!distroSpecData?.to_StudioKey || distroSpecData?.to_StudioKey?.length === 0){
+                    sErrorMessage = 'Studio not found in DistroSpec';
+                }
             }
             if (sErrorMessage) {
                 await UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oFeedData.BookingID, IsActive: "Y" });
@@ -924,7 +930,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oResponseStatus.Status = 'R';//For Review
                     }
                     if (!sErrorMessage) {
-                        let sOrigin = oFeedData?.Origin_OriginID;
                         if(sTheaterID && (sOrigin === 'S' || sOrigin === 'M')){ //Applicable only for Manual and Spreadsheet
                             sShipTo = sTheaterID;
                             oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
@@ -968,15 +973,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!aContentPackages?.length && !aKeyPackages?.length) {// No matching content or Key packages found
                         sErrorMessage = `No matching Content Or Key Package available for DistroSpec ${distroSpecData?.DistroSpecID}`;
                     }
-                    if (!sErrorMessage && aContentPackages?.length) { //For Content Package
+                    if (!sErrorMessage && aContentPackages?.length) { //RULE 2.3 => Lookup package ID Delivery method
                         var oContentPackages;
-                        let sDeliveryMethodFromPackage = '';   //This stored teh actual delivery method used for SO creation       
-                        // if (!aContentPackages?.length) {
-                        //     sErrorMessage = `DistroSpec ${distroSpecData?.DistroSpecID} not in validity range for Content Order`;
-                        // }
-                        // else 
-                        { //RULE 2.3 => Lookup package ID Delivery method
-                            // These rules are applicable only for content 
+                        let sDeliveryMethodFromPackage = '';   //This stores teh actual delivery method used for SO creation
+                            for (var j in aDeliverySeqFromDistHeader) {
+                                var sDelSeq = aDeliverySeqFromDistHeader[j];
+                                if (sDelSeq) {
+                                    oContentPackages = aContentPackages.find((pkg) => {
+                                        return (
+                                            pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
+                                            pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
+                                            pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
+                                            pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
+                                            pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
+                                    });
+                                    if (oContentPackages) { //Delivery sequence is found in the delivery method maintained                                  
+                                        var oFilteredContentPackage = oContentPackages;
+                                        sDeliveryMethodFromPackage = sDelSeq; //Assign the del method found as per sequence
+                                        aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction
+                                        break;
+                                    }
+                                }
+                            }
                             for (var j in aDeliverySeqFromDistHeader) {
                                 var sDelSeq = aDeliverySeqFromDistHeader[j];
                                 if (sDelSeq) {
@@ -1096,8 +1114,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     sErrorMessage = `Theater Capability not found. Ship-To:${sShipTo}`;
                                 }
                                 oFilteredContentPackage = oBPPackage;
-                            }
-                        }
+                            }          
                         sContentDeliveryMethod = sDeliveryMethodFromPackage;
                         if(!sErrorMessage){
                             //RULE 7.1 => Shipping Type for Content
@@ -1985,17 +2002,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 req.error(502, uuid + "  " + e)
             }
         });
-        const createSalesOrder = async (req, sContentIndicator) => {
-            var aBookingIDs = req.data?.bookingIDs, sErrorMessage, updateQuery = [], oPayLoad = {},
-                aResponseStatus = [], hanaDBTable = StudioFeed;
-            if (!aBookingIDs?.length) {
-                req.reject(400, "Booking ID was not sent for processing");
-                return;
-            }
-        };
-        // this.on(['READ'], S4_Parameters, async (req) => {
-        //     return s4h_param_Txn.run(req.query);
-        // });
 
         this.on(['READ'], S4_Plants, async req => {
             return await s4h_planttx.run(req.query);
