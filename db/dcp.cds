@@ -321,6 +321,7 @@ entity BookingSalesorderItem : managed {
         DistroSpecPackageName    : String(40);
         KeyStartTime             : Time;
         KeyEndTime               : Time;
+        AssetIDs                 : String;
         ShippingType             : Association to one ShippingTypeMaster;
         SalesTerritory           : Association to one api.SalesDistricts;  
 }

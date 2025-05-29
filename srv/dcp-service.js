@@ -1488,8 +1488,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     await updateItemTextForSalesOrder(req, "Z004", oContentPackage.GofilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
                 }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
-                var aContentPkgCPL = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
-                var sKeyPkgKrakens, sKeyPkgAssetIDs;
+                var aContentPkgDCP = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
+                var sKeyPkgKrakens, sContentPkgAssetIDs;
                 var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
                     sPackageUUID = oKeyPackage?.PackageUUID;
@@ -1519,17 +1519,22 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sPackageName = oContentPackage?.PackageName;
                     oContentData.to_Item[i].DistroSpecPackageID = oContentPackage?.PackageUUID;
                     oContentData.to_Item[i].DistroSpecPackageName = oContentPackage?.PackageName;
-                    var aFinalCPLs = [], aFinalCTTs = [];
-                    for (var c in aContentPkgCPL) {
-                        var aDCPDet = aContentPkgCPL[c];
-                        var aLinkedCPLUUIDs = aContentPkgCPL[c]?.to_DCPDetail?.map((item) => { return item.LinkedCPLUUID });
-                        var aCTTs = aContentPkgCPL[c]?.to_DCPDetail?.map((item) => { return item.LinkedCTT });
+                    var aFinalCPLs = [], aFinalCTTs = [], aFinalAssetIDs = [];
+                    for (var c in aContentPkgDCP) {
+                        var aDCPDet = aContentPkgDCP[c];
+                        var aLinkedCPLUUIDs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.LinkedCPLUUID });
+                        var aCTTs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.LinkedCTT });
+                        var aAssetIDs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.AssetMapUUID });
+                        var aUniqueAssetIDs = [...new Set(aAssetIDs)];
 
                         if (aLinkedCPLUUIDs?.length) {
                             aFinalCPLs = aFinalCPLs?.length ? [...aFinalCPLs, ...aLinkedCPLUUIDs] : [...aLinkedCPLUUIDs];
                         }
                         if (aCTTs?.length) {
                             aFinalCTTs = aFinalCTTs?.length ? [...aFinalCTTs, ...aCTTs] : [...aCTTs];
+                        }
+                        if (aUniqueAssetIDs?.length) {
+                            aFinalAssetIDs = aFinalAssetIDs?.length ? [...aFinalAssetIDs, ...aUniqueAssetIDs] : [...aUniqueAssetIDs];
                         }
                     }
                     if (aFinalCTTs?.length) { //RULE 9.1
@@ -1542,8 +1547,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oContentData.to_Item[i].CPLUUID = sContentPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }                    
-                    if (oAssetvault?.AssetMapID) { //made it only for C as per email from Ravneet on 27th May and as discusssed with Pranav on 27th 3:17PM)
-                        await updateItemTextForSalesOrder(req, "Z013", oAssetvault.AssetMapID, oResponseStatus, oSalesOrderItem, oContentData); 
+                    if (aFinalAssetIDs?.length) { //made it only for C as per email from Ravneet on 27th May and as discusssed with Pranav on 27th 3:17PM)
+                        sContentPkgAssetIDs = aFinalAssetIDs?.map((u) => { return u ? u : false }).join(`,`);
+                        oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
+                        await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
                     }                         
                 }  
        
