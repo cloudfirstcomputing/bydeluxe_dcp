@@ -322,6 +322,7 @@ entity BookingSalesorderItem : managed {
         KeyStartTime             : Time;
         KeyEndTime               : Time;
         AssetIDs                 : String;
+        KrakenIDs                : String;
         ShippingType             : Association to one ShippingTypeMaster;
         SalesTerritory           : Association to one api.SalesDistricts;  
 }

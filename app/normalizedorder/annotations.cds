@@ -151,6 +151,12 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : SalesOrder,
+            Label : '{i18n>Salesorder}',
+            ![@UI.Importance] : #High,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : OrderType_code,
             Label : '{i18n>Ordertype}',
             ![@UI.Importance] : #High,
@@ -177,12 +183,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : CustomerReference,
             Label : '{i18n>Customerreference}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SalesOrder,
-            Label : '{i18n>Salesorder}',
             ![@UI.Importance] : #High,
         },
         {
@@ -328,16 +328,6 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : PlayEndDate,
-            Label : '{i18n>Playenddate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayEndTime,
-            Label : '{i18n>Playendtime}',
-        },
-        {
-            $Type : 'UI.DataField',
             Value : PlayStartDate,
             Label : '{i18n>Playstartdate}',
         },
@@ -345,6 +335,16 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : PlayStartTime,
             Label : '{i18n>Playstarttime}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PlayEndDate,
+            Label : '{i18n>Playenddate}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PlayEndTime,
+            Label : '{i18n>Playendtime}',
         },
         {
             $Type : 'UI.DataField',
@@ -884,6 +884,16 @@ annotate BookingOrderService.BookingSalesorderItem with @(
             $Type : 'UI.DataField',
             Value : CTT,
             Label : '{i18n>CTT}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : AssetIDs,
+            Label : '{i18n>AssetIDs}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : KrakenIDs,
+            Label : '{i18n>KrakenIDs}',
         },
         {
             $Type : 'UI.DataField',

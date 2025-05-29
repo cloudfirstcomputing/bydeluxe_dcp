@@ -1489,7 +1489,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
                 var aContentPkgDCP = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
-                var sKeyPkgKrakens, sContentPkgAssetIDs;
+                var sKrakenTitlesForContentFromAssetVault, sContentPkgAssetIDs;
                 var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
                     sPackageUUID = oKeyPackage?.PackageUUID;
@@ -1551,6 +1551,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sContentPkgAssetIDs = aFinalAssetIDs?.map((u) => { return u ? u : false }).join(`,`);
                         oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
                         await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
+                        
+                        var aKrakens = await SELECT.from(AssetVault_Local).columns(["KrakenTitleID"]).
+                        where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
+
+                        if(aKrakens?.length){
+                            sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.KrakenTitleID})?.join(',');
+                            await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
+                        }
+
                     }                         
                 }  
        
