@@ -215,7 +215,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
         // DistRestrictions?$expand
         this.on("READ", [`DistRestrictions`, `KeyDistRestrictions`], async (req, next) => {
             if (!req.query.SELECT.columns) return next();
-            const fields = ["Circuit_CustomerGroup", "DistributionFilterRegion_ID"]
+            const fields = ["Circuit_CustomerGroup"]
             const { processedField, lreq } = expand(req, fields)
             if (processedField.length === 0) return next();
 
@@ -238,10 +238,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
                         })
                         break;
 
-                    case "DistributionFilterRegion_ID":
-                        records = await SELECT.from(GeoRegions).where({ ID: ids })
+                    // case "DistributionFilterRegion_ID":
+                    //     records = await SELECT.from(GeoRegions).where({ ID: ids })
 
-                        break;
+                    //     break;
                     default:
                         break;
                 }
@@ -249,14 +249,9 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 for (const record of records)
                     maps[record[element[1]]] = record;
 
-                // Add titles to result
-                // for (const note of asArray(response)) {
-                //     if (processedField[index] === "DistributionFilterRegion_ID") {
-                //         note[element[0]] = records.find(item => item.Country === note.DistributionFilterCountry_code)
-                //     } else {
-                //         note[element[0]] = maps[note[processedField[index]]];
-                //     }
-                // }
+                for (const note of asArray(response)) {
+                    note[element[0]] = maps[note[processedField[index]]];
+                }
             }
 
             return response;
