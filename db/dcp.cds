@@ -140,9 +140,9 @@ entity StudioFeed : cuid, managed {
     RequestId          : String;
     OrderID            : String;
     PlayStartDate      : Date ;
-    PlayStartTime      : Time ;
+    PlayStartTime      : Time default '00:00:01';
     PlayEndDate        : Date ;
-    PlayEndTime        : Time;
+    PlayEndTime        : Time default '23:59:59';
     KeyDeliveryOnDate  : Date;
     KeyStartDate       : Date;
     KeyStartTime       : Time;
