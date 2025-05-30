@@ -524,7 +524,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 }))
 
                 req.info({
-                    message: `DCP Material ${ins.Product} created`,
+                    message: `DCP Material ${ins.Product} created! Production process started for DCP Material ${ins.Product}`,
                 })
             } catch (error) {
                 req.error(502, error)
