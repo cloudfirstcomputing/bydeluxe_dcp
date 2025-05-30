@@ -236,9 +236,13 @@ annotate service.DistributionDcp with @(
     ],
     UI.LineItem                  : [
         {
-            $Type : 'UI.DataFieldForAction',
-            Action: 'AssetVaultService.reprocessProductionProcess',
-            Label : 'Production Process',
+            $Type        : 'UI.DataFieldForAction',
+            Action       : 'AssetVaultService.reprocessProductionProcess',
+            Label        : 'Production Process',
+            // ![@UI.Hidden]: {$edmJson: {$Ne: [
+            //     {$Path: 'CreatedinSAP'},
+            //     true
+            // ]}}
         },
         {
             $Type: 'UI.DataField',

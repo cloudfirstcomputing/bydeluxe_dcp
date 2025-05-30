@@ -533,6 +533,8 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
 
         this.on("reprocessProductionProcess", async req => {
             const { ProjectID } = req.params[0]
+            let assetvault = await SELECT.one.from(DistributionDcp, ProjectID)
+            if (!assetvault.CreatedinSAP) return req.error(400, 'DCP Material is not created!')
             const prodProcess = await SELECT.from(ProductionProcess).where({ Material: ProjectID })
 
             productionProcess(prodProcess)
