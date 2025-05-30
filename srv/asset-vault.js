@@ -524,7 +524,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 }))
 
                 req.info({
-                    message: `DCP Material ${ins.Product} created! Production process started for DCP Material ${ins.Product}`,
+                    message: `DCP Material ${ins.Product} created! BOM process started for DCP Material ${ins.Product}`,
                 })
             } catch (error) {
                 req.error(502, error)
@@ -539,7 +539,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
 
             productionProcess(prodProcess)
             req.info({
-                message: `Production process started for DCP Material ${ProjectID}`,
+                message: `BOM process started for DCP Material ${ProjectID}`,
             })
         })
 
