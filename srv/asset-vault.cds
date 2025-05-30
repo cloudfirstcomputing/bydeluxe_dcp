@@ -14,6 +14,7 @@ service AssetVaultService {
                 Common.SideEffects             : {TargetProperties: ['_it/*']}
             )
             action createDcp(Title : dcpParam : Title) returns many String;
+            action reprocessProductionProcess()        returns many String;
         };
 
     entity Products           as projection on api.Products;
@@ -25,7 +26,7 @@ service AssetVaultService {
     entity ValuationArea      as projection on api.YY1_ValuationArea;
 
     @readonly
-    entity Parameters           as projection on api.YY1_PARAMETER;
+    entity Parameters         as projection on api.YY1_PARAMETER;
 
     @readonly
     entity StorageLocations   as projection on api.StorageLocations;

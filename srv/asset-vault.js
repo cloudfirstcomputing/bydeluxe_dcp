@@ -37,169 +37,176 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             for (let index = 0; index < x.length; index++) {
                 const element = x[index];
                 prdProcess = {
-                    Material: x.Product,
-                    Plant: x.Plant,
-                    IsBomCreated: false,
-                    IsProductionVersion1: false,
-                    IsProductionVersion2: false
+                    Material: element.Material,
+                    Plant: element.Plant,
+                    IsBomCreated: element.IsBomCreated,
+                    IsProductionVersion1: element.IsProductionVersion1,
+                    IsProductionVersion2: element.IsProductionVersion2
                 }
                 try {
-                    await bomtx.run(INSERT.into(MaterialBOM).entries({
-                        "Material": `${element.Product}`,
-                        "Plant": `${element.Plant}`,
-                        "BillOfMaterialVariantUsage": "1",
-                        "BOMHeaderBaseUnit": "EA",
-                        "BOMHeaderQuantityInBaseUnit": "1",
-                        "to_BillOfMaterialItem": [
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-1-TB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-1.5-TB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-2-TB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-3-TB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-4-TB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-0250-GB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-0320-GB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-0400-GB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-0500-GB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-0640-GB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            },
-                            {
-                                "BillOfMaterialComponent": "CRU-SATA-0750-GB",
-                                "BillOfMaterialItemCategory": "L",
-                                "BillOfMaterialItemUnit": "EA",
-                                "BillOfMaterialItemQuantity": "1",
-                                "AlternativeItemGroup": "1",
-                                "AlternativeItemPriority": "2",
-                                "AlternativeItemStrategy": "2",
-                                "UsageProbabilityPercent": "100"
-                            }
-                        ]
-                    }))
-                    prdProcess.IsBomCreated = true
-                    await prdver.run(INSERT.into(ProductionVersion).entries({
-                        "Material": `${element.Product}`,
-                        "Plant": `${element.Plant}`,
-                        "ProductionVersion": "0001",
-                        "ProductionVersionText": "Replication",
-                        "BillOfOperationsType": "N",
-                        "BillOfOperationsGroup": bgv1?.VariableValue,
-                        "BillOfOperationsVariant": "1",
-                        "BillOfMaterialVariantUsage": "1",
-                        "BillOfMaterialVariant": "1",
-                        "ProductionLine": plv1?.VariableValue,
-                        "ProductionVersionStatus": "2",
-                        "BOMCheckStatus": "1",
-                        "ProductionVersionLockText": "Not locked",
-                        "BillOfOperationsTypeName": "Routing"
-                    }))
-                    prdProcess.IsProductionVersion1 = true
-                    await prdver.run(INSERT.into(ProductionVersion).entries({
-                        "Material": `${element.Product}`,
-                        "Plant": `${element.Plant}`,
-                        "ProductionVersion": "0002",
-                        "ProductionVersionText": "Replication-Manual",
-                        "BillOfOperationsType": "N",
-                        "BillOfOperationsGroup": bgv2?.VariableValue,
-                        "BillOfOperationsVariant": "1",
-                        "BillOfMaterialVariantUsage": "1",
-                        "BillOfMaterialVariant": "1",
-                        "ProductionLine": plv2?.VariableValue,
-                        "ProductionVersionStatus": "2",
-                        "BOMCheckStatus": "1",
-                        "ProductionVersionLockText": "Not locked",
-                        "BillOfOperationsTypeName": "Routing"
-                    }))
-                    prdProcess.IsProductionVersion2 = true
+                    if (!prdProcess.IsBomCreated) {
+                        await bomtx.run(INSERT.into(MaterialBOM).entries({
+                            "Material": `${element.Material}`,
+                            "Plant": `${element.Plant}`,
+                            "BillOfMaterialVariantUsage": "1",
+                            "BOMHeaderBaseUnit": "EA",
+                            "BOMHeaderQuantityInBaseUnit": "1",
+                            "to_BillOfMaterialItem": [
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-1-TB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-1.5-TB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-2-TB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-3-TB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-4-TB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-0250-GB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-0320-GB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-0400-GB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-0500-GB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-0640-GB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                },
+                                {
+                                    "BillOfMaterialComponent": "CRU-SATA-0750-GB",
+                                    "BillOfMaterialItemCategory": "L",
+                                    "BillOfMaterialItemUnit": "EA",
+                                    "BillOfMaterialItemQuantity": "1",
+                                    "AlternativeItemGroup": "1",
+                                    "AlternativeItemPriority": "2",
+                                    "AlternativeItemStrategy": "2",
+                                    "UsageProbabilityPercent": "100"
+                                }
+                            ]
+                        }))
+                        prdProcess.IsBomCreated = true
+                    }
+                    if (!prdProcess.IsProductionVersion1) {
+                        await prdver.run(INSERT.into(ProductionVersion).entries({
+                            "Material": `${element.Material}`,
+                            "Plant": `${element.Plant}`,
+                            "ProductionVersion": "0001",
+                            "ProductionVersionText": "Replication",
+                            "BillOfOperationsType": "N",
+                            "BillOfOperationsGroup": bgv1?.VariableValue,
+                            "BillOfOperationsVariant": "1",
+                            "BillOfMaterialVariantUsage": "1",
+                            "BillOfMaterialVariant": "1",
+                            "ProductionLine": plv1?.VariableValue,
+                            "ProductionVersionStatus": "2",
+                            "BOMCheckStatus": "1",
+                            "ProductionVersionLockText": "Not locked",
+                            "BillOfOperationsTypeName": "Routing"
+                        }))
+                        prdProcess.IsProductionVersion1 = true
+                    }
+
+                    if (!prdProcess.IsProductionVersion2) {
+                        await prdver.run(INSERT.into(ProductionVersion).entries({
+                            "Material": `${element.Material}`,
+                            "Plant": `${element.Plant}`,
+                            "ProductionVersion": "0002",
+                            "ProductionVersionText": "Replication-Manual",
+                            "BillOfOperationsType": "N",
+                            "BillOfOperationsGroup": bgv2?.VariableValue,
+                            "BillOfOperationsVariant": "1",
+                            "BillOfMaterialVariantUsage": "1",
+                            "BillOfMaterialVariant": "1",
+                            "ProductionLine": plv2?.VariableValue,
+                            "ProductionVersionStatus": "2",
+                            "BOMCheckStatus": "1",
+                            "ProductionVersionLockText": "Not locked",
+                            "BillOfOperationsTypeName": "Routing"
+                        }))
+                        prdProcess.IsProductionVersion2 = true
+                    }
                 } catch (error) {
-                    LOG.error(error?.message)
+                    LOG.error(`${element.Material} ${element.Plant} : ${error?.message}`)
                     continue
                 } finally {
                     aProductionProcess.push(prdProcess)
@@ -212,7 +219,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     IsProductionVersion1: element.IsProductionVersion1,
                     IsProductionVersion2: element.IsProductionVersion2
                 }).where({
-                    Material: element.Product,
+                    Material: element.Material,
                     Plant: element.Plant
                 })
             }
@@ -336,6 +343,14 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             let to_Valuation = []
             let assetvault = await SELECT.one.from(DistributionDcp, ProjectID).columns(["*", { "ref": ["_Items"], "expand": ["*"] }])
             if (assetvault.CreatedinSAP) return req.error(400, 'DCP Material already created!')
+            const prdCheck = await pdtx.run(SELECT.one.from(Products).columns('Product').where({ Product: ProjectID }))
+            if (prdCheck?.Product) {
+                await UPDATE(DistributionDcp, assetvault.ProjectID).with({
+                    DCP: ProjectID,
+                    CreatedinSAP: true
+                })
+                return req.warn(400, 'DCP Material already created!')
+            }
             try {
                 const plants1 = await planttx.run(SELECT.from(Plants))
                 const plants = plants1.filter(item => item.Plant.startsWith('9') === false)
@@ -356,7 +371,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     to_Plant.push({
                         "Product": ProjectID,
                         "Plant": plant.Plant,
-                        // "ProfitCenter": "117990",
+                        "ProfitCenter": "117990",
                         "AvailabilityCheckType": "SR",
                         "MRPType": "PD",
                         "MRPResponsible": "001",
@@ -498,7 +513,15 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     CreatedinSAP: true
                 })
 
-                productionProcess(to_Plant)
+                productionProcess(to_Plant.map(item => {
+                    return {
+                        Material: item.Product,
+                        Plant: item.Plant,
+                        IsBomCreated: false,
+                        IsProductionVersion1: false,
+                        IsProductionVersion2: false
+                    }
+                }))
 
                 req.info({
                     message: `DCP Material ${ins.Product} created`,
@@ -506,6 +529,16 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             } catch (error) {
                 req.error(502, error)
             }
+        })
+
+        this.on("reprocessProductionProcess", async req => {
+            const { ProjectID } = req.params[0]
+            const prodProcess = await SELECT.from(ProductionProcess).where({ Material: ProjectID })
+
+            productionProcess(prodProcess)
+            req.info({
+                message: `Production process started for DCP Material ${ProjectID}`,
+            })
         })
 
         this.on("READ", "MediaFiles", async (req, res) => {
