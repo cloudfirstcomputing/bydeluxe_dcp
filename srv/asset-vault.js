@@ -356,21 +356,39 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                     to_Plant.push({
                         "Product": ProjectID,
                         "Plant": plant.Plant,
-                        // "ProfitCenter": "100402",
+                        // "ProfitCenter": "117990",
                         "AvailabilityCheckType": "SR",
                         "MRPType": "PD",
                         "MRPResponsible": "001",
                         "ProcurementType": "X",
+                        "PeriodType": "W",
                         "to_ProductSupplyPlanning": {
                             "Product": ProjectID,
                             "Plant": plant.Plant,
+                            //MRP1
                             "MRPType": "PD",
-                            "ProcurementType": "X",
-                            "LotSizingProcedure": "MB",
                             "MRPResponsible": "001",
-                            "SafetyStockQuantity": "5",
+                            "AssemblyScrapPercent": "15.00",
                             "LotSizingProcedure": "MB",
-                            "PlanningStrategyGroup": "10"
+                            //MRP2
+                            "ProcurementType": "X",
+                            "SafetyStockQuantity": "5",
+                            //MRP3
+                            "ProdRqmtsConsumptionMode": "2",
+                            "FwdConsumptionPeriodInWorkDays": "60",
+                            "BackwardCnsmpnPeriodInWorkDays": "30",
+                            "AvailabilityCheckType": "SR",
+                            "PlanningStrategyGroup": "40"
+                        },
+                        "to_ProductWorkScheduling": {
+                            "Product": ProjectID,
+                            "Plant": plant.Plant,
+                            "ProductionSchedulingProfile": "YB0001"
+                        },
+                        "to_PlantSales": {
+                            "Product": ProjectID,
+                            "Plant": plant.Plant,
+                            "AvailabilityCheckType": "SR"
                         },
                         "to_StorageLocation": slocs.filter(sloc => sloc.Plant === plant.Plant)
                             .map(item => {
