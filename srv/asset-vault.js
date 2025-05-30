@@ -3,7 +3,8 @@ const LOG = cds.log('productionProcess')
 const locLog = cds.log('location')
 const xmljs = require("xml-js");
 const { Readable } = require('stream');
-const { executeHttpRequest } = require("@sap-cloud-sdk/http-client")
+const { executeHttpRequest } = require("@sap-cloud-sdk/http-client");
+const e = require("express");
 
 module.exports = class AssetVaultService extends cds.ApplicationService {
     async init() {
@@ -270,9 +271,13 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         })
 
         this.after('CREATE', DistributionDcp, async req => {
+            const aCpl = []
             for (let index = 0; index < req._Items.length; index++) {
+                const element = req._Items[index];
+                let itemCpl = { DKDMS3location: null, CPLS3location: null, ProjectID: null, ID: null }
+                itemCpl.ProjectID = req.ProjectID
+                itemCpl.ID = element.ID
                 try {
-                    const element = req._Items[index];
                     const dkdm = await executeHttpRequest(
                         {
                             destinationName: "TDLCertificateAPI",
@@ -300,16 +305,25 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                             url: `/dc-asset-vault-api/v1/assets/${element.LinkedCPLUUID}`
                         }
                     );
-                    element.DKDMS3location = dkdm.data.items[0]?.storageInformation?.locations?.find(item => item.type === 's3')?.path
-                    element.CPLS3location = cpl.data?.storageInformation?.locations?.find(item => item.type === 's3')?.path
-                    cds.tx(async () => {
-                        await UPDATE(`DELUXE_ASSETVAULT_DISTRIBUTIONDCP__ITEMS`)
-                            .with({ DKDMS3location: element.DKDMS3location, CPLS3location: element.CPLS3location })
-                            .where`UP__PROJECTID = ${req.ProjectID} AND ID = ${element.ID}`
-                    })
+                    itemCpl.DKDMS3location = dkdm.data.items[0]?.storageInformation?.locations?.find(item => item.type === 's3')?.path
+                    itemCpl.CPLS3location = cpl.data?.storageInformation?.locations?.find(item => item.type === 's3')?.path
+                    // cds.tx(async () => {
+                    //     await UPDATE(`DELUXE_ASSETVAULT_DISTRIBUTIONDCP__ITEMS`)
+                    //         .with({ DKDMS3location: element.DKDMS3location, CPLS3location: element.CPLS3location })
+                    //         .where`UP__PROJECTID = ${req.ProjectID} AND ID = ${element.ID}`
+                    // })
                 } catch (error) {
-                    locLog.error(`Error in s3 Location api ${req.ProjectID}: ${error}`)
+                    locLog.error(`Error in s3 Location api ${req.ProjectID} : ${element.LinkedCPLUUID} : ${error}`)
+                    continue
+                } finally {
+                    aCpl.push(itemCpl)
                 }
+            }
+            for (let index = 0; index < aCpl.length; index++) {
+                const element = aCpl[index];
+                await UPDATE(`DELUXE_ASSETVAULT_DISTRIBUTIONDCP__ITEMS`)
+                    .with({ DKDMS3location: element.DKDMS3location, CPLS3location: element.CPLS3location })
+                    .where`UP__PROJECTID = ${element.ProjectID} AND ID = ${element.ID}`
             }
             return req
         })
