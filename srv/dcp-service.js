@@ -880,7 +880,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var oPayLoad = {}, hanaDBTable = StudioFeed,
                 sContentIndicator = oFeedData?.OrderType_code, aDeliverySeqFromDistHeader = [], sBuPa = oFeedData?.Studio_BusinessPartner;
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
-            var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType;
+            var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType_Content, sShippingType_Key;
             let sOrigin = oFeedData?.Origin_OriginID;
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
 
@@ -976,25 +976,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!sErrorMessage && aContentPackages?.length) { //RULE 2.3 => Lookup package ID Delivery method
                         var oContentPackages;
                         let sDeliveryMethodFromPackage = '';   //This stores teh actual delivery method used for SO creation
-                            for (var j in aDeliverySeqFromDistHeader) {
-                                var sDelSeq = aDeliverySeqFromDistHeader[j];
-                                if (sDelSeq) {
-                                    oContentPackages = aContentPackages.find((pkg) => {
-                                        return (
-                                            pkg.DeliveryMethod1_ShippingCondition === sDelSeq || pkg.DeliveryMethod2_ShippingCondition === sDelSeq ||
-                                            pkg.DeliveryMethod3_ShippingCondition === sDelSeq || pkg.DeliveryMethod4_ShippingCondition === sDelSeq ||
-                                            pkg.DeliveryMethod5_ShippingCondition === sDelSeq || pkg.DeliveryMethod6_ShippingCondition === sDelSeq ||
-                                            pkg.DeliveryMethod7_ShippingCondition === sDelSeq || pkg.DeliveryMethod8_ShippingCondition === sDelSeq ||
-                                            pkg.DeliveryMethod9_ShippingCondition === sDelSeq || pkg.DeliveryMethod10_ShippingCondition === sDelSeq)
-                                    });
-                                    if (oContentPackages) { //Delivery sequence is found in the delivery method maintained                                  
-                                        var oFilteredContentPackage = oContentPackages;
-                                        sDeliveryMethodFromPackage = sDelSeq; //Assign the del method found as per sequence
-                                        aContentPackageDistRestrictions = oFilteredContentPackage?.to_DistRestriction
-                                        break;
-                                    }
-                                }
-                            }
                             for (var j in aDeliverySeqFromDistHeader) {
                                 var sDelSeq = aDeliverySeqFromDistHeader[j];
                                 if (sDelSeq) {
@@ -1122,9 +1103,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oPayLoad.ShippingCondition = sContentDeliveryMethod;
                                 oResponseStatus.DeliveryMethod = sContentDeliveryMethod;
                                 var oShippingTypeMapping = await SELECT.one.from(ShippingConditionTypeMapping).where({ ShippingCondition: sContentDeliveryMethod });
-                                sShippingType = oShippingTypeMapping?.ShippingType;
+                                sShippingType_Content = oShippingTypeMapping?.ShippingType;
     
-                                if (!sShippingType) {
+                                if (!sShippingType_Content) {
                                     sErrorMessage = `Shipping Type not maintained for Delivery Method: ${sContentDeliveryMethod}`;
                                 }
                             }
@@ -1137,7 +1118,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     if (!sErrorMessage && aKeyPackages?.length) { //For Key Package
                         sKeyDeliveryMethod = "04"; //Rule 3.3 => Delivery Method for Key is Fixed
-                        sShippingType = '07'; //RULE 7.2 => Shipping Type for KEY
+                        sShippingType_Key = '07'; //RULE 7.2 => Shipping Type for KEY
                     }
                     if(!sErrorMessage){
                         for (var pk in oPackages) { //Going through both filtered content and Key packages if available
@@ -1206,10 +1187,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oPayLoad.to_Item = [];
 
                         var sLongText;
-                        var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                        var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
+                        var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
+                        var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);
 
-                        if ((oFinalContentPackage) && sShippingType === '03' || sShippingType === '06' || sShippingType === '12') {  
+                        if ((oFinalContentPackage) && sShippingType_Content === '03' || sShippingType_Content === '06' || sShippingType_Content === '12') {  
                             // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                             if (oFinalContentPackage?.to_DCPMaterial) {
@@ -1227,7 +1208,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": sShippingType,
+                                        "ShippingType": sShippingType_Content,
                                         "LongText": sLongText,
                                         "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
                                         "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
@@ -1238,6 +1219,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                             else {
                                 sErrorMessage = "DCP Material not available";
+                            }
+                        }
+                        
+                        if (oFinalKeyPackage) { //This indicates Key is also applicable
+                            if (oDCPMapping) {
+                                oPayLoad.to_Item.push({
+                                    "Material": oDCPMapping?.Material,
+                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                    "RequestedQuantity": '1',
+                                    "RequestedQuantityISOUnit": "EA",
+                                    "DeliveryPriority": `1`,
+                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                    "ShippingType": '07',
+                                    "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                });
+                            }
+                            else {
+                                sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType_Content}, hence this item not created`;
+                                oResponseStatus.warning.push({
+                                    "message": `| ${sErrorMessage} |`,
+                                    "errorMessage": sErrorMessage
+                                })
                             }
                         }
                         if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
@@ -1251,33 +1254,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": sShippingType,
+                                        "ShippingType": sShippingType_Content,
                                         "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
                                     });
                                 }
                                 else {
-                                    sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType}, hence this item not created ` 
-                                    oResponseStatus.warning.push({
-                                        "message": `| ${sErrorMessage} |`,
-                                        "errorMessage": sErrorMessage
-                                    })
-                                }
-                            }
-                            if (oFinalKeyPackage) { //This indicates Key is also applicable
-                                if (oDCPMapping) {
-                                    oPayLoad.to_Item.push({
-                                        "Material": oDCPMapping?.Material,
-                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                        "RequestedQuantity": '1',
-                                        "RequestedQuantityISOUnit": "EA",
-                                        "DeliveryPriority": `1`,
-                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": '07',
-                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
-                                    });
-                                }
-                                else {
-                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType}, hence this item not created`;
+                                    sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType_Content}, hence this item not created ` 
                                     oResponseStatus.warning.push({
                                         "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
