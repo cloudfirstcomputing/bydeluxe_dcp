@@ -1383,39 +1383,41 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
             var sTitle = oContentData.Title_Product;
             var sBuPa = oContentData.Studio_BusinessPartner;
-            if (oContentData?.Origin_OriginID === "S") {
+            if (oContentData?.Origin_OriginID === "S" || oContentData?.Origin_OriginID === "F") {
                 var sCustomerRef = oContentData.CustomerReference;
                 if (sCustomerRef) {
-                    // var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
-                    // var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
-                    //     to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
-                    // if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {
-
-                    //     oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
-                    //     aDistroSpecData = await oDistroQuery;
-                    //     distroSpecData = aDistroSpecData?.find((dist) => {
-                    //         return dist.to_StudioKey?.find((stud) => {
-                    //             return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
-                    //         });
-                    //     });
-                    // }
-                    // else {
-                    //     sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
-                    // }
-                    if (isNaN(sCustomerRef)) {
-                        sErrorMessage = `Distro ID should be a number formatted as Text during upload. Uploaded content has ${sCustomerRef} as DistroID`;
-                    }
-                    else {
-                        var iDistroSpecID = parseInt(sCustomerRef);
-                        oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
-                        aDistroSpecData = await oDistroQuery;
-                        if (aDistroSpecData?.length) {
-                            distroSpecData = aDistroSpecData[0];
+                    if(oContentData?.Origin_OriginID === "F"){
+                        var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
+                        var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
+                            to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
+                        if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {    
+                            oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
+                            aDistroSpecData = await oDistroQuery;
+                            distroSpecData = aDistroSpecData?.find((dist) => {
+                                return dist.to_StudioKey?.find((stud) => {
+                                    return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
+                                });
+                            });
                         }
                         else {
-                            sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
+                            sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
                         }
-
+                    }
+                    else{
+                        if (isNaN(sCustomerRef)) {
+                            sErrorMessage = `Distro ID should be a number formatted as Text during upload. Uploaded content has ${sCustomerRef} as DistroID`;
+                        }
+                        else {
+                            var iDistroSpecID = parseInt(sCustomerRef);
+                            oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
+                            aDistroSpecData = await oDistroQuery;
+                            if (aDistroSpecData?.length) {
+                                distroSpecData = aDistroSpecData[0];
+                            }
+                            else {
+                                sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
+                            }    
+                        }
                     }
                 }
                 else {

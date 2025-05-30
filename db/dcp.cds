@@ -121,7 +121,7 @@ entity StudioFeed : cuid, managed {
     BookingID          : String                       ;
     SourceSystem       : String                       ;
     EntityID           : String                       ;
-    Origin             : Association to Origins       @readonly;
+    Origin             : Association to Origins       ;
     // Origin             : String        ;
     Studio             : Association to StudioVH                       ;
     StudioText         : String;
