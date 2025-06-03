@@ -2442,7 +2442,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     FeatureCount = aFeatureItems?.length;
 
                     var aRatingItems = aItems?.filter((item) => {
-                        return (item?.LinkedCTT?.toUpperCase().includes('RTG') || item?.LinkedCTT?.toUpperCase().includes('Rating'));
+                        return (item?.LinkedCTT?.toUpperCase().includes('RTG') || item?.LinkedCTT?.toUpperCase().includes('RATING'));
                     });
                     await aRatingItems?.forEach(element => {
                         Content.push({
