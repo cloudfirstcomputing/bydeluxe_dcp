@@ -789,14 +789,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else {
+                    var oLocalResponse;
                     if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
                             data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
+                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
                             recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
                         }
                     }
-                    else {
+                    else { //New Order
                         var oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
                         if (oExistingData) {
                             oResponseStatus.error.push({
@@ -805,18 +807,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             });
                             continue;
                         }
-                    }
-                    var oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
-                    let sTitle = oLocalResponse?.distroSpecData?.Title_Product;
-                    data[i].Title_Product = sTitle;
-                    if(sTitle){
-                        let oMat = await prdtx.run(SELECT.one.from(TitleCustVH).where({Product: sTitle}));
-                        data[i].TitleText = oMat?.ProductName;
-                    }
-                    let sBupa = data[i]?.Studio_BusinessPartner;
-                    if(sBupa){
-                        let oBP = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: sBupa }));
-                        data[i].StudioText = oBP?.BusinessPartnerFullName;
+                        else{                            
+                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                        }
                     }
                     if (oLocalResponse?.success?.length && !oLocalResponse?.error?.length) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
@@ -883,9 +876,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType_Content, sShippingType_Key;
             let sOrigin = oFeedData?.Origin_OriginID;
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
-
             oResponseStatus.distroSpecData = distroSpecData;
             oResponseStatus.SalesOrder = '';//Resetting Sales order for next entry
+            {   
+                let sTitle = distroSpecData?.Title_Product;
+                oFeedData.Title_Product = sTitle;
+                if(sTitle){
+                    let oMat = await prdtx.run(SELECT.one.from(TitleCustVH).where({Product: sTitle}));
+                    oFeedData.TitleText = oMat?.ProductName;
+                }
+                let sBupa = oFeedData?.Studio_BusinessPartner;
+                if(sBupa){
+                    let oBP = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: sBupa }));
+                    oFeedData.StudioText = oBP?.BusinessPartnerFullName;
+                }
+            }
             // oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
             oPayLoad.SalesOrderType = "TA";
             oFeedData.PlayStartTime = oFeedData?.PlayStartTime?oFeedData.PlayStartTime:'00:00:01';
@@ -1194,9 +1199,29 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                             let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
-                            let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);
-    
-                            if (oFinalContentPackage?.to_DCPMaterial) {
+                            let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
+                            if(sShippingType_Content === '01'){ //Satellite Delivery => Pick only generic material as per email from Pranav on 3rd Jun 13:05
+                                if(oDCPMapping){
+                                    oPayLoad.to_Item.push({
+                                        "Material": oDCPMapping?.Material,
+                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                        "RequestedQuantity": '1',
+                                        "RequestedQuantityISOUnit": "EA",
+                                        "DeliveryPriority": `1`,
+                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                        "ShippingType": sShippingType_Content,
+                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                    });
+                                }
+                                else{
+                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType_Content}, hence this item not created`;
+                                    oResponseStatus.warning.push({
+                                        "message": `| ${sErrorMessage} |`,
+                                        "errorMessage": sErrorMessage
+                                    });
+                                }
+                            }
+                            else if (oFinalContentPackage?.to_DCPMaterial) {
                                 for (var j in oFinalContentPackage.to_DCPMaterial) {
                                     var oMatRecord = oFinalContentPackage.to_DCPMaterial[j];
                                     if (sContentDeliveryMethod === '02') { //RULE 5.2 => LongText for GoFilex TitleID NORAM to pass in Items
