@@ -398,7 +398,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
             }
 
-            await _gofilexcreation(req);
+            // await _gofilexcreation(req);
         })
 
         async function _gofilexcreation(req) {
