@@ -376,28 +376,34 @@ annotate service.ShippingConditions with {
 };
 
 annotate service.DCPProducts with {
-    Product     @Common: {Label: '{i18n>Product}', };
-    ProductName @common: {Label: '{i18n>ProductDesc}'}
+    Product      @Common: {Label: '{i18n>Product}', };
+    ProductName  @Common: {Label: '{i18n>ProductDesc}'};
+    Product_Text @UI.HiddenFilter;
+    ProductType  @UI.HiddenFilter;
 };
 
 annotate service.Titles with {
-    Product     @Common: {Label: '{i18n>Title}', };
-    ProductName @Common: {Label: '{i18n>Description}'}
+    Product      @Common: {Label: '{i18n>Title}', };
+    ProductName  @Common: {Label: '{i18n>Description}'};
+    Product_Text @UI.HiddenFilter;
+    ProductType  @UI.HiddenFilter;
 };
 
 annotate service.DeliveryPriority with {
     DeliveryPriority     @Common: {Label: '{i18n>DeliveryPriority}', };
-    DeliveryPriorityDesc @common: {Label: '{i18n>Description}'}
+    DeliveryPriorityDesc @common: {Label: '{i18n>Description}'};
 };
 
 annotate service.CustomerGroup with {
     CustomerGroup @Common      : {Label: '{i18n>CustomerGroup}', };
     Name          @Common.Label: '{i18n>Description}';
+    to_Text       @UI.HiddenFilter;
 };
 
 annotate service.SalesDistricts with {
     SalesDistrict @Common      : {Label: '{i18n>SalesDistrict}', };
     Name          @Common.Label: '{i18n>Description}';
+    to_Text       @UI.HiddenFilter;
 };
 
 annotate service.DistroSpec with @(
@@ -757,7 +763,7 @@ annotate service.Package with @(
         {
             $Type : 'UI.ReferenceFacet',
             ID    : '_PackageDeliveryethod',
-            Label : '{i18n>DeliveryMethod}',
+            Label : '{i18n>DeliveryPreferences}',
             Target: '@UI.FieldGroup#_PackageDeliveryethod',
         },
         {
