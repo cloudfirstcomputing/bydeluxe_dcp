@@ -119,7 +119,7 @@ entity TitleCustVH       as projection on api.ZI_TITLES_VH;
 entity StudioVH      as projection on api.ZI_Studio;
 entity StudioFeed : cuid, managed {
     BookingID          : String                       ;
-    SourceSystem       : String                       ;
+    SourceSystem       : String                       @UI.Hidden;
     EntityID           : String                       ;
     Origin             : Association to Origins       ;
     // Origin             : String        ;
@@ -130,14 +130,14 @@ entity StudioFeed : cuid, managed {
     TitleText          : String;
     CreatedOn          : Date;
     RequestedDelivDate : Date                         ;
-    ReleaseID          : String;
+    ReleaseID          : String @UI.Hidden;
     OrderType          : Association to dist.OrderType                       ;
-    RecordType         : String;
+    RecordType         : String @UI.Hidden;
     BookingType        : Association to BookingTypeVH;
     TheaterID          : String;
-    Circuit            : String;
+    Circuit            : String @UI.Hidden;
     BookerName         : String;
-    RequestId          : String;
+    RequestId          : String @UI.Hidden;
     OrderID            : String;
     PlayStartDate      : Date ;
     PlayStartTime      : Time default '00:00:01' ;
@@ -151,25 +151,25 @@ entity StudioFeed : cuid, managed {
     HFR                : String;
     ShipmentIndicator  : String;
     ScreeningIndicator : String;
-    DepotID            : String;
-    SoundID            : String;
+    DepotID            : String @UI.Hidden;
+    SoundID            : String @UI.Hidden;
     Language           : String;
-    SubtitleType1      : String;
-    SubtitleType2      : String;
-    PrintFormat        : String;
+    SubtitleType1      : String @UI.Hidden;
+    SubtitleType2      : String @UI.Hidden;
+    PrintFormat        : String @UI.Hidden;
     ShipPriority       : Integer                      @assert.range: [
         1,
         5
     ];
-    PrintQuality       : String;
+    PrintQuality       : String @UI.Hidden;
     ApprovedScreens    : String;
-    CTTs               : String;
-    CPLUUIDs           : String;
-    CountryCode        : String;
-    ScreenID           : String;
-    ContentType        : String;
-    CancelOrder        : String;
-    DeliveryType       : String;
+    CTTs               : String @UI.Hidden;
+    CPLUUIDs           : String @UI.Hidden;
+    CountryCode        : String @UI.Hidden;
+    ScreenID           : String @UI.Hidden;
+    ContentType        : String @UI.Hidden;
+    CancelOrder        : String @UI.Hidden;
+    DeliveryType       : String @UI.Hidden;
 
     //Common custom fields    
     RemediationCounter : Integer                      @readonly;

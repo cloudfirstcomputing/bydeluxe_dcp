@@ -33,7 +33,8 @@ annotate BookingOrderService.StudioFeed with{
                     ValueListProperty: 'OriginText',
                 },
             ]
-        }
+        },
+        FieldControl : #ReadOnly,
     };
     OrderType              @Common: {
         Label          : '{i18n>Ordertype}',
@@ -129,6 +130,7 @@ annotate BookingOrderService.StudioFeed with{
             ]
         }
     };
+    OrderID @Common.FieldControl: #ReadOnly
     
     
 }
@@ -139,11 +141,6 @@ annotate BookingOrderService.StudioFeed with @(
             Value : BookingID,
             Label : '{i18n>Bookingid}',
             ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SourceSystem,
-            Label : '{i18n>Sourcesystem}',
         },
         {
             $Type : 'UI.DataField',
@@ -238,43 +235,8 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : DeliveryType,
-            Label : '{i18n>Deliverytype}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ContentType,
-            Label : '{i18n>Contenttype}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CountryCode,
-            Label : '{i18n>Countrycode}',
-        },
-        {
-            $Type : 'UI.DataField',
             Value : DepotID,
             Label : '{i18n>Depotid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CancelOrder,
-            Label : 'CancelOrder',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : Circuit,
-            Label : '{i18n>Circuit}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CTTs,
-            Label : '{i18n>Ctts}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CPLUUIDs,
-            Label : '{i18n>Cpluuids}',
         },
         {
             $Type : 'UI.DataField',
@@ -343,31 +305,6 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : PrintQuality,
-            Label : '{i18n>Printquality}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : RecordType,
-            Label : '{i18n>Recordtype}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ReleaseID,
-            Label : '{i18n>Releaseid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : RequestId,
-            Label : '{i18n>Requestid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ScreenID,
-            Label : '{i18n>Screenid}',
-        },
-        {
-            $Type : 'UI.DataField',
             Value : ScreeningIndicator,
             Label : '{i18n>Screeningindicator}',
         },
@@ -380,21 +317,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : ShipPriority,
             Label : '{i18n>Shippriority}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SoundID,
-            Label : '{i18n>Soundid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SubtitleType1,
-            Label : '{i18n>Subtitletype}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : SubtitleType2,
-            Label : '{i18n>Subtitletype}',
         },
         {
             $Type : 'UI.DataField',
@@ -443,11 +365,6 @@ annotate BookingOrderService.StudioFeed with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : SourceSystem,
-                Label : '{i18n>Sourcesystem}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : BookingID,
                 Label : '{i18n>Bookingid}',
             },
@@ -468,13 +385,18 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : RequestedDelivDate,
-                Label : '{i18n>Requesteddelivdate}',
+                Value : CustomerReference,
+                Label : '{i18n>Customerreference}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : OrderType_code,
                 Label : '{i18n>Ordertype}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : RequestedDelivDate,
+                Label : '{i18n>Requesteddelivdate}',
             },
             {
                 $Type : 'UI.DataField',
@@ -503,56 +425,11 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : CancelOrder,
-                Label : '{i18n>Cancelorder}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : Circuit,
-                Label : '{i18n>Circuit}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : CountryCode,
-                Label : '{i18n>Countrycode}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : CPLUUIDs,
-                Label : '{i18n>Cpluuids}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : createdAt,
             },
             {
                 $Type : 'UI.DataField',
-                Value : ContentType,
-                Label : '{i18n>Contenttype}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : createdBy,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : CTTs,
-                Label : '{i18n>Ctts}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : CustomerReference,
-                Label : '{i18n>Customerreference}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DeliveryType,
-                Label : '{i18n>Deliverytype}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DepotID,
-                Label : '{i18n>Depotid}',
             },
             {
                 $Type : 'UI.DataField',
@@ -644,28 +521,8 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : RecordType,
-                Label : '{i18n>Recordtype}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ReleaseID,
-                Label : '{i18n>Releaseid}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : Remediation,
                 Label : '{i18n>Remediation}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : RequestId,
-                Label : '{i18n>Requestid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ScreenID,
-                Label : '{i18n>Screenid}',
             },
             {
                 $Type : 'UI.DataField',
@@ -684,23 +541,8 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : SoundID,
-                Label : '{i18n>Soundid}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : Status_ID,
                 Label : '{i18n>Statusid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : SubtitleType1,
-                Label : '{i18n>Subtitletype}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : SubtitleType2,
-                Label : '{i18n>Subtitletype}',
             },
             {
                 $Type : 'UI.DataField',
@@ -898,11 +740,6 @@ annotate BookingOrderService.BookingSalesorderItem with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : DepotID,
-            Label : '{i18n>Depotid}'
-        },
-        {
-            $Type : 'UI.DataField',
             Value : FilmStock,
             Label : '{i18n>Filmstock}'
         },
@@ -950,11 +787,6 @@ annotate BookingOrderService.BookingSalesorderItem with @(
             $Type : 'UI.DataField',
             Value : PlayStartDate,
             Label : '{i18n>Playstartdate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PrintFormat,
-            Label : '{i18n>Printformat}',
         },
         {
             $Type : 'UI.DataField',
@@ -1082,16 +914,6 @@ annotate BookingOrderService.BookingSalesorderItem with @(
                 $Type : 'UI.DataField',
                 Value : PlayStartDate,
                 Label : '{i18n>Playstartdate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PrintFormat,
-                Label : '{i18n>Printformat}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PrintQuality,
-                Label : '{i18n>Printquality}',
             },
             {
                 $Type : 'UI.DataField',

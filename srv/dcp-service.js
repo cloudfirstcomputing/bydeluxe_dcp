@@ -885,6 +885,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
 
             oResponseStatus.distroSpecData = distroSpecData;
+            oResponseStatus.SalesOrder = '';//Resetting Sales order for next entry
             // oPayLoad.SalesOrderType = aConfig?.find((e) => { return e.VariableName === 'SOType_SPIRITWORLD' })?.VariableValue;
             oPayLoad.SalesOrderType = "TA";
             oFeedData.PlayStartTime = oFeedData?.PlayStartTime?oFeedData.PlayStartTime:'00:00:01';
@@ -1187,12 +1188,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oPayLoad.to_Item = [];
 
                         var sLongText;
-                        var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
-                        var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);
 
-                        if ((oFinalContentPackage) && sShippingType_Content === '03' || sShippingType_Content === '06' || sShippingType_Content === '12') {  
+                        // if ((oFinalContentPackage) && sShippingType_Content === '03'  || sShippingType_Content === '06' || sShippingType_Content === '12') {  
+                            if (oFinalContentPackage) {  
                             // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
+                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
+                            let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);
+    
                             if (oFinalContentPackage?.to_DCPMaterial) {
                                 for (var j in oFinalContentPackage.to_DCPMaterial) {
                                     var oMatRecord = oFinalContentPackage.to_DCPMaterial[j];
@@ -1223,6 +1226,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                         
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
+                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
+                            let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
                             if (oDCPMapping) {
                                 oPayLoad.to_Item.push({
                                     "Material": oDCPMapping?.Material,
@@ -1243,30 +1248,30 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 })
                             }
                         }
-                        if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
-                            if (oFinalContentPackage) { //Applicable only for Content.                                
-                                if (oDCPMapping) {
-                                    oPayLoad.to_Item.push({
-                                        "Material": oDCPMapping?.Material,
-                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                        "RequestedQuantity": '1',
-                                        "RequestedQuantityISOUnit": "EA",
-                                        // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
-                                        "DeliveryPriority": `1`,
-                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": sShippingType_Content,
-                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
-                                    });
-                                }
-                                else {
-                                    sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType_Content}, hence this item not created ` 
-                                    oResponseStatus.warning.push({
-                                        "message": `| ${sErrorMessage} |`,
-                                        "errorMessage": sErrorMessage
-                                    })
-                                }
-                            }
-                        }
+                        // if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
+                        //     if (oFinalContentPackage) { //Applicable only for Content.                                
+                        //         if (oDCPMapping) {
+                        //             oPayLoad.to_Item.push({
+                        //                 "Material": oDCPMapping?.Material,
+                        //                 "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                        //                 "RequestedQuantity": '1',
+                        //                 "RequestedQuantityISOUnit": "EA",
+                        //                 // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
+                        //                 "DeliveryPriority": `1`,
+                        //                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                        //                 "ShippingType": sShippingType_Content,
+                        //                 "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                        //             });
+                        //         }
+                        //         else {
+                        //             sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType_Content}, hence this item not created ` 
+                        //             oResponseStatus.warning.push({
+                        //                 "message": `| ${sErrorMessage} |`,
+                        //                 "errorMessage": sErrorMessage
+                        //             })
+                        //         }
+                        //     }
+                        // }
                     }
                 }
             }
@@ -1553,11 +1558,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
                         await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
                         
-                        var aKrakens = await SELECT.from(AssetVault_Local).columns(["KrakenTitleID"]).
+                        var aKrakens = await SELECT.from(AssetVault_Local).columns(["ProjectID"]).
                         where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
 
                         if(aKrakens?.length){
-                            sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.KrakenTitleID})?.join(',');
+                            sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.ProjectID})?.join(',');
                             await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
                         }
 
@@ -2437,7 +2442,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     FeatureCount = aFeatureItems?.length;
 
                     var aRatingItems = aItems?.filter((item) => {
-                        return item?.LinkedCTT?.toUpperCase().includes('RTG');
+                        return (item?.LinkedCTT?.toUpperCase().includes('RTG') || item?.LinkedCTT?.toUpperCase().includes('Rating'));
                     });
                     await aRatingItems?.forEach(element => {
                         Content.push({
