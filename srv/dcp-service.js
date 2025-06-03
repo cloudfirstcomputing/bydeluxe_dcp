@@ -3044,9 +3044,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "Qty": aBillingDocumentItem[index]?.BillingQuantity,
                             "UOM": aBillingDocumentItem[index]?.BillingQuantityUnit,
                             "Cur": aBillingDocumentItem[index]?.TransactionCurrency,
-                            "Price": aPriceItem[index]?.ConditionRateValue,
-                            "Discount": aDiscountItem[index]?.ConditionAmount == undefined ? '0.00' : aDiscountItem[index]?.ConditionAmount,
-                            "Extended": aExtendedAmount[index]?.ConditionAmount,
+                            "Price": parseFloat(aPriceItem[index]?.ConditionRateValue).toFixed(2),
+                            "Discount": aDiscountItem[index]?.ConditionAmount == undefined ? '0.00' : aDiscountItem[index]?.ConditionAmount.toFixed(2),
+                            "Extended": aExtendedAmount[index]?.ConditionAmount.toFixed(2),
                             "Tax": oTaxSerial?.SerialNo
                         });
                     }
@@ -3057,9 +3057,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "Qty": aBillingDocumentItem[index]?.BillingQuantity,
                             "UOM": aBillingDocumentItem[index]?.BillingQuantityUnit,
                             "Cur": aBillingDocumentItem[index]?.TransactionCurrency,
-                            "Price": aPriceItem[index]?.ConditionRateValue,
-                            "Discount": aDiscountItem[index]?.ConditionAmount == undefined ? '0.00' : aDiscountItem[index]?.ConditionAmount,
-                            "Extended": aExtendedAmount[index]?.ConditionAmount,
+                            "Price": parseFloat(aPriceItem[index]?.ConditionRateValue).toFixed(2),
+                            "Discount": aDiscountItem[index]?.ConditionAmount == undefined ? '0.00' : aDiscountItem[index]?.ConditionAmount.toFixed(2),
+                            "Extended": aExtendedAmount[index]?.ConditionAmount.toFixed(2),
                             "Tax": oTaxSerial?.SerialNo
                         });
                     }
@@ -3198,16 +3198,16 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 // 3. Get Bank Details using BankCountry + BankInternalID
                 const oBankDetails = await bankAPI.run(
                     SELECT.one.from(Bank).where({
-                        BankCountry: oHouseBank?.BankCountry,
-                        BankInternalID: oHouseBank?.BankInternalID
+                        BankCountry: oHouseBank == undefined ? '' : oHouseBank?.BankCountry,
+                        BankInternalID: oHouseBank == undefined ? '' : oHouseBank?.BankInternalID
                     })
                 );
 
                 // 4. Get Bank Address via navigation: /Bank/{BankCountry}/{BankInternalID}/_BankAddress
                 const oBankAddress = await bankAPI.run(
                     SELECT.one.from(BankAddress).where({
-                        BankCountry: oHouseBank?.BankCountry,
-                        BankInternalID: oHouseBank?.BankInternalID
+                        BankCountry: oHouseBank == undefined ? '' : oHouseBank?.BankCountry,
+                        BankInternalID: oHouseBank == undefined ? '' : oHouseBank?.BankInternalID
                     })
                 );
 
@@ -3254,9 +3254,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                      var iTypeLength = oTaxObjectforForm.TaxTable.TaxTableRow.length;
                      var iTaxableAmount = oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2
                      var iGrandTotal = iNetAmount+iTaxableAmount-(isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem))
-                    oTaxObjectforForm.TaxTable.TaxTableRow[0].Cell2 = 'USD '+iNetAmount
-                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-3].Cell2 ='USD '+ ( isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem) )
-                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2 ='USD '+ ( isNaN(iGrandTotal)? 0 : parseInt(iGrandTotal) )
+                    oTaxObjectforForm.TaxTable.TaxTableRow[0].Cell2 = 'USD '+iNetAmount.toFixed(2)
+                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-3].Cell2 ='USD '+ ( isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem).toFixed(2) )
+                    oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2 ='USD '+ ( isNaN(iGrandTotal)? 0 : parseInt(iGrandTotal).toFixed(2) )
 
                 const billingDataNode = {
                     "TaxInvoice": {

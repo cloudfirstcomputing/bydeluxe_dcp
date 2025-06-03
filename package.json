@@ -17,6 +17,7 @@
     "@sap/textbundle": "^5.2.0",
     "@sap/xsenv": "^5.3.0",
     "@sap/xssec": "^4",
+    "axios": "^1.9.0",
     "express": "^4",
     "passport": "^0.7.0",
     "uuid": "^11.0.5",
@@ -605,6 +606,12 @@
           "path": "/sap/opu/odata/sap/YY1_CHARACTERISTIC_ST_CDS",
           "destination": "S4HC_DEV",
           "requestTimeout": 1000000
+        }
+      },
+      "GoFilex_api": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "GoFilex_api"
         }
       }
     }

@@ -1,4 +1,5 @@
 const cds = require("@sap/cds");
+const axios = require('axios');
 const { uuid } = cds.utils
 
 module.exports = class DistributionService extends cds.ApplicationService {
@@ -396,7 +397,76 @@ module.exports = class DistributionService extends cds.ApplicationService {
             if (ret) {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
             }
+
+            await _gofilexcreation(req);
         })
+
+        async function _gofilexcreation(req) {
+            var sBearer = await getBearerToken();
+            var oGoFilex_DEST = await cds.connect.to("GoFilex_api");
+            const headers = {
+                Authorization: `Bearer ${sBearer}`
+            };
+            // const headers = {
+            //     "Content-Type": 'application/json',
+            //     "accept": 'application/json',
+            // };
+            // Print PDF code logic
+            var sUrl = "/dc-delivery-gofilex-api/v1/gofilex-portals/urn:deluxe:dc-delivery-gofilex:gofilex-portal:56657f4a-0e58-48e6-a425-3fb3567a0484/proxy/api/method/v1/title/add"
+
+            const data = {
+                "identifier": {
+                    "source": "deluxe",
+                    "value": "1073677"
+                },
+                "name": req.data.to_Package[req.data.to_Package.length - 1].PackageName,
+                "releaseDate": req.data.ReleaseDate,
+                "ownerId": "HXXA6vm4DQ3Yrddiu",
+                "countries": [
+                    "US"
+                ]
+            };
+
+            var oGoFilex = await oGoFilex_DEST.send({
+                method: "POST",
+                path: sUrl,
+                data,
+                headers
+            });
+            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex
+            return req
+        }
+
+
+        async function getBearerToken() {
+            const tokenUrl = 'https://login.dmlib.in/oauth2/aussw63cpzrSVEZDi0h7/v1/token';
+
+            const username = '0oa25ibcpnkQUlMnj0h8';  // ✅ USERNAME
+            const password = 'iwMg6SqEV32qpyGF1sXBaHPqPapiV1LHdWJd84b6mS9vD_NPU4qSaa1oGklq6gGc'; // ✅ USER PASSWORD
+
+            const basicAuth = Buffer.from(`${username}:${password}`).toString('base64');
+
+            const data = new URLSearchParams({
+                grant_type: 'client_credentials',
+                scope: 'dc-sap-btp-proxy',
+            });
+
+            var response = await axios.post(tokenUrl, data.toString(), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Basic ${basicAuth}`
+                }
+            })
+            // .then(response => {
+            //   console.log('Access Token:', response.data.access_token);
+            // })
+            // .catch(error => {
+            //   console.error('Error fetching token:', error.response?.data || error.message);
+            // });
+
+            return response.data.access_token;
+
+        }
 
         this.before('NEW', `Package.drafts`, req => {
             req.data.ValidFrom = today()
