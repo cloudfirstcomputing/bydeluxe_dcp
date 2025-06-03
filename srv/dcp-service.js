@@ -2478,7 +2478,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     RatingCount = aRatingItems?.length;
 
                     var aTrailerItems = aItems?.filter((item) => {
-                        return item?.LinkedCTT?.toUpperCase().includes('TRL');
+                        return item?.LinkedCTT?.toUpperCase().includes('TLR');
                     });
                     await aTrailerItems?.forEach(element => {
                         Content.push({
