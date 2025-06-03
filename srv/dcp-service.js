@@ -834,20 +834,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 if (bReconcile) {
                     var sID = data[i].ID;
-                    await UPDATE(hanatable).set({ ErrorMessage: data[i].ErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID }).where({
+                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID }).where({
                         ID: sID
                     });
                 }
                 else {
-                    recordsToBeInserted.push(data[i]); //INSERT is always required
-                    // if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
-                    //     var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                    //     if (entry_Active) {
-                    //         data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                    //         recordsToBeUpdated.push(entry_Active);
-                    //     }
-                    // }
-                    // recordsToBeInserted.push(data[i]); //INSERT is always required
+                    recordsToBeInserted.push(data[i]); 
                 }
             }
             if (!bReconcile) {
@@ -900,11 +892,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             else {
                 sErrorMessage = 'Requested Delivery Date not available';
-            }
-            if(sOrigin === 'M' || sOrigin === 'S'){//For Manual Or Spreadsheet
-                if(!distroSpecData?.to_StudioKey || distroSpecData?.to_StudioKey?.length === 0){
-                    sErrorMessage = 'Studio not found in DistroSpec';
-                }
             }
             if (sErrorMessage) {
                 await UPDATE(hanaDBTable).set({ ErrorMessage: sErrorMessage }).where({ BookingID: oFeedData.BookingID, IsActive: "Y" });
@@ -1370,7 +1357,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             return newDate;
         }
         const getDistroSpecData = async (req, oContentData, aDeliverySeqFromDistHeader) => {
-            let distroSpecData;
+            let distroSpecData, sOrigin = oContentData.Origin_OriginID,
+            sTitle = oContentData.Title_Product,
+            sBuPa = oContentData.Studio_BusinessPartner,
+            sCustomerRef = oContentData.CustomerReference;            
             var oDistroQuery = SELECT.from(DistroSpec_Local, (dist) => {
                 dist('*'),
                     dist.to_StudioKey((studio) => { studio('*') }),
@@ -1411,50 +1401,52 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             keyPkg.to_CPLDetail((cpl) => { cpl('*') })
                     })
             });
-            var sTitle = oContentData.Title_Product;
-            var sBuPa = oContentData.Studio_BusinessPartner;
-            if (oContentData?.Origin_OriginID === "S" || oContentData?.Origin_OriginID === "F") {
-                var sCustomerRef = oContentData.CustomerReference;
+            if (sOrigin === "F") { //Feed               
+                var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
+                var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
+                    to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
+                if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {    
+                    oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
+                    aDistroSpecData = await oDistroQuery;
+                    distroSpecData = aDistroSpecData?.find((dist) => {
+                        return dist.to_StudioKey?.find((stud) => {
+                            return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
+                        });
+                    });
+                }
+                else {
+                    sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
+                }
+            
                 if (sCustomerRef) {
-                    if(oContentData?.Origin_OriginID === "F"){
-                        var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
-                        var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
-                            to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
-                        if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {    
-                            oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
-                            aDistroSpecData = await oDistroQuery;
-                            distroSpecData = aDistroSpecData?.find((dist) => {
-                                return dist.to_StudioKey?.find((stud) => {
-                                    return stud.StudioKeyUUID === to_StudioKey_StudioKeyUUID;
-                                });
-                            });
-                        }
-                        else {
-                            sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
-                        }
-                    }
+                    if(sCustomerRef === "F"){}
                     else{
-                        if (isNaN(sCustomerRef)) {
-                            sErrorMessage = `Distro ID should be a number formatted as Text during upload. Uploaded content has ${sCustomerRef} as DistroID`;
-                        }
-                        else {
-                            var iDistroSpecID = parseInt(sCustomerRef);
-                            oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
-                            aDistroSpecData = await oDistroQuery;
-                            if (aDistroSpecData?.length) {
-                                distroSpecData = aDistroSpecData[0];
-                            }
-                            else {
-                                sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
-                            }    
-                        }
                     }
                 }
                 else {
                     sErrorMessage = "DistroSpec ID is not available in the payload";
                 }
             }
-            else {
+            else if(sOrigin === "S" || sOrigin === "M"){//Manual Or Spreadsheet                
+                if (isNaN(sCustomerRef)) {
+                    sErrorMessage = `Distro ID should be a number formatted as Text during upload. Uploaded content has ${sCustomerRef} as DistroID`;
+                }
+                else {
+                    var iDistroSpecID = parseInt(sCustomerRef);
+                    oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
+                    aDistroSpecData = await oDistroQuery;
+                    if (aDistroSpecData?.length) {
+                        distroSpecData = aDistroSpecData[0];                        
+                        if(!distroSpecData?.to_StudioKey || distroSpecData?.to_StudioKey?.length === 0){
+                            sErrorMessage = 'Studio not found in DistroSpec';
+                        }
+                    }
+                    else {
+                        sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
+                    }    
+                }
+            }
+            else { // Portal or any Other values
                 // var oProductDescFromS4 = await s4h_products_Crt.run(SELECT.one.from(ProductDescription).where({ ProductDescription: sTitle, Language: 'EN' }));
                 // var Product = oProductDescFromS4?.Product;
                 var Product = sTitle;
