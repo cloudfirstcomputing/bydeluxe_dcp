@@ -671,10 +671,10 @@ define view TitleV as
             RatingsConcat.RatingCode,
             ExternalTitleIDs.IDType,
             ExternalTitleIDs.IDValue,
-            '' as Region :String,
-            '' as TitleCategoryText :String,
-            '' as LangCodeText :String,
-            '' as StudioText :String
+            '' as Region :String(500),
+            '' as TitleCategoryText :String(500),
+            '' as LangCodeText :String(500),
+            '' as StudioText :String(500)
             // @cds.persistence.skip
             // to_CountryText   : Association to api.CountryText 
             //          on to_CountryText.Country = $self.RegionCode

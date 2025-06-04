@@ -2095,7 +2095,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             if (dbData.length > 0) {
                 const countryCodes = [...new Set(dbData.map(row => row.RegionCode != null ? row.RegionCode : ''))]
-                const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor != null ? row.StudioDistributor : ''))]
+                const aStudioDistrbution = [...new Set(dbData.map(row => row.StudioDistributor != null ? row.StudioDistributor.slice(0, 10) : ''))]
                 const aLanguage = [...new Set(dbData.map(row => row.LanguageCode != null ? row.LanguageCode.toLowerCase() : ''))]
 
                 const countryTexts = await s4h_country.run(
