@@ -613,6 +613,10 @@
         "credentials": {
           "destination": "GoFilex_api"
         }
+      },
+      "YY1_PROFORMAREPORT_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001"
       }
     }
   },
