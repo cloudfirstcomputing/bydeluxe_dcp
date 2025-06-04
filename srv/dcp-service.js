@@ -802,19 +802,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
                         if (oExistingData) {
                             oResponseStatus.error.push({
+                                "BookingID": data[i].BookingID,
                                 "message": `| Booking ID ${data[i].BookingID} already exists|`,
                                 "errorMessage": `Booking ID ${data[i].BookingID} already exists`
                             });
-                            continue;
+                            oLocalResponse= oResponseStatus;
                         }
                         else{                            
                             oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
                         }
                     }
-                    if (oLocalResponse?.success?.length && !oLocalResponse?.error?.length) {
+                    let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === data[i].BookingID});
+                    if (oLocalResponse?.success?.length && !oErrorEntry) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
                     }
-                    if (oLocalResponse?.success?.length) {
+                    if (oLocalResponse?.success?.length && !oErrorEntry) {
                         // oResponseStatus?.success?.push(...oLocalResponse?.success);
                         data[i].SalesOrder = oLocalResponse?.SalesOrder;
                         data[i].DeliveryMethod = oLocalResponse?.DeliveryMethod;
@@ -825,9 +827,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         data[i].Status_ID = oLocalResponse.Status;
                         data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
                     }
-                    else if (oLocalResponse?.error?.length) {
+                    if (oErrorEntry) {
                         // oResponseStatus?.error?.push(...oLocalResponse?.error);
-                        data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
+                        data[i].ErrorMessage = oErrorEntry?.errorMessage;
                         data[i].Status_ID = "D";
                     }
                     oLocalResponse = {};
@@ -1290,6 +1292,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var sSalesOrder = "";
             if (sErrorMessage) {
                 oResponseStatus.error.push({
+                    "BookingID": oFeedData.BookingID,
                     "message": `| Booking ID: ${oFeedData.BookingID}: ${sErrorMessage} |`,
                     "errorMessage": sErrorMessage
                 })
@@ -1301,6 +1304,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     data: oPayLoad
                 }).catch((err) => {
                     oResponseStatus.error.push({
+                        "BookingID": oFeedData.BookingID,
                         "message": `| Booking ID: ${oFeedData.BookingID}: ${err.message} |`,
                         "errorMessage": err.message
                     })
@@ -1308,6 +1312,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (result) {
                         sSalesOrder = result?.SalesOrder;
                         oResponseStatus.success.push({
+                            "BookingID": oFeedData?.BookingID,
                             "message": `| Booking ID: ${oFeedData.BookingID}, Sales Order: ${result?.SalesOrder} is created |`,
                             "SalesOrder": sSalesOrder
                         });
@@ -2046,7 +2051,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }).then((result) => {
                 if (result) {
                     oResponseStatus.success.push({
-                        "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, ${sType} Item Text is created |`
+                        "BookingID": oContentData?.BookingID,
+                        "message": `| For Booking ID: ${oContentData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, ${sType} Item Text is created |`
                     });
                 }
             });
