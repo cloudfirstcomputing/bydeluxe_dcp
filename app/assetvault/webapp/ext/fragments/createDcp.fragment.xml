@@ -19,7 +19,7 @@
                             path: '/Titles',
                             sorter: { path: 'Product' }
                             }">
-                        <core:Item key="{Product}" text="{Name}" />
+                        <core:Item key="{Product}" text="{ProductName}" />
                     </ComboBox>
                 </f:SimpleForm>
             </Panel>
