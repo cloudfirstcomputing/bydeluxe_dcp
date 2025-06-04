@@ -44,7 +44,7 @@ service AssetVaultService {
     entity Plants             as projection on api.Plants;
 
     @readonly
-    entity Titles             as projection on api.Products;
+    entity Titles             as projection on api.ZI_TITLES_VH;
 
     @readonly
     entity CustomerCompany    as projection on api.CustomerCompany;

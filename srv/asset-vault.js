@@ -15,6 +15,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         const _asArray = x => Array.isArray(x) ? x : [x]
         const bptx = await cds.connect.to('API_BUSINESS_PARTNER')
         const pdtx = await cds.connect.to('API_PRODUCT_SRV')
+        const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
         const planttx = await cds.connect.to('API_PLANT_SRV')
         const sloctx = await cds.connect.to('YY1_STORAGELOCATION_CDS')
         const salesorgtx = await cds.connect.to('API_SALESORGANIZATION_SRV')
@@ -271,10 +272,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
         })
 
         this.on(['READ'], Titles, async req => {
-            const data = _asArray(await pdtx.run(SELECT.from(Titles).columns(["Product", { "ref": ["to_Description"], "expand": ["*"] }]).where({ ProductGroup: 'Z007' })))
-            return data.map(item => {
-                return { Product: item.Product, Name: (item.to_Description.length) ? item.to_Description.find(text => text.Language === req.locale.toUpperCase()).ProductDescription : '' }
-            })
+            return prdtx.run(req.query)
         })
 
         this.after('CREATE', DistributionDcp, async req => {
