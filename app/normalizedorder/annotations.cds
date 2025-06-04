@@ -14,6 +14,7 @@ annotate BookingOrderService.StudioFeed with{
     // };
     Origin              @Common: {
         Label          : '{i18n>Origin}',
+        FieldControl : #ReadOnly,
         Text: {
 	            $value                : Origin.OriginText,
 	          ![@UI.TextArrangement]: #TextFirst,
@@ -34,10 +35,10 @@ annotate BookingOrderService.StudioFeed with{
                 },
             ]
         },
-        FieldControl : #ReadOnly,
     };
     OrderType              @Common: {
         Label          : '{i18n>Ordertype}',
+        FieldControl : #Mandatory,
         Text: {
 	            $value                : OrderType.name,
 	          ![@UI.TextArrangement]: #TextFirst,
@@ -61,6 +62,7 @@ annotate BookingOrderService.StudioFeed with{
     };
     BookingType              @Common: {
         Label          : '{i18n>Bookingtype}',
+        FieldControl: #ReadOnly,
         Text: {
 	            $value                : BookingType.Description,
 	          ![@UI.TextArrangement]: #TextFirst,
@@ -84,6 +86,7 @@ annotate BookingOrderService.StudioFeed with{
     };
     Title              @Common: {
         Label          : '{i18n>Title}',
+        FieldControl : #Mandatory,
         // Text           : Title.ProductName,
         // TextArrangement: #TextFirst,
         Text: {
@@ -109,6 +112,7 @@ annotate BookingOrderService.StudioFeed with{
     };    
     Studio              @Common: {
         Label          : '{i18n>Studio}',
+        FieldControl : #Mandatory,
         Text: {
 	            $value                : StudioText,
 	          ![@UI.TextArrangement]: #TextFirst,
@@ -130,7 +134,15 @@ annotate BookingOrderService.StudioFeed with{
             ]
         }
     };
-    OrderID @Common.FieldControl: #ReadOnly
+    OrderID @Common.FieldControl: #ReadOnly;
+    BookingID @Common.FieldControl : #Mandatory;
+    
+    EntityID @Common.FieldControl : #Mandatory;
+    CustomerReference @Common.FieldControl : #Mandatory;
+    RequestedDelivDate @Common.FieldControl : #Mandatory;
+    TheaterID @Common.FieldControl : #Mandatory;
+    PlayStartDate @Common.FieldControl : #Mandatory;
+    PlayEndDate @Common.FieldControl : #Mandatory;
     
     
 }
