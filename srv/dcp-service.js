@@ -1189,7 +1189,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                             let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
                             let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
-                            if(sShippingType_Content === '01'){ //Satellite Delivery => Pick only generic material as per email from Pranav on 3rd Jun 13:05
+                            if(sShippingType_Content === '01' || sShippingType_Content === '02'){ //Satellite Or e-Delivery => Pick only generic material as per email from Pranav on 3rd Jun 13:05
                                 if(oDCPMapping){
                                     oPayLoad.to_Item.push({
                                         "Material": oDCPMapping?.Material,
