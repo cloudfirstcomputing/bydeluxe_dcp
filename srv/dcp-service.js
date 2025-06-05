@@ -1672,7 +1672,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) { //If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || sFeedOrderType === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
                     }
                     else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
@@ -1686,7 +1686,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) { //If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || sFeedOrderType === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
                     }
                     else {
                         return false;
@@ -1702,7 +1702,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) {//If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || sFeedOrderType === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
                     }
                     else { //FeedOrderType = K Line 14-17 (Blank content will not be picked)
                         return false;
@@ -1714,7 +1714,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) {//If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || sFeedOrderType === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
                     }
                     else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
