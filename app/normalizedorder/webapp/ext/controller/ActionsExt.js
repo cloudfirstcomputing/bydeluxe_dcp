@@ -395,6 +395,9 @@ sap.ui.define([
                                         if(aResponse[i].UpdateSuccess){
                                             iUpdateCount = aResponse[i].UpdateSuccess.length; 
                                         };
+                                        if(aResponse[i].UpdateSuccess){
+                                            iUpdateCount = aResponse[i].UpdateSuccess.length; 
+                                        };
 
                                     }
                                     if(iErrorCount){
@@ -484,7 +487,7 @@ sap.ui.define([
                                 response = oContext.getBoundContext().getObject();
                                 if(response?.message){
                                     var oResponse = response.message;
-                                   var aSuccess = oResponse.success,  aError = oResponse.error,  aWarning = oResponse.warning; 
+                                   var aSuccess = oResponse.success,  aError = oResponse.error,  aWarning = oResponse.warning, aNonPersistentError = oResponse.nonpersistenterror;
                                     if(aError?.length){
                                         MessageBox.error('Click the below link for more details', {
                                             details: JSON.stringify(aError),
@@ -523,6 +526,20 @@ sap.ui.define([
                                                 }
                                             }
                                         });                                        
+                                    }
+                                    if(aNonPersistentError?.length){
+                                        MessageBox.error('Click the below link for more details', {
+                                            details: JSON.stringify(aNonPersistentError),
+                                            title: 'Errors occured',
+                                            actions: MessageBox.Action.OK,
+                                            emphasizedAction: MessageBox.Action.OK,
+                                            onClose: function (oAction) {
+                                                if (oAction === MessageBox.Action.OK) {
+                                                    that.Obj.fieldCancel();
+                                                }
+                                            }
+                                        });
+
                                     }
                                     
                                 batchModel.refresh();

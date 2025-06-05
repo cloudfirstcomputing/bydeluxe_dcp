@@ -47,7 +47,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         var sSoldToCustomer = '1000055', SalesOrganization = '1170', DistributionChannel = '20', Division = '20', CompanyCode = '1170', BillTo = "", sErrorMessage = "";
         // let aConfig = (await s4h_param_Txn.run(SELECT.from(S4_Parameters)));
-        var oSalesParameterConfig, oResponseStatus = { "error": [], "success": [], "warning": [] };
+        var oSalesParameterConfig, oResponseStatus = { "error": [], "success": [], "warning": [], "nonpersistenterror":[] };
         // var sSoldToCustomer = aConfig?.find((e) => e.VariableName === 'SoldTo_SPIRITWORLD')?.VariableValue,
         //     SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
         //     DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
@@ -739,7 +739,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var recordsToBeInserted = [], recordsToBeUpdated = [], successEntries = [], updateSuccessEntries = [], hanatable = StudioFeed;
             var data = aData;
             sErrorMessage = ""; //Resetting error message
-            oResponseStatus = { "error": [], "success": [], "warning": [] }; //Setting fresh response for the incoming request
+            oResponseStatus = { "error": [], "success": [], "warning": [], "nonpersistenterror":[] }; //Setting fresh response for the incoming request
             for (var i = 0; i < data.length; i++) {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
@@ -806,12 +806,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     else { //New Order
                         var oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
                         if (oExistingData) {
-                            oResponseStatus.error.push({
+                            oResponseStatus.nonpersistenterror.push({
                                 "BookingID": data[i].BookingID,
                                 "message": `| Booking ID ${data[i].BookingID} already exists|`,
                                 "errorMessage": `Booking ID ${data[i].BookingID} already exists`
                             });
-                            oLocalResponse= oResponseStatus;
+                            // oLocalResponse= oResponseStatus;
+                            continue;
                         }
                         else{                            
                             oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
