@@ -360,16 +360,19 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                 const sorgIds = sorgs.map(item => item.SalesOrganization)
                 const sorgdist = await distchtx.run(SELECT.from(SalesOrgDistCh).where({ SalesOrganization: sorgIds }))
                 const comp = await comptx.run(SELECT.from(Company).where({ CompanyCode: compIds }))
+                const params = await paramtx.run(SELECT.from(Parameters)
+                    .where({ VariableName: plantIds }))
 
                 for (let index = 0; index < plants.length; index++) {
                     const plant = plants[index];
                     const element = comp.find(item => item.CompanyCode === plant.CompanyCode)
                     if (!['US', 'CA'].includes(element.Country)) continue
                     const valuation = valArea.find(item => item.CompanyCode === plant.CompanyCode)
+                    const param = params.find(item => item.VariableName === plant.Plant)
                     to_Plant.push({
                         "Product": ProjectID,
                         "Plant": plant.Plant,
-                        "ProfitCenter": "117990",
+                        "ProfitCenter": param?.VariableValue,
                         "AvailabilityCheckType": "SR",
                         "MRPType": "PD",
                         "MRPResponsible": "001",
