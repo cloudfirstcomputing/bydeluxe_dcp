@@ -133,15 +133,6 @@
                   "tableSettings": {
                     "type": "ResponsiveTable",
                     "selectionMode": "Single"
-                  },
-                  "actions": {
-                    "DistributionDcpExt": {
-                      "press": "com.dlx.assetvault.ext.controller.DistributionDcpExt.onCreateDcp",
-                      "visible": true,
-                      "enabled": true,
-                      "requiresSelection": true,
-                      "text": "Create DCP Material"
-                    }
                   }
                 }
               }

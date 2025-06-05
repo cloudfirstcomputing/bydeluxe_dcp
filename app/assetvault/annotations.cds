@@ -1,5 +1,14 @@
 using AssetVaultService as service from '../../srv/asset-vault';
 
+annotate service.Titles with {
+    Product;
+    Product_Text @UI.HiddenFilter;
+    ProductName;
+    ProductType  @UI.HiddenFilter;
+    Name         @UI.HiddenFilter;
+};
+
+
 annotate service.DistributionDcp with {
     ProjectID                      @Common: {Label: '{i18n>DistPrjID}', };
     AssetMapID                     @Common: {Label: '{i18n>AssetMapID}', };
@@ -236,13 +245,22 @@ annotate service.DistributionDcp with @(
     ],
     UI.LineItem                  : [
         {
-            $Type        : 'UI.DataFieldForAction',
-            Action       : 'AssetVaultService.reprocessProductionProcess',
-            Label        : 'Production Process',
-            // ![@UI.Hidden]: {$edmJson: {$Ne: [
-            //     {$Path: 'CreatedinSAP'},
-            //     true
-            // ]}}
+            $Type : 'UI.DataFieldForAction',
+            Action: 'AssetVaultService.reprocessProductionProcess',
+            Label : 'Production Process',
+        // ![@UI.Hidden]: {$edmJson: {$Ne: [
+        //     {$Path: 'CreatedinSAP'},
+        //     true
+        // ]}}
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'AssetVaultService.createDcp',
+            Label : 'Create DCP Material',
+        // ![@UI.Hidden]: {$edmJson: {$Eq: [
+        //     {$Path: 'CreatedinSAP'},
+        //     true
+        // ]}}
         },
         {
             $Type: 'UI.DataField',
@@ -406,3 +424,26 @@ annotate service.DistributionDcp._Items with @(
         ],
     }
 );
+
+annotate service.dcpParam {
+    Title @(
+        Common.Label                   : 'Title',
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'Titles',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Title,
+                    ValueListProperty: 'Product'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ProductName'
+                }
+            ],
+            Label         : 'Choose One Title'
+        },
+        Common.ValueListWithFixedValues: false
+    );
+}
