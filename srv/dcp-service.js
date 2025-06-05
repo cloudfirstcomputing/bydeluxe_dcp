@@ -54,8 +54,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         //     Division = aConfig?.find((e) => { return e.VariableName === 'Division_SPIRITWORLD' })?.VariableValue;
         this.before("SAVE", StudioFeed.drafts, async (req) => {
             var oFeed = req.data;
-            oFeed.Version = 1;
-            oFeed.Origin_OriginID = "M";
+            if(!oFeed.Version)
+                oFeed.Version = 1;
+            if(!oFeed.Origin_OriginID)
+                oFeed.Origin_OriginID = "M";
+            if(!oFeed.BookingType_ID)
+                oFeed.BookingType_ID='NO'
             oFeed.Status_ID = "A";
         });
         // this.on("SAVE", StudioFeed.drafts ,async(req, next)=>{
@@ -1184,12 +1188,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var sLongText;
 
                         // if ((oFinalContentPackage) && sShippingType_Content === '03'  || sShippingType_Content === '06' || sShippingType_Content === '12') {  
-                            if (oFinalContentPackage) {  
+                        if (oFinalContentPackage) {  
                             // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                             let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
                             let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
-                            if(sShippingType_Content === '01' || sShippingType_Content === '02'){ //Satellite Or e-Delivery => Pick only generic material as per email from Pranav on 3rd Jun 13:05
+                            // if(sShippingType_Content === '01' || sShippingType_Content === '02' || sShippingType_Content === '06'){ //Satellite Or e-Delivery or HDD => Pick only generic material as per email from Pranav on 3rd Jun 13:05
+                            if(sShippingType_Content !== '03' || sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if(oDCPMapping){
                                     oPayLoad.to_Item.push({
                                         "Material": oDCPMapping?.Material,
@@ -1210,82 +1215,63 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                 }
                             }
-                            else if (oFinalContentPackage?.to_DCPMaterial) {
-                                for (var j in oFinalContentPackage.to_DCPMaterial) {
-                                    var oMatRecord = oFinalContentPackage.to_DCPMaterial[j];
-                                    if (sContentDeliveryMethod === '02') { //RULE 5.2 => LongText for GoFilex TitleID NORAM to pass in Items
-                                        var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oMatRecord.DCPMaterialNumber_Product });
-                                        var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
-                                        sLongText = sGoFilexTitleID;
+                            else{ //DCP Material Creation
+                                if (oFinalContentPackage?.to_DCPMaterial) {
+                                    for (var j in oFinalContentPackage.to_DCPMaterial) {
+                                        var oMatRecord = oFinalContentPackage.to_DCPMaterial[j];
+                                        if (sContentDeliveryMethod === '02') { //RULE 5.2 => LongText for GoFilex TitleID NORAM to pass in Items
+                                            var oAssetvault = await SELECT.one.from(AssetVault_Local).where({ DCP: oMatRecord.DCPMaterialNumber_Product });
+                                            var sGoFilexTitleID = oAssetvault?.GoFilexTitleID_NORAM;
+                                            sLongText = sGoFilexTitleID;
+                                        }
+                                        var oEntry = {
+                                            "Material": oMatRecord.DCPMaterialNumber_Product,
+                                            "RequestedQuantity": '1',
+                                            "RequestedQuantityISOUnit": "EA",
+                                            // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
+                                            "DeliveryPriority": `1`,
+                                            "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                            "ShippingType": sShippingType_Content,
+                                            "LongText": sLongText,
+                                            "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                            "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                        };
+                                        oPayLoad.to_Item.push(oEntry);
                                     }
-                                    var oEntry = {
-                                        "Material": oMatRecord.DCPMaterialNumber_Product,
-                                        "RequestedQuantity": '1',
-                                        "RequestedQuantityISOUnit": "EA",
-                                        // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
-                                        "DeliveryPriority": `1`,
-                                        "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                        "ShippingType": sShippingType_Content,
-                                        "LongText": sLongText,
-                                        "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
-                                    };
-                                    oPayLoad.to_Item.push(oEntry);
+                                    // var aDCPs = oFinalContentPackage?.to_DCPMaterial.map((item) => { return item.DCPMaterialNumber_Product });
                                 }
-                                // var aDCPs = oFinalContentPackage?.to_DCPMaterial.map((item) => { return item.DCPMaterialNumber_Product });
-                            }
-                            else {
-                                sErrorMessage = "DCP Material not available";
-                            }
-                        }
-                        
+                                else {
+                                    sErrorMessage = "DCP Material not available";
+                                }                                
+                            } 
+                        }                        
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
                             let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
                             let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
-                            if (oDCPMapping) {
-                                oPayLoad.to_Item.push({
-                                    "Material": oDCPMapping?.Material,
-                                    "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                    "RequestedQuantity": '1',
-                                    "RequestedQuantityISOUnit": "EA",
-                                    "DeliveryPriority": `1`,
-                                    "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                                    "ShippingType": '07',
-                                    "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
-                                });
-                            }
-                            else {
-                                sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType_Content}, hence this item not created`;
-                                oResponseStatus.warning.push({
-                                    "message": `| ${sErrorMessage} |`,
-                                    "errorMessage": sErrorMessage
-                                })
+                            if(sShippingType_Content !== '03' || sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
+                                if (oDCPMapping) {
+                                    if(!oPayLoad.to_Item?.find((item)=>{return item.Material === oDCPMapping.Material})){
+                                        oPayLoad.to_Item.push({
+                                            "Material": oDCPMapping?.Material,
+                                            "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
+                                            "RequestedQuantity": '1',
+                                            "RequestedQuantityISOUnit": "EA",
+                                            "DeliveryPriority": `1`,
+                                            "PricingReferenceMaterial": distroSpecData?.Title_Product,
+                                            "ShippingType": '07',
+                                            "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                        });
+                                    }
+                                }
+                                else {
+                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType_Content}, hence this item not created`;
+                                    oResponseStatus.warning.push({
+                                        "message": `| ${sErrorMessage} |`,
+                                        "errorMessage": sErrorMessage
+                                    });
+                                }
                             }
                         }
-                        // if (oPayLoad?.ShippingCondition !== '03') { // Bug Reported: HDD SO- Creates order with DCP Material and Generic Material for HDD. Should only pick DCP. ShippingCondition !== '03' added as per Pranav 
-                        //     if (oFinalContentPackage) { //Applicable only for Content.                                
-                        //         if (oDCPMapping) {
-                        //             oPayLoad.to_Item.push({
-                        //                 "Material": oDCPMapping?.Material,
-                        //                 "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                        //                 "RequestedQuantity": '1',
-                        //                 "RequestedQuantityISOUnit": "EA",
-                        //                 // "DeliveryPriority": `${oFinalContentPackage?.Priority}`,
-                        //                 "DeliveryPriority": `1`,
-                        //                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
-                        //                 "ShippingType": sShippingType_Content,
-                        //                 "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
-                        //             });
-                        //         }
-                        //         else {
-                        //             sErrorMessage = `DCP Material Mapping not maintained for Shipping Type: ${sShippingType_Content}, hence this item not created ` 
-                        //             oResponseStatus.warning.push({
-                        //                 "message": `| ${sErrorMessage} |`,
-                        //                 "errorMessage": sErrorMessage
-                        //             })
-                        //         }
-                        //     }
-                        // }
                     }
                 }
             }
@@ -1422,15 +1408,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 else {
                     sErrorMessage = `DistroSpec with Customer reference ${sCustomerRef} not found`;
                 }
-            
-                if (sCustomerRef) {
-                    if(sCustomerRef === "F"){}
-                    else{
-                    }
-                }
-                else {
-                    sErrorMessage = "DistroSpec ID is not available in the payload";
-                }
             }
             else if(sOrigin === "S" || sOrigin === "M"){//Manual Or Spreadsheet                
                 if (isNaN(sCustomerRef)) {
@@ -1445,6 +1422,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if(!distroSpecData?.to_StudioKey || distroSpecData?.to_StudioKey?.length === 0){
                             sErrorMessage = 'Studio not found in DistroSpec';
                         }
+                        else if(!distroSpecData?.to_StudioKey?.find((item)=>{return sBuPa === item.Studio_BusinessPartner})){
+                            sErrorMessage = `Studio ${sBuPa} not found in DistroSpec ${iDistroSpecID}`;
+                        }                        
                     }
                     else {
                         sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
