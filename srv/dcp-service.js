@@ -1253,7 +1253,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
                             let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
                             let oDCPMapping = oVarMapping?.mapping;
-                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06' && sShippingType_Content !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
+                            if(sShippingType_Key !== '03' && sShippingType_Key !== '06' && sShippingType_Key !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if (oDCPMapping) {
                                     if(!oPayLoad.to_Item?.find((item)=>{return item.Material === oDCPMapping.Material})){
                                         oPayLoad.to_Item.push({
@@ -1672,7 +1672,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) { //If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
                     }
                     else {
                         return false;
@@ -1700,7 +1700,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) {//If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
                     }
                     else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
