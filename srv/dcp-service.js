@@ -1194,7 +1194,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
                             let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
                             // if(sShippingType_Content === '01' || sShippingType_Content === '02' || sShippingType_Content === '06'){ //Satellite Or e-Delivery or HDD => Pick only generic material as per email from Pranav on 3rd Jun 13:05
-                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
+                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06' && sShippingType_Content !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if(oDCPMapping){
                                     oPayLoad.to_Item.push({
                                         "Material": oDCPMapping?.Material,
@@ -1248,7 +1248,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
                             // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
                             let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
-                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
+                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06' && sShippingType_Content !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if (oDCPMapping) {
                                     if(!oPayLoad.to_Item?.find((item)=>{return item.Material === oDCPMapping.Material})){
                                         oPayLoad.to_Item.push({
