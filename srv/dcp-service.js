@@ -558,7 +558,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     return;
                 }
                 // var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
+                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
+                let oDCPMapping = oVarMapping?.mapping;
                 if (sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')) {
                     /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
                     Pick up Add.MatGroup from BTP Mapping table and set it in the AdditionalMaterialGroup1 of this DCP Item in S4
@@ -1192,7 +1193,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                             // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
-                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
+                            let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
+                            let oDCPMapping = oVarMapping?.mapping;
                             // if(sShippingType_Content === '01' || sShippingType_Content === '02' || sShippingType_Content === '06'){ //Satellite Or e-Delivery or HDD => Pick only generic material as per email from Pranav on 3rd Jun 13:05
                             if(sShippingType_Content !== '03' && sShippingType_Content !== '06' && sShippingType_Content !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if(oDCPMapping){
@@ -1208,8 +1210,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     });
                                 }
                                 else{
-                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType_Content}, hence this item not created`;
-                                    oResponseStatus.warning.push({
+                                    sErrorMessage = `DCP Material Mapping not maintained for: ${oVarMapping?.mode} - ${sShippingType_Content} - ${CompanyCode}, hence generic item not created for content`;
+                                    oResponseStatus.error.push({
+                                        "BookingID": oFeedData?.BookingID,
                                         "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
                                     });
@@ -1247,7 +1250,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }                        
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
                             // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
-                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
+                            let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
+                            let oDCPMapping = oVarMapping?.mapping;
                             if(sShippingType_Content !== '03' && sShippingType_Content !== '06' && sShippingType_Content !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if (oDCPMapping) {
                                     if(!oPayLoad.to_Item?.find((item)=>{return item.Material === oDCPMapping.Material})){
@@ -1264,8 +1268,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     }
                                 }
                                 else {
-                                    sErrorMessage = `DCP Material Mapping not maintained for: ${sShippingType_Content}, hence this item not created`;
-                                    oResponseStatus.warning.push({
+                                    sErrorMessage = `DCP Material Mapping not maintained for: ${oVarMapping?.mode} - ${sShippingType_Content} - ${CompanyCode}, hence generic item not created for key`;
+                                    oResponseStatus.error.push({
+                                        "BookingID":oFeedData?.BookingID,
                                         "message": `| ${sErrorMessage} |`,
                                         "errorMessage": sErrorMessage
                                     });
@@ -1278,7 +1283,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var sSalesOrder = "";
             if (sErrorMessage) {
                 oResponseStatus.error.push({
-                    "BookingID": oFeedData.BookingID,
+                    "BookingID": oFeedData?.BookingID,
                     "message": `| Booking ID: ${oFeedData.BookingID}: ${sErrorMessage} |`,
                     "errorMessage": sErrorMessage
                 })
@@ -1340,7 +1345,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oDCPMapping = await SELECT.one.from(DCPMaterialMapping).where({ ShippingType: sShippingType, Variable: sMode });
                 }
             }
-            return oDCPMapping;
+            return {"mode":sMode, "mapping":oDCPMapping};
         }
         const addDays = async (date, days) => {
             const newDate = new Date(date);
@@ -1652,7 +1657,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) { //If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
                     }
                     else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
@@ -1666,7 +1671,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) { //If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
                     }
                     else {
                         return false;
@@ -1682,7 +1687,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) {//If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
                     }
                     else { //FeedOrderType = K Line 14-17 (Blank content will not be picked)
                         return false;
@@ -1694,7 +1699,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
                     if (pkg.OrderType_code) {//If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
+                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
                     }
                     else {
                         //FeedOrderType = C Line 14-17 (Blank content will not be picked)
