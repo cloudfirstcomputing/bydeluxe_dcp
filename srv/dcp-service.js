@@ -557,8 +557,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     req.reject(400, `No Shipping Type found for Shipping Condition ${sDeliveryMethod}`);
                     return;
                 }
-                var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                var oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
+                // var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
+                var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
                 if (sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')) {
                     /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
                     Pick up Add.MatGroup from BTP Mapping table and set it in the AdditionalMaterialGroup1 of this DCP Item in S4
@@ -634,7 +634,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             "ItemBillingBlockReason": "03",
                             "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
                             "DeliveryPriority": "04",
-                            "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                            "ProfitCenter": oDCPMapping?.ProfitCenter
                         };
                         // oSalesorderItem_PayLoad['to_ScheduleLine'] = [{
                         //     "SalesOrder": sSalesOrder,
@@ -690,7 +690,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oSalesorderItem_PayLoad["ItemBillingBlockReason"] = "03";
                     oSalesorderItem_PayLoad["PricingReferenceMaterial"] = distroSpecData?.Title_Product;
                     oSalesorderItem_PayLoad["DeliveryPriority"] = "04";
-                    oSalesorderItem_PayLoad["ProfitCenter"] = oDCPMapping_Cocode?.ProfitCenter;
+                    oSalesorderItem_PayLoad["ProfitCenter"] = oDCPMapping?.ProfitCenter;
                     // oSalesorderItem_PayLoad["DeliveryPriority"] = sShippingType;
                     await s4h_sohv2_Txn.send({
                         method: 'POST',
@@ -1191,10 +1191,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (oFinalContentPackage) {  
                             // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                             // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
-                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
-                            let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
+                            // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
+                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
                             // if(sShippingType_Content === '01' || sShippingType_Content === '02' || sShippingType_Content === '06'){ //Satellite Or e-Delivery or HDD => Pick only generic material as per email from Pranav on 3rd Jun 13:05
-                            if(sShippingType_Content !== '03' || sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
+                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if(oDCPMapping){
                                     oPayLoad.to_Item.push({
                                         "Material": oDCPMapping?.Material,
@@ -1204,7 +1204,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "DeliveryPriority": `1`,
                                         "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                         "ShippingType": sShippingType_Content,
-                                        "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                        "ProfitCenter": oDCPMapping?.ProfitCenter
                                     });
                                 }
                                 else{
@@ -1234,7 +1234,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             "ShippingType": sShippingType_Content,
                                             "LongText": sLongText,
                                             "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
-                                            "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                            "ProfitCenter": oDCPMapping?.ProfitCenter
                                         };
                                         oPayLoad.to_Item.push(oEntry);
                                     }
@@ -1246,9 +1246,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             } 
                         }                        
                         if (oFinalKeyPackage) { //This indicates Key is also applicable
-                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
-                            let oDCPMapping_Cocode = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
-                            if(sShippingType_Content !== '03' || sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
+                            // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
+                            let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
+                            if(sShippingType_Content !== '03' && sShippingType_Content !== '06'){ //All other than Physical/HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                 if (oDCPMapping) {
                                     if(!oPayLoad.to_Item?.find((item)=>{return item.Material === oDCPMapping.Material})){
                                         oPayLoad.to_Item.push({
@@ -1259,7 +1259,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             "DeliveryPriority": `1`,
                                             "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                             "ShippingType": '07',
-                                            "ProfitCenter": oDCPMapping_Cocode?.ProfitCenter
+                                            "ProfitCenter": oDCPMapping?.ProfitCenter
                                         });
                                     }
                                 }

@@ -412,8 +412,43 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : BookingType_ID,
+                Label : '{i18n>Bookingtype}',
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : SalesOrder,
                 Label : '{i18n>Salesorder}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : TheaterID,
+                Label : '{i18n>Theaterid}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayStartDate,
+                Label : '{i18n>Playstartdate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayStartTime,
+                Label : '{i18n>Playstarttime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayEndDate,
+                Label : '{i18n>Playenddate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : PlayEndTime,
+                Label : '{i18n>Playendtime}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : Origin_OriginID,
+                Label : '{i18n>Originoriginid}',
             },
             {
                 $Type : 'UI.DataField',
@@ -429,11 +464,6 @@ annotate BookingOrderService.StudioFeed with @(
                 $Type : 'UI.DataField',
                 Value : BookerName,
                 Label : '{i18n>Bookername}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : BookingType_ID,
-                Label : '{i18n>Bookingtype}',
             },
             {
                 $Type : 'UI.DataField',
@@ -498,31 +528,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Origin_OriginID,
-                Label : '{i18n>Originoriginid}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayStartDate,
-                Label : '{i18n>Playstartdate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayStartTime,
-                Label : '{i18n>Playstarttime}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayEndDate,
-                Label : '{i18n>Playenddate}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PlayEndTime,
-                Label : '{i18n>Playendtime}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : PrintFormat,
                 Label : '{i18n>Printformat}',
             },
@@ -558,11 +563,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : TheaterID,
-                Label : '{i18n>Theaterid}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : Version,
                 Label : '{i18n>Version}',
             },
@@ -570,16 +570,6 @@ annotate BookingOrderService.StudioFeed with @(
                 $Type : 'UI.DataField',
                 Value : Warnings,
                 Label : '{i18n>Warnings}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : DeliveryMethod,
-                Label : 'DeliveryMethod',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : RemediationCounter,
-                Label : 'RemediationCounter',
             },
         ],
     },
