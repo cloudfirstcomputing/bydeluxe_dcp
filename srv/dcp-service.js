@@ -1649,62 +1649,86 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var dPlayStartDate = new Date(oFeedData.PlayStartDate.replace(/-/g, '/'));
             var dPlayEndDate = new Date(oFeedData.PlayEndDate.replace(/-/g, '/'));
 
-            if (sFeedOrderType === 'C' || sFeedOrderType === 'B') {  //Package check when Feed Order Type is C or B
-                //FeedOrderType = C Line 2-13 (K will not be picked from Content Package)
-                //FeedOrderType = B Line 2-5, 10-13 (C will be picked from Content Package)
-                aContentPackage = aContentPackage?.filter((pkg) => {
+            if (sFeedOrderType === 'C' ) { //Package check when Feed Order Type is C
+                aContentPackage = aContentPackage?.filter((pkg) => { //Pick only C or B entries of Content
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
+                    let bDateCheck = (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo);
                     if (pkg.OrderType_code) { //If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
+                        return (bDateCheck && (pkg.OrderType_code === "C" || pkg.OrderType_code === 'B'));
                     }
                     else {
-                        //FeedOrderType = C Line 14-17 (Blank content will not be picked)
-                        //FeedOrderType = B Line 14-17 (Blank content will not be picked)
                         return false;
                     }
                 });
-                aKeyPackage = aKeyPackage?.filter((pkg) => { //Key package check when Feed Order Type = C
+                aKeyPackage = aKeyPackage?.filter((pkg) => { //Key package check when Feed Order Type = C or B
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if (pkg.OrderType_code) { //If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
+                    let bDateCheck = (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo);
+                    if (pkg.OrderType_code) { //If content package has Order type maintained
+                        return (bDateCheck && (pkg.OrderType_code === "C" || pkg.OrderType_code === 'B'));
                     }
                     else {
                         return false;
                     }
                 });
             }
-            else if (sFeedOrderType === 'K' || sFeedOrderType === 'B') { //Package check when Feed Order Type is K or B
-                //FeedOrderType = K Line 2-13 (C will not be picked from Key Package)
-                //FeedOrderType = B Line 6-13 (K Or B will be picked from Key Package)
-                aKeyPackage = aKeyPackage?.filter((pkg) => {
+            else if (sFeedOrderType === 'K') { //Package check when Feed Order Type is K 
+                aKeyPackage = aKeyPackage?.filter((pkg) => { //Key package check when Feed Order Type = K or B
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if (pkg.OrderType_code) {//If key package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B' || sFeedOrderType === 'B'));
+                    let bDateCheck = (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo);
+                    if (pkg.OrderType_code) { //If content package has Order type maintained
+                        return (bDateCheck && (pkg.OrderType_code === "K" || pkg.OrderType_code === 'B'));
                     }
-                    else { //FeedOrderType = K Line 14-17 (Blank content will not be picked)
+                    else {
                         return false;
                     }
                 });
-                aContentPackage = aContentPackage?.filter((pkg) => {//Content package check when Feed Order Type = K
+                aContentPackage = aContentPackage?.filter((pkg) => { //Pick only K or B entries of Content
                     var sDistValidFrom = pkg.ValidFrom;
                     var sDistValidTo = pkg.ValidTo;
                     sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
                     sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
-                    if (pkg.OrderType_code) {//If content package has Order type maintained
-                        return (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo && (pkg.OrderType_code === sFeedOrderType || pkg.OrderType_code === 'B'));
+                    let bDateCheck = (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo);
+                    if (pkg.OrderType_code) { //If content package has Order type maintained
+                        return (bDateCheck && (pkg.OrderType_code === "K" || pkg.OrderType_code === 'B'));
                     }
                     else {
-                        //FeedOrderType = C Line 14-17 (Blank content will not be picked)
-                        //FeedOrderType = B Line 14-17 (Blank content will not be picked)
+                        return false;
+                    }
+                });
+            }
+            else if (sFeedOrderType === 'B' ) { //Package check when Feed Order Type is B
+                aContentPackage = aContentPackage?.filter((pkg) => { //Pick only C or K or B entries of Content
+                    var sDistValidFrom = pkg.ValidFrom;
+                    var sDistValidTo = pkg.ValidTo;
+                    sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
+                    sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
+                    let bDateCheck = (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo);
+                    if (pkg.OrderType_code) { //If content package has Order type maintained
+                        return (bDateCheck && (pkg.OrderType_code === "C" || pkg.OrderType_code === "K" || pkg.OrderType_code === 'B'));
+                    }
+                    else {
+                        return false;
+                    }
+                });
+                aKeyPackage = aKeyPackage?.filter((pkg) => { //Key package check when Feed Order Type = C or K or B
+                    var sDistValidFrom = pkg.ValidFrom;
+                    var sDistValidTo = pkg.ValidTo;
+                    sDistValidFrom = new Date(sDistValidFrom.replace(/-/g, '/'));
+                    sDistValidTo = new Date(sDistValidTo.replace(/-/g, '/'));
+                    let bDateCheck = (dPlayStartDate >= sDistValidFrom && dPlayEndDate <= sDistValidTo);
+                    if (pkg.OrderType_code) { //If content package has Order type maintained
+                        return (bDateCheck && (pkg.OrderType_code === "C" || pkg.OrderType_code === "K" || pkg.OrderType_code === 'B'));
+                    }
+                    else {
                         return false;
                     }
                 });
