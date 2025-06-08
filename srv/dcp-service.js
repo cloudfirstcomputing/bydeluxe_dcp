@@ -849,6 +849,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 else {
                     recordsToBeInserted.push(data[i]); 
                 }
+                sErrorMessage = '';//Resetting Error message
             }
             if (!bReconcile) {
                 if (recordsToBeInserted.length) {
