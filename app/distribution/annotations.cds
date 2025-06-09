@@ -1004,7 +1004,7 @@ annotate service.DistRestrictions with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: TrailMixSub,
+                Value: TrailMixSub_code,
             },
         ]
     },
@@ -1137,7 +1137,7 @@ annotate service.KeyDistRestrictions with @(
             },
             {
                 $Type: 'UI.DataField',
-                Value: TrailMixSub,
+                Value: TrailMixSub_code,
             },
         ]
     },

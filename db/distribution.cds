@@ -136,11 +136,7 @@ entity DistRestrictions : cuid {
     PlayBackCapability8        : String(40);
     PlayBackCapability9        : String(40);
     PlayBackCapability10       : String(40);
-    TrailMixSub                : String(1) enum {
-        Monthly = 'M';
-        Weekly = 'W';
-        NA = '0';
-    };
+    TrailMixSub                : trailMix;
     to_Package                 : Association to Package;
     to_DistroSpec              : Association to DistroSpec;
 };
@@ -163,11 +159,7 @@ entity KeyDistRestrictions : cuid {
     PlayBackCapability8        : String(40);
     PlayBackCapability9        : String(40);
     PlayBackCapability10       : String(40);
-    TrailMixSub                : String(1) enum {
-        Monthly = 'M';
-        Weekly = 'W';
-        NA = '0';
-    };
+    TrailMixSub                : trailMix;
     to_KeyPackage              : Association to KeyPackage;
     to_DistroSpec              : Association to DistroSpec;
 };
@@ -217,8 +209,20 @@ entity GeoRegions {
         _Territory  : Association to one GeoRegions;
 };
 
+entity GeoCountries {
+    key ID         : String(5);
+        Country    : String(3);
+        SAPCountry : String(3);
+        _Region     : Association to one GeoRegions;
+}
+
 type orderType : Association to OrderType;
+type trailMix : Association to TrailMix;
 
 entity OrderType : CodeList {
+    key code : String(4);
+};
+
+entity TrailMix : CodeList {
     key code : String(4);
 };
