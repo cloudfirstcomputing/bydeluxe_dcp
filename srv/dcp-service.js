@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
-            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner } = this.entities;
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner, S4H_BPCustomer } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -942,10 +942,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 oPayLoad.CustomerPurchaseOrderType = oFeedData?.Origin_OriginID; //RULE 10.1
                 var aContentPackages = distroSpecData?.to_Package, aKeyPackages = distroSpecData?.to_KeyPackage;
                 var sTheaterID = oFeedData.TheaterID, sShipTo = "";
-                var sBPCustomerNumber = "", sPYCustomer = "", sCustomerGroupFromS4 = "";
+                var sBPCustomerNumber = "", sPYCustomer = "", sCustomerGroupFromS4 = "", oSoldToSalesData;
                 oPayLoad.to_Partner = [];
                 if (sTheaterID) { //FIDNING SHIP-TO
-                    var oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                    oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
                     if (!oSoldToSalesData) {
                         sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
                     }
@@ -1145,52 +1145,104 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sShippingType_Key = '07'; //RULE 7.2 => Shipping Type for KEY
                     }
                     if(!sErrorMessage){
-                        for (var pk in oPackages) { //Going through both filtered content and Key packages if available
+                        // for (var pk in oPackages) { //Going through both filtered content and Key packages if available
+                        {
                             //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
-                            var aContOrKeyPckg = oPackages[pk];
-                            var aCircuits = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                                return rest.Circuit_CustomerGroup?.length > 0;
-                            });
-                            var aCountry = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                                return rest.DistributionFilterCountry_code?.length > 0;
-                            });
-                            var aRegion = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                                return rest.DistributionFilterRegion_Countr?.length > 0;
-                            });
-                            var aCity = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                                return rest.DistributionFilterCity?.length > 0;
-                            });
-                            var aPostalCode = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                                return rest.DistributionFilterPostal?.length > 0;
-                            });
-                            var aLanguage = aContOrKeyPckg?.to_DistRestriction?.filter((rest) => {
-                                return rest.DistributionFilterLanguage_code?.length > 0;
-                            });
-                            if (aContOrKeyPckg && aContOrKeyPckg.length) {
-                                var oDist = aContOrKeyPckg.find((dist) => {
-                                    return dist.Theater_BusinessPartner || dist.Circuit_CustomerGroup || dist.DistributionFilterLanguage_code ||
-                                        dist.DistributionFilterCountry_code || dist.DistributionFilterRegion_Country || dist.DistributionFilterCity ||
-                                        dist.DistributionFilterPostal
+                            // var aContOrKeyPckg = oPackages[pk] ;
+                            var aContOrKeyPckg = oPackages['ContentPackage'];
+                            var aTheaters = [], aLanguage = [], aCircuits = []
+                            for(let i in aContOrKeyPckg){
+                                var oContPkg = aContOrKeyPckg[i];
+                                let aDistRestrictions = oContPkg['to_DistRestriction'];
+                                let aTh = aDistRestrictions.map((item) => {
+                                        return item.Theater_BusinessPartner;                                   
                                 });
-                                if (oDist) {
-                                    var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
-                                    var oDistRestriction = aContOrKeyPckg.find((dist) => {
-                                        return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
-                                            ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code) ? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
-                                            ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
-                                            ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
-                                            ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
-                                            ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
-                                        );
-                                    });
-                                    if (!oDistRestriction) {
-                                        sErrorMessage = `No relevant Package IDs identified for restrictions.
-                                        CustomerGroupFromS4:${sCustomerGroupFromS4}|
-                                        PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
+                                aTheaters = aTheaters?.length?[...aTheaters, ...aTh]: [...aTh];
+                                aTheaters = aTheaters.filter((item)=>item);
+                                let aLang = aDistRestrictions.map((item) => {
+                                        return item.DistributionFilterLanguage_code;                                 
+                                });
+                                aLanguage = aLanguage?.length?[...aLanguage, ...aLang] :[...aLang];
+                                aLanguage = aLanguage.filter((item)=>item);
+                                let aCirc = aDistRestrictions.map((item) => {
+                                        return item.Circuit_CustomerGroup;
+                                });
+                                aCircuits = aCircuits?.length?[...aCircuits, ...aCirc]:[...aCirc];
+                                aCircuits = aCircuits.filter((item)=>item);
+                            }
+                            // var aCountry = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction)?.filter((rest) => {
+                            //     return rest.DistributionFilterCountry_code?.length > 0;
+                            // });
+                            // var aRegion = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction)?.filter((rest) => {
+                            //     return rest.DistributionFilterRegion_Countr?.length > 0;
+                            // });
+                            // var aCity = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction)?.filter((rest) => {
+                            //     return rest.DistributionFilterCity?.length > 0;
+                            // });
+                            // var aPostalCode = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction)?.filter((rest) => {
+                            //     return rest.DistributionFilterPostal?.length > 0;
+                            // });
+                            if (aContOrKeyPckg && aContOrKeyPckg.length) {
+                                if(aTheaters?.length && sShipTo){
+                                    if(!aTheaters.includes(sShipTo)){
+                                        sErrorMessage = `No Package found as ShipTo ${sShipTo} doesnot match with Theater Restriction`;
+                                    }
+                                    else{
+                                        aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
+                                            return rest.Theater_BusinessPartner === sShipTo;
+                                        }));
                                     }
                                 }
+                                // var oDist = aContOrKeyPckg.find((dist) => {
+                                //     return dist.Theater_BusinessPartner || dist.Circuit_CustomerGroup || dist.DistributionFilterLanguage_code ||
+                                //         dist.DistributionFilterCountry_code || dist.DistributionFilterRegion_Country || dist.DistributionFilterCity ||
+                                //         dist.DistributionFilterPostal
+                                // });
+                                // if (oDist) 
+                                if(!sErrorMessage){
+                                    let sBPLang = oSoldToSalesData?.YY1_Language_csa;
+                                    if(aLanguage?.length && sBPLang){
+                                        if(!aLanguage.includes(sBPLang)){
+                                            sErrorMessage = `No Package found as BP Language ${sBPLang} doesnot match with Language Restriction`;
+                                        }
+                                        else{
+                                            aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
+                                                return DistributionFilterLanguage_code === sBPLang;
+                                            }));
+                                        }
+                                    }  
+                                }
+                                if(!sErrorMessage){     
+                                    var oBPCustomerDataFromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BPCustomer).where({Customer: sBuPa}));  
+                                    let sAttr06 = oBPCustomerDataFromS4?.FreeDefinedAttribute06;                        
+                                    if(aCircuits?.length && sAttr06){
+                                        if(!aCircuits.includes(sAttr06)){
+                                            sErrorMessage = `No Package found as Circuit (FreeDefinedAttribute06) ${sAttr06} doesnot match with Circuit Restriction`;
+                                        }
+                                        else{
+                                            aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
+                                                return rest.Circuit_CustomerGroup === sAttr06;
+                                            }));
+                                        }
+                                    } 
+                                    // var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
+                                    // var oDistRestriction = aContOrKeyPckg.find((dist) => {
+                                    //     return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
+                                    //         ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code) ? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
+                                    //         ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
+                                    //         ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
+                                    //         ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
+                                    //         ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
+                                    //     );
+                                    // });
+                                    // if (!oDistRestriction) {
+                                    //     sErrorMessage = `No relevant Package IDs identified for restrictions.
+                                    //     CustomerGroupFromS4:${sCustomerGroupFromS4}|
+                                    //     PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
+                                    // }
+                                }
                             }
-                            oResponseStatus[pk] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
+                            oResponseStatus['ContentPackage'] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
                             //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - END
                         }
                     }
@@ -1449,7 +1501,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (aDistroSpecData?.length) {
                         distroSpecData = aDistroSpecData[0];                        
                         if(!distroSpecData?.to_StudioKey || distroSpecData?.to_StudioKey?.length === 0){
-                            sErrorMessage = 'Studio not found in DistroSpec';
+                            sErrorMessage = 'Studio not maintained in DistroSpec ${iDistroSpecID}';
                         }
                         else if(!distroSpecData?.to_StudioKey?.find((item)=>{return sBuPa === item.Studio_BusinessPartner})){
                             sErrorMessage = `Studio ${sBuPa} not found in DistroSpec ${iDistroSpecID}`;
@@ -1761,6 +1813,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             return { "ContentPackage": aContentPackage, "KeyPackage": aKeyPackage };
         };
+        this.on('READ', S4H_BPCustomer , async(req)=>{
+            return await s4h_bp_Txn.run(req.query);
+        });
         this.on('READ', TitleCustVH , async(req)=>{
             return await prdtx.run(req.query);
         });
