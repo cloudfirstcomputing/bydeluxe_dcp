@@ -795,7 +795,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 else {
                     var oLocalResponse;
-                    if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
+                    if(bReconcile){
+                        let entry_Active = await SELECT.one.from(hanatable).where({ ID: data[i].ID });
+                        oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                        recordsToBeUpdated.push(entry_Active); 
+                    }
+                    else if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
                             data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
@@ -842,7 +847,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 if (bReconcile) {
                     var sID = data[i].ID;
-                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID }).where({
+                    let aBTPItemFields = Object.keys(BookingSalesorderItem?.elements);
+                    aBTPItemFields = aBTPItemFields.filter((item)=> item !=='createdBy' && item !== 'createdAt' &&
+                        item !== 'modifiedBy' && item !== 'modifiedAt');
+                    let aSOItems = data[i].to_Item; //Items which got created in S4
+                    let btpItems = [];    
+                    for(let i in aSOItems){//Iterating S4 Items
+                        let oItems = aSOItems[i],  entry = {};
+                        let aS4keys = Object.keys(oItems);
+                        for(let j in aS4keys){
+                            let sFieldName = aS4keys[j];
+                            if(aBTPItemFields.find((field)=> field === sFieldName ) ){
+                                entry[sFieldName] = oItems[sFieldName];
+                            }
+                        }
+                        btpItems.push({...entry});
+                    }
+                    
+                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID, to_Item: btpItems }).where({
                         ID: sID
                     });
                 }
@@ -850,7 +872,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     recordsToBeInserted.push(data[i]); 
                 }
                 sErrorMessage = '';//Resetting Error message
-            }
+            }//End of for loop
             if (!bReconcile) {
                 if (recordsToBeInserted.length) {
                     let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
