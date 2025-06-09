@@ -1845,7 +1845,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData[i].SalesDocument, SalesDocumentItem: aData[i].SalesDocumentItem}));
-                    aData[i].ShipDate = oShipDetails?.ActualGoodsMovementDate;
+                    // aData[i].ShipDate = oShipDetails?.ActualGoodsMovementDate;
+                      aData[i].ShipDate = oShipDetails?.PlannedGoodsIssueDate;
                     
                 }
             }

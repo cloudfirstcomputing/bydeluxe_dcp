@@ -95,6 +95,31 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : ShipDate,
             Label : '{i18n>Shipdate1}',
         },
+         {
+            $Type : 'UI.DataField',
+            Value : ProductDescription,
+            Label : '{i18n>ProductDescription}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : DeliveryStatusDescription,
+            Label : '{i18n>DeliveryStatusDescription}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : OverallSDProcessStatusDesc,
+            Label : '{i18n>OverallSDProcessStatusDesc}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : RegionName,
+            Label : '{i18n>RegionName}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : AdditionalMaterialGroup1Name,
+            Label : '{i18n>AdditionalMaterialGroup1Name}',
+        }
     ],
     UI.SelectionFields : [
         CreationDate,
@@ -249,6 +274,31 @@ annotate BookingOrderService.S4H_ProformaReport with @(
                 Value : ShipDate,
                 Label : '{i18n>ShipDate}',
             },
+                   {
+            $Type : 'UI.DataField',
+            Value : ProductDescription,
+            Label : '{i18n>ProductDescription}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : DeliveryStatusDescription,
+            Label : '{i18n>DeliveryStatusDescription}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : OverallSDProcessStatusDesc,
+            Label : '{i18n>OverallSDProcessStatusDesc}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : RegionName,
+            Label : '{i18n>RegionName}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : AdditionalMaterialGroup1Name,
+            Label : '{i18n>AdditionalMaterialGroup1Name}',
+        }
         ],
     },
     UI.HeaderInfo : {

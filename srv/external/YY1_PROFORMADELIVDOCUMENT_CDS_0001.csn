@@ -78,6 +78,13 @@
      "@sap.required.in.filter": "false",
      "@sap.label": "Act. Gds Mvmnt Date",
      "@sap.quickinfo": "Actual Goods Movement Date"
+    },
+    "PlannedGoodsIssueDate": {
+     "type": "cds.Date",
+     "@sap.display.format": "Date",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Pland Gds Mvmnt Date",
+     "@sap.quickinfo": "Planned Goods Movement Date"
     }
    }
   }

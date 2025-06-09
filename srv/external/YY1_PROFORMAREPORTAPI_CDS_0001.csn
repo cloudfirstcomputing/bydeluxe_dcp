@@ -264,6 +264,40 @@
      "@sap.required.in.filter": "false",
      "@sap.label": "Business Partner",
      "@sap.quickinfo": "Business Partner Number"
+    },
+    "ProductDescription": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Product Description"
+    },
+    "DeliveryStatusDescription": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Delivery Status Description",
+     "@sap.quickinfo": "Status Description"
+    },
+    "OverallSDProcessStatusDesc": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "SD Process Description",
+     "@sap.quickinfo": "Status Description"
+    },
+    "RegionName": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Region Name",
+     "@sap.quickinfo": "Description"
+    },
+    "AdditionalMaterialGroup1Name": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Material Group Name",
+     "@sap.quickinfo": "Description"
     }
    }
   }
