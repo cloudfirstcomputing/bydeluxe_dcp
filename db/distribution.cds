@@ -198,6 +198,7 @@ entity DCPMaterialMapping : cuid, managed {
     Variable      : String(200);
     Material      : String(40);
     MaterialGroup : String(10);
+    Plant         : String(4);
     CompanyCode   : String(4);
     ProfitCenter  : String(10);
 }
@@ -213,11 +214,11 @@ entity GeoCountries {
     key ID         : String(5);
         Country    : String(3);
         SAPCountry : String(3);
-        _Region     : Association to one GeoRegions;
+        _Region    : Association to one GeoRegions;
 }
 
 type orderType : Association to OrderType;
-type trailMix : Association to TrailMix;
+type trailMix  : Association to TrailMix;
 
 entity OrderType : CodeList {
     key code : String(4);
