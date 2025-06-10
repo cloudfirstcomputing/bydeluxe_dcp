@@ -1151,8 +1151,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             // var aContOrKeyPckg = oPackages['ContentPackage'];
                             var aTheaters = [], aLanguage = [], aCircuits = []
                             for(let i in aContOrKeyPckg){
-                                var oContPkg = aContOrKeyPckg[i];
-                                let aDistRestrictions = oContPkg['to_DistRestriction'];
+                                let aDistRestrictions = aContOrKeyPckg[i]['to_DistRestriction'];
                                 let aTh = aDistRestrictions.map((item) => {
                                         return item.Theater_BusinessPartner;                                   
                                 });
@@ -1240,8 +1239,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }
                             // oResponseStatus['ContentPackage'] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
                             oResponseStatus[pk] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
+                            if(sErrorMessage){
+                                break;
+                            }
                             //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - END
-                        }
+                        }//Package loop
                     }
                     if (!sErrorMessage) {
                         var oFinalContentPackage = oResponseStatus?.ContentPackage?.[0];
