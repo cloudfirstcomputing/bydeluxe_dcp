@@ -13,6 +13,7 @@ annotate service.DCPMaterialMapping with {
     modifiedAt;
     modifiedBy;
     ShippingType  @Common: {Label: '{i18n>ShippingType}', };
+    Plant         @Common: {Label: '{i18n>Plant}', };
     Variable      @Common: {Label: '{i18n>Variable}', };
     Material      @Common: {Label: '{i18n>Material}', };
     MaterialGroup @Common: {Label: '{i18n>MaterialGroup}', };
@@ -50,6 +51,10 @@ annotate service.DCPMaterialMapping with @(
                 Value: Material,
             },
             {
+                $Type : 'UI.DataField',
+                Value : Plant,
+            },
+            {
                 $Type: 'UI.DataField',
                 Value: MaterialGroup,
             },
@@ -81,6 +86,10 @@ annotate service.DCPMaterialMapping with @(
         {
             $Type: 'UI.DataField',
             Value: Material,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Plant,
         },
         {
             $Type: 'UI.DataField',
