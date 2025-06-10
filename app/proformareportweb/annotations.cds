@@ -97,7 +97,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
          {
             $Type : 'UI.DataField',
-            Value : ProductDescription,
+            Value : ProductDesc,
             Label : '{i18n>ProductDescription}',
         },
          {
@@ -112,7 +112,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
          {
             $Type : 'UI.DataField',
-            Value : RegionName,
+            Value : RegionNameDes,
             Label : '{i18n>RegionName}',
         },
          {
@@ -276,7 +276,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
                    {
             $Type : 'UI.DataField',
-            Value : ProductDescription,
+            Value : ProductDesc,
             Label : '{i18n>ProductDescription}',
         },
          {
@@ -291,7 +291,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
          {
             $Type : 'UI.DataField',
-            Value : RegionName,
+            Value : RegionNameDes,
             Label : '{i18n>RegionName}',
         },
          {

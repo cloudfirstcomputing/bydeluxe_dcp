@@ -67,11 +67,13 @@
 <Property Name="Region" Type="Edm.String" MaxLength="3" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Region" sap:quickinfo="Region (State, Province, County)"/>
 <Property Name="AddresseeName1" Type="Edm.String" MaxLength="40" sap:aggregation-role="dimension" sap:required-in-filter="false" sap:label="AddressName" sap:quickinfo="Name 1"/>
 <Property Name="ReferenceBusinessPartner" Type="Edm.String" MaxLength="10" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Business Partner" sap:quickinfo="Business Partner Number"/>
-<Property Name="ProductDescription" Type="Edm.String" MaxLength="40" sap:required-in-filter="false" sap:label="Product Description"/>
+<Property Name="ProductDescription" Type="Edm.String" MaxLength="40" sap:required-in-filter="false" sap:label="Product Description ignore" sap:quickinfo="Product Description"/>
 <Property Name="DeliveryStatusDescription" Type="Edm.String" MaxLength="20" sap:required-in-filter="false" sap:label="Delivery Status Description" sap:quickinfo="Status Description"/>
 <Property Name="OverallSDProcessStatusDesc" Type="Edm.String" MaxLength="20" sap:required-in-filter="false" sap:label="SD Process Description" sap:quickinfo="Status Description"/>
-<Property Name="RegionName" Type="Edm.String" MaxLength="20" sap:required-in-filter="false" sap:label="Region Name" sap:quickinfo="Description"/>
+<Property Name="RegionName" Type="Edm.String" MaxLength="20" sap:required-in-filter="false" sap:label="Region Name Description" sap:quickinfo="Description"/>
 <Property Name="AdditionalMaterialGroup1Name" Type="Edm.String" MaxLength="40" sap:required-in-filter="false" sap:label="Material Group Name" sap:quickinfo="Description"/>
+<Property Name="ProductDesc" Type="Edm.String" MaxLength="40" sap:required-in-filter="false" sap:label="Product Description"/>
+<Property Name="RegionNameDes" Type="Edm.String" MaxLength="20" sap:required-in-filter="false" sap:label="Region Name" sap:quickinfo="Description"/>
 </EntityType>
 <EntityContainer Name="YY1_PROFORMAREPORTAPI_CDS_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
 <EntitySet Name="YY1_ProformaReportAPI" EntityType="YY1_PROFORMAREPORTAPI_CDS.YY1_ProformaReportAPIType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>

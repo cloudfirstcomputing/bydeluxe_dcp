@@ -269,7 +269,8 @@
      "type": "cds.String",
      "length": 40,
      "@sap.required.in.filter": "false",
-     "@sap.label": "Product Description"
+     "@sap.label": "Product Description ignore",
+     "@sap.quickinfo": "Product Description"
     },
     "DeliveryStatusDescription": {
      "type": "cds.String",
@@ -289,7 +290,7 @@
      "type": "cds.String",
      "length": 20,
      "@sap.required.in.filter": "false",
-     "@sap.label": "Region Name",
+     "@sap.label": "Region Name Description",
      "@sap.quickinfo": "Description"
     },
     "AdditionalMaterialGroup1Name": {
@@ -297,6 +298,19 @@
      "length": 40,
      "@sap.required.in.filter": "false",
      "@sap.label": "Material Group Name",
+     "@sap.quickinfo": "Description"
+    },
+    "ProductDesc": {
+     "type": "cds.String",
+     "length": 40,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Product Description"
+    },
+    "RegionNameDes": {
+     "type": "cds.String",
+     "length": 20,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Region Name",
      "@sap.quickinfo": "Description"
     }
    }
