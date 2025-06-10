@@ -8,7 +8,8 @@ using {YY1_PARAMETER_CDS as S4_Param} from './external/YY1_PARAMETER_CDS';
 using {YY1_SALESPARAMETERS_CDS_0001 as S4_Sales_Param} from './external/YY1_SALESPARAMETERS_CDS_0001';
 using {API_PRODUCT_SRV as externalProduct} from '../srv/external/API_PRODUCT_SRV.csn';
 using {API_PRODUCTGROUP_SRV as S4_prodGroup} from '../srv/external/API_PRODUCTGROUP_SRV.csn';
-using {YY1_PROFORMAREPORTAPI_CDS_0001 as S4_proforma} from '../srv/external/YY1_PROFORMAREPORTAPI_CDS_0001.csn';
+// using {YY1_PROFORMAREPORTAPI_CDS_0001 as S4_proforma} from '../srv/external/YY1_PROFORMAREPORTAPI_CDS_0001.csn';
+using {YY1_PROFORMAREPORTAPI1_CDS_0001 as S4_proforma} from '../srv/external/YY1_PROFORMAREPORTAPI1_CDS_0001.csn';
 using {YY1_PROFORMADELIVDOCUMENT_CDS_0001 as S4_proforma_delivDoc} from '../srv/external/YY1_PROFORMADELIVDOCUMENT_CDS_0001';
 
 using api from '../db/common';
@@ -45,7 +46,7 @@ service BookingOrderService {
     entity S4H_BusinessPartnerapi       as projection on api.BusinessPartnersV1;
     entity S4H_BusinessPartnerAddress   as projection on S4_BuisnessPartner.A_BusinessPartnerAddress;
     entity S4H_ProductGroup1            as projection on api.ProductGroup1;
-    entity S4H_ProformaReport           as projection on S4_proforma.YY1_ProformaReportAPI;
+    entity S4H_ProformaReport           as projection on S4_proforma.YY1_PROFORMAREPORTAPI1;
     entity S4H_ProformaDeliveryDoc      as projection on S4_proforma_delivDoc.YY1_ProformaDelivDocument;
     entity S4H_SalesOrderItemText       as projection on api.SalesOrderItemText;
     entity StudioVH                     as projection on db.StudioVH;

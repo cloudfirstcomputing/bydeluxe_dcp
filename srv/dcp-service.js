@@ -34,7 +34,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         var prdgrp1tx = await cds.connect.to("YY1_ADDITIONALMATERIALGRP1_CDS");
         var invformAPI = await cds.connect.to("ZCL_INVFORM");
         var bankAPI = await cds.connect.to("CE_BANK_0003");
-        var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORTAPI_CDS_0001");
+        var proformaAPI = await cds.connect.to("YY1_PROFORMAREPORTAPI1_CDS_0001");
         var proformaDelDocAPI = await cds.connect.to("YY1_PROFORMADELIVDOCUMENT_CDS_0001");
         const prdtx = await cds.connect.to("ZCL_PRODUCT_VH");
         const bpapi = await cds.connect.to("ZAPI_BUSINESSPARTNERS");
@@ -1903,50 +1903,152 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             let aData = await proformaAPI.run(req.query);
             let aBPList = [];//For BP Address Search optimization
             if(Array.isArray(aData)){
-                for(let i in aData){
-                    let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
-                    let oSalesOrder = await query;
-                    if (oSalesOrder?.PlayStartDate) {
-                        aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
-                    }
-                    if (oSalesOrder?.PlayEndDate) {
-                        aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
-                    }
-                    aData[i].RequestID = oSalesOrder?.RequestId;
-                    aData[i].BookerName = oSalesOrder?.BookerName;
-                    let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData[i].SalesDocument, SalesOrderItem: aData[i].SalesDocumentItem, LongTextID: 'Z010'}));
-                    if(oPackTitleText){
-                        aData[i].PackageTitle = oPackTitleText?.LongText;
-                    }
-                    let oBP = await bpsoapi.run(SELECT.one.from(SalesDocumentHeaderPartner).where({SalesDocument: aData[i].SalesDocument}));
-                    let sBusinessPartner = oBP?.ReferenceBusinessPartner;
-                    if(sBusinessPartner){
-                        let oBPFound = aBPList.find((item)=>{return item.bp === sBusinessPartner});
-                        aData[i].ReferenceBusinessPartner = sBusinessPartner;
-                        let oBPAddress;
-                        if(!oBPFound){
-                            let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
-                            oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
-                            aBPList.push({"bp":sBusinessPartner,"Address":oBPAddress});
-                        }
-                        else{
-                            oBPAddress = oBPFound.Address;
-                        }
+                // for(let i in aData){
+                //     let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData[i].SalesDocument});
+                //     let oSalesOrder = await query;
+                //     if (oSalesOrder?.PlayStartDate) {
+                //         aData[i].PlayStartDate = oSalesOrder?.PlayStartDate;
+                //     }
+                //     if (oSalesOrder?.PlayEndDate) {
+                //         aData[i].PlayEndDate = oSalesOrder?.PlayEndDate;
+                //     }
+                //     aData[i].RequestID = oSalesOrder?.RequestId;
+                //     aData[i].BookerName = oSalesOrder?.BookerName;
+                //     let oPackTitleText = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SalesOrderItemText).where({SalesOrder: aData[i].SalesDocument, SalesOrderItem: aData[i].SalesDocumentItem, LongTextID: 'Z010'}));
+                //     if(oPackTitleText){
+                //         aData[i].PackageTitle = oPackTitleText?.LongText;
+                //     }
+                //     let oBP = await bpsoapi.run(SELECT.one.from(SalesDocumentHeaderPartner).where({SalesDocument: aData[i].SalesDocument}));
+                //     let sBusinessPartner = oBP?.ReferenceBusinessPartner;
+                //     if(sBusinessPartner){
+                //         let oBPFound = aBPList.find((item)=>{return item.bp === sBusinessPartner});
+                //         aData[i].ReferenceBusinessPartner = sBusinessPartner;
+                //         let oBPAddress;
+                //         if(!oBPFound){
+                //             let oBPDetails = await s4h_bp_Txn.run(SELECT.one.from(S4H_BuisnessPartner).columns(['*', { "ref": ["to_BusinessPartnerAddress"], "expand": ["*"] }]).where({ BusinessPartner: sBusinessPartner }));
+                //             oBPAddress = oBPDetails?.to_BusinessPartnerAddress?.[0];
+                //             aBPList.push({"bp":sBusinessPartner,"Address":oBPAddress});
+                //         }
+                //         else{
+                //             oBPAddress = oBPFound.Address;
+                //         }
                         
-                        if(oBPAddress){
-                            aData[i].BPStreetName = oBPAddress?.StreetName;
-                            aData[i].BPCityName = oBPAddress?.CityName;
-                            aData[i].BPPostalCode = oBPAddress?.PostalCode;
-                            aData[i].BPRegion = oBPAddress?.Region;                                                        
-                            aData[i].BPCountry = oBPAddress?.Country; 
-                            aData[i].AddressID = oBPAddress?.AddressID; 
+                //         if(oBPAddress){
+                //             aData[i].BPStreetName = oBPAddress?.StreetName;
+                //             aData[i].BPCityName = oBPAddress?.CityName;
+                //             aData[i].BPPostalCode = oBPAddress?.PostalCode;
+                //             aData[i].BPRegion = oBPAddress?.Region;                                                        
+                //             aData[i].BPCountry = oBPAddress?.Country; 
+                //             aData[i].AddressID = oBPAddress?.AddressID; 
+                //         }
+                //     }
+                //     let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData[i].SalesDocument, SalesDocumentItem: aData[i].SalesDocumentItem}));
+                //     // aData[i].ShipDate = oShipDetails?.ActualGoodsMovementDate;
+                //       aData[i].ShipDate = oShipDetails?.PlannedGoodsIssueDate;
+                    
+                // }
+
+
+                // Enriched Code 
+
+                    const salesOrderIds = aData.map(e => e.SalesDocument);
+                    const salesOrderItems = aData.map(e => ({
+                        SalesDocument: e.SalesDocument,
+                        SalesDocumentItem: e.SalesDocumentItem
+                    }));
+                
+                    // 1. Fetch StudioFeed data in bulk
+                    const studioFeedData = await SELECT
+                        .from(StudioFeed)
+                        .where({ SalesOrder: { in: salesOrderIds } });
+                
+                    // 2. Fetch S4H_SalesOrderItemText data in bulk
+                    const salesOrderTexts = await s4h_sohv2_Txn.run(
+                        SELECT
+                            .from(S4H_SalesOrderItemText)
+                            .where({ 
+                                SalesOrder: { in: salesOrderIds },
+                                LongTextID: 'Z010'
+                            })
+                    );
+                
+                    // 3. Fetch Partner data in bulk
+                    const partnerData = await bpsoapi.run(
+                        SELECT
+                            .from(SalesDocumentHeaderPartner)
+                            .where({ SalesDocument: { in: salesOrderIds } })
+                    );
+                
+                    const businessPartners = partnerData.map(p => p.ReferenceBusinessPartner);
+                
+                    // 4. Fetch BusinessPartner data in bulk
+                    const bpDetailsList = await s4h_bp_Txn.run(
+                        SELECT
+                            .from(S4H_BuisnessPartner)
+                            .columns(['*', { ref: ["to_BusinessPartnerAddress"], expand: ["*"] }])
+                            .where({ BusinessPartner: { in: businessPartners } })
+                    );
+                
+                    // 5. Fetch Shipping Details in bulk
+                    const shipDetails = await proformaDelDocAPI.run(
+                        SELECT
+                            .from(S4H_ProformaDeliveryDoc)
+                            .where({
+                                SalesDocument: { in: salesOrderIds }
+                            })
+                    );
+                
+                    // Mapping fetched data for fast lookup
+                    const studioFeedMap = Object.fromEntries(studioFeedData.map(o => [o.SalesOrder, o]));
+                    const textMap = new Map();
+                    for (let text of salesOrderTexts) {
+                        textMap.set(`${text.SalesOrder}-${text.SalesOrderItem}`, text.LongText);
+                    }
+                
+                    const bpPartnerMap = Object.fromEntries(partnerData.map(p => [p.SalesDocument, p.ReferenceBusinessPartner]));
+                    const bpAddressMap = new Map();
+                    for (let bp of bpDetailsList) {
+                        const address = bp?.to_BusinessPartnerAddress?.[0];
+                        if (address) bpAddressMap.set(bp.BusinessPartner, address);
+                    }
+                
+                    const shipMap = new Map();
+                    for (let ship of shipDetails) {
+                        shipMap.set(`${ship.SalesDocument}-${ship.SalesDocumentItem}`, ship);
+                    }
+                
+                    // Enriching aData with mapped results
+                    for (let item of aData) {
+                        const studio = studioFeedMap[item.SalesDocument];
+                        if (studio) {
+                            item.PlayStartDate = studio.PlayStartDate;
+                            item.PlayEndDate = studio.PlayEndDate;
+                            item.RequestID = studio.RequestId;
+                            item.BookerName = studio.BookerName;
+                        }
+                
+                        const longTextKey = `${item.SalesDocument}-${item.SalesDocumentItem}`;
+                        item.PackageTitle = textMap.get(longTextKey);
+                
+                        const bpId = bpPartnerMap[item.SalesDocument];
+                        item.ReferenceBusinessPartner = bpId;
+                        const bpAddress = bpAddressMap.get(bpId);
+                        if (bpAddress) {
+                            item.BPStreetName = bpAddress.StreetName;
+                            item.BPCityName = bpAddress.CityName;
+                            item.BPPostalCode = bpAddress.PostalCode;
+                            item.BPRegion = bpAddress.Region;
+                            item.BPCountry = bpAddress.Country;
+                            item.AddressID = bpAddress.AddressID;
+                        }
+                
+                        const ship = shipMap.get(longTextKey);
+                        if (ship) {
+                            item.ShipDate = ship.PlannedGoodsIssueDate;
                         }
                     }
-                    let oShipDetails = await proformaDelDocAPI.run(SELECT.one.from(S4H_ProformaDeliveryDoc).where({SalesDocument: aData[i].SalesDocument, SalesDocumentItem: aData[i].SalesDocumentItem}));
-                    // aData[i].ShipDate = oShipDetails?.ActualGoodsMovementDate;
-                      aData[i].ShipDate = oShipDetails?.PlannedGoodsIssueDate;
-                    
-                }
+                
+                
             }
             else{ //For Object Page
                 let query = SELECT.one.from(StudioFeed).where({SalesOrder: aData['SalesDocument']});

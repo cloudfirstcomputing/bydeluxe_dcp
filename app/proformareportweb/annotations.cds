@@ -25,10 +25,25 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : PricingReferenceMaterial,
             Label : '{i18n>Pricingreferencematerial}',
         },
+          {
+            $Type : 'UI.DataField',
+            Value : ProductDesc,
+            Label : '{i18n>ProductDescription}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : MaterialGroup,
+            Label : '{i18n>MaterialGroup}',
+        },
         {
             $Type : 'UI.DataField',
             Value : AdditionalMaterialGroup1,
             Label : '{i18n>Additionalmaterialgroup1}',
+        },
+         {
+            $Type : 'UI.DataField',
+            Value : AdditionalMaterialGroup1Name,
+            Label : '{i18n>AdditionalMaterialGroup1Name}',
         },
         {
             $Type : 'UI.DataField',
@@ -62,6 +77,11 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : OverallSDProcessStatusDesc,
+            Label : '{i18n>OverallSDProcessStatusDesc}',
+        },
+        {
+            $Type : 'UI.DataField',
             Value : PackageTitle,
             Label : '{i18n>Packagetitle}',
         },
@@ -92,33 +112,18 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : ShipDate,
-            Label : '{i18n>Shipdate1}',
-        },
-         {
-            $Type : 'UI.DataField',
-            Value : ProductDesc,
-            Label : '{i18n>ProductDescription}',
-        },
-         {
-            $Type : 'UI.DataField',
             Value : DeliveryStatusDescription,
             Label : '{i18n>DeliveryStatusDescription}',
         },
-         {
+        {
             $Type : 'UI.DataField',
-            Value : OverallSDProcessStatusDesc,
-            Label : '{i18n>OverallSDProcessStatusDesc}',
+            Value : ShipDate,
+            Label : '{i18n>Shipdate1}',
         },
-         {
+        {
             $Type : 'UI.DataField',
             Value : RegionNameDes,
             Label : '{i18n>RegionName}',
-        },
-         {
-            $Type : 'UI.DataField',
-            Value : AdditionalMaterialGroup1Name,
-            Label : '{i18n>AdditionalMaterialGroup1Name}',
         }
     ],
     UI.SelectionFields : [
