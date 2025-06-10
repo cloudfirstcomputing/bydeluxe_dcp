@@ -730,7 +730,7 @@ sap.ui.define([
                     aData = [];
                     break;
                 }
-                else if (oEntry?.SalesOrder || !oEntry.ErrorMessage) {
+                else if (oEntry?.SalesOrder && oEntry.Status_ID !== 'D') {
                     MessageBox.error(`Reconciliation can be done only for failed entries`, {
                         title: "Error",
                         contentWidth: "auto",

@@ -1145,11 +1145,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         sShippingType_Key = '07'; //RULE 7.2 => Shipping Type for KEY
                     }
                     if(!sErrorMessage){
-                        // for (var pk in oPackages) { //Going through both filtered content and Key packages if available
-                        {
+                        for (var pk in oPackages) { //Going through both filtered content and Key packages if available
                             //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
-                            // var aContOrKeyPckg = oPackages[pk] ;
-                            var aContOrKeyPckg = oPackages['ContentPackage'];
+                            var aContOrKeyPckg = oPackages[pk] ;
+                            // var aContOrKeyPckg = oPackages['ContentPackage'];
                             var aTheaters = [], aLanguage = [], aCircuits = []
                             for(let i in aContOrKeyPckg){
                                 var oContPkg = aContOrKeyPckg[i];
@@ -1160,12 +1159,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 aTheaters = aTheaters?.length?[...aTheaters, ...aTh]: [...aTh];
                                 aTheaters = aTheaters.filter((item)=>item);
                                 let aLang = aDistRestrictions.map((item) => {
-                                        return item.DistributionFilterLanguage_code;                                 
+                                        return item.DistributionFilterLanguage_code?.toUpperCase();                                 
                                 });
                                 aLanguage = aLanguage?.length?[...aLanguage, ...aLang] :[...aLang];
                                 aLanguage = aLanguage.filter((item)=>item);
                                 let aCirc = aDistRestrictions.map((item) => {
-                                        return item.Circuit_CustomerGroup;
+                                        return item.Circuit_CustomerGroup?.toUpperCase();
                                 });
                                 aCircuits = aCircuits?.length?[...aCircuits, ...aCirc]:[...aCirc];
                                 aCircuits = aCircuits.filter((item)=>item);
@@ -1199,32 +1198,29 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 //         dist.DistributionFilterPostal
                                 // });
                                 // if (oDist) 
-                                if(!sErrorMessage){
-                                    let sBPLang = oSoldToSalesData?.YY1_Language_csa;
-                                    if(aLanguage?.length && sBPLang){
-                                        if(!aLanguage.includes(sBPLang)){
-                                            sErrorMessage = `No Package found as BP Language ${sBPLang} doesnot match with Language Restriction`;
+                                if(!sErrorMessage && aLanguage?.length){
+                                        let oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                                        let sShipToLang = oShipToSalesData?.YY1_Language_csa;                               
+                                        if(sShipToLang && !aLanguage.includes(sShipToLang?.toUpperCase())){
+                                            sErrorMessage = `No Package found as ShipTo ${sShipTo} Language ${sShipToLang} doesnot match with Language Restriction`;
                                         }
                                         else{
                                             aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
-                                                return DistributionFilterLanguage_code === sBPLang;
+                                                return rest.DistributionFilterLanguage_code?.toUpperCase() === sShipToLang?.toUpperCase();
                                             }));
                                         }
-                                    }  
                                 }
-                                if(!sErrorMessage){     
-                                    var oBPCustomerDataFromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BPCustomer).where({Customer: sBuPa}));  
-                                    let sAttr06 = oBPCustomerDataFromS4?.FreeDefinedAttribute06;                        
-                                    if(aCircuits?.length && sAttr06){
-                                        if(!aCircuits.includes(sAttr06)){
-                                            sErrorMessage = `No Package found as Circuit (FreeDefinedAttribute06) ${sAttr06} doesnot match with Circuit Restriction`;
+                                if(!sErrorMessage && aCircuits?.length){ 
+                                    var oShipToCustomerDataFromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BPCustomer).where({Customer: sShipTo}));  
+                                    let sAttr06 = oShipToCustomerDataFromS4?.FreeDefinedAttribute06;                        
+                                    if(sAttr06 && !aCircuits.includes(sAttr06?.toUpperCase())){
+                                            sErrorMessage = `No Package found as ShipTo ${sShipTo} Circuit (FreeDefinedAttribute06) ${sAttr06} doesnot match with Circuit Restriction`;
                                         }
                                         else{
                                             aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
-                                                return rest.Circuit_CustomerGroup === sAttr06;
+                                                return rest.Circuit_CustomerGroup?.toUpperCase() === sAttr06?.toUpperCase();
                                             }));
                                         }
-                                    } 
                                     // var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
                                     // var oDistRestriction = aContOrKeyPckg.find((dist) => {
                                     //     return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
@@ -1242,7 +1238,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     // }
                                 }
                             }
-                            oResponseStatus['ContentPackage'] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
+                            // oResponseStatus['ContentPackage'] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
+                            oResponseStatus[pk] = aContOrKeyPckg?.[0] ? [aContOrKeyPckg?.[0]] : [];
                             //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - END
                         }
                     }
