@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
-            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner, S4H_BPCustomer, GeoRegions } = this.entities;
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner, S4H_BPCustomer } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -1151,7 +1151,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             //RULE 2.2 and 3.2 => Package Restrictions (Common for both Content and Key)   - START
                             var aContOrKeyPckg = oPackages[pk] ;
                             // var aContOrKeyPckg = oPackages['ContentPackage'];
-                            var aTheaters = [], aLanguage = [], aCircuits = [], aRegions = [];
+                            var aTheaters = [], aLanguage = [], aCircuits = [], aDistroRegions = [];
                             for(let i in aContOrKeyPckg){
                                 let aDistRestrictions = aContOrKeyPckg[i]['to_DistRestriction'];
                                 let aTh = aDistRestrictions.map((item) => {
@@ -1173,8 +1173,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 let aReg = aDistRestrictions.map((item) => {
                                     return item.DistributionFilterRegion_ID?.toUpperCase();
                                 });
-                                aRegions = aRegions?.length?[...aRegions, ...aReg]:[...aReg];
-                                aRegions = aRegions.filter((item)=>item);
+                                aDistroRegions = aDistroRegions?.length?[...aDistroRegions, ...aReg]:[...aReg];
+                                aDistroRegions = aDistroRegions.filter((item)=>item);
                             }
                             // var aCountry = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction)?.filter((rest) => {
                             //     return rest.DistributionFilterCountry_code?.length > 0;
@@ -1235,19 +1235,37 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     //     PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
                                     // }
                                 }
-                                if(!sErrorMessage && aRegions?.length){ 
+                                if(!sErrorMessage && aDistroRegions?.length){ 
                                     var oShipToAddressFromS4 = await s4h_bp_Txn.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({BusinessPartner: sShipTo}));  
                                     let sS4Country = oShipToAddressFromS4?.Country;                        
                                     if(sS4Country ){
-                                        let aDistRegions = await SELECT.columns(['Code']).from(GeoRegions).where({ID: {"IN": aRegions}});
-                                        aDistRegions = aDistRegions?.map((item)=> item?.toUpperCase());
-                                        if(aDistRegions?.length && !aDistRegions.includes(sS4Country?.toUpperCase())){
-                                            sErrorMessage = `No Package found as ShipTo ${sS4Country} doesnot match with Region Restriction`;
-                                        }
-                                        else{
-                                            aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
-                                                return rest.DistributionFilterRegion_ID?.toUpperCase() === sS4Country?.toUpperCase();
-                                            }));
+                                        // let aDistRegions = await SELECT.columns(['Code']).from('DistributionService.GeoRegions').where({ID: {"IN": aRegions}});
+                                        let aDistCountries = await SELECT.from('DistributionService.GeoCountries').where({SAPCountry: sS4Country});
+                                        let aRegionIDs = aDistCountries.map((item)=>item._Region_ID?.toUpperCase());
+                                        if(aRegionIDs?.length){
+                                            aRegionIDs = [...new Set(aRegionIDs)];
+                                            let aTerritories = await SELECT.columns(['_Territory_ID']).from('DistributionService.GeoRegions').where({ ID: {"IN": aRegionIDs} } );
+                                            aTerritories = aTerritories.map((item)=>item._Territory_ID)?.filter((item)=>item);
+                                            if(aTerritories?.length){
+                                                aRegionIDs = [...aRegionIDs, ...aTerritories]
+                                            }
+                                            aRegionIDs = [...new Set(aRegionIDs)];
+                                            aRegionIDs = aRegionIDs.map((item)=>item.toUpperCase());
+                                            let sMattchedRegionID;
+                                            for(let i in aDistroRegions){
+                                                if(aRegionIDs.includes(aDistroRegions[i])){
+                                                    sMattchedRegionID = aDistroRegions[i];
+                                                    break;
+                                                }
+                                            }
+                                            if(!sMattchedRegionID){
+                                                sErrorMessage = `No Package found as Region IDs for Country ${sS4Country} => (${aRegionIDs?.toString()}) doesnot match with Region Restriction =>(${aDistroRegions?.toString()})`;
+                                            }
+                                            else{
+                                                aContOrKeyPckg = aContOrKeyPckg?.filter((item)=> item.to_DistRestriction?.filter((rest) => {
+                                                    return rest.DistributionFilterRegion_ID?.toUpperCase() === sMattchedRegionID?. toUpperCase();
+                                                }));
+                                            }
                                         }
                                     }
                                 }
