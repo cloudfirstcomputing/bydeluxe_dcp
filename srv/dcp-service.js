@@ -1363,6 +1363,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     "errorMessage": sErrorMessage
                 })
             }
+            else if(!oPayLoad?.to_Item?.length){
+                sErrorMessage = 'Line items could not be determined';
+                oResponseStatus.error.push({
+                    "BookingID": oFeedData?.BookingID,
+                    "message": `| Booking ID: ${oFeedData.BookingID}: ${sErrorMessage} |`,
+                    "errorMessage": sErrorMessage
+                });
+            }
             else {
                 var postResult = await s4h_sohv2_Txn.send({
                     method: 'POST',
