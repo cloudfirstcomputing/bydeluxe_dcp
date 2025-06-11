@@ -44,7 +44,8 @@
     "watch-printdocuments": "cds watch --open printdocuments/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-dcpmatmap": "cds watch --open dcpmatmap/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-normalizedorder": "cds watch --open normalizedorder/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-proformareportweb": "cds watch --open proformareportweb/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-proformareportweb": "cds watch --open proformareportweb/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-dcnstatus": "cds watch --open dcnstatus/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -630,6 +631,7 @@
     "app/adobeformprinting",
     "app/dcpmatmap",
     "app/normalizedorder",
-    "app/proformareportweb"
+    "app/proformareportweb",
+    "app/dcnstatus"
   ]
 }
