@@ -306,6 +306,32 @@
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Material Group"
+    },
+    "FreeDefinedAttribute06": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.aggregation.role": "dimension",
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Circuit Name Neglect",
+     "@sap.quickinfo": "Attribute 6"
+    },
+    "FullName": {
+     "type": "cds.String",
+     "length": 80,
+     "@sap.aggregation.role": "dimension",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Full Name",
+     "@sap.quickinfo": "Full Name of Person"
+    },
+    "FreeDefinedAttribute06_yysales": {
+     "type": "cds.String",
+     "length": 3,
+     "@sap.aggregation.role": "dimension",
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Circuit Name",
+     "@sap.quickinfo": "Attribute 6"
     }
    }
   }

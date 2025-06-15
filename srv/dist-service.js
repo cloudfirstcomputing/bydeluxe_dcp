@@ -1,6 +1,7 @@
 const cds = require("@sap/cds");
 const axios = require('axios');
 const { uuid } = cds.utils
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
@@ -398,7 +399,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
             }
 
-            // await _gofilexcreation(req);
+            var oGoFilex = await _gofilexcreation(req);
+            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex
         })
 
         async function _gofilexcreation(req) {
@@ -417,7 +419,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             const data = {
                 "identifier": {
                     "source": "deluxe",
-                    "value": "1073677"
+                    "value": uuidv4()
                 },
                 "name": req.data.to_Package[req.data.to_Package.length - 1].PackageName,
                 "releaseDate": req.data.ReleaseDate,
@@ -433,8 +435,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 data,
                 headers
             });
-            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex
-            return req
+            return oGoFilex
         }
 
 

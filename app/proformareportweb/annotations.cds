@@ -4,32 +4,132 @@ using from '../../srv/external/YY1_PROFORMAREPORT_CDS_0001.csn';
 annotate BookingOrderService.S4H_ProformaReport with @(
     Capabilities.Deletable: false,
     Capabilities.SearchRestrictions.Searchable: false,
+    Capabilities : {
+    FilterRestrictions : {
+        $Type              : 'Capabilities.FilterRestrictionsType',
+        RequiredProperties : [
+            Customer
+        ],
+    }
+    },
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Value : SalesDocument,
-            Label : '{i18n>Salesdocument}',
+            Value : StudioTheatreId,
+            Label : '{i18n>StudioTheatreId}',
         },
         {
             $Type : 'UI.DataField',
-            Value : SalesDocumentItem,
-            Label : '{i18n>Salesdocumentitem}',
+            Value : FreeDefinedAttribute06_yysales,
+            Label : '{i18n>FreeDefinedAttribute06}',
+        },
+            {
+                $Type : 'UI.DataField',
+                Value : Partner,
+                Label : '{i18n>ReferenceBusinessPartner}',
+            },
+                        {
+                $Type : 'UI.DataField',
+                Value : BPStreetName,
+                Label : '{i18n>Streetname}',
+            },
+             {
+                $Type : 'UI.DataField',
+                Value : BPCityName,
+                Label : '{i18n>Cityname}',
+            },
+               {
+                $Type : 'UI.DataField',
+                Value : BPRegion,
+                Label : '{i18n>DistributionFilterRegion}',
+            },
+                {
+                $Type : 'UI.DataField',
+                Value : BPPostalCode,
+                Label : '{i18n>Postalcode}',
+            },
+                  {
+            $Type : 'UI.DataField',
+            Value : ProductDesc,
+            Label : '{i18n>ProductDescription}',
+        },
+                {
+            $Type : 'UI.DataField',
+            Value : PackageTitle,
+            Label : '{i18n>Packagetitle}',
+        },
+            {
+            $Type : 'UI.DataField',
+            Value : StudioMediaOrderID,
+            Label : '{i18n>StudioMediaOrderID}',
+        },
+            {
+                $Type : 'UI.DataField',
+                Value : BookerName,
+                Label : '{i18n>Bookername}',
+            },
+                 {
+            $Type : 'UI.DataField',
+            Value : PlayStartDate,
+            Label : '{i18n>Playstartdate}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PlayEndDate,
+            Label : '{i18n>Playenddate}',
+        },
+               {
+            $Type : 'UI.DataField',
+            Value : DeliveryStatusDescription,
+            Label : '{i18n>DeliveryStatusDescription}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : CreationDate,
+            Label : '{i18n>Creationdate}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : LastChangeDate,
+            Label : '{i18n>Lastchangedate}',
         },
         {
             $Type : 'UI.DataField',
             Value : SalesDocumentItemText,
             Label : '{i18n>SalesDocumentItemText}',
         },
+                {
+            $Type : 'UI.DataField',
+            Value : OverallSDProcessStatusDesc,
+            Label : '{i18n>OverallSDProcessStatusDesc}',
+        },
+             {
+            $Type : 'UI.DataField',
+            Value : ShippingCondition,
+            Label : '{i18n>Shippingcondition}',
+        },
+                   
+        {
+            $Type : 'UI.DataField',
+            Value : PlantName,
+            Label : '{i18n>Plant}',
+        },
+                {
+            $Type : 'UI.DataField',
+            Value : ShipDate,
+            Label : '{i18n>Shipdate1}',
+        },
+                {
+                $Type : 'UI.DataField',
+                Value : NetAmount,
+                Label : '{i18n>Netamount}',
+            },
         {
             $Type : 'UI.DataField',
             Value : PricingReferenceMaterial,
             Label : '{i18n>Pricingreferencematerial}',
         },
-          {
-            $Type : 'UI.DataField',
-            Value : ProductDesc,
-            Label : '{i18n>ProductDescription}',
-        },
+    
         {
             $Type : 'UI.DataField',
             Value : MaterialGroup,
@@ -45,46 +145,15 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : AdditionalMaterialGroup1Name,
             Label : '{i18n>AdditionalMaterialGroup1Name}',
         },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayStartDate,
-            Label : '{i18n>Playstartdate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlayEndDate,
-            Label : '{i18n>Playenddate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PlantName,
-            Label : '{i18n>Plant}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : CreationDate,
-            Label : '{i18n>Creationdate}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : LastChangeDate,
-            Label : '{i18n>Lastchangedate}',
-        },
+
+        
         {
             $Type : 'UI.DataField',
             Value : OverallSDProcessStatus,
             Label : '{i18n>Overallsdprocessstatus}',
         },
-        {
-            $Type : 'UI.DataField',
-            Value : OverallSDProcessStatusDesc,
-            Label : '{i18n>OverallSDProcessStatusDesc}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PackageTitle,
-            Label : '{i18n>Packagetitle}',
-        },
+
+
         {
             $Type : 'UI.DataField',
             Value : RequestID,
@@ -100,35 +169,39 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : BPCountry,
             Label : '{i18n>DistributionFilterCountry}',
         },
-        {
-            $Type : 'UI.DataField',
-            Value : ShippingCondition,
-            Label : '{i18n>Shippingcondition}',
-        },
+   
         {
             $Type : 'UI.DataField',
             Value : TotalDeliveryStatus,
             Label : '{i18n>Totaldeliverystatus}',
         },
-        {
-            $Type : 'UI.DataField',
-            Value : DeliveryStatusDescription,
-            Label : '{i18n>DeliveryStatusDescription}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : ShipDate,
-            Label : '{i18n>Shipdate1}',
-        },
+ 
+
         {
             $Type : 'UI.DataField',
             Value : RegionNameDes,
             Label : '{i18n>RegionName}',
+        },
+               {
+            $Type : 'UI.DataField',
+            Value : SalesDocument,
+            Label : '{i18n>Salesdocument}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : SalesDocumentItem,
+            Label : '{i18n>Salesdocumentitem}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : SalesDocumentItemText,
+            Label : '{i18n>SalesDocumentItemText}',
         }
     ],
     UI.SelectionFields : [
         CreationDate,
-        SalesDocument,
+        Customer 
+        
     ],
     UI.Facets : [
         {
@@ -338,3 +411,33 @@ annotate BookingOrderService.S4H_ProformaReport with {
     PartnerFunction @Common.Label : 'PartnerFunction'
 };
 
+annotate BookingOrderService.S4H_ProformaReport with {
+    Customer              @Common: {
+        Label          : '{i18n>Studio}',
+        FieldControl : #Mandatory,
+        Text: {
+	            $value                : StudioText,
+	          ![@UI.TextArrangement]: #TextFirst,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'StudioVH',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty:  Customer,
+                    ValueListProperty: 'BusinessPartner',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'BusinessPartnerFullName',
+                },
+            ]
+        }
+    };
+
+};
+
+
+    

@@ -73,6 +73,9 @@
 <Property Name="ProductDesc" Type="Edm.String" MaxLength="40" sap:required-in-filter="false" sap:label="Product Description"/>
 <Property Name="RegionNameDes" Type="Edm.String" MaxLength="20" sap:required-in-filter="false" sap:label="Region Name" sap:quickinfo="Description"/>
 <Property Name="MaterialGroup" Type="Edm.String" MaxLength="9" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Material Group"/>
+<Property Name="FreeDefinedAttribute06" Type="Edm.String" MaxLength="3" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Circuit Name Neglect" sap:quickinfo="Attribute 6"/>
+<Property Name="FullName" Type="Edm.String" MaxLength="80" sap:aggregation-role="dimension" sap:required-in-filter="false" sap:label="Full Name" sap:quickinfo="Full Name of Person"/>
+<Property Name="FreeDefinedAttribute06_yysales" Type="Edm.String" MaxLength="3" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Circuit Name" sap:quickinfo="Attribute 6"/>
 </EntityType>
 <EntityContainer Name="YY1_PROFORMAREPORTAPI1_CDS_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
 <EntitySet Name="YY1_PROFORMAREPORTAPI1" EntityType="YY1_PROFORMAREPORTAPI1_CDS.YY1_PROFORMAREPORTAPI1Type" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>

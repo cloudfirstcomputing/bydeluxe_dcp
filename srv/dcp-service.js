@@ -1918,7 +1918,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             if(req.query.SELECT.orderBy){
                 req.query.SELECT.orderBy = undefined;
             }
-            let aData = await proformaAPI.run(req.query);
+            // let aData = await proformaAPI.run(req.query);
+            let aData = await bpapi.run(req.query);
             let aBPList = [];//For BP Address Search optimization
             if(Array.isArray(aData)){
                 // for(let i in aData){
@@ -1978,6 +1979,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     // 1. Fetch StudioFeed data in bulk
                     const studioFeedData = await SELECT
                         .from(StudioFeed)
+                        .columns(['*', { ref: ["Studio"], expand: ["*"] }])
                         .where({ SalesOrder: { in: salesOrderIds } });
                 
                     // 2. Fetch S4H_SalesOrderItemText data in bulk
@@ -2039,6 +2041,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     for (let item of aData) {
                         const studio = studioFeedMap[item.SalesDocument];
                         if (studio) {
+                            item.Studio = studio.Studio;
+                            item.StudioText = studio.StudioText;
+                            item.StudioTheatreId = studio.TheaterID;
+                            item.StudioMediaOrderID = studio.RequestId;
                             item.PlayStartDate = studio.PlayStartDate;
                             item.PlayEndDate = studio.PlayEndDate;
                             item.RequestID = studio.RequestId;
@@ -2052,7 +2058,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         item.ReferenceBusinessPartner = bpId;
                         const bpAddress = bpAddressMap.get(bpId);
                         if (bpAddress) {
-                            item.BPStreetName = bpAddress.StreetName;
+                            item.BPStreetName = bpAddress.StreetName + bpAddress.District  ;
                             item.BPCityName = bpAddress.CityName;
                             item.BPPostalCode = bpAddress.PostalCode;
                             item.BPRegion = bpAddress.Region;
