@@ -14,7 +14,7 @@ entity StatusStaging : cuid, managed {
     StatusDescription      : String(100);
     StatusTimeStamp        : Timestamp @cds.on.insert: $now;
     DistributorId          : Integer;
-    OriginatingEnvironment : String;
+    OriginatingEnvironment : String(1);
     studioId               : String(10);
     studioMediaOrderId     : String(40);
     studioRequestId        : String(40);
@@ -46,4 +46,30 @@ entity StatusConversion : cuid, managed {
     SapDocType            : String(4);
     Preference            : String(4);
     SapDocStatus          : String(1000) @UI.MultiLineText
+}
+
+entity StatusWebHooks : cuid {
+    DeliveryNumber  : String(10);
+    TrackingNumber  : String(100);
+    ShippyProStatus : String(20);
+    Date            : Date;
+    Time            : Time;
+}
+
+entity InterfaceStatus : cuid {
+    Studio         : String(10);
+    StudioName     : String(40);
+    TheaterID      : String(10);
+    TheaterName    : String(40);
+    SalesOrder     : String(10);
+    DeliveryNumber : String(10);
+    OrderType      : String(10);
+    BookingID      : String(40);
+    OrderID        : String(40);
+    Title          : String(20);
+    DeliveryMethod : String(100);
+    StatusDate     : Date;
+    StatusTime     : Time;
+    StatusName     : String(40);
+    StatusNote     : String(200);
 }
