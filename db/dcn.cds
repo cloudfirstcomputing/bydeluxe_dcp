@@ -30,6 +30,7 @@ entity StatusStaging : cuid, managed {
     Carrier                : String(40);
     ShipDate               : Timestamp;
     OrderType              : String(10);
+    SNSQueueStatus         : String(1);
     Reasons                : Composition of many {
                                  ID                : UUID;
                                  ReasonDescription : String(200)
