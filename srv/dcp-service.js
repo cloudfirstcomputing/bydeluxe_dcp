@@ -806,8 +806,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         if (entry_Active) {
                             data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
-                            recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
+                            if(!data[i].SalesOrder){
+                                data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
+                                data[i].Status_ID = 'D';
+    
+                                oResponseStatus.error.push({
+                                    "message": `| ${data[i].ErrorMessage} |`,
+                                    "errorMessage": data[i].ErrorMessage
+                                });
+                                
+                            }
+                            else{
+                                oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                                recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
+                            }
+                        }
+                        else{ //Entry for Update or Cancel not present
+                            data[i].ErrorMessage = `There is no record exist with incoming Booking ID${data[i].BookingID}`;
+                            data[i].Status_ID = 'D';
+                            oResponseStatus.error.push({
+                                "message": `| ${data[i].ErrorMessage} |`,
+                                "errorMessage": data[i].ErrorMessage
+                            });
                         }
                     }
                     else { //New Order
@@ -905,8 +925,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             let iDistroSpecID = distroSpecData?.DistroSpecID,
             sOrderType = oFeedData?.OrderType_code,
             sBookingType = oFeedData?.BookingType_ID,
-            sTheaterID = oFeedData?.TheaterID; 
-            let sTitle = distroSpecData?.Title_Product;
+            sTheaterID = oFeedData?.TheaterID,
+            sHFR = oFeedData?.HFR ,
+            sTitle = distroSpecData?.Title_Product;
             oFeedData.Title_Product = sTitle;
             if(sTitle){
                 let oMat = await prdtx.run(SELECT.one.from(TitleCustVH).where({Product: sTitle}));
@@ -937,6 +958,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             break;
                         }    
                     }                    
+                }
+            }
+            if(sHFR){
+                let aScheduleLine = [];
+                if(sHFR === "Y" && sBookingType === "NO"){
+                    aScheduleLine.push({"DelivBlockReasonForSchedLine": "50"});
+                }
+                else if(sHFR === "N" && sBookingType === "U"){
+
                 }
             }
             if (!sErrorMessage ){
@@ -1639,7 +1669,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
                 var aContentPkgDCP = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
-                var sKrakenTitlesForContentFromAssetVault, sContentPkgAssetIDs;
+                var sKrakenTitlesForContentFromAssetVault, sContentPkgAssetIDs, sKencastIDs;
                 var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
                     sPackageUUID = oKeyPackage?.PackageUUID;
@@ -1674,8 +1704,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var aDCPDet = aContentPkgDCP[c];
                         var aLinkedCPLUUIDs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.LinkedCPLUUID });
                         var aCTTs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.LinkedCTT });
-                        var aAssetIDs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.AssetMapUUID });
-                        var aUniqueAssetIDs = [...new Set(aAssetIDs)];
+                        let aAssetIDs = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.AssetMapUUID });
+                        let aUniqueAssetIDs = [...new Set(aAssetIDs)];
 
                         if (aLinkedCPLUUIDs?.length) {
                             aFinalCPLs = aFinalCPLs?.length ? [...aFinalCPLs, ...aLinkedCPLUUIDs] : [...aLinkedCPLUUIDs];
@@ -1698,21 +1728,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }                    
                     if (aFinalAssetIDs?.length) { //made it only for C as per email from Ravneet on 27th May and as discusssed with Pranav on 27th 3:17PM)
-                        sContentPkgAssetIDs = aFinalAssetIDs?.map((u) => { return u ? u : false }).join(`,`);
-                        oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
-                        await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
-                        
-                        var aKrakens = await SELECT.from(AssetVault_Local).columns(["ProjectID"]).
-                        where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
+                        // sContentPkgAssetIDs = aFinalAssetIDs?.map((u) => { return u ? u : false }).join(`,`);
+                        // oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
+                        // await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
+                        let aKencastID = await SELECT.from(AssetVault_Local).columns(["KencastID"]).
+                        where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving KencastID from Assetvault based on AssetID maintained in Content DCP
 
+                        if(aKencastID?.length){
+                            sKencastIDs = aKencastID?.map((item)=>{ return item.KencastID})?.join(',');
+                            oContentData.to_Item[i].AssetIDs = sKencastIDs;
+                            await updateItemTextForSalesOrder(req, "Z013", sKencastIDs, oResponseStatus, oSalesOrderItem, oContentData); 
+                        }                       
+                        
+                        let aKrakens = await SELECT.from(AssetVault_Local).columns(["ProjectID"]).
+                        where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
                         if(aKrakens?.length){
                             sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.ProjectID})?.join(',');
                             await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
                         }
-
                     }                         
-                }  
-       
+                }
                 if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9 (made it for both C and K as per discussion on 22nd May)
                     // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
                     var oProdGroup = await prdgrp1tx.run(SELECT.one.from(S4H_ProductGroup1).where({ AdditionalMaterialGroup1: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
