@@ -947,16 +947,36 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 for(let i in aExistingEntry){
                     let oExistingEntry = aExistingEntry[i];
                     let sCreatedAt = oExistingEntry?.createdAt;
-                    if(sCreatedAt){
+    
+                    var sStartDate = oFeedData?.PlayStartDate;
+                    var sStartTime = oFeedData?.PlayStartTime;
+                    var sEndDate = oFeedData?.PlayEndDate;
+                    var sEndTime = oFeedData?.PlayEndTime;
+                    var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(`${sStartDate}T00:00:00`);
+                    var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(`${sEndDate}T00:00:00`);
+                    var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
+
+                    if(dStartDate && dEndDate && sCreatedAt){
                         let dCreatedAt = new Date(sCreatedAt);
-                        let dToday = new Date();
+                        // let dToday = new Date();
                         let sSalesOrder = oExistingEntry?.SalesOrder;
-                        let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
-                        if(iDiffInDays < 7 && sSalesOrder){
+                        // let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                        // if(iDiffInDays < 7 && sSalesOrder){
+                        //     sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
+                        //     oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
+                        //     break;
+                        // }
+                        // if(dStartDate.getTime() <= dCreatedAt.getTime() && dEndDate.getTime() >= dCreatedAt.getTime() && sSalesOrder){
+                        //     let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                        // } 
+
+                        let iDiffStartInDays = (dStartDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                        let iDiffEndInDays = (dEndDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                        if((!(iDiffStartInDays < 0) && iDiffStartInDays <7) || (!(iDiffEndInDays <0 ) && iDiffEndInDays <7)){
                             sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
                             oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
                             break;
-                        }    
+                        }
                     }                    
                 }
             }
