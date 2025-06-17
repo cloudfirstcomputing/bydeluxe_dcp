@@ -1733,6 +1733,27 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (aUniqueAssetIDs?.length) {
                             aFinalAssetIDs = aFinalAssetIDs?.length ? [...aFinalAssetIDs, ...aUniqueAssetIDs] : [...aUniqueAssetIDs];
                         }
+
+                        var aDCPMats = aContentPkgDCP[c]?.to_DCPDetail?.map((item) => { return item.DCP });
+                        let aUniqueDCPMats = [...new Set(aDCPMats)];
+                        if(aDCPMats?.length){
+                            let aKencastID = await SELECT.from(AssetVault_Local).columns(["KencastID"]).
+                            where({ ProjectID : {'IN': aUniqueDCPMats} }); //Retrieving KencastID from Assetvault based on AssetID maintained in Content DCP
+
+                            if(aKencastID?.length){
+                                sKencastIDs = aKencastID?.map((item)=>{ return item.KencastID})?.join(',');
+                                oContentData.to_Item[i].AssetIDs = sKencastIDs;
+                                if(sKencastIDs)
+                                await updateItemTextForSalesOrder(req, "Z013", sKencastIDs, oResponseStatus, oSalesOrderItem, oContentData); 
+                            }  
+                            let aKrakens = await SELECT.from(AssetVault_Local).columns(["ProjectID"]).
+                            where({ ProjectID : {'IN': aUniqueDCPMats} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
+                            if(aKrakens?.length){
+                                sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.ProjectID})?.join(',');
+                                if(sKrakenTitlesForContentFromAssetVault)
+                                await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
+                            }                             
+                        }
                     }
                     if (aFinalCTTs?.length) { //RULE 9.1
                         sContentPkgCTTs = aFinalCTTs?.map((u) => { return u ? u : false }).join(`,`);
@@ -1744,28 +1765,28 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oContentData.to_Item[i].CPLUUID = sContentPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sContentPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }                    
-                    if (aFinalAssetIDs?.length) { //made it only for C as per email from Ravneet on 27th May and as discusssed with Pranav on 27th 3:17PM)
-                        // sContentPkgAssetIDs = aFinalAssetIDs?.map((u) => { return u ? u : false }).join(`,`);
-                        // oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
-                        // await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
-                        let aKencastID = await SELECT.from(AssetVault_Local).columns(["KencastID"]).
-                        where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving KencastID from Assetvault based on AssetID maintained in Content DCP
+                    // if (aFinalAssetIDs?.length) { //made it only for C as per email from Ravneet on 27th May and as discusssed with Pranav on 27th 3:17PM)
+                    //     // sContentPkgAssetIDs = aFinalAssetIDs?.map((u) => { return u ? u : false }).join(`,`);
+                    //     // oContentData.to_Item[i].AssetIDs = sContentPkgAssetIDs;
+                    //     // await updateItemTextForSalesOrder(req, "Z013", sContentPkgAssetIDs, oResponseStatus, oSalesOrderItem, oContentData); 
+                    //     let aKencastID = await SELECT.from(AssetVault_Local).columns(["KencastID"]).
+                    //     where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving KencastID from Assetvault based on AssetID maintained in Content DCP
 
-                        if(aKencastID?.length){
-                            sKencastIDs = aKencastID?.map((item)=>{ return item.KencastID})?.join(',');
-                            oContentData.to_Item[i].AssetIDs = sKencastIDs;
-                            if(sKencastIDs)
-                            await updateItemTextForSalesOrder(req, "Z013", sKencastIDs, oResponseStatus, oSalesOrderItem, oContentData); 
-                        }                       
+                    //     if(aKencastID?.length){
+                    //         sKencastIDs = aKencastID?.map((item)=>{ return item.KencastID})?.join(',');
+                    //         oContentData.to_Item[i].AssetIDs = sKencastIDs;
+                    //         if(sKencastIDs)
+                    //         await updateItemTextForSalesOrder(req, "Z013", sKencastIDs, oResponseStatus, oSalesOrderItem, oContentData); 
+                    //     }                       
                         
-                        let aKrakens = await SELECT.from(AssetVault_Local).columns(["ProjectID"]).
-                        where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
-                        if(aKrakens?.length){
-                            sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.ProjectID})?.join(',');
-                            if(sKrakenTitlesForContentFromAssetVault)
-                            await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
-                        }
-                    }                         
+                    //     let aKrakens = await SELECT.from(AssetVault_Local).columns(["ProjectID"]).
+                    //     where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
+                    //     if(aKrakens?.length){
+                    //         sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.ProjectID})?.join(',');
+                    //         if(sKrakenTitlesForContentFromAssetVault)
+                    //         await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
+                    //     }
+                    // }                         
                 }
                 if (oSalesOrderItem?.AdditionalMaterialGroup1 && sPackageName) { //RULE 9.9 (made it for both C and K as per discussion on 22nd May)
                     // var oProdGroup = await s4h_prodGroup.run(SELECT.one.from(S4_ProductGroupText).where({ MaterialGroup: oSalesOrderItem?.AdditionalMaterialGroup1, Language: 'EN' }));
