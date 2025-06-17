@@ -103,55 +103,50 @@
    "@sap.updatable": "false",
    "@sap.deletable": "false",
    "@sap.content.version": "1",
-   "@sap.semantics": "aggregate",
    "@sap.label": "Consumption view for Proforma report",
    "elements": {
-    "ID": {
-     "key": true,
-     "type": "cds.LargeString",
-     "@sap.sortable": "false",
-     "@sap.filterable": "false",
-     "notNull": true
-    },
     "SalesDocument": {
+     "key": true,
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
-     "@sap.label": "Sales Document"
+     "@sap.label": "Sales Document",
+     "notNull": true
     },
     "SalesDocumentItem": {
+     "key": true,
      "type": "cds.String",
      "length": 6,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "NonNegative",
      "@sap.required.in.filter": "false",
      "@sap.text": "SalesDocumentItemText",
-     "@sap.label": "Sales Document Item"
+     "@sap.label": "Sales Document Item",
+     "notNull": true
     },
     "Customer": {
+     "key": true,
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Customer",
-     "@sap.quickinfo": "Customer Number"
+     "@sap.quickinfo": "Customer Number",
+     "notNull": true
     },
     "Partner": {
+     "key": true,
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Customer",
-     "@sap.quickinfo": "Customer Number"
+     "@sap.quickinfo": "Customer Number",
+     "notNull": true
     },
     "AddressID": {
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Address Number"
@@ -165,7 +160,6 @@
     },
     "CreationDate": {
      "type": "cds.Date",
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "Date",
      "@sap.required.in.filter": "false",
      "@sap.label": "Created On",
@@ -173,7 +167,6 @@
     },
     "LastChangeDate": {
      "type": "cds.Date",
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "Date",
      "@sap.required.in.filter": "false",
      "@sap.label": "Changed On",
@@ -182,7 +175,6 @@
     "OverallSDProcessStatus": {
      "type": "cds.String",
      "length": 1,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Overall Status",
@@ -191,24 +183,13 @@
     "ShippingCondition": {
      "type": "cds.String",
      "length": 2,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Shipping Conditions"
     },
-    "ReferenceSDDocument": {
-     "type": "cds.String",
-     "length": 10,
-     "@sap.aggregation.role": "dimension",
-     "@sap.display.format": "UpperCase",
-     "@sap.required.in.filter": "false",
-     "@sap.label": "Reference Document",
-     "@sap.quickinfo": "Document Number of Reference Document"
-    },
     "AdditionalMaterialGroup1": {
      "type": "cds.String",
      "length": 3,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Material Group 1"
@@ -217,18 +198,15 @@
      "type": "cds.Decimal",
      "precision": 15,
      "scale": 3,
-     "@sap.aggregation.role": "measure",
      "@sap.required.in.filter": "false",
      "@sap.unit": "TransactionCurrency",
      "@sap.variable.scale": "true",
      "@sap.label": "Net Value",
-     "@sap.quickinfo": "Net Value of the Document Item in Document Currency",
-     "@sap.filterable": "false"
+     "@sap.quickinfo": "Net Value of the Document Item in Document Currency"
     },
     "TransactionCurrency": {
      "type": "cds.String",
      "length": 5,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Document Currency",
@@ -238,25 +216,14 @@
     "PricingReferenceMaterial": {
      "type": "cds.String",
      "length": 18,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Pricing Ref. Matl",
      "@sap.quickinfo": "Pricing Reference Material"
     },
-    "ShippingPoint": {
-     "type": "cds.String",
-     "length": 4,
-     "@sap.aggregation.role": "dimension",
-     "@sap.display.format": "UpperCase",
-     "@sap.required.in.filter": "false",
-     "@sap.label": "Shipping Point",
-     "@sap.quickinfo": "Shipping Point / Receiving Point"
-    },
     "Plant": {
      "type": "cds.String",
      "length": 4,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Plant",
@@ -271,7 +238,6 @@
     "TotalDeliveryStatus": {
      "type": "cds.String",
      "length": 1,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Ovrl Delivery Status",
@@ -280,7 +246,6 @@
     "AddressID_1": {
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Address Number"
@@ -288,21 +253,18 @@
     "CityName": {
      "type": "cds.String",
      "length": 40,
-     "@sap.aggregation.role": "dimension",
      "@sap.required.in.filter": "false",
      "@sap.label": "City"
     },
     "StreetName": {
      "type": "cds.String",
      "length": 60,
-     "@sap.aggregation.role": "dimension",
      "@sap.required.in.filter": "false",
      "@sap.label": "Street"
     },
     "PostalCode": {
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Postal Code",
@@ -311,7 +273,6 @@
     "Country": {
      "type": "cds.String",
      "length": 3,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Country/Region Key"
@@ -319,7 +280,6 @@
     "Region": {
      "type": "cds.String",
      "length": 3,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Region",
@@ -328,7 +288,6 @@
     "AddresseeName1": {
      "type": "cds.String",
      "length": 40,
-     "@sap.aggregation.role": "dimension",
      "@sap.required.in.filter": "false",
      "@sap.label": "AddressName",
      "@sap.quickinfo": "Name 1"
@@ -336,7 +295,6 @@
     "ReferenceBusinessPartner": {
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Business Partner",
@@ -379,7 +337,6 @@
     "MaterialGroup": {
      "type": "cds.String",
      "length": 9,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Material Group"
@@ -387,7 +344,6 @@
     "BPTheatreFullName": {
      "type": "cds.String",
      "length": 80,
-     "@sap.aggregation.role": "dimension",
      "@sap.required.in.filter": "false",
      "@sap.label": "Full Name",
      "@sap.quickinfo": "Full Name of Person"
@@ -395,7 +351,6 @@
     "FreeDefinedAttribute06_yysales": {
      "type": "cds.String",
      "length": 3,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Circuit Name",
@@ -404,7 +359,6 @@
     "CustomerPurchaseOrderType": {
      "type": "cds.String",
      "length": 4,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Purchase Order Type",
@@ -413,7 +367,6 @@
     "ReferenceBusinessPartner_A": {
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Business Partner",
@@ -422,7 +375,6 @@
     "SoldToParty": {
      "type": "cds.String",
      "length": 10,
-     "@sap.aggregation.role": "dimension",
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Sold-to Party"

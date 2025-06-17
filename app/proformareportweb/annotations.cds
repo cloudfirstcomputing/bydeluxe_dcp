@@ -320,11 +320,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : ReferenceSDDocument,
-                Label : '{i18n>Referencesddocument1}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : ReferenceBusinessPartner,
                 Label : 'Ship-To BP',
             },
@@ -337,11 +332,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
                 $Type : 'UI.DataField',
                 Value : BPStreetName,
                 Label : '{i18n>Streetname}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : ShippingPoint,
-                Label : '{i18n>Shippingpoint}',
             },
             {
                 $Type : 'UI.DataField',
