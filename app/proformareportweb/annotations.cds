@@ -8,7 +8,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
     FilterRestrictions : {
         $Type              : 'Capabilities.FilterRestrictionsType',
         RequiredProperties : [
-            Customer
         ],
     }
     },
@@ -25,7 +24,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
             {
                 $Type : 'UI.DataField',
-                Value : Partner,
+                Value : BPTheatreFullName,
                 Label : '{i18n>ReferenceBusinessPartner}',
             },
                         {
@@ -83,6 +82,12 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : DeliveryStatusDescription,
             Label : '{i18n>DeliveryStatusDescription}',
         },
+           {
+            $Type : 'UI.DataField',
+            Value : CustomerPurchaseOrderType,
+            Label : '{i18n>CustomerPurchaseOrderType}',
+        },
+        
         {
             $Type : 'UI.DataField',
             Value : CreationDate,
@@ -95,8 +100,8 @@ annotate BookingOrderService.S4H_ProformaReport with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : SalesDocumentItemText,
-            Label : '{i18n>SalesDocumentItemText}',
+            Value : SalesDocument,
+            Label : '{i18n>Salesdocument}',
         },
                 {
             $Type : 'UI.DataField',
@@ -117,9 +122,9 @@ annotate BookingOrderService.S4H_ProformaReport with @(
                 {
             $Type : 'UI.DataField',
             Value : ShipDate,
-            Label : '{i18n>Shipdate1}',
+            Label : '{i18n>Shipdate}',
         },
-                {
+        {
                 $Type : 'UI.DataField',
                 Value : NetAmount,
                 Label : '{i18n>Netamount}',
@@ -140,11 +145,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : AdditionalMaterialGroup1,
             Label : '{i18n>Additionalmaterialgroup1}',
         },
-         {
-            $Type : 'UI.DataField',
-            Value : AdditionalMaterialGroup1Name,
-            Label : '{i18n>AdditionalMaterialGroup1Name}',
-        },
+
 
         
         {
@@ -182,11 +183,6 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : RegionNameDes,
             Label : '{i18n>RegionName}',
         },
-               {
-            $Type : 'UI.DataField',
-            Value : SalesDocument,
-            Label : '{i18n>Salesdocument}',
-        },
         {
             $Type : 'UI.DataField',
             Value : SalesDocumentItem,
@@ -200,7 +196,7 @@ annotate BookingOrderService.S4H_ProformaReport with @(
     ],
     UI.SelectionFields : [
         CreationDate,
-        Customer 
+        SoldToParty 
         
     ],
     UI.Facets : [
@@ -412,7 +408,7 @@ annotate BookingOrderService.S4H_ProformaReport with {
 };
 
 annotate BookingOrderService.S4H_ProformaReport with {
-    Customer              @Common: {
+    SoldToParty              @Common: {
         Label          : '{i18n>Studio}',
         FieldControl : #Mandatory,
         Text: {
@@ -426,7 +422,7 @@ annotate BookingOrderService.S4H_ProformaReport with {
             Parameters     : [
                 {
                     $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty:  Customer,
+                    LocalDataProperty:  SoldToParty,
                     ValueListProperty: 'BusinessPartner',
                 },
                 {

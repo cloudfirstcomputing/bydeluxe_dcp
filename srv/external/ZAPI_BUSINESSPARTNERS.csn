@@ -384,7 +384,7 @@
      "@sap.required.in.filter": "false",
      "@sap.label": "Material Group"
     },
-    "FullName": {
+    "BPTheatreFullName": {
      "type": "cds.String",
      "length": 80,
      "@sap.aggregation.role": "dimension",
@@ -400,6 +400,32 @@
      "@sap.required.in.filter": "false",
      "@sap.label": "Circuit Name",
      "@sap.quickinfo": "Attribute 6"
+    },
+    "CustomerPurchaseOrderType": {
+     "type": "cds.String",
+     "length": 4,
+     "@sap.aggregation.role": "dimension",
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Purchase Order Type",
+     "@sap.quickinfo": "Customer Purchase Order Type"
+    },
+    "ReferenceBusinessPartner_A": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.aggregation.role": "dimension",
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Business Partner",
+     "@sap.quickinfo": "Business Partner Number"
+    },
+    "SoldToParty": {
+     "type": "cds.String",
+     "length": 10,
+     "@sap.aggregation.role": "dimension",
+     "@sap.display.format": "UpperCase",
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Sold-to Party"
     }
    }
   }

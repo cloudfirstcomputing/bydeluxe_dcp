@@ -2933,7 +2933,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 });
 
                 // Construct GRMatItemNode array with mapped product details
-                const GRMatItemNode = materialDocument[0].to_MaterialDocumentItem.reduce((accum, item) => {
+                const GRMatItemNode = materialDocument[0].to_MaterialDocumentItem?.reduce((accum, item) => {
                     if (item.MaterialDocumentItem == oMaterialDocument.MaterialDocumentItem) {
                         accum.push({
                             AccountAssignmentCategory: oMaterialDocument.MaterialDocument,
@@ -2973,7 +2973,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             MaterialDocumentItem: item.MaterialDocumentItem,
                             MaterialDocumentYear: item.MaterialDocumentYear,
                             MaterialGrossWeight: 13.0,
-                            MaterialName: productMap[item.Material]?.ProductManufacturerNumber == '' ? productMap[item.Material]?.to_Description[0].ProductDescription : productMap[item.Material]?.ProductManufacturerNumber, // Barcode text,
+                            MaterialName: productMap[item.Material]?.ProductManufacturerNumber == '' ? productMap[item.Material]?.to_Description !== undefined ? productMap[item.Material]?.to_Description[0].ProductDescription : '' : productMap[item.Material]?.ProductManufacturerNumber, // Barcode text,
                             MaterialNetWeight: 12.0,
                             MaterialSizeOrderDimensionDesc: "",
                             MaterialVolume: 0.0,
@@ -3586,7 +3586,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "InvoiceNo": billingHeader.to_Item[0].BillingDocument,
                             "InvoiceDate": billingHeader.BillingDocumentDate,
                             "Terms": oPaymentTermsText.PaymentTermsName,
-                            "PaymentDueDate": oJournalEntryItem.NetDueDate
+                            "PaymentDueDate": oJournalEntryItem?.NetDueDate
                         },
                         "BillTo": {
                             "BillToAddress": oBusinessPartnerAddrfromS4?.FullName + "," + oBusinessPartnerAddrfromS4?.HouseNumber + "," + oBusinessPartnerAddrfromS4?.StreetName + "," + oBusinessPartnerAddrfromS4?.CityName + "," + oBusinessPartnerAddrfromS4?.PostalCode + "," + oBusinessPartnerAddrfromS4?.Region + "," + oBusinessPartnerAddrfromS4?.Country,
