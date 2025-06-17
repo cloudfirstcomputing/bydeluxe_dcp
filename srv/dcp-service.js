@@ -1754,6 +1754,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if(aKencastID?.length){
                             sKencastIDs = aKencastID?.map((item)=>{ return item.KencastID})?.join(',');
                             oContentData.to_Item[i].AssetIDs = sKencastIDs;
+                            if(sKencastIDs)
                             await updateItemTextForSalesOrder(req, "Z013", sKencastIDs, oResponseStatus, oSalesOrderItem, oContentData); 
                         }                       
                         
@@ -1761,6 +1762,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         where({ AssetMapID : {'IN': aFinalAssetIDs} }); //Retrieving Krakens from Assetvault based on AssetID maintained in Content DCP
                         if(aKrakens?.length){
                             sKrakenTitlesForContentFromAssetVault = aKrakens?.map((item)=>{ return item.ProjectID})?.join(',');
+                            if(sKrakenTitlesForContentFromAssetVault)
                             await updateItemTextForSalesOrder(req, "Z006", sKrakenTitlesForContentFromAssetVault, oResponseStatus, oSalesOrderItem, oContentData); 
                         }
                     }                         

@@ -15,7 +15,7 @@ using {YY1_PROFORMADELIVDOCUMENT_CDS_0001 as S4_proforma_delivDoc} from '../srv/
 
 using api from '../db/common';
 using deluxe.distribution as dist from '../db/distribution';
-
+using deluxe.assetvault as av from '../db/asset-vault';
 service BookingOrderService {
     entity dcpcontent                   as projection on db.dcpcontent;
     action createContent(Records : array of dcpcontent)                                                    returns String;
@@ -55,6 +55,20 @@ service BookingOrderService {
     entity S4H_BPCustomer               as projection on S4_BuisnessPartner.A_Customer;
     entity GeoRegions                   as projection on dist.GeoRegions;
     entity GeoCountries                 as projection on dist.GeoCountries;
+    @readonly
+    entity CplList              as
+        select from av.DistributionDcp._Items as a
+        inner join av.DistributionDcp as b
+            on a.up_.ProjectID = b.ProjectID
+        {
+            key DCP,
+            key a.LinkedCPLUUID,
+                a.LinkedCTT,
+                a.AssetMapUUID,
+                b.ProjectID,
+                a.Download,
+                a.Email
+        }
     // define view ProformaReport as select from S4H_ProformaReport as s4rep left outer join DistroSpec_Local as disspec on disspec.DistroSpecID = 6; 
     extend projection S4H_ProformaReport with {
         virtual null as PlayStartDate: Date,
