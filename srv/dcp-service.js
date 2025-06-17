@@ -960,15 +960,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }                    
                 }
             }
-            if(sHFR){
-                let aScheduleLine = [];
-                if(sHFR === "Y" && sBookingType === "NO"){
-                    aScheduleLine.push({"DelivBlockReasonForSchedLine": "50"});
-                }
-                else if(sHFR === "N" && sBookingType === "U"){
-
-                }
-            }
             if (!sErrorMessage ){
                 if (oFeedData.RequestedDelivDate) {
                     oPayLoad.RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`
@@ -1412,7 +1403,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 if(sShippingType_Key !== '03' && sShippingType_Key !== '06' && sShippingType_Key !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                     if (oDCPMapping) {
                                         if(!oPayLoad.to_Item?.find((item)=>{return item.Material === oDCPMapping.Material})){
-                                            oPayLoad.to_Item.push({
+                                            let oItemEntry = {
                                                 "Material": oDCPMapping?.Material,
                                                 "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
                                                 "RequestedQuantity": '1',
@@ -1422,7 +1413,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "ShippingType": '07',
                                                 "ProfitCenter": oDCPMapping?.ProfitCenter,
                                                 "ProductionPlant":oDCPMapping?.Plant
-                                            });
+                                            };
+                                            if(sHFR){
+                                                if(sHFR === "Y" && sBookingType === "NO"){
+                                                    oItemEntry["to_ScheduleLine"] = {"DelivBlockReasonForSchedLine": "50"};
+                                                }
+                                            }
+                                            oPayLoad.to_Item.push(...oItemEntry);
                                         }
                                     }
                                     else {
@@ -1433,7 +1430,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             "errorMessage": sErrorMessage
                                         });
                                     }
-                                }
+                                } 
                             }
                         }
                     }
