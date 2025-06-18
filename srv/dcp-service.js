@@ -1402,7 +1402,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "DeliveryPriority": `1`,
                                                 "PricingReferenceMaterial": distroSpecData?.Title_Product,
                                                 "ShippingType": sShippingType_Content,
-                                                "LongText": sLongText,
                                                 "AdditionalMaterialGroup1": oDCPMapping?.MaterialGroup,
                                                 "ProfitCenter": oDCPMapping?.ProfitCenter,
                                                 "ProductionPlant":oDCPMapping?.Plant
@@ -1439,7 +1438,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     oItemEntry["to_ScheduleLine"] = {"DelivBlockReasonForSchedLine": "50"};
                                                 }
                                             }
-                                            oPayLoad.to_Item.push(...oItemEntry);
+                                            // oPayLoad.to_Item.push({...oItemEntry})
                                         }
                                     }
                                     else {

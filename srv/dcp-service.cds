@@ -66,8 +66,8 @@ service BookingOrderService {
                 a.LinkedCTT,
                 a.AssetMapUUID,
                 b.ProjectID,
-                a.Download,
-                a.Email
+                b.KencastID,
+                b.KrakenTitleID
         }
     // define view ProformaReport as select from S4H_ProformaReport as s4rep left outer join DistroSpec_Local as disspec on disspec.DistroSpecID = 6; 
     extend projection S4H_ProformaReport with {
