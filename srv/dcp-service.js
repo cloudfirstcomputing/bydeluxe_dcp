@@ -10,7 +10,7 @@ const xmljs = require("xml-js");
 module.exports = class BookingOrderService extends cds.ApplicationService {
     async init() {
         const { dcpcontent, dcpkey, S4H_SOHeader, S4H_BuisnessPartner, DistroSpec_Local, AssetVault_Local, S4H_CustomerSalesArea, S4H_ProformaReport, BookingStatus, DCPMaterialMapping, S4H_ProductGroup1,
-            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList_Local, S4H_BusinessPartnerAddress, Languages, S4H_ProformaDeliveryDoc, TitleCustVH,
+            S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList, S4H_BusinessPartnerAddress, Languages, S4H_ProformaDeliveryDoc, TitleCustVH,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
@@ -1438,6 +1438,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     oItemEntry["to_ScheduleLine"] = {"DelivBlockReasonForSchedLine": "50"};
                                                 }
                                             }
+                                            oPayLoad.to_Item.push(oItemEntry);
                                             // oPayLoad.to_Item.push({...oItemEntry})
                                         }
                                     }
@@ -1684,8 +1685,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     await updateItemTextForSalesOrder(req, "Z004", oContentPackage.GofilexTitleID, oResponseStatus, oSalesOrderItem, oContentData);
                 }
                 var aKeyPkgCPL = oKeyPackage?.to_CPLDetail, aKeyPkgCTT = [], sKeyPkgCTTs, aKeyPkgCPLUUID = [], sKeyPkgCPLUUIDs; //For Key package CTT and CPLUUID
+                let aKeyKenCastIDs = [], aKeyKrakenIDs = [];
                 var aContentPkgDCP = oContentPackage?.to_DCPMaterial, sContentPkgCTTs, sContentPkgCPLUUIDs; //For Content package CTT and CPLUUID
-                var sKrakenTitlesForContentFromAssetVault, sContentPkgAssetIDs, sKencastIDs;
+                var sKrakenTitlesForContentFromAssetVault, sContentPkgAssetIDs, sKencastIDs, sKeyKenCasts, sKeyKrakenIDs;
                 var sPackageUUID, sPackageName;
                 if (sShippingType === '07') { //Key Order Item
                     sPackageUUID = oKeyPackage?.PackageUUID;
@@ -1695,9 +1697,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     for (var c in aKeyPkgCPL) {
                         if (aKeyPkgCPL[c]?.CPLUUID) {
                             aKeyPkgCPLUUID.push(aKeyPkgCPL[c]?.CPLUUID);
-                            const assetvault = await SELECT.one.from(CplList_Local).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID });
-                            aKeyPkgCTT.push(assetvault?.LinkedCTT);
+                            const oCplList = await SELECT.one.from(CplList).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID, KrakenTitleID: {'!=': '', '!=': null} });
+                            aKeyPkgCTT.push(oCplList?.LinkedCTT);
+                            aKeyKenCastIDs.push(oCplList?.KencastID); 
+                            aKeyKrakenIDs.push(oCplList?.KrakenTitleID);
                         }
+                    }
+                    // if (aKeyKenCastIDs?.length) { 
+                    //     sKeyKenCasts = aKeyKenCastIDs?.map((u) => { return u ? u : false }).join(`,`);
+                    //     oContentData.to_Item[i].AssetIDs = sKeyKenCasts;
+                    //     await updateItemTextForSalesOrder(req, "Z013", sKeyKenCasts, oResponseStatus, oSalesOrderItem, oContentData);
+                    // }
+                    if (aKeyKrakenIDs?.length) { 
+                        sKeyKrakenIDs = aKeyKrakenIDs?.map((u) => { return u ? u : false }).join(`,`);
+                        oContentData.to_Item[i].KrakenIDs = sKeyKrakenIDs;
+                        await updateItemTextForSalesOrder(req, "Z006", sKeyKrakenIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }
                     if (aKeyPkgCTT?.length) { //RULE 9.1
                         sKeyPkgCTTs = aKeyPkgCTT?.map((u) => { return u ? u : false }).join(`,`);
