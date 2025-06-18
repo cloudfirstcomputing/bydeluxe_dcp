@@ -1697,10 +1697,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     for (var c in aKeyPkgCPL) {
                         if (aKeyPkgCPL[c]?.CPLUUID) {
                             aKeyPkgCPLUUID.push(aKeyPkgCPL[c]?.CPLUUID);
-                            const oCplList = await SELECT.one.from(CplList).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID, KrakenTitleID: {'!=': '', '!=': null} });
+                            const oCplList = await SELECT.one.from(CplList).where({ LinkedCPLUUID: aKeyPkgCPL[c]?.CPLUUID });
                             aKeyPkgCTT.push(oCplList?.LinkedCTT);
                             aKeyKenCastIDs.push(oCplList?.KencastID); 
-                            aKeyKrakenIDs.push(oCplList?.KrakenTitleID);
+                            aKeyKrakenIDs.push(oCplList?.ProjectID);
                         }
                     }
                     // if (aKeyKenCastIDs?.length) { 
