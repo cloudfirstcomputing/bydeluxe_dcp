@@ -618,6 +618,10 @@
       "YY1_PROFORMAREPORT_CDS_0001": {
         "kind": "odata-v2",
         "model": "srv/external/YY1_PROFORMAREPORT_CDS_0001"
+      },
+      "YY1_PROFORMAREPORTAPI_CDS_0001": {
+        "kind": "odata-v2",
+        "model": "srv/external/YY1_PROFORMAREPORTAPI_CDS_0001"
       }
     }
   },

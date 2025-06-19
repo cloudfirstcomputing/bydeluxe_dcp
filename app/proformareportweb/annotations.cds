@@ -394,7 +394,8 @@ annotate BookingOrderService.S4H_ProformaReport with {
 };
 
 annotate BookingOrderService.S4H_ProformaReport with {
-    PartnerFunction @Common.Label : 'PartnerFunction'
+    PartnerFunction @Common.Label : 'PartnerFunction';
+    PricingReferenceMaterial @UI.Hidden: true
 };
 
 annotate BookingOrderService.S4H_ProformaReport with {

@@ -7272,10 +7272,6 @@
   "Distrospec_SRV": {
    "kind": "service",
    "@cds.external": true,
-   "@CodeList.UnitsOfMeasure": {
-    "Url": "../../../../default/iwbep/common/0001/$metadata",
-    "CollectionPath": "UnitsOfMeasure"
-   },
    "@Common.ApplyMultiUnitBehaviorForSortingAndFiltering": true,
    "@Capabilities.FilterFunctions": [
     "eq",
