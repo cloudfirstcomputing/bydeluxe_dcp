@@ -803,10 +803,101 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         recordsToBeUpdated.push(entry_Active); 
                     }
                     else if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
-                        var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                        // var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                        var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} });
                         if (entry_Active) {
                             data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                            if(!data[i].SalesOrder){
+                            if(entry_Active?.SalesOrder){
+                                // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                                // recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
+                                let sSalesOrder = entry_Active.SalesOrder, oFeedData = data[i];
+                                let sHFR_Incoming = oFeedData?.HFR;
+                                let dReqDelDate = entry_Active?.RequestedDelivDate;
+                                entry_Active.IsActive="N";
+                                recordsToBeUpdated.push(entry_Active); 
+
+                                oFeedData.SalesOrder = entry_Active.SalesOrder;
+                                oFeedData.IsActive = "Y";
+
+                                let oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
+                                var aSalesOrderItems = oSalesOrder.to_Item;
+                                let bItemForHFRUpdate_CancelPresent = false;  
+                                for (var p in aSalesOrderItems) {
+                                    let oSalesOrderItem = aSalesOrderItems[p];
+                                    let sShippingType = oSalesOrderItem?.ShippingType; 
+                                    if(oFeedData.BookingType_ID === 'U' && sShippingType === '07'){
+                                        if (oFeedData.RequestedDelivDate && dReqDelDate && oFeedData.RequestedDelivDate !== dReqDelDate) {
+                                            let RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
+                                            let ConfirmedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
+                                            let sDelBlockReason = "";
+                                            if(sHFR_Incoming === "Y" && oFeedData.HFR === "Y"){
+                                                    sDelBlockReason = "50";
+                                            }
+                                            bItemForHFRUpdate_CancelPresent = true; 
+                                                await s4h_sohv2_Txn.send({
+                                                    method: 'PATCH',
+                                                    path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,
+                                                    data: {
+                                                        "DelivBlockReasonForSchedLine":sDelBlockReason,
+                                                        "RequestedDeliveryDate":RequestedDeliveryDate,
+                                                        "ConfirmedDeliveryDate": ConfirmedDeliveryDate               
+                                                    }
+                                                }).catch((err) => {
+                                                    oResponseStatus.error.push({
+                                                        "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
+                                                        "errorMessage": err.message
+                                                    });
+                                                }).then((result, param2) => {
+                                                    oResponseStatus.success.push({
+                                                        "BookingID": oFeedData?.BookingID,
+                                                        "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line is created |`
+                                                    });
+                                                    oFeedData.Status_ID = "C";
+                                                });                                                                                     
+                                        }
+                                        else {    
+                                            data[i].ErrorMessage = `| No Change in Delivery Date for HFR update |`;
+                                            oResponseStatus.error.push({
+                                                "message": data[i].ErrorMessage,
+                                                "errorMessage": data[i].ErrorMessage
+                                            });
+                                        }
+                                    }//Update Block
+                                    else if(oFeedData.BookingType_ID === 'C'){ //Cancel  
+                                        bItemForHFRUpdate_CancelPresent = true;  
+                                        await s4h_sohv2_Txn.send({
+                                            method: 'PATCH',
+                                            path: `/A_SalesOrderItem(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}')`,
+                                            data: {
+                                                "SalesDocumentRjcnReason":"70"                
+                                            }
+                                        }).catch((err) => {
+                                            oResponseStatus.error.push({
+                                                "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `,
+                                                "errorMessage": err.message
+                                            });
+                                        }).then((result, param2) => {
+                                                oResponseStatus.success.push({
+                                                    "BookingID": oFeedData?.BookingID,
+                                                    "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem} has been cancelled |`
+                                                });
+                                                oFeedData.Status_ID = "C";
+                                        });
+                                    }//End of Cancel block                                     
+                                }//End of Sales Order Item Iteration
+                               if(!bItemForHFRUpdate_CancelPresent){
+                                data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
+                                data[i].Status_ID = 'D';
+    
+                                oResponseStatus.error.push({
+                                    "message": `| ${data[i].ErrorMessage} |`,
+                                    "errorMessage": data[i].ErrorMessage
+                                });   
+
+                               }                             
+                            // recordsToBeInserted.push(data[i]); This done at the end  
+                            }
+                            else{ //No active Sales Order in the existing entry                                
                                 data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
                                 data[i].Status_ID = 'D';
     
@@ -814,22 +905,18 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     "message": `| ${data[i].ErrorMessage} |`,
                                     "errorMessage": data[i].ErrorMessage
                                 });
-                                
-                            }
-                            else{
-                                oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
-                                recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
                             }
                         }
                         else{ //Entry for Update or Cancel not present
-                            data[i].ErrorMessage = `There is no record exist with incoming Booking ID${data[i].BookingID}`;
-                            data[i].Status_ID = 'D';
+                            oFeedData.ErrorMessage = `There is no record exist with incoming Booking ID${oFeedData.BookingID}`;
+                            oFeedData.Status_ID = 'D';
                             oResponseStatus.error.push({
-                                "message": `| ${data[i].ErrorMessage} |`,
-                                "errorMessage": data[i].ErrorMessage
+                                "message": `| ${oFeedData.ErrorMessage} |`,
+                                "errorMessage": oFeedData.ErrorMessage
                             });
                         }
-                    }
+                        oLocalResponse = oResponseStatus;
+                    }//End of HFR = U or C
                     else { //New Order
                         var oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
                         if (oExistingData) {
@@ -846,10 +933,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === data[i].BookingID});
-                    if (oLocalResponse?.success?.length && !oErrorEntry) {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && data[i].BookingType_ID === "NO") {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
                     }
-                    if (oLocalResponse?.success?.length && !oErrorEntry) {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && data[i].BookingType_ID === "NO") {
                         // oResponseStatus?.success?.push(...oLocalResponse?.success);
                         data[i].SalesOrder = oLocalResponse?.SalesOrder;
                         data[i].DeliveryMethod = oLocalResponse?.DeliveryMethod;
@@ -1433,11 +1520,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 "ProfitCenter": oDCPMapping?.ProfitCenter,
                                                 "ProductionPlant":oDCPMapping?.Plant
                                             };
-                                            if(sHFR){
-                                                if(sHFR === "Y" && sBookingType === "NO"){
-                                                    oItemEntry["to_ScheduleLine"] = {"DelivBlockReasonForSchedLine": "50"};
-                                                }
-                                            }
+                                            // if(sHFR){
+                                            //     if(sHFR === "Y" && sBookingType === "NO"){
+                                            //         oItemEntry["to_ScheduleLine"] = [{
+                                            //             "RequestedDeliveryDate": `/Date(${new Date().getTime()})/`,
+                                            //             "DelivBlockReasonForSchedLine": "50"
+                                            //         }];
+                                            //     }
+                                            // }
+
                                             oPayLoad.to_Item.push(oItemEntry);
                                             // oPayLoad.to_Item.push({...oItemEntry})
                                         }
@@ -1708,7 +1799,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     //     oContentData.to_Item[i].AssetIDs = sKeyKenCasts;
                     //     await updateItemTextForSalesOrder(req, "Z013", sKeyKenCasts, oResponseStatus, oSalesOrderItem, oContentData);
                     // }
-                    if (aKeyKrakenIDs?.length) { 
+                    if (aKeyKrakenIDs?.length) {
+                        aKeyKrakenIDs = [...new Set(aKeyKrakenIDs) ];
                         sKeyKrakenIDs = aKeyKrakenIDs?.map((u) => { return u ? u : false }).join(`,`);
                         oContentData.to_Item[i].KrakenIDs = sKeyKrakenIDs;
                         await updateItemTextForSalesOrder(req, "Z006", sKeyKrakenIDs, oResponseStatus, oSalesOrderItem, oContentData);
@@ -1723,6 +1815,32 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oContentData.to_Item[i].CPLUUID = sKeyPkgCPLUUIDs;
                         await updateItemTextForSalesOrder(req, "Z005", sKeyPkgCPLUUIDs, oResponseStatus, oSalesOrderItem, oContentData);
                     }  
+                    let sHFR = oContentData?.HFR, sBookingType = oContentData?.BookingType_ID;
+                    if(sHFR){
+                        if(sHFR === "Y" && sBookingType === "NO"){
+                            await s4h_sohv2_Txn.send({
+                                method: 'PATCH',
+                                path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,
+                                data: {
+                                    "DelivBlockReasonForSchedLine":"50"
+    
+                                }
+                            }).catch((err) => {
+                                oResponseStatus.warning.push({
+                                    "message": `| For Booking ID: ${oContentData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
+                                    "errorMessage": err.message
+                                });
+                            }).then((result, param2) => {
+                                // if (result) {
+                                    oResponseStatus.success.push({
+                                        "BookingID": oContentData?.BookingID,
+                                        "message": `| For Booking ID: ${oContentData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line is created |`
+                                    });
+                                // }
+                            });                            
+                        }
+                    }
+                        
                 }
                 else { //Content Order item
                     sPackageUUID = oContentPackage?.PackageUUID;
@@ -2834,10 +2952,10 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
 
                     VersionDescription = oAssetVault?.VersionDescription;
                     var Product = oAssetVault?.Title;
-                    if (Product) {
-                        var oProdLongText = await s4h_products_Crt.run(SELECT.one.from(ProductBasicText).where({ Product: Product, Language: 'EN' }));
-                        Title = oProdLongText?.LongText;
-                    }
+                    // if (Product) {
+                    //     var oProdLongText = await s4h_products_Crt.run(SELECT.one.from(ProductBasicText).where({ Product: Product, Language: 'EN' }));
+                    //     Title = oProdLongText?.LongText;
+                    // }
                     var convertedBytes = await convertBytes(oAssetVault?.AssetMapFileSize);
                     TotalSize = convertedBytes;
 
@@ -2851,9 +2969,14 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     //         })
                     // }).where({ Title_Product: DCPBarcode });
                     // var sBupa = distroSpecData?.to_StudioKey?.[0]?.Studio_BusinessPartner;
-                    let oTitle = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: Product, TitleType: 'Parent' });
-                    var sBupa = oTitle?.StudioDistributor;
-
+                    let oTitleV = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: Product, TitleType: 'Parent' });
+                    var sBupa = oTitleV?.StudioDistributor;
+                    if(oTitleV?.UseSecureName === "No"){
+                        Title = oTitleV.OriginalTitleName;
+                    }
+                    else{
+                       Title = oTitleV.SecurityTitle;
+                    }
                     if (sBupa) {
                         var oBupa = await s4h_bp_Txn.run(SELECT.one.columns(['BusinessPartnerFullName']).from(S4H_BuisnessPartner).where({ BusinessPartner: sBupa }));
                         Studio = oBupa?.BusinessPartnerFullName;
