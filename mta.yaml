@@ -121,10 +121,6 @@ modules:
             - proformareportweb.zip
           name: proformareportweb
           target-path: resources/
-        - artifacts:
-            - comdlxdcnstatus.zip
-          name: comdlxdcnstatus
-          target-path: resources/
   - name: comdlxdistribution
     type: html5
     path: app/distribution
@@ -218,16 +214,6 @@ modules:
   - name: proformareportweb
     type: html5
     path: app/proformareportweb
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-  - name: comdlxdcnstatus
-    type: html5
-    path: app/dcnstatus
     build-parameters:
       build-result: dist
       builder: custom

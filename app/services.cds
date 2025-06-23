@@ -16,5 +16,3 @@ using from './dcpmatmap/annotations';
 using from './normalizedorder/annotations';
 
 using from './proformareportweb/annotations';
-
-using from './dcnstatus/annotations';
