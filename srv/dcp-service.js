@@ -454,7 +454,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return;
             }
             if (!oFeedDBData.SalesOrder) {
-                req.reject(501, "Please Select an entry where Sales Order is available for remediation");
+                aResponseStatus.push({
+                    "message": `Please Select an entry where Sales Order is available for remediation`,
+                    "status": "E"
+                });
+                
+                req.reply({
+                    code: 201,
+                    message: JSON.stringify(aResponseStatus)
+                });
                 return;
             }
             sSalesOrder = oFeedDBData?.SalesOrder;
