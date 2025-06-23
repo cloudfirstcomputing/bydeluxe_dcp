@@ -833,7 +833,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} });
                         if (entry_Active) {
                             data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                            if(entry_Active?.SalesOrder){
+                            if(entry_Active?.SalesOrder){ //SO available, so try for Update or Cancel
                                 // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
                                 // recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
                                 let sSalesOrder = entry_Active.SalesOrder, oFeedData = data[i];
@@ -846,81 +846,94 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oFeedData.IsActive = "Y";
 
                                 let oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
-                                var aSalesOrderItems = oSalesOrder.to_Item;
-                                let bItemForHFRUpdate_CancelPresent = false;  
-                                for (var p in aSalesOrderItems) {
-                                    let oSalesOrderItem = aSalesOrderItems[p];
-                                    let sShippingType = oSalesOrderItem?.ShippingType; 
-                                    if(oFeedData.BookingType_ID === 'U' && sShippingType === '07'){
-                                        if (oFeedData.RequestedDelivDate && dReqDelDate && oFeedData.RequestedDelivDate !== dReqDelDate) {
-                                            let RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
-                                            let ConfirmedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
-                                            let sDelBlockReason = "";
-                                            if(sHFR_Incoming === "Y" && oFeedData.HFR === "Y"){
-                                                    sDelBlockReason = "50";
+                                if(oSalesOrder?.OverallDeliveryStatus === "A"){ //GO for update/Cancel only if DelStatus =
+                                    var aSalesOrderItems = oSalesOrder.to_Item;
+                                    let bItemForHFRUpdate_CancelPresent = false;  
+                                    for (var p in aSalesOrderItems) {
+                                        let oSalesOrderItem = aSalesOrderItems[p];
+                                        let sShippingType = oSalesOrderItem?.ShippingType; 
+                                        if(oFeedData.BookingType_ID === 'U'){
+                                            if (oFeedData.RequestedDelivDate && dReqDelDate && oFeedData.RequestedDelivDate !== dReqDelDate) {
+                                                let RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
+                                                let ConfirmedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
+                                                let sDelBlockReason = "";
+                                                if(sHFR_Incoming === "Y" && oFeedData.HFR === "Y"  && sShippingType === '07'){
+                                                        sDelBlockReason = "50";
+                                                }
+                                                bItemForHFRUpdate_CancelPresent = true; 
+                                                    await s4h_sohv2_Txn.send({
+                                                        method: 'PATCH',
+                                                        path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,
+                                                        data: {
+                                                            "DelivBlockReasonForSchedLine":sDelBlockReason,
+                                                            "RequestedDeliveryDate":RequestedDeliveryDate,
+                                                            "ConfirmedDeliveryDate": ConfirmedDeliveryDate               
+                                                        }
+                                                    }).catch((err) => {
+                                                        oResponseStatus.error.push({
+                                                            "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
+                                                            "errorMessage": err.message
+                                                        });
+                                                    }).then((result, param2) => {
+                                                        oResponseStatus.success.push({
+                                                            "BookingID": oFeedData?.BookingID,
+                                                            "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line is created |`
+                                                        });
+                                                        oFeedData.Status_ID = "C";
+                                                    });                                                                                     
                                             }
-                                            bItemForHFRUpdate_CancelPresent = true; 
-                                                await s4h_sohv2_Txn.send({
-                                                    method: 'PATCH',
-                                                    path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,
-                                                    data: {
-                                                        "DelivBlockReasonForSchedLine":sDelBlockReason,
-                                                        "RequestedDeliveryDate":RequestedDeliveryDate,
-                                                        "ConfirmedDeliveryDate": ConfirmedDeliveryDate               
-                                                    }
-                                                }).catch((err) => {
-                                                    oResponseStatus.error.push({
-                                                        "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
-                                                        "errorMessage": err.message
-                                                    });
-                                                }).then((result, param2) => {
+                                            else {    
+                                                data[i].ErrorMessage = `| No Change in Delivery Date for HFR update |`;
+                                                oResponseStatus.error.push({
+                                                    "message": data[i].ErrorMessage,
+                                                    "errorMessage": data[i].ErrorMessage
+                                                });
+                                            }
+                                        }//Update Block
+                                        else if(oFeedData.BookingType_ID === 'C'){ //Cancel  
+                                            bItemForHFRUpdate_CancelPresent = true;  
+                                            await s4h_sohv2_Txn.send({
+                                                method: 'PATCH',
+                                                path: `/A_SalesOrderItem(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}')`,
+                                                data: {
+                                                    "SalesDocumentRjcnReason":"70"                
+                                                }
+                                            }).catch((err) => {
+                                                oResponseStatus.error.push({
+                                                    "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `,
+                                                    "errorMessage": err.message
+                                                });
+                                            }).then((result, param2) => {
                                                     oResponseStatus.success.push({
                                                         "BookingID": oFeedData?.BookingID,
-                                                        "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line is created |`
+                                                        "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem} has been cancelled |`
                                                     });
                                                     oFeedData.Status_ID = "C";
-                                                });                                                                                     
-                                        }
-                                        else {    
-                                            data[i].ErrorMessage = `| No Change in Delivery Date for HFR update |`;
-                                            oResponseStatus.error.push({
-                                                "message": data[i].ErrorMessage,
-                                                "errorMessage": data[i].ErrorMessage
                                             });
-                                        }
-                                    }//Update Block
-                                    else if(oFeedData.BookingType_ID === 'C'){ //Cancel  
-                                        bItemForHFRUpdate_CancelPresent = true;  
-                                        await s4h_sohv2_Txn.send({
-                                            method: 'PATCH',
-                                            path: `/A_SalesOrderItem(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}')`,
-                                            data: {
-                                                "SalesDocumentRjcnReason":"70"                
-                                            }
-                                        }).catch((err) => {
-                                            oResponseStatus.error.push({
-                                                "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `,
-                                                "errorMessage": err.message
-                                            });
-                                        }).then((result, param2) => {
-                                                oResponseStatus.success.push({
-                                                    "BookingID": oFeedData?.BookingID,
-                                                    "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem} has been cancelled |`
-                                                });
-                                                oFeedData.Status_ID = "C";
-                                        });
-                                    }//End of Cancel block                                     
-                                }//End of Sales Order Item Iteration
-                               if(!bItemForHFRUpdate_CancelPresent){
-                                data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
-                                data[i].Status_ID = 'D';
-    
-                                oResponseStatus.error.push({
-                                    "message": `| ${data[i].ErrorMessage} |`,
-                                    "errorMessage": data[i].ErrorMessage
-                                });   
+                                        }//End of Cancel block                                     
+                                    }//End of Sales Order Item Iteration
+                                    if(!bItemForHFRUpdate_CancelPresent){
+                                    data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
+                                    data[i].Status_ID = 'D';
+        
+                                    oResponseStatus.error.push({
+                                        "message": `| ${data[i].ErrorMessage} |`,
+                                        "errorMessage": data[i].ErrorMessage
+                                    }); 
 
-                               }                             
+                                }  
+
+                                } 
+                                else{ //Delivery already completed, so cannot be updated/cancelled                              
+                                    data[i].ErrorMessage = `Delivery already created for this order ${data[i].SalesOrder} (Status: ${oSalesOrder?.OverallDeliveryStatus}), hence can not change the order`;
+                                    data[i].Status_ID = 'D';
+        
+                                    oResponseStatus.error.push({
+                                        "message": `| ${data[i].ErrorMessage} |`,
+                                        "errorMessage": data[i].ErrorMessage
+                                    });
+
+                                }                            
                             // recordsToBeInserted.push(data[i]); This done at the end  
                             }
                             else{ //No active Sales Order in the existing entry                                
