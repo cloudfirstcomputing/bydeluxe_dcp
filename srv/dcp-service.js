@@ -377,14 +377,32 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!element.PlayStartDate) {
                         sValidationError = sValidationError + "Play Start Date is mandatory.\n";
                     }
+                    else{
+                        let isValidDate = await checkDateFormat(element.PlayStartDate);
+                        if(!isValidDate){
+                            sValidationError = sValidationError + "Play Start Date should be in YYYY-MM-DD format.\n";
+                        }
+                    }
                     if (!element.PlayEndDate) {
                         sValidationError = sValidationError + "Play End Date is mandatory.\n";
+                    }
+                    else{
+                        let isValidDate = await checkDateFormat(element.PlayEndDate);
+                        if(!isValidDate){
+                            sValidationError = sValidationError + "Play End Date should be in YYYY-MM-DD format.\n";
+                        }
                     }
                     if (!element.CustomerReference) {
                         sValidationError = sValidationError + "Distrospec ID is mandatory.\n";
                     }
                     if (!element.RequestedDelivDate) {
                         sValidationError = sValidationError + "RequestedDelivDate is mandatory.\n";
+                    }
+                    else{
+                        let isValidDate = await checkDateFormat(element.RequestedDelivDate);
+                        if(!isValidDate){
+                            sValidationError = sValidationError + "Requested Delivery Date should be in YYYY-MM-DD format.\n";
+                        }
                     }
                     if (!element.BookingType_ID) {
                         sValidationError = sValidationError + "BookingType is mandatory.\n";
@@ -414,8 +432,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
         });
         this.on('reconcileStudioFeed', async (req, res) => {
-            var aBookingID = req.data?.aBookingID;
-            var aFeeds = await SELECT.from(StudioFeed).where({ BookingID: { "IN": aBookingID }, IsActive: 'Y' });
+            var aIDs = req.data?.aBookingID;
+            var aFeeds = await SELECT.from(StudioFeed).where({ ID: { "IN": aIDs }});
             aFeeds = aFeeds?.map((feed) => {
                 feed.BookingType_ID = 'C';
                 return feed
@@ -1634,6 +1652,19 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             const newDate = new Date(date);
             newDate.setDate(date.getDate() + days);
             return newDate;
+        }
+        const  checkDateFormat = async (dateString)=> {
+
+            // 1. Check format with regex
+            const regex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!regex.test(dateString)) {
+                return false;
+            }
+            
+            // 2. Validate date components
+            const date = new Date(dateString);
+            // Check if it's a valid date and if the parsed date matches the original string
+            return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === dateString;
         }
         const getDistroSpecData = async (req, oContentData, aDeliverySeqFromDistHeader) => {
             let distroSpecData, sOrigin = oContentData.Origin_OriginID,

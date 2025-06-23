@@ -366,7 +366,6 @@ sap.ui.define([
                         validateTheExcelData:function(data, filename){
                             that.Obj = this;
                             var response;
-
                             var uploadSuccess = oResourceBundle.getText("uploadSuccess"),
                                 uploadSuccessTitle = oResourceBundle.getText("uploadSuccessTitle"),
                                 uploadSuccessCount = oResourceBundle.getText("uploadSuccessCount"),
@@ -739,17 +738,8 @@ sap.ui.define([
                     aData = [];
                     break;
                 }
-                else if (!oEntry?.BookingID) {
-                    MessageBox.error(`Retry after selecting Booking ID from table settings`, {
-                        title: "Error",
-                        contentWidth: "auto",
-                        styleClass: sResponsivePaddingClasses
-                    });
-                    aData = [];
-                    break;
-                }
                 else {
-                    aData.push(oEntry.BookingID);
+                    aData.push(oEntry.ID);
                 }
             }
             if (aData?.length) {
@@ -808,7 +798,7 @@ sap.ui.define([
                     }
                 );
             }
-        },
+        }
         
     };
 });
