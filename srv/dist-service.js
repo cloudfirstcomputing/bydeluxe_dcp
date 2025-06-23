@@ -400,7 +400,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             }
 
             var oGoFilex = await _gofilexcreation(req);
-            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex
+            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex.titleId
         })
 
         async function _gofilexcreation(req) {

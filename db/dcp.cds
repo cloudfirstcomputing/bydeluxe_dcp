@@ -483,10 +483,10 @@ entity OrderRequest : managed {
         IsCancellation       : Boolean;
         DeliveryType         : String(50);
         IsRemediation        : Boolean;
-        DeliveryAddress      : Composition of one AddressType;
-        PhysicalAddress      : Composition of one AddressType;
-        Package              : Composition of one PackageType;
-        Vendor               : Composition of one VendorType;
+        DeliveryAddress      : Composition of one AddressType on DeliveryAddress.OrderRequest = $self;
+        PhysicalAddress      : Composition of one AddressType on PhysicalAddress.OrderRequest = $self;
+        Package              : Composition of one PackageType on Package.OrderRequest = $self;
+        Vendor               : Composition of one VendorType on Vendor.OrderRequest = $self;
 }
 
 entity AddressType {
@@ -502,13 +502,14 @@ entity AddressType {
         ISO          : String(10);
         PostalCode   : String(20);
         Region       : String(50);
-        OrderRequest : Association to OrderRequest;
+ key   OrderRequest : Association to OrderRequest;
 }
 
 entity PackageType {
     key ID           : Integer;
         Description  : String(200);
         TitleName    : String(500);
+    key OrderRequest : Association to OrderRequest;
         Compositions : Composition of one CompositionType
                            on Compositions.Package = $self;
 }
@@ -525,7 +526,7 @@ entity CompositionType {
         ContentSize       : String(200);
         IsUpdated         : Boolean;
         CompositionStatus : String(50);
-        Package           : Association to PackageType;
+     key Package           : Association to PackageType;
 }
 
 entity VendorType {
@@ -534,7 +535,7 @@ entity VendorType {
         Email        : String(500);
         Phone        : String(50);
         Fax          : String(50);
-        OrderRequest : Association to OrderRequest;
+    key OrderRequest : Association to OrderRequest;
 }
 
 //OFE Key

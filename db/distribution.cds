@@ -101,6 +101,7 @@ entity Package {
         ValidFrom          : Date       @mandatory;
         ValidTo            : Date       @mandatory;
         GofilexTitleID     : String;
+        KrakenID           : String;
         DeliveryMethod1    : Association to api.ShippingConditions;
         DeliveryMethod2    : Association to api.ShippingConditions;
         DeliveryMethod3    : Association to api.ShippingConditions;
