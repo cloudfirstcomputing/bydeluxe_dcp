@@ -400,14 +400,16 @@ module.exports = class DistributionService extends cds.ApplicationService {
             }
 
             var oGoFilex = await _gofilexcreation(req);
-            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex.titleId
+            req.data.to_Package[req.data.to_Package.length - 1].KrakenID = oGoFilex.KrakenID
+            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex.GoFilex
         })
 
         async function _gofilexcreation(req) {
             var sBearer = await getBearerToken();
             var oGoFilex_DEST = await cds.connect.to("GoFilex_api");
             const headers = {
-                Authorization: `Bearer ${sBearer}`
+                Authorization: `Bearer ${sBearer}`,
+                'Content-Type': 'application/json'
             };
             // const headers = {
             //     "Content-Type": 'application/json',
@@ -415,11 +417,11 @@ module.exports = class DistributionService extends cds.ApplicationService {
             // };
             // Print PDF code logic
             var sUrl = "/dc-delivery-gofilex-api/v1/gofilex-portals/urn:deluxe:dc-delivery-gofilex:gofilex-portal:56657f4a-0e58-48e6-a425-3fb3567a0484/proxy/api/method/v1/title/add"
-
+            const sUUID = uuidv4()
             const data = {
                 "identifier": {
                     "source": "deluxe",
-                    "value": uuidv4()
+                    "value": sUUID
                 },
                 "name": req.data.to_Package[req.data.to_Package.length - 1].PackageName,
                 "releaseDate": req.data.ReleaseDate,
@@ -435,9 +437,37 @@ module.exports = class DistributionService extends cds.ApplicationService {
                 data,
                 headers
             });
-            return oGoFilex
-        }
 
+            const aMaterialSet = [...new Set(
+                req.data.to_Package
+                    .flatMap(pkg => pkg.to_DCPMaterial || []) // flatten all DCPMaterials
+                    .map(mat => mat.DCPMaterialNumber_Product) // extract the values
+                    .filter(Boolean) // optional: remove undefined/null
+            )];
+
+            const aAsssetVault = await SELECT.from(CplList).where({ DCP: { "IN": aMaterialSet } })
+            const aAssetMapUUIDs = aAsssetVault.map(obj => obj.AssetMapUUID);
+            var sAssetUrl = "/dc-delivery-gofilex-api/v1/gofilex-portals/urn:deluxe:dc-delivery-gofilex:gofilex-portal:56657f4a-0e58-48e6-a425-3fb3567a0484/proxy/api/method/v1/assets/link/to/title"
+
+            var sDataLinkAsset = {
+                "assetUuids": aAssetMapUUIDs,
+                "titleId": oGoFilex.titleId
+            }
+
+
+
+            var oGoFilex = await oGoFilex_DEST.send({
+                method: "POST",
+                path: sAssetUrl,
+                data: JSON.stringify(sDataLinkAsset),
+                headers
+            });
+
+            return {
+                "GoFilex": oGoFilex.titleId,
+                "KrakenID": sUUID
+            }
+        }
 
         async function getBearerToken() {
             const tokenUrl = 'https://login.dmlib.in/oauth2/aussw63cpzrSVEZDi0h7/v1/token';

@@ -116,6 +116,7 @@ annotate service.Package with {
     Priority         @Common: {Label: '{i18n>Priority}', };
     OrderType        @Common: {Label: '{i18n>OrderType}', };
     GofilexTitleID   @Common: {Label: '{i18n>GofilexTitleID}', };
+    KrakenID         @Common: {Label: '{i18n>KrakenID}', };
     DeliveryMethod1  @Common: {
         Label          : '{i18n>DeliveryMethod1}',
         Text           : DeliveryMethod1.ShippingConditionName,
@@ -679,6 +680,10 @@ annotate service.Package with @(
             {
                 $Type: 'UI.DataField',
                 Value: GofilexTitleID,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: KrakenID,
             }
         ],
     },
