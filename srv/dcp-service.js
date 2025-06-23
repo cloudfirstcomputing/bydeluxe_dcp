@@ -822,27 +822,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     });
                 }
                 else {
-                    var oLocalResponse;
+                    var oLocalResponse, oExistingData;
                     if(bReconcile){
-                        let entry_Active = await SELECT.one.from(hanatable).where({ ID: data[i].ID });
-                        oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
-                        recordsToBeUpdated.push(entry_Active); 
+                        oExistingData = await SELECT.one.from(hanatable).where({ ID: data[i].ID });
+                        // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                        // recordsToBeUpdated.push(entry_Active); 
                     }
-                    else if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
+                    if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                         // var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                        var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} });
-                        if (entry_Active) {
-                            data[i].Version = entry_Active.Version ? entry_Active.Version + 1 : 1;
-                            if(entry_Active?.SalesOrder){ //SO available, so try for Update or Cancel
-                                // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
-                                // recordsToBeUpdated.push(entry_Active); //This record will be set as Inactive
-                                let sSalesOrder = entry_Active.SalesOrder, oFeedData = data[i];
+                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({createdAt:'desc'});
+                        if (oExistingData && oExistingData?.SalesOrder) {
+                            data[i].Version = oExistingData.Version ? oExistingData.Version + 1 : 1;
+                            // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                                // recordsToBeUpdated.push(oExistingData); //This record will be set as Inactive
+                                let sSalesOrder = oExistingData.SalesOrder, oFeedData = data[i];
                                 let sHFR_Incoming = oFeedData?.HFR;
-                                let dReqDelDate = entry_Active?.RequestedDelivDate;
-                                entry_Active.IsActive="N";
-                                recordsToBeUpdated.push(entry_Active); 
+                                let dReqDelDate = oExistingData?.RequestedDelivDate;
+                                oExistingData.IsActive="N";
+                                recordsToBeUpdated.push(oExistingData); 
 
-                                oFeedData.SalesOrder = entry_Active.SalesOrder;
+                                oFeedData.SalesOrder = oExistingData.SalesOrder;
                                 oFeedData.IsActive = "Y";
 
                                 let oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
@@ -912,7 +911,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             });
                                         }//End of Cancel block                                     
                                     }//End of Sales Order Item Iteration
-                                    if(!bItemForHFRUpdate_CancelPresent){
+                                    if(!bItemForHFRUpdate_CancelPresent && !data[i].ErrorMessage){
                                     data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
                                     data[i].Status_ID = 'D';
         
@@ -930,35 +929,25 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         
                                     oResponseStatus.error.push({
                                         "message": `| ${data[i].ErrorMessage} |`,
-                                        "errorMessage": data[i].ErrorMessage
+                                        "errorMessage": data[i].ErrorMessage,
+                                        "BookingID":data[i].BookingID
                                     });
 
-                                }                            
-                            // recordsToBeInserted.push(data[i]); This done at the end  
-                            }
-                            else{ //No active Sales Order in the existing entry                                
-                                data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
-                                data[i].Status_ID = 'D';
-    
-                                oResponseStatus.error.push({
-                                    "message": `| ${data[i].ErrorMessage} |`,
-                                    "errorMessage": data[i].ErrorMessage
-                                });
-                            }
+                                }     
                         }
                         else{ //Entry for Update or Cancel not present
-                            oFeedData.ErrorMessage = `There is no record exist with incoming Booking ID${oFeedData.BookingID}`;
-                            oFeedData.Status_ID = 'D';
+                            data[i].ErrorMessage = `There is no record exist with incoming Booking ID${data[i].BookingID} where Sales Order ${oExistingData?.SalesOrder} is linked for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
+                            data[i].Status_ID = 'D';
                             oResponseStatus.error.push({
-                                "message": `| ${oFeedData.ErrorMessage} |`,
-                                "errorMessage": oFeedData.ErrorMessage
+                                "message": `| ${data[i].ErrorMessage} |`,
+                                "errorMessage": data[i].ErrorMessage
                             });
                         }
                         oLocalResponse = oResponseStatus;
                     }//End of HFR = U or C
                     else { //New Order
-                        var oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
-                        if (oExistingData) {
+                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
+                        if (oExistingData && !bReconcile) {
                             oResponseStatus.nonpersistenterror.push({
                                 "BookingID": data[i].BookingID,
                                 "message": `| Booking ID ${data[i].BookingID} already exists|`,
