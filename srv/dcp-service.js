@@ -52,32 +52,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         //     SalesOrganization = aConfig?.find((e) => e.VariableName === 'SalesOrg_SPIRITWORLD')?.VariableValue,
         //     DistributionChannel = aConfig?.find((e) => e.VariableName === 'DistChannel_SPIRITWORLD')?.VariableValue,
         //     Division = aConfig?.find((e) => { return e.VariableName === 'Division_SPIRITWORLD' })?.VariableValue;
-        this.before("SAVE", StudioFeed.drafts, async (req) => {
-            var oFeed = req.data;
-            if(!oFeed.Version)
-                oFeed.Version = 1;
-            if(!oFeed.Origin_OriginID)
-                oFeed.Origin_OriginID = "M";
-            if(!oFeed.BookingType_ID)
-                oFeed.BookingType_ID='NO'
-            oFeed.Status_ID = "A";
-        });
-        // this.on("SAVE", StudioFeed.drafts ,async(req, next)=>{
-        //     var oFeed = req.data;
-        //     oFeed.Version = 1;
-        //     oFeed.Origin_OriginID = "M";
-        //     oFeed.Status_ID = "A";
-        //     await createStudioFeeds(req, [oFeed]);
-        // });
-        this.on("CREATE", StudioFeed, async (req, next) => {
-            var oFeed = req.data;
-            var aResponse = await createStudioFeeds(req, [oFeed]);
 
-            req.reply({
-                code: 201,
-                message: aResponse
-            });
-        });
         const { Titles } = this.entities;
 
         // Define the mass upload action
@@ -313,7 +288,43 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
         this.on('READ', S4H_ProductGroup1, async (req) => {
             return prdgrp1tx.run(SELECT.from(S4H_ProductGroup1).where({ Language: req.locale.toUpperCase() }))
-        })
+        });
+        
+        // this.on("SAVE", StudioFeed.drafts ,async(req, next)=>{
+        //     var oFeed = req.data;
+        //     oFeed.Version = 1;
+        //     oFeed.Origin_OriginID = "M";
+        //     oFeed.Status_ID = "A";
+        //     await createStudioFeeds(req, [oFeed]);
+        // });
+        this.before("SAVE", StudioFeed.drafts, async (req) => {
+            var oFeed = req.data;
+            if(!oFeed.Version)
+                oFeed.Version = 1;
+            if(!oFeed.Origin_OriginID)
+                oFeed.Origin_OriginID = "M";
+            if(!oFeed.BookingType_ID)
+                oFeed.BookingType_ID='NO'
+            oFeed.Status_ID = "A";
+        });
+        this.on("CREATE", StudioFeed, async (req, next) => {
+            var oFeed = req.data;
+            var oResponse = await createStudioFeeds(req, [oFeed]);
+            if(oResponse.nonpersistenterror){
+                req.error({
+                    code: 400,
+                    message: JSON.stringify(oResponse.nonpersistenterror)
+                });
+
+            }
+            else{
+                req.reply({
+                    code: 201,
+                    message: oResponse
+                });
+
+            }
+        });        
         this.on('MassUploadStudioFeed', async (req, res) => {
             try {
                 let excelData = {}
@@ -498,7 +509,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 return (s4Item.MaterialGroup !== 'Z004' && (s4Item.ItemBillingBlockReason === '' || s4Item.ItemBillingBlockReason !== '03') && s4Item.DeliveryPriority !== '04');
             });
             if (!aNonKeyItems?.length) { //RULE 11.1 => Remediation not possible for Key (Prod Group Z003)
-                req.reject(501, `Remediation cannot be done for Sales Order: ${sSalesOrder} as all items are key entries`);
+                req.error(400, `Remediation cannot be done for Sales Order: ${sSalesOrder} as all items are key entries`);
                 return;
             }
             else if (!oFeedDBData.DeliveryMethod) {

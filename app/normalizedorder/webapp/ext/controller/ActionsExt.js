@@ -459,7 +459,17 @@ sap.ui.define([
                                 });
                                 batchModel.refresh();
                                 BusyIndicator.hide();
-                            });
+                            }).catch(
+                                (err, param2) => {
+                                    MessageBox.error("Error occured", {
+                                        title: "Error",
+                                        details: err?.error?.message?err.error.message:err                                        ,
+                                        contentWidth: "auto",
+                                        styleClass: sResponsivePaddingClasses
+                                    });
+                                    BusyIndicator.hide();
+                                }
+                            );
                         },
 
                         // Code to upload the excelsheet data
@@ -559,7 +569,7 @@ sap.ui.define([
                                 });
                                 batchModel.refresh();
                                 oView.setBusy(false);
-                            });
+                            })
                         },
 
                         // Code to navigate to the errorTable.view.xml
@@ -702,7 +712,7 @@ sap.ui.define([
                                 (err, param2) => {
                                     MessageBox.error("Error occured", {
                                         title: "Error",
-                                        details: err,
+                                        details: err?.error?.message?err.error.message:err                                        ,
                                         contentWidth: "auto",
                                         styleClass: sResponsivePaddingClasses
                                     });
@@ -791,7 +801,7 @@ sap.ui.define([
                         BusyIndicator.hide();
                         MessageBox.error("Error occured", {
                             title: "Error",
-                            details: err,
+                            details: err?.error?.message?err.error.message:err,
                             contentWidth: "auto",
                             styleClass: sResponsivePaddingClasses
                         });
