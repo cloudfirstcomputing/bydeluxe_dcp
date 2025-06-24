@@ -63,7 +63,14 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return { processedField, lreq }
 
         }
-
+        const uniquePackageName = arr => {
+            let unq = [...new Set(arr.map(item => item.PackageName))]
+            if (unq.length !== arr.length) {
+                return false
+            } else {
+                return true
+            }
+        }
         const uniquePriority = arr => {
             const resArr = []
             const lookup = arr.reduce((a, e) => {
@@ -98,6 +105,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
             req.data.DistroSpecID = ++maxID
             req.data.FieldControl = 1
+            req.data.Status = true
             const titlev = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: req.data.Title_Product })
             req.data.ReleaseDate = titlev?.ReleaseDate
             req.data.RepertoryDate = titlev?.RepertoryDate
@@ -389,6 +397,19 @@ module.exports = class DistributionService extends cds.ApplicationService {
         })
 
         this.before('SAVE', DistroSpec, async req => {
+            const ds = await SELECT.one.from(DistroSpec).where({ Name: req.data.Name })
+            if (ds && ds.DistroSpecUUID !== req.data.DistroSpecUUID) {
+                req.error(400, `Distro Spec Name should not be identical: Distro SpecID ${ds.DistroSpecID}`)
+            }
+
+            if (!uniquePackageName(req.data.to_Package)) {
+                req.error(400, `Package Name should be unique in Content Package`)
+            }
+
+            if (!uniquePackageName(req.data.to_KeyPackage)) {
+                req.error(400, `Package Name should be unique in Key Package`)
+            }
+
             let ret = uniquePriority(req.data.to_Package)
             if (ret) {
                 req.error(400, `Priority should be unique in Content Package: ${ret}`)
@@ -397,11 +418,6 @@ module.exports = class DistributionService extends cds.ApplicationService {
             ret = uniquePriority(req.data.to_KeyPackage)
             if (ret) {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
-            }
-
-            const ds = await SELECT.one.from(DistroSpec).where({ Name: req.data.Name })
-            if (ds) {
-                req.error(400, `Distro Spec Name should not be identical: ${ds.DistroSpecID}`)
             }
 
             var aPackage = req.data.to_Package
