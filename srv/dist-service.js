@@ -398,19 +398,25 @@ module.exports = class DistributionService extends cds.ApplicationService {
             if (ret) {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
             }
-            if (req.data.DeliverySequence1_ShippingCondition == '02' || req.data.DeliverySequence10_ShippingCondition == '02' || 
-                req.data.DeliverySequence2_ShippingCondition == '02' || req.data.DeliverySequence3_ShippingCondition =='02' || 
-                req.data.DeliverySequence4_ShippingCondition == '02' || req.data.DeliverySequence5_ShippingCondition =='02' || 
-                req.data.DeliverySequence6_ShippingCondition == '02' || req.data.DeliverySequence7_ShippingCondition == '02' || 
-                req.data.DeliverySequence8_ShippingCondition == '02' || req.data.DeliverySequence9_ShippingCondition == '02') {
-                    var oGoFilex = await _gofilexcreation(req);
-                    req.data.to_Package[req.data.to_Package.length - 1].KrakenID = oGoFilex.KrakenID
-                    req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex.GoFilex
+
+            var aPackage = req.data.to_Package
+            for (var index in aPackage) {
+                if (aPackage[index].DeliveryMethod1 == '02' || aPackage[index].DeliveryMethod2 == '02' ||
+                    aPackage[index].DeliveryMethod3 == '02' || aPackage[index].DeliveryMethod4 == '02' ||
+                    aPackage[index].DeliveryMethod5 == '02' || aPackage[index].DeliveryMethod6 == '02' ||
+                    aPackage[index].DeliveryMethod7 == '02' || aPackage[index].DeliveryMethod8 == '02' ||
+                    aPackage[index].DeliveryMethod9 == '02' || aPackage[index].DeliveryMethod10 == '02') {
+                    var oGoFilex = await _gofilexcreation(aPackage[index], req.data.ReleaseDate);
+                    aPackage[index].KrakenID = oGoFilex.KrakenID
+                    aPackage[index].GofilexTitleID = oGoFilex.GoFilex
+                }
             }
-          
+
+            req.data.to_Package =  aPackage;
+
         })
 
-        async function _gofilexcreation(req) {
+        async function _gofilexcreation(Package, ReleaseDate) {
             var sBearer = await getBearerToken();
             var oGoFilex_DEST = await cds.connect.to("GoFilex_api");
             const headers = {
@@ -429,8 +435,8 @@ module.exports = class DistributionService extends cds.ApplicationService {
                     "source": "deluxe",
                     "value": sUUID
                 },
-                "name": req.data.to_Package[req.data.to_Package.length - 1].PackageName,
-                "releaseDate": req.data.ReleaseDate,
+                "name": Package.PackageName,
+                "releaseDate": ReleaseDate,
                 "ownerId": "HXXA6vm4DQ3Yrddiu",
                 "countries": [
                     "US"
@@ -445,8 +451,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             });
 
             const aMaterialSet = [...new Set(
-                req.data.to_Package
-                    .flatMap(pkg => pkg.to_DCPMaterial || []) // flatten all DCPMaterials
+                Packageto_DCPMaterial // flatten all DCPMaterials
                     .map(mat => mat.DCPMaterialNumber_Product) // extract the values
                     .filter(Boolean) // optional: remove undefined/null
             )];
