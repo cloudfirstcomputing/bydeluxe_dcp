@@ -22,6 +22,7 @@ entity DistroSpec : managed {
         Title              : Association to one TitleVH @mandatory;
         ReleaseDate        : Date;
         RepertoryDate      : Date;
+        Status             : Boolean;
         DeliverySequence1  : Association to api.ShippingConditions;
         DeliverySequence2  : Association to api.ShippingConditions;
         DeliverySequence3  : Association to api.ShippingConditions;
@@ -68,7 +69,7 @@ entity StudioKey {
 
 entity CustomerRef {
     key ID                : UUID;
-        CustomerReference : String(40);
+        CustomerReference : String(40) @mandatory;
         to_StudioKey      : Association to StudioKey;
         to_DistroSpec     : Association to DistroSpec;
 };
@@ -102,7 +103,7 @@ entity Package {
         ValidTo            : Date       @mandatory;
         GofilexTitleID     : String;
         KrakenID           : String;
-        DeliveryMethod1    : Association to api.ShippingConditions;
+        DeliveryMethod1    : Association to api.ShippingConditions @mandatory;
         DeliveryMethod2    : Association to api.ShippingConditions;
         DeliveryMethod3    : Association to api.ShippingConditions;
         DeliveryMethod4    : Association to api.ShippingConditions;

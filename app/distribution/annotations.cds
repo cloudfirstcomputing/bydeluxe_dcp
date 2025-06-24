@@ -28,6 +28,7 @@ annotate service.DistroSpec with {
         Text           : Title.ProductName,
         TextArrangement: #TextOnly,
     };
+    Status @Common: {Label: '{i18n>Active}', };
     DeliverySequence1  @Common: {
         Label          : '{i18n>DeliverySequence1}',
         Text           : DeliverySequence1.ShippingConditionName,
@@ -439,6 +440,10 @@ annotate service.DistroSpec with @(
             {
                 $Type: 'UI.DataField',
                 Value: RepertoryDate,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Status,
             }
         ],
     },
@@ -536,6 +541,10 @@ annotate service.DistroSpec with @(
         {
             $Type: 'UI.DataField',
             Value: Title_Product,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Status,
         },
     ],
 );
