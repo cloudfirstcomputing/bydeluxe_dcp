@@ -783,6 +783,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 data[i].Status_ID = "A";
                 data[i].IsActive = "Y";
                 data[i].Version = 1;
+                if(data[i]?.BookingType_ID !== "C" &&  data[i]?.BookingType_ID !== "U"){
+                    data[i].BookingType_ID = "NO";
+                }
                 let sEntityID = data[i].EntityID, sBupa = data[i].Studio_BusinessPartner;
                 oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
                 sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
@@ -977,10 +980,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === data[i].BookingID});
-                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID !== "U" || data[i].BookingType_ID !== "C")) {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID === "NO")) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
                     }
-                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID !== "U" || data[i].BookingType_ID !== "C")) {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID === "NO")) {
                         // oResponseStatus?.success?.push(...oLocalResponse?.success);
                         data[i].SalesOrder = oLocalResponse?.SalesOrder;
                         data[i].DeliveryMethod = oLocalResponse?.DeliveryMethod;
@@ -1890,7 +1893,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }  
                     let sHFR = oContentData?.HFR, sBookingType = oContentData?.BookingType_ID;
                     if(sHFR){
-                        if(sHFR === "Y" && (sBookingType !== "U" || sBookingType !== "C")){
+                        if(sHFR === "Y" && (sBookingType === "NO")){
                             await s4h_sohv2_Txn.send({
                                 method: 'PATCH',
                                 path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,
