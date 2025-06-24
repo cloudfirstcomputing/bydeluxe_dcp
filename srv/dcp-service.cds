@@ -12,32 +12,85 @@ using {API_PRODUCTGROUP_SRV as S4_prodGroup} from '../srv/external/API_PRODUCTGR
 // using {YY1_PROFORMAREPORTAPI1_CDS_0001 as S4_proforma} from '../srv/external/YY1_PROFORMAREPORTAPI1_CDS_0001.csn';
 using {ZAPI_BUSINESSPARTNERS as S4_proforma} from '../srv/external/ZAPI_BUSINESSPARTNERS.csn';
 using {YY1_PROFORMADELIVDOCUMENT_CDS_0001 as S4_proforma_delivDoc} from '../srv/external/YY1_PROFORMADELIVDOCUMENT_CDS_0001';
-
 using api from '../db/common';
 using deluxe.distribution as dist from '../db/distribution';
 using deluxe.assetvault as av from '../db/asset-vault';
+
 service BookingOrderService {
     entity dcpcontent                   as projection on db.dcpcontent;
-    action createContent(Records : array of dcpcontent)                                                    returns String;
-    action processContent(bookingIDs : array of String)                                                    returns String;
+    action createContent(Records : array of dcpcontent)                                                           returns String;
+    action processContent(bookingIDs : array of String)                                                           returns String;
     // action reconcileContent(bookingIDs: array of  String) returns String;
 
     entity dcpkey                       as projection on db.dcpkey;
-    action createKey(Records : array of dcpkey)                                                            returns String;
-    action postKeyToSAP(bookingIDs : array of String)                                                      returns String;
-    action MassUploadBookingFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)         returns UploadResponse;
+    action createKey(Records : array of dcpkey)                                                                   returns String;
+    action postKeyToSAP(bookingIDs : array of String)                                                             returns String;
+    action MassUploadBookingFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)                returns UploadResponse;
     // action reconcileKey(bookingIDs: array of  String) returns String;
-    
+
     //Normalized Order
     entity StudioFeed                   as projection on db.StudioFeed;
     annotate StudioFeed with @odata.draft.enabled;
-    action createStudioFeeds(StudioFeed : array of StudioFeed)                                             returns String;
-    action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)          returns UploadResponse;
+
+    action createStudioFeeds(StudioFeed : array of {
+        BookingID              : String;
+        SourceSystem           : String;
+        EntityID               : String;
+        Origin_OriginID        : String;
+        // Origin             : String        ;
+        Studio_BusinessPartner : String;
+        StudioText             : String;
+        CustomerReference      : String;
+        Title_Product          : String;
+        TitleText              : String;
+        CreatedOn              : Date;
+        RequestedDelivDate     : Date;
+        ReleaseID              : String;
+        OrderType_code         : String;
+        RecordType             : String;
+        BookingType_ID         : String;
+        TheaterID              : String;
+        Circuit                : String;
+        BookerName             : String;
+        RequestId              : String;
+        OrderID                : String;
+        PlayStartDate          : Date;
+        PlayStartTime          : Time;
+        PlayEndDate            : Date;
+        PlayEndTime            : Time;
+        KeyDeliveryOnDate      : Date;
+        KeyStartDate           : Date;
+        KeyStartTime           : Time;
+        KeyEndDate             : Date;
+        KeyEndTime             : Time;
+        HFR                    : String;
+        ShipmentIndicator      : String;
+        ScreeningIndicator     : String;
+        DepotID                : String;
+        SoundID                : String;
+        Language               : String;
+        SubtitleType1          : String;
+        SubtitleType2          : String;
+        PrintFormat            : String;
+        ShipPriority           : Integer;
+        PrintQuality           : String;
+        ApprovedScreens        : String;
+        CTTs                   : String;
+        CPLUUIDs               : String;
+        CountryCode            : String;
+        ScreenID               : String;
+        ContentType            : String;
+        CancelOrder            : String;
+        DeliveryType           : String;
+    })                                                                                                            returns String;
+
+    action MassUploadStudioFeed(fileData : LargeString, fileName : String, fieldNames : FieldMap)                 returns UploadResponse;
     action MassUploadManageMaterialTitle(fileData : LargeString, fileName : String, fieldNames : array of String) returns UploadResponse;
-    action remediateSalesOrder(ID : String)                                    returns String;
-    action reconcileStudioFeed(aBookingID : array of String)                                               returns String;
+    action remediateSalesOrder(ID : String)                                                                       returns String;
+    action reconcileStudioFeed(aBookingID : array of String)                                                      returns String;
+
     @readonly
-    entity TitleCustVH               as projection on db.TitleCustVH;
+    entity TitleCustVH                  as projection on db.TitleCustVH;
 
     entity S4H_SOHeader                 as projection on S4_SalesOrder.SalesOrder;
     entity S4H_BuisnessPartner          as projection on S4_BuisnessPartner.A_BusinessPartner;
@@ -55,8 +108,9 @@ service BookingOrderService {
     entity S4H_BPCustomer               as projection on S4_BuisnessPartner.A_Customer;
     entity GeoRegions                   as projection on dist.GeoRegions;
     entity GeoCountries                 as projection on dist.GeoCountries;
+
     @readonly
-    entity CplList              as
+    entity CplList                      as
         select from av.DistributionDcp._Items as a
         inner join av.DistributionDcp as b
             on a.up_.ProjectID = b.ProjectID
@@ -69,24 +123,25 @@ service BookingOrderService {
                 b.KencastID,
                 b.KrakenTitleID
         }
-    // define view ProformaReport as select from S4H_ProformaReport as s4rep left outer join DistroSpec_Local as disspec on disspec.DistroSpecID = 6; 
+
+    // define view ProformaReport as select from S4H_ProformaReport as s4rep left outer join DistroSpec_Local as disspec on disspec.DistroSpecID = 6;
     extend projection S4H_ProformaReport with {
-        virtual null as PlayStartDate: Date,
-        virtual null as PlayEndDate: Date,
-        virtual null as RequestID: String,
-        virtual null as PackageTitle: String,
-        virtual null as BookerName: String,
-        virtual null as BPStreetName: String,
-        virtual null as BPCityName: String,
-        virtual null as BPPostalCode: String,
-        virtual null as BPRegion: String,
-        virtual null as BPCountry: String,
-        virtual null as ShipDate: Date,
-        virtual null as StudioTheatreId: String ,
-        virtual null as StudioMediaOrderID: String ,
-           virtual null as StudioText: String 
+        virtual null as PlayStartDate      : Date,
+        virtual null as PlayEndDate        : Date,
+        virtual null as RequestID          : String,
+        virtual null as PackageTitle       : String,
+        virtual null as BookerName         : String,
+        virtual null as BPStreetName       : String,
+        virtual null as BPCityName         : String,
+        virtual null as BPPostalCode       : String,
+        virtual null as BPRegion           : String,
+        virtual null as BPCountry          : String,
+        virtual null as ShipDate           : Date,
+        virtual null as StudioTheatreId    : String,
+        virtual null as StudioMediaOrderID : String,
+        virtual null as StudioText         : String
     }
- 
+
 
     // extend projection S4H_ProformaReport{
     //     @Semantics.amount.currencyCode: 'TransactionCurrency'
@@ -98,7 +153,9 @@ service BookingOrderService {
         projection on api.Country {
 
             @Common.ValueList: {
-                Label: 'Country', CollectionPath: 'S4H_Country', Parameters: [
+                Label         : 'Country',
+                CollectionPath: 'S4H_Country',
+                Parameters    : [
                     {
                         $Type            : 'Common.ValueListParameterInOut',
                         LocalDataProperty: 'Country',
@@ -117,7 +174,9 @@ service BookingOrderService {
             CountryCurrency,
             to_Text.CountryName as CountryName
         };
-    entity CountryText as projection on api.CountryText;
+
+    entity CountryText                  as projection on api.CountryText;
+
     entity S4_Parameters                as
         projection on S4_Param.YY1_PARAMETER {
             key ID,
@@ -139,8 +198,8 @@ service BookingOrderService {
         RowData : String;
     };
 
-   type UploadResponse : {
-        message     : {
+    type UploadResponse : {
+        message : {
             success : array of ResultRow;
             error   : array of ResultRow;
             warning : array of ResultRow;
@@ -148,7 +207,6 @@ service BookingOrderService {
     };
 
 
-    
     @readonly
     entity S4_Plants                    as projection on api.Plants;
 
@@ -160,16 +218,18 @@ service BookingOrderService {
     entity AssetVault_Local             as projection on AssetVault;
     entity BookingSalesOrder            as projection on db.BookingSalesOrder;
     entity BookingSalesorderItem        as projection on db.BookingSalesorderItem;
+    entity BookingSalesorderPartner     as projection on db.BookingSalesorderPartner;
     entity CplList_Local                as projection on distService.CplList;
     entity DCPMaterialMapping           as projection on distService.DCPMaterialMapping;
-    action test(bookingIDs : array of String)                                                              returns String;
+    action test(bookingIDs : array of String)                                                                     returns String;
     entity BookingStatus                as projection on db.BookingStatus;
     entity ShippingConditionTypeMapping as projection on db.ShippingConditionTypeMapping;
-    entity ShippingTypeMaster           as projection on db.ShippingTypeMaster;  //S4_Bank
+    entity ShippingTypeMaster           as projection on db.ShippingTypeMaster; //S4_Bank
     entity Origins                      as projection on db.Origins;
-    entity OrderTypes as projection on dist.OrderType;
-    entity BookingTypeVH as projection on db.BookingTypeVH;
-    entity SalesDocumentHeaderPartner as projection on api.SalesDocumentHeaderPartner;
+    entity OrderTypes                   as projection on dist.OrderType;
+    entity BookingTypeVH                as projection on db.BookingTypeVH;
+    entity SalesDocumentHeaderPartner   as projection on api.SalesDocumentHeaderPartner;
+
     type RemediateType {
         bookingID         : String;
         salesOrder        : String;
@@ -180,7 +240,7 @@ service BookingOrderService {
     }
 
     entity Maccs_Dchub                  as projection on db.Maccs_Dchub;
-    action createMaccs(Request : array of Maccs_Dchub)                                                     returns String;
+    action createMaccs(Request : array of Maccs_Dchub)                                                            returns String;
 
     /// Comscore Hollywood
 
@@ -254,7 +314,7 @@ service BookingOrderService {
         bookerEmail       : String;
     }
 
-    action createComscoreHollywood(Request : TheatreOrderRequestType)                                      returns String;
+    action createComscoreHollywood(Request : TheatreOrderRequestType)                                             returns String;
 
     /// Disney OFE
 
@@ -329,7 +389,7 @@ service BookingOrderService {
         Fax   : String(50);
     }
 
-    action createDisneyOFE(Request : OrderRequestType)                                                     returns String;
+    action createDisneyOFE(Request : OrderRequestType)                                                            returns String;
 
 
     //OFE Key
@@ -372,46 +432,47 @@ service BookingOrderService {
         email : String;
     }
 
-    action createDisneyOFEKey(Request : OFEOrderstype)                                                     returns String;
+    action createDisneyOFEKey(Request : OFEOrderstype)                                                            returns String;
     entity Titles                       as projection on db.Titles;
     entity Ratings                      as projection on db.Ratings;
     entity ExternalTitleIDs             as projection on db.ExternalTitleIDs;
-   
-    @readonly
-    entity TitleV                       as projection on  db.TitleV{
-        *,
-           @Common.ValueList               : {
-            $Type         : 'Common.ValueListType',
-            CollectionPath: 'CountryText',
-            Parameters    : [
-                {
-                    $Type            : 'Common.ValueListParameterInOut',
-                    LocalDataProperty: RegionCode,
-                    ValueListProperty: 'Country',
-                },
-                {
-                    $Type            : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty: 'CountryName',
-                }
-            ],
-        }
-        @Common.Text: Region
-        @UI.TextArrangement : #TextOnly
-           RegionCode ,
-           Region,
-           @Common.Text: TitleCategoryText
-        @UI.TextArrangement : #TextOnly
-           TitleCategory,
-           TitleCategoryText ,
-           @Common.Text: LangCodeText
-        @UI.TextArrangement : #TextOnly
-           LanguageCode,
-           LangCodeText ,
-           @Common.Text: StudioText
-        @UI.TextArrangement : #TextOnly
-           StudioDistributor,
-           StudioText 
-    };
+
+            @readonly
+    entity TitleV                       as
+        projection on db.TitleV {
+            *,
+            @Common.ValueList  : {
+                $Type         : 'Common.ValueListType',
+                CollectionPath: 'CountryText',
+                Parameters    : [
+                    {
+                        $Type            : 'Common.ValueListParameterInOut',
+                        LocalDataProperty: RegionCode,
+                        ValueListProperty: 'Country',
+                    },
+                    {
+                        $Type            : 'Common.ValueListParameterDisplayOnly',
+                        ValueListProperty: 'CountryName',
+                    }
+                ],
+            }
+            @Common.Text       : Region
+            @UI.TextArrangement: #TextOnly
+            RegionCode,
+            Region,
+            @Common.Text       : TitleCategoryText
+            @UI.TextArrangement: #TextOnly
+            TitleCategory,
+            TitleCategoryText,
+            @Common.Text       : LangCodeText
+            @UI.TextArrangement: #TextOnly
+            LanguageCode,
+            LangCodeText,
+            @Common.Text       : StudioText
+            @UI.TextArrangement: #TextOnly
+            StudioDistributor,
+            StudioText
+        };
 
     entity Products                     as
         projection on externalProduct.A_Product {
@@ -469,10 +530,10 @@ service BookingOrderService {
         ProductDescription : String(40)
     }
 
-    action createProduct(input : ProductsType)                                                             returns Products;
-    action editProduct(input : ProductsType)                                                               returns Products;
-    action deleteProduct(input : ProductsType)                                                             returns Products;
-    action downloadFormADS(form : String, Product : String)                                                returns LargeString;
+    action createProduct(input : ProductsType)                                                                    returns Products;
+    action editProduct(input : ProductsType)                                                                      returns Products;
+    action deleteProduct(input : ProductsType)                                                                    returns Products;
+    action downloadFormADS(form : String, Product : String)                                                       returns LargeString;
 
     type MaterialDocItemType {
         MaterialDocumentYear : String(4);
@@ -480,7 +541,7 @@ service BookingOrderService {
         MaterialDocumentItem : String(4);
     }
 
-    action formGR_LABEL(form : String, Material : MaterialDocItemType)                                     returns LargeString;
+    action formGR_LABEL(form : String, Material : MaterialDocItemType)                                            returns LargeString;
 
 
     @readonly
@@ -506,10 +567,10 @@ service BookingOrderService {
                 Plant,
                 Supplier,
                 Batch,
-                '' as PlantDescription :String,
-                '' as MaterialDescription :String,
-                '' as BatchDescription :String,
-                '' as SupplierDescription :String,
+                '' as PlantDescription    : String,
+                '' as MaterialDescription : String,
+                '' as BatchDescription    : String,
+                '' as SupplierDescription : String,
                 to_MaterialDocumentHeader : redirected to MaterialDocumentHeader,
 
         };
@@ -543,12 +604,11 @@ service BookingOrderService {
                 to_BillingDocument : redirected to BillingDocument
         }
 
-    entity BillingDocumentPartner as projection on api.BillingDocumentPartner;
-
-    entity BillingDocumentItemText as projection on api.BillingDocumentItemText;
+    entity BillingDocumentPartner       as projection on api.BillingDocumentPartner;
+    entity BillingDocumentItemText      as projection on api.BillingDocumentItemText;
     entity BillingDocumentItemPrcgElmnt as projection on api.BillingDocumentItemPrcgElmnt;
-    
- 
+
+
     type BillingDoc {
         BillingDocument         : String;
         BillingDocumentCategory : String;
@@ -557,27 +617,22 @@ service BookingOrderService {
 
     }
 
-    action invoiceForm_LABEL(form : String, Billing : BillingDoc)                                          returns LargeString;
-
-    action  SDBIL_CI_STANDARD_US_E (form:String, Billing:BillingDoc) returns LargeString;
-    
-    entity Batch  as projection on db.Batch;
-    entity Company as projection on api.Company;
-
-    entity AddressPostal as projection on api.AddressPostal;
-    entity AddressPhoneNumber               as projection on api. AddressPhoneNumber;
-    entity AddressEmailAddress               as projection on api.AddressEmailAddress;
-    entity AddlCompanyCodeInformation        as projection on api.AddlCompanyCodeInformation;
-    entity CoCodeCountryVATReg               as projection on api.CoCodeCountryVATReg;
-     entity PaymentTermsText               as projection on api.PaymentTermsText;
-    entity JournalEntryItem               as projection on api.JournalEntryItem;
-    entity PricingConditionTypeText               as projection on api.PricingConditionTypeText;
-    entity HouseBank as projection on api.HouseBank;
-    entity SalesOrderHeaderPartner               as projection on api.SalesOrderHeaderPartner;
-    entity SalesOrderItemPartners               as projection on api.SalesOrderItemPartner;
-    entity CustSalesPartnerFunc               as projection on api.CustSalesPartnerFunc;
-
-
-    entity Bank as projection on api.Bank;
-     entity BankAddress   as projection on api.BankAddress;
+    action invoiceForm_LABEL(form : String, Billing : BillingDoc)                                                 returns LargeString;
+    action SDBIL_CI_STANDARD_US_E(form : String, Billing : BillingDoc)                                            returns LargeString;
+    entity Batch                        as projection on db.Batch;
+    entity Company                      as projection on api.Company;
+    entity AddressPostal                as projection on api.AddressPostal;
+    entity AddressPhoneNumber           as projection on api.AddressPhoneNumber;
+    entity AddressEmailAddress          as projection on api.AddressEmailAddress;
+    entity AddlCompanyCodeInformation   as projection on api.AddlCompanyCodeInformation;
+    entity CoCodeCountryVATReg          as projection on api.CoCodeCountryVATReg;
+    entity PaymentTermsText             as projection on api.PaymentTermsText;
+    entity JournalEntryItem             as projection on api.JournalEntryItem;
+    entity PricingConditionTypeText     as projection on api.PricingConditionTypeText;
+    entity HouseBank                    as projection on api.HouseBank;
+    entity SalesOrderHeaderPartner      as projection on api.SalesOrderHeaderPartner;
+    entity SalesOrderItemPartners       as projection on api.SalesOrderItemPartner;
+    entity CustSalesPartnerFunc         as projection on api.CustSalesPartnerFunc;
+    entity Bank                         as projection on api.Bank;
+    entity BankAddress                  as projection on api.BankAddress;
 }

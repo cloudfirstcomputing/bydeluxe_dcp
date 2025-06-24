@@ -13,7 +13,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             S4_Plants, S4_ShippingConditions, S4H_SOHeader_V2, S4H_SalesOrderItem_V2, ShippingConditionTypeMapping, Maccs_Dchub, S4_Parameters, CplList, S4H_BusinessPartnerAddress, Languages, S4H_ProformaDeliveryDoc, TitleCustVH,
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
-            CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg,
+            CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg, BookingSalesorderPartner,
             PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner, S4H_BPCustomer } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
@@ -977,10 +977,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                     }
                     let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === data[i].BookingID});
-                    if (oLocalResponse?.success?.length && !oErrorEntry && data[i].BookingType_ID === "NO") {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID !== "U" || data[i].BookingType_ID !== "C")) {
                         data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
                     }
-                    if (oLocalResponse?.success?.length && !oErrorEntry && data[i].BookingType_ID === "NO") {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID !== "U" || data[i].BookingType_ID !== "C")) {
                         // oResponseStatus?.success?.push(...oLocalResponse?.success);
                         data[i].SalesOrder = oLocalResponse?.SalesOrder;
                         data[i].DeliveryMethod = oLocalResponse?.DeliveryMethod;
@@ -1016,8 +1016,24 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }
                         btpItems.push({...entry});
                     }
+                    let aBTPPartnerFields = Object.keys(BookingSalesorderPartner?.elements);
+                    aBTPPartnerFields = aBTPPartnerFields.filter((item)=> item !=='createdBy' && item !== 'createdAt' &&
+                        item !== 'modifiedBy' && item !== 'modifiedAt');
+                    let aS4Partners = data[i].to_Partner; //Items which got created in S4
+                    let btpPartners = [];    
+                    for(let i in aS4Partners){//Iterating S4 Items
+                        let oItems = aS4Partners[i],  entry = {};
+                        let aS4keys = Object.keys(oItems);
+                        for(let j in aS4keys){
+                            let sFieldName = aS4keys[j];
+                            if(aBTPPartnerFields.find((field)=> field === sFieldName ) ){
+                                entry[sFieldName] = oItems[sFieldName];
+                            }
+                        }
+                        btpPartners.push({...entry});
+                    }
                     
-                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID, to_Item: btpItems }).where({
+                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID, to_Item: btpItems, to_Partner: btpPartners }).where({
                         ID: sID
                     });
                 }
@@ -1073,7 +1089,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oPayLoad.SalesOrderType = "TA";
             oFeedData.PlayStartTime = oFeedData?.PlayStartTime?oFeedData.PlayStartTime:'00:00:01';
             oFeedData.PlayEndTime = oFeedData?.PlayEndTime?oFeedData.PlayEndTime:'23:59:59';
-            if(iDistroSpecID && sOrderType && (sBookingType && sBookingType === 'NO') && sTheaterID && sBupa && oFeedData.Status_ID !== 'S'){ //Check not applicable during Reconciliation of repetitie entries
+            if(iDistroSpecID && sOrderType && (sBookingType && (sBookingType !== 'U' || sBookingType !== 'C')) && sTheaterID && sBupa && oFeedData.Status_ID !== 'S'){ //Check not applicable during Reconciliation of repetitie entries
                 let aExistingEntry = await SELECT.from(hanaDBTable).where({CustomerReference: `${iDistroSpecID}`, OrderType_code: sOrderType, BookingType_ID: sBookingType, TheaterID: sTheaterID, Studio_BusinessPartner: sBupa }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                 for(let i in aExistingEntry){
                     let oExistingEntry = aExistingEntry[i];
@@ -1874,7 +1890,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }  
                     let sHFR = oContentData?.HFR, sBookingType = oContentData?.BookingType_ID;
                     if(sHFR){
-                        if(sHFR === "Y" && sBookingType === "NO"){
+                        if(sHFR === "Y" && (sBookingType !== "U" || sBookingType !== "C")){
                             await s4h_sohv2_Txn.send({
                                 method: 'PATCH',
                                 path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,

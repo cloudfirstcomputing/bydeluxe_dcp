@@ -190,12 +190,13 @@ entity StudioFeed : cuid, managed {
 }
 
 entity Origins {
-    key OriginID   : String(1) enum {
-            F;
-            P;
-            S;
-            M;
-        };
+    // key OriginID   : String(1) enum {
+    //         F;
+    //         P;
+    //         S;
+    //         M;
+    //     };
+    key OriginID   : String(1);
         OriginText : localized String;
 };
 
@@ -210,11 +211,12 @@ entity BookingStatus {
 };
 
 entity BookingTypeVH {
-    key ID: String(2) enum {
-        NO; //New Order
-        C; //Cancel
-        U; //Update
-    };
+    // key ID: String(2) enum {
+    //     NO; //New Order
+    //     C; //Cancel
+    //     U; //Update
+    // };
+    key ID: String(2);
     Description: localized String;
 }
 // @cds.redirection.target: 'BookingOrderService.BookingSalesOrder'
