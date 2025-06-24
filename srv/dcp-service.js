@@ -445,10 +445,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on('reconcileStudioFeed', async (req, res) => {
             var aIDs = req.data?.aBookingID;
             var aFeeds = await SELECT.from(StudioFeed).where({ ID: { "IN": aIDs }});
-            aFeeds = aFeeds?.map((feed) => {
-                feed.BookingType_ID = 'C';
-                return feed
-            });
+            // aFeeds = aFeeds?.map((feed) => {
+            //     feed.BookingType_ID = 'C';
+            //     return feed
+            // });
             var aResponse = await createStudioFeeds(req, aFeeds, true);
             req.reply({
                 code: 201,
@@ -893,7 +893,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     });                                                                                     
                                             }
                                             else {    
-                                                data[i].ErrorMessage = `| No Change in Delivery Date for HFR update |`;
+                                                data[i].ErrorMessage = `| No Change in Delivery Date for update |`;
                                                 oResponseStatus.error.push({
                                                     "message": data[i].ErrorMessage,
                                                     "errorMessage": data[i].ErrorMessage
@@ -957,7 +957,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         oLocalResponse = oResponseStatus;
                     }//End of HFR = U or C
                     else { //New Order
-                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
+                        if(bReconcile){ //For Reconcile, data already picked from table
+                            oExistingData = data[i];
+                        }
+                        else{
+                            oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
+                        }                        
                         if (oExistingData && !bReconcile) {
                             oResponseStatus.nonpersistenterror.push({
                                 "BookingID": data[i].BookingID,
@@ -968,7 +973,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             continue;
                         }
                         else{                            
-                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i], bReconcile);
                         }
                     }
                     let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === data[i].BookingID});
@@ -1040,7 +1045,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             }
             return oResponseStatus;
         };
-        const create_S4SalesOrder_WithItems_UsingNormalizedRules = async (req, oFeedData) => {
+        const create_S4SalesOrder_WithItems_UsingNormalizedRules = async (req, oFeedData, bReconcile) => {
             var oPayLoad = {}, hanaDBTable = StudioFeed, aDeliverySeqFromDistHeader = [];
             var distroSpecData = await getDistroSpecData(req, oFeedData, aDeliverySeqFromDistHeader);
             var aContentPackageDistRestrictions, sContentDeliveryMethod, sKeyDeliveryMethod, sShippingType_Content, sShippingType_Key;
@@ -1098,7 +1103,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
 
                         let iDiffStartInDays = (dStartDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
                         let iDiffEndInDays = (dEndDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
-                        if((!(iDiffStartInDays < 0) && iDiffStartInDays <7) || (!(iDiffEndInDays <0 ) && iDiffEndInDays <7)){
+                        if(!bReconcile && sSalesOrder && ((!(iDiffStartInDays < 0) && iDiffStartInDays <7) || (!(iDiffEndInDays <0 ) && iDiffEndInDays <7))){
                             sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
                             oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
                             break;
