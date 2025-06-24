@@ -113,7 +113,11 @@ annotate BookingOrderService.S4H_ProformaReport with @(
             Value : ShippingCondition,
             Label : '{i18n>Shippingcondition}',
         },
-                   
+             {
+            $Type : 'UI.DataField',
+            Value : ShippingPointName,
+            Label : '{i18n>ShippingPointName}',
+        },     
         {
             $Type : 'UI.DataField',
             Value : PlantName,
@@ -395,7 +399,18 @@ annotate BookingOrderService.S4H_ProformaReport with {
 
 annotate BookingOrderService.S4H_ProformaReport with {
     PartnerFunction @Common.Label : 'PartnerFunction';
-    PricingReferenceMaterial @UI.Hidden: true
+    PricingReferenceMaterial @UI.Hidden: true;
+    SalesDocumentItemText @UI.Hidden: true;
+    SalesDocumentItem @UI.Hidden: true;
+    RegionNameDes @UI.Hidden: true;
+    TotalDeliveryStatus @UI.Hidden: true;
+    BPCountry @UI.Hidden: true;
+    RequestID @UI.Hidden: true;
+    OverallSDProcessStatus @UI.Hidden: true;
+    AdditionalMaterialGroup1 @UI.Hidden: true;
+    MaterialGroup @UI.Hidden: true;
+
+    
 };
 
 annotate BookingOrderService.S4H_ProformaReport with {

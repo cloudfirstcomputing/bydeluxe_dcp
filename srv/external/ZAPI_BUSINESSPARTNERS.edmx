@@ -99,6 +99,7 @@
 <Property Name="CustomerPurchaseOrderType" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Purchase Order Type" sap:quickinfo="Customer Purchase Order Type"/>
 <Property Name="ReferenceBusinessPartner_A" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Business Partner" sap:quickinfo="Business Partner Number"/>
 <Property Name="SoldToParty" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:required-in-filter="false" sap:label="Sold-to Party"/>
+<Property Name="ShippingPointName" Type="Edm.String" MaxLength="30" sap:required-in-filter="false" sap:label="Description"/>
 </EntityType>
 <EntityContainer Name="cds_zsd_businesspartners_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
 <EntitySet Name="ZI_Circuit" EntityType="cds_zsd_businesspartners.ZI_CircuitType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>

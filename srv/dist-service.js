@@ -398,10 +398,16 @@ module.exports = class DistributionService extends cds.ApplicationService {
             if (ret) {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
             }
-
-            var oGoFilex = await _gofilexcreation(req);
-            req.data.to_Package[req.data.to_Package.length - 1].KrakenID = oGoFilex.KrakenID
-            req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex.GoFilex
+            if (DeliverySequence1_ShippingCondition == '02' || DeliverySequence10_ShippingCondition == '02' || 
+                DeliverySequence2_ShippingCondition == '02' || DeliverySequence3_ShippingCondition =='02' || 
+                DeliverySequence4_ShippingCondition == '02' || DeliverySequence5_ShippingCondition =='02' || 
+                DeliverySequence6_ShippingCondition == '02' || DeliverySequence7_ShippingCondition == '02' || 
+                DeliverySequence8_ShippingCondition == '02' || DeliverySequence9_ShippingCondition == '02') {
+                    var oGoFilex = await _gofilexcreation(req);
+                    req.data.to_Package[req.data.to_Package.length - 1].KrakenID = oGoFilex.KrakenID
+                    req.data.to_Package[req.data.to_Package.length - 1].GofilexTitleID = oGoFilex.GoFilex
+            }
+          
         })
 
         async function _gofilexcreation(req) {

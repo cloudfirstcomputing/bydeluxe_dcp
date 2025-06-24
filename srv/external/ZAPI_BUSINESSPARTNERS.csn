@@ -378,6 +378,12 @@
      "@sap.display.format": "UpperCase",
      "@sap.required.in.filter": "false",
      "@sap.label": "Sold-to Party"
+    },
+    "ShippingPointName": {
+     "type": "cds.String",
+     "length": 30,
+     "@sap.required.in.filter": "false",
+     "@sap.label": "Description"
     }
    }
   }
