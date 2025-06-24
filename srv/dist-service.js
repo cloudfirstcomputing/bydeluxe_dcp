@@ -401,11 +401,11 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
             var aPackage = req.data.to_Package
             for (var index in aPackage) {
-                if (aPackage[index].DeliveryMethod1 == '02' || aPackage[index].DeliveryMethod2 == '02' ||
-                    aPackage[index].DeliveryMethod3 == '02' || aPackage[index].DeliveryMethod4 == '02' ||
-                    aPackage[index].DeliveryMethod5 == '02' || aPackage[index].DeliveryMethod6 == '02' ||
-                    aPackage[index].DeliveryMethod7 == '02' || aPackage[index].DeliveryMethod8 == '02' ||
-                    aPackage[index].DeliveryMethod9 == '02' || aPackage[index].DeliveryMethod10 == '02') {
+                if (aPackage[index].DeliveryMethod1_ShippingCondition == '02' || aPackage[index].DeliveryMethod2_ShippingCondition == '02' ||
+                    aPackage[index].DeliveryMethod3_ShippingCondition == '02' || aPackage[index].DeliveryMethod4_ShippingCondition == '02' ||
+                    aPackage[index].DeliveryMethod5_ShippingCondition == '02' || aPackage[index].DeliveryMethod6_ShippingCondition == '02' ||
+                    aPackage[index].DeliveryMethod7_ShippingCondition == '02' || aPackage[index].DeliveryMethod8_ShippingCondition == '02' ||
+                    aPackage[index].DeliveryMethod9_ShippingCondition == '02' || aPackage[index].DeliveryMethod10_ShippingCondition == '02') {
                     var oGoFilex = await _gofilexcreation(aPackage[index], req.data.ReleaseDate);
                     aPackage[index].KrakenID = oGoFilex.KrakenID
                     aPackage[index].GofilexTitleID = oGoFilex.GoFilex
@@ -451,7 +451,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             });
 
             const aMaterialSet = [...new Set(
-                Packageto_DCPMaterial // flatten all DCPMaterials
+                Package.to_DCPMaterial // flatten all DCPMaterials
                     .map(mat => mat.DCPMaterialNumber_Product) // extract the values
                     .filter(Boolean) // optional: remove undefined/null
             )];
