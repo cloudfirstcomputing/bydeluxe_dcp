@@ -1750,10 +1750,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
             if (sOrigin === "F") { //Feed               
                 var oCustomerRef = await SELECT.one.from('DistributionService.CustomerRef').where({ CustomerReference: sCustomerRef });
-                var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID,
-                    to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;
+                var to_DistroSpec_DistroSpecUUID = oCustomerRef?.to_DistroSpec_DistroSpecUUID, //Getting DistroID from Customer Ref table
+                    to_StudioKey_StudioKeyUUID = oCustomerRef?.to_StudioKey_StudioKeyUUID;//Getting Studio from Customer Ref table
                 if (oCustomerRef && to_DistroSpec_DistroSpecUUID && to_StudioKey_StudioKeyUUID) {    
-                    oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }];
+                    oDistroQuery.SELECT.where = [{ ref: ["DistroSpecUUID"] }, "=", { val: to_DistroSpec_DistroSpecUUID }, "and" ,{ ref: ["Status"] }, "=", { val: true }];
                     aDistroSpecData = await oDistroQuery;
                     distroSpecData = aDistroSpecData?.find((dist) => {
                         return dist.to_StudioKey?.find((stud) => {
@@ -1771,7 +1771,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 else {
                     var iDistroSpecID = parseInt(sCustomerRef);
-                    oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }];
+                    oDistroQuery.SELECT.where = [{ ref: ["DistroSpecID"] }, "=", { val: iDistroSpecID }, "and" , { ref: ["Status"] }, "=", { val: true }];
                     aDistroSpecData = await oDistroQuery;
                     if (aDistroSpecData?.length) {
                         distroSpecData = aDistroSpecData[0];                        
@@ -1783,7 +1783,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         }                        
                     }
                     else {
-                        sErrorMessage = `DistroSpec with Distro ID ${sCustomerRef} not found`;
+                        sErrorMessage = `Active DistroSpec with Distro ID ${sCustomerRef} not found`;
                     }    
                 }
             }
