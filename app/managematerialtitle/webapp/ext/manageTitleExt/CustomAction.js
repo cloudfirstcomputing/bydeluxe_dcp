@@ -314,7 +314,7 @@ sap.ui.define([
                         Ratings_Ass: [],
                         ExternalTitleIDs_Ass: [],
                         GofilexTitleId: "",
-                        UseSecureName: "Yes"
+                        UseSecureName: "No"
                         //IDType: "",
                         //IDValue: ""
                     });
@@ -349,7 +349,7 @@ sap.ui.define([
                     Ratings_Ass: [],
                     ExternalTitleIDs_Ass: [],
                     GofilexTitleId: "",
-                    UseSecureName: "Yes"
+                    UseSecureName: "No"
                     //IDType: "",
                     //IDValue: ""
                 });
