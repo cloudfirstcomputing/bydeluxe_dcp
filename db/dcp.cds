@@ -354,6 +354,17 @@ entity ShippingTypeMaster {
         ShippingTypeDescription : String;
 }
 
+entity KalmusTheaterStudio: managed{
+    key PartnerfunctionSP: String;
+    key Studio: String;
+    StudioName: String;
+
+    key PartnerfunctionSH: String;
+    key Theater:String;
+    TheaterName: String;
+
+    StudioShorts: String;
+}
 // Maccs_Dchub
 entity Maccs_Dchub : managed {
     key requestId                     : String(18) @mandatory;

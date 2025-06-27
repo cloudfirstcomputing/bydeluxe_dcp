@@ -239,6 +239,8 @@ service BookingOrderService {
         deliveryDate      : Date
     }
 
+    entity KalmusTheaterStudio as projection on db.KalmusTheaterStudio;
+    
     entity Maccs_Dchub                  as projection on db.Maccs_Dchub;
     action createMaccs(Request : array of Maccs_Dchub)                                                            returns String;
 
