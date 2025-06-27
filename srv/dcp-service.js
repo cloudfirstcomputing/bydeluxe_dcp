@@ -3812,6 +3812,7 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const billingDataNode = {
                     "TaxInvoice": {
                         "Header": {
+                            "InvoiceHeadText" : billingHeader.BillingDocumentType=='F8'?'Proforma Invoice':'Tax Invoice',
                             "CompanyName":oAddrCompanyCode === undefined ? '' : oAddrCompanyCode?.AddresseeName1,
                             "CompanyAddress": sCompanyAddress,
                             "Telephone":oAddrPhone == undefined ? '' : oAddrPhone?.PhoneAreaCodeSubscriberNumber,
