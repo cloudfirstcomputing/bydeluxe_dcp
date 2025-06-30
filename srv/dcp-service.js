@@ -1160,7 +1160,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if (!oSoldToSalesData) {
                             sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
                         }
-                        if (oSoldToSalesData?.CustomerPaymentTerms === '0001') {
+                        if (oSoldToSalesData?.CustomerPaymentTerms === '0001' && !bReconcile) { // Error overridden during reconciliation
                             sErrorMessage = `Check Payment Terms`;
                             oResponseStatus.Status = 'R';//For Review
                         }
