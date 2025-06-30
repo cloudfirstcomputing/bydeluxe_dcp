@@ -1040,7 +1040,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         btpPartners.push({...entry});
                     }
                     
-                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID, to_Item: btpItems, to_Partner: btpPartners }).where({
+                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID, 
+                        DeliveryMethod: data[i].DeliveryMethod, RemediationCounter: data[i].RemediationCounter,
+                        to_Item: btpItems, to_Partner: btpPartners }).where({
                         ID: sID
                     });
                 }
