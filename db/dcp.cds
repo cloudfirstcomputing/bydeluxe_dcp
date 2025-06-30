@@ -364,6 +364,8 @@ entity KalmusTheaterStudio: managed{
     TheaterName: String;
 
     StudioShorts: String;
+    Active: Boolean;
+    Freeze: Boolean;
 }
 // Maccs_Dchub
 entity Maccs_Dchub : managed {
