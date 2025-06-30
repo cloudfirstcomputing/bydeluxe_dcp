@@ -379,6 +379,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (!element.BookingID) {
                         sValidationError = sValidationError + "BookingID is mandatory.\n";
                     }
+                    if (!element.EntityID) {
+                        sValidationError = sValidationError + "EntityID is mandatory.\n";
+                    }
                     if (!element.Studio_BusinessPartner) {
                         sValidationError = sValidationError + "Studio is mandatory.\n";
                     }
