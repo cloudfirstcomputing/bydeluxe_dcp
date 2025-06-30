@@ -564,7 +564,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     }
                     );
                 }
-                var aContentPackageDistRestrictions, oFilteredContentPackage, sDeliveryMethod;
+                var aContentPackageDistRestrictions, oFilteredContentPackage; 
+                let sDeliveryMethod;
                 for (var j in aDeliverySeqFromDistHeader) {
                     var sDelSeq = aDeliverySeqFromDistHeader[j];
                     if (sDelSeq) {
@@ -595,7 +596,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     return;
                 }
                 // var oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType);
-                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode);
+                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType, CompanyCode, sDeliveryMethod);
                 let oDCPMapping = oVarMapping?.mapping;
                 if (sDeliveryMethod === '03' && (sShippingType == '03' || sShippingType === '06' || sShippingType === '12')) {
                     /*As per what is discussed with Pranav, DCP is considered only if Shipping Condition = 03 (HDD). 
@@ -1203,13 +1204,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         var oPackages = await performPrioritySort_OrderType_ValidityCheck(oFeedData, distroSpecData); //Contains list of valid content pakcages
                         aContentPackages = oPackages?.ContentPackage;
                         aKeyPackages = oPackages?.KeyPackage;
+                        let sDeliveryMethodFromPackage = '';   //This stores teh actual delivery method used for SO creation
     
                         if (!aContentPackages?.length && !aKeyPackages?.length) {// No matching content or Key packages found
                             sErrorMessage = `No matching Content Or Key Package available for DistroSpec ${distroSpecData?.DistroSpecID}`;
                         }
                         if (!sErrorMessage && aContentPackages?.length) { //RULE 2.3 => Lookup package ID Delivery method
                             var oContentPackages;
-                            let sDeliveryMethodFromPackage = '';   //This stores teh actual delivery method used for SO creation
                                 for (var j in aDeliverySeqFromDistHeader) {
                                     var sDelSeq = aDeliverySeqFromDistHeader[j];
                                     if (sDelSeq) {
@@ -1509,7 +1510,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 // RULE 5.1 and 6.3 => Applicable only for Content and Key with Include Content  
                                 // 27.05.2025:5:29PM (Pranav): When HDD (03), it should pick only DCP with AddMaterialGroup1 derived from Generic Material. No Generic Material to be created here
                                 // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content);
-                                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode);                            
+                                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Content, CompanyCode, sDeliveryMethodFromPackage);                            
                                 let oDCPMapping = oVarMapping?.mapping;
                                 // if(sShippingType_Content === '01' || sShippingType_Content === '02' || sShippingType_Content === '06'){ //Satellite Or e-Delivery or HDD => Pick only generic material as per email from Pranav on 3rd Jun 13:05
                                 if(sShippingType_Content !== '03' && sShippingType_Content !== '06' && sShippingType_Content !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
@@ -1567,7 +1568,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }                        
                             if (oFinalKeyPackage) { //This indicates Key is also applicable
                                 // let oDCPMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key);
-                                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode);
+                                let oVarMapping = await getVariableBasedDCPMapping(ReleaseDate, dStartDate, RepertoryDate, sShippingType_Key, CompanyCode, sDeliveryMethodFromPackage);
                                 let oDCPMapping = oVarMapping?.mapping;
                                 if(sShippingType_Key !== '03' && sShippingType_Key !== '06' && sShippingType_Key !== '12'){ //All other than Physical/HDD/DCDC HDD (as per Teams conversation in Teams with Pranav and Ravneet on 5th Jun 17:00)
                                     if (oDCPMapping) {
@@ -1653,27 +1654,33 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oResponseStatus.FilteredPackage = oFinalContentPackage;
             return oResponseStatus;
         };
-        const getVariableBasedDCPMapping = async (ReleaseDate, dStartDate, RepertoryDate, sShippingType, sCompanyCode) => {
+        const getVariableBasedDCPMapping = async (ReleaseDate, dStartDate, RepertoryDate, sShippingType, sCompanyCode, sDeliveryMethod) => {
 
             // RULE 5.1, 6.1 => Common for Content and Key
             var sMode, dAddSevenDays;
             // if (iDifferenceInHours < 24) {
             //     sMode = 'Screening';
             // }
-            if (ReleaseDate) {
-                dAddSevenDays = await addDays(ReleaseDate, 7);
+            if(sDeliveryMethod && (sDeliveryMethod === '08' || sDeliveryMethod === '09')){
+                sMode = "Trailer";
             }
-            if (ReleaseDate && dStartDate < ReleaseDate) {
-                sMode = 'PreRelease';
-            }
-            else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime()) {
-                sMode = 'PostBreak';
-            }
-            else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
-                sMode = 'Release';
-            }
-            else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
-                sMode = 'Repertory';
+            else{
+                if (ReleaseDate) {
+                    dAddSevenDays = await addDays(ReleaseDate, 7);
+                }
+                if (ReleaseDate && dStartDate < ReleaseDate) {
+                    sMode = 'PreRelease';
+                }
+                else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime()) {
+                    sMode = 'PostBreak';
+                }
+                else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
+                    sMode = 'Release';
+                }
+                else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
+                    sMode = 'Repertory';
+                }
+
             }
             if (sMode) {
                 if(sCompanyCode){
