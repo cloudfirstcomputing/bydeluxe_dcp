@@ -330,9 +330,9 @@ entity CPLSalesOrdersMaster {
 
 
 
-entity MasteringHubMain : cuid {
-  SalesOrderNumber            : Integer;
-  LineItem                    : Integer;
+entity MasteringHubMain : cuid , managed{
+key SalesOrderNumber            : Integer;
+key  LineItem                    : Integer;
   Material                    : String(40);
   InternalOrderStatus         : String(20);
   CreationDate                : DateTime;

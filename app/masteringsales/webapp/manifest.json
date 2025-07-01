@@ -128,6 +128,22 @@
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "Create": {
+                      "press": "deluxe.masteringsales.ext.controller.Create.Create",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Create"
+                    },
+                    "MassUpload": {
+                      "press": "deluxe.masteringsales.ext.controller.MassUpload.MassUpload",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "MassUpload"
+                    }
                   }
                 }
               }
