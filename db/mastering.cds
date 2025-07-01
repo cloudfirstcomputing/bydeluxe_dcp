@@ -384,58 +384,151 @@ key  LineItem                    : Integer;
   QTOutputs                     : Integer;
   DFX                           : String(8);
   ProductionOrderNumber         : Integer;
-
-  ImageEssence                  : Composition of one EssenceDetails on ImageEssence.parent = $self;
-  AudioEssence                  : Composition of one EssenceDetails on AudioEssence.parent = $self;
-  AUXEssence                    : Composition of one EssenceDetails on AUXEssence.parent = $self;
-  SubtitleEssence               : Composition of one EssenceDetails on SubtitleEssence.parent = $self;
-  OpenCaptionsEssence           : Composition of one EssenceDetails on OpenCaptionsEssence.parent = $self;
-  ClosedCaptionsEssence         : Composition of one EssenceDetails on ClosedCaptionsEssence.parent = $self;
-
-  insertEdit                    : Composition of one InsertEditDetails on insertEdit.parent = $self;
-  partner                       : Composition of one PartnerDetails on partner.parent = $self;
+  insertEdit                    : Composition of many InsertEditDetails on insertEdit.parent = $self;
+  partner                       : Composition of many PartnerDetails on partner.parent = $self;
 }
 
-entity EssenceDetails : managed {
+// entity EssenceDetails : cuid,managed {
+//   parent : Association to InsertEditDetails;
+//   key ImageEssenceId                  : String(8);
+//   Resolution                      : String(2);
+//   AspectRatio                     : String(12);
+//   ContainerHeight                 : Integer;
+//   ContainerWidth                  : Integer;
+//   ActivePictureHeight             : Integer;
+//   ActivePictureWidth              : Integer;
+//   ImageDimension                  : String(2);
+//   ImageStandard                   : String(20);
+//   LightLevel                      : String(20);
+//   FrameRate                       : Decimal;
+//   TargetMaxBitRate                : Decimal;
+//   TextedTextless                  : String(20);
+//   ImageLanguages                  : String(100);
+//   ImageIngestRequired             : Boolean;
+
+//   key AudioEssenceId                  : String(8);
+//   AudioChannelConfiguration       : String(20);
+//   AudioChannelCount               : Integer;
+//   AudioLanguage                   : String(200);
+//   HI                              : Boolean;
+//   VI                              : Boolean;
+//   AdditionalAudioTracks           : String(100);
+//   AudioIngestRequired             : Boolean;
+//   AudioDeliveryDate               : DateTime;
+//   HIDeliveryDate                  : DateTime;
+//   VIDeliveryDate                  : DateTime;
+
+//   key AUXEssenceId                    : String(8);
+//   AUXType                         : String(12);
+//   AUXLanguages                    : String(20);
+//   AUXBackup                       : Boolean;
+//   AUXIngestRequired               : Boolean;
+//   LocalisedGFXDeliveryDate        : DateTime;
+
+//   key SubtitleEssenceId               : String(8);
+//   Subtitles                       : String(12);
+//   SubtitleLanguage                : String(20);
+//   SubtitleDimension               : String(2);
+//   SubtitleFormat                  : String(10);
+//   SubtitleExcludedReels          : Integer;
+//   ForcedNarrative                 : Boolean;
+//   ForcedNarrativeDetails         : String(1000);
+//   SubtitleDeliveryDate            : DateTime;
+//   ForcedNarrativeSubtitleDeliveryDate : DateTime;
+//   SubtitleIngestRequired          : Boolean;
+//   SLDeliveryDate                  : DateTime;
+//   HLTDeliveryDate                 : DateTime;
+
+//   key OpenCaptionsEssenceId           : String(8);
+//   OpenCaptions                    : String(12);
+//   OCAPLanguage                    : String(20);
+//   OCAPDimensions                  : String(2);
+//   OCAPFormat                      : String(10);
+//   OCAPExcludedReels               : Integer;
+//   OCAPDeliveryDate                : DateTime;
+//   OCAPIngestRequired              : Boolean;
+
+//   ClosedCaptionsEssenceId         : String(8);
+//   ClosedCaptions                  : String(4);
+//   CCAPLanguage                    : String(20);
+//   CCAPFormat                      : String(10);
+//   CCAPExcludedReels               : Integer;
+//   CCAPDeliveryDate                : DateTime;
+//   CCAPIngestRequired              : Boolean;
+
+// }
+
+entity InsertEditDetails : managed {
+   parent : Association to MasteringHubMain;
+
+key EditEssenceID         : String(8);
+   Edits                 : Boolean;
+   EstimatedEditCount    : Integer;
+   InsertEssenceID       : String(8);
+   Inserts               : Boolean;
+   EstimatedInsertCount  : Integer;
+   GeneralOrderNotes     : String(2000);
+   LocalApprovalStatus   : String(12);
+   Translator            : String(20);
+   ImageEssence              : Composition of many ImageEssenceDetails on ImageEssence.parent = $self;
+  AudioEssence              : Composition of many AudioEssenceDetails on AudioEssence.parent = $self;
+  AUXEssence                : Composition of many AUXEssenceDetails on AUXEssence.parent = $self;
+  SubtitleEssence           : Composition of many SubtitleEssenceDetails on SubtitleEssence.parent = $self;
+  OpenCaptionsEssence       : Composition of many OpenCaptionsEssenceDetails on OpenCaptionsEssence.parent = $self;
+  ClosedCaptionsEssence     : Composition of many ClosedCaptionsEssenceDetails on ClosedCaptionsEssence.parent = $self;
+}
+
+entity ImageEssenceDetails : managed {
   key ID : String(8);
-  parent : Association to MasteringHubMain;
+  parent : Association to InsertEditDetails;
 
-  ImageEssenceId                  : String(8);
-  Resolution                      : String(2);
-  AspectRatio                     : String(12);
-  ContainerHeight                 : Integer;
-  ContainerWidth                  : Integer;
-  ActivePictureHeight             : Integer;
-  ActivePictureWidth              : Integer;
-  ImageDimension                  : String(2);
-  ImageStandard                   : String(20);
-  LightLevel                      : String(20);
-  FrameRate                       : Decimal;
-  TargetMaxBitRate                : Decimal;
-  TextedTextless                  : String(20);
-  ImageLanguages                  : String(100);
-  ImageIngestRequired             : Boolean;
+  Resolution          : String(2);
+  AspectRatio         : String(12);
+  ContainerHeight     : Integer;
+  ContainerWidth      : Integer;
+  ActivePictureHeight : Integer;
+  ActivePictureWidth  : Integer;
+  ImageDimension      : String(2);
+  ImageStandard       : String(20);
+  LightLevel          : String(20);
+  FrameRate           : Decimal;
+  TargetMaxBitRate    : Decimal;
+  TextedTextless      : String(20);
+  ImageLanguages      : String(100);
+  ImageIngestRequired : Boolean;
+}
 
-  AudioEssenceId                  : String(8);
-  AudioChannelConfiguration       : String(20);
-  AudioChannelCount               : Integer;
-  AudioLanguage                   : String(200);
-  HI                              : Boolean;
-  VI                              : Boolean;
-  AdditionalAudioTracks           : String(100);
-  AudioIngestRequired             : Boolean;
-  AudioDeliveryDate               : DateTime;
-  HIDeliveryDate                  : DateTime;
-  VIDeliveryDate                  : DateTime;
+entity AudioEssenceDetails : managed {
+  key ID : String(8);
+  parent : Association to InsertEditDetails;
 
-  AUXEssenceId                    : String(8);
-  AUXType                         : String(12);
-  AUXLanguages                    : String(20);
-  AUXBackup                       : Boolean;
-  AUXIngestRequired               : Boolean;
-  LocalisedGFXDeliveryDate        : DateTime;
+  AudioChannelConfiguration : String(20);
+  AudioChannelCount         : Integer;
+  AudioLanguage             : String(200);
+  HI                        : Boolean;
+  VI                        : Boolean;
+  AdditionalAudioTracks     : String(100);
+  AudioIngestRequired       : Boolean;
+  AudioDeliveryDate         : DateTime;
+  HIDeliveryDate            : DateTime;
+  VIDeliveryDate            : DateTime;
+}
 
-  SubtitleEssenceId               : String(8);
+entity AUXEssenceDetails : managed {
+  key ID : String(8);
+  parent : Association to InsertEditDetails;
+
+  AUXType                  : String(12);
+  AUXLanguages             : String(20);
+  AUXBackup                : Boolean;
+  AUXIngestRequired        : Boolean;
+  LocalisedGFXDeliveryDate : DateTime;
+}
+
+entity SubtitleEssenceDetails : managed {
+  key ID : String(8);
+  parent : Association to InsertEditDetails;
+
   Subtitles                       : String(12);
   SubtitleLanguage                : String(20);
   SubtitleDimension               : String(2);
@@ -448,39 +541,32 @@ entity EssenceDetails : managed {
   SubtitleIngestRequired          : Boolean;
   SLDeliveryDate                  : DateTime;
   HLTDeliveryDate                 : DateTime;
-
-  OpenCaptionsEssenceId           : String(8);
-  OpenCaptions                    : String(12);
-  OCAPLanguage                    : String(20);
-  OCAPDimensions                  : String(2);
-  OCAPFormat                      : String(10);
-  OCAPExcludedReels               : Integer;
-  OCAPDeliveryDate                : DateTime;
-  OCAPIngestRequired              : Boolean;
-
-  ClosedCaptionsEssenceId         : String(8);
-  ClosedCaptions                  : String(4);
-  CCAPLanguage                    : String(20);
-  CCAPFormat                      : String(10);
-  CCAPExcludedReels               : Integer;
-  CCAPDeliveryDate                : DateTime;
-  CCAPIngestRequired              : Boolean;
 }
 
-entity InsertEditDetails : managed {
-  key parent : Association to MasteringHubMain;
+entity OpenCaptionsEssenceDetails : managed {
+  key ID : String(8);
+  parent : Association to InsertEditDetails;
 
-  EditEssenceID         : String(8);
-  Edits                 : Boolean;
-  EstimatedEditCount    : Integer;
-  InsertEssenceID       : String(8);
-  Inserts               : Boolean;
-  EstimatedInsertCount  : Integer;
-  GeneralOrderNotes     : String(2000);
-  LocalApprovalStatus   : String(12);
-  Translator            : String(20);
+  OpenCaptions      : String(12);
+  OCAPLanguage      : String(20);
+  OCAPDimensions    : String(2);
+  OCAPFormat        : String(10);
+  OCAPExcludedReels : Integer;
+  OCAPDeliveryDate  : DateTime;
+  OCAPIngestRequired: Boolean;
 }
 
+entity ClosedCaptionsEssenceDetails : managed {
+  key ID : String(8);
+  parent : Association to InsertEditDetails;
+
+  ClosedCaptions     : String(4);
+  CCAPLanguage       : String(20);
+  CCAPFormat         : String(10);
+  CCAPExcludedReels  : Integer;
+  CCAPDeliveryDate   : DateTime;
+  CCAPIngestRequired : Boolean;
+}
 entity PartnerDetails : managed {
   key parent : Association to MasteringHubMain;
 

@@ -27,6 +27,18 @@ annotate service.MasteringHubMain with @(
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneratedGroup',
         },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : 'Items',
+            ID : 'Items',
+            Target : 'insertEdit/@UI.LineItem#Items',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : 'Partner',
+            ID : 'Partner',
+            Target : 'partner/@UI.LineItem#Partner',
+        },
     ],
     UI.LineItem : [
         {
@@ -64,6 +76,79 @@ annotate service.InsertEditDetails with @(
             Target : 'parent/@UI.LineItem',
             Label : 'Items',
             ID : 'items',
+        },
+    ],
+    UI.LineItem #Items : [
+        {
+            $Type : 'UI.DataField',
+            Value : EditEssenceID,
+            Label : 'EditEssenceID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Edits,
+            Label : 'Edits',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : EstimatedEditCount,
+            Label : 'EstimatedEditCount',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : EstimatedInsertCount,
+            Label : 'EstimatedInsertCount',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : GeneralOrderNotes,
+            Label : 'GeneralOrderNotes',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : InsertEssenceID,
+            Label : 'InsertEssenceID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Inserts,
+            Label : 'Inserts',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : LocalApprovalStatus,
+            Label : 'LocalApprovalStatus',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : modifiedAt,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : modifiedBy,
+        },
+    ],
+);
+
+annotate service.PartnerDetails with @(
+    UI.LineItem #Partner : [
+        {
+            $Type : 'UI.DataField',
+            Value : DCPDeliveryPartnerInfo,
+            Label : 'DCPDeliveryPartnerInfo',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : DKDMDeliveryPartnerInfo,
+            Label : 'DKDMDeliveryPartnerInfo',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : modifiedAt,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : modifiedBy,
         },
     ]
 );

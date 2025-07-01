@@ -12,8 +12,13 @@ service MasteringService @(requires: 'authenticated-user') {
 
  entity MasteringHubMain  as projection on db.MasteringHubMain;
   entity InsertEditDetails  as projection on db.InsertEditDetails;
-   entity EssenceDetails  as projection on db.EssenceDetails;
-    entity PartnerDetails  as projection on db.PartnerDetails;
+  entity ImageEssenceDetails as projection on db.ImageEssenceDetails;
+  entity AudioEssenceDetails as projection on db.AudioEssenceDetails;
+  entity AUXEssenceDetails as projection on db.AUXEssenceDetails;
+  entity SubtitleEssenceDetails as projection on db.SubtitleEssenceDetails;
+  entity OpenCaptionsEssenceDetails as projection on db.OpenCaptionsEssenceDetails;
+  entity ClosedCaptionsEssenceDetails as projection on db.ClosedCaptionsEssenceDetails;
+entity PartnerDetails  as projection on db.PartnerDetails;
     
 
 
