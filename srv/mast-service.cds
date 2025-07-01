@@ -9,4 +9,13 @@ service MasteringService @(requires: 'authenticated-user') {
 
     @readonly
     entity BusinessPartners as projection on api.BusinessPartners;
+
+ entity MasteringHubMain  as projection on db.MasteringHubMain;
+  entity InsertEditDetails  as projection on db.InsertEditDetails;
+   entity EssenceDetails  as projection on db.EssenceDetails;
+    entity PartnerDetails  as projection on db.PartnerDetails;
+    
+
+
+
 }

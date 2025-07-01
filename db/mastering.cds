@@ -324,3 +324,167 @@ entity CPLSalesOrdersMaster {
   DFX                            : String(8);
   ProductionOrderNumber          : Integer;
 }
+
+
+
+
+
+
+entity MasteringHubMain : cuid {
+  SalesOrderNumber            : Integer;
+  LineItem                    : Integer;
+  Material                    : String(40);
+  InternalOrderStatus         : String(20);
+  CreationDate                : DateTime;
+  InternalLastModifiedDate    : DateTime;
+  InternalCancellationDate    : DateTime;
+  CustomerOrderStatus         : String(20);
+  CustomerLastModifiedDate    : DateTime;
+  CustomerCancellationDate    : DateTime;
+  TitleID                     : String(40);
+  Title                       : String(200);
+  StudioID                    : Integer;
+  StudioName                  : String(40);
+  MasteringFacility           : String(4);
+  RequestedMasteringFacility  : String(4);
+  PackagingStandard           : String(20);
+  ContentKind                 : String(3);
+  VersionNumber               : String(10);
+  ContentTypeModifiers        : String(100);
+  IntendedPrimaryTerritory    : String(3);
+  IntendedSecondaryTerritory : String(500);
+  Rating                      : String(400);
+  Encrypted                   : Boolean;
+  VersionType                 : String(4);
+  VersionDescription          : String(100);
+  BaseCompositionReelCount    : Integer;
+  Branched                    : Boolean;
+  IntendedPackaging           : String(100);
+  StudioRequestedCTT          : String(800);
+  CTTRecommendedToProduction  : String(800);
+  StudioContentID             : String(100);
+  StudioContentDescription    : String(800);
+  HeadTailReels               : String(3);
+  PrecedingSODID              : String(10);
+  BaseCPLs                    : String(200);
+  NotBeforeApproved           : String(40);
+  NotBeforeCompleted          : String(40);
+
+  OVSourceAssetDeliveryDeadline : DateTime;
+  LVSourceAssetDeliveryDeadline : DateTime;
+  RequestedMasteringStartDate   : DateTime;
+  RequestedMasteringEndDate     : DateTime;
+  RequestedMasteringDeadline    : DateTime;
+  ReleaseDate                   : Date;
+  AVID_CPL                      : String(20);
+  CTTFinal                      : String(128);
+  CPL_UUID                      : String(40);
+  Stereography                  : Boolean;
+  ClientQC                      : Boolean;
+  QTOutputs                     : Integer;
+  DFX                           : String(8);
+  ProductionOrderNumber         : Integer;
+
+  ImageEssence                  : Composition of one EssenceDetails on ImageEssence.parent = $self;
+  AudioEssence                  : Composition of one EssenceDetails on AudioEssence.parent = $self;
+  AUXEssence                    : Composition of one EssenceDetails on AUXEssence.parent = $self;
+  SubtitleEssence               : Composition of one EssenceDetails on SubtitleEssence.parent = $self;
+  OpenCaptionsEssence           : Composition of one EssenceDetails on OpenCaptionsEssence.parent = $self;
+  ClosedCaptionsEssence         : Composition of one EssenceDetails on ClosedCaptionsEssence.parent = $self;
+
+  insertEdit                    : Composition of one InsertEditDetails on insertEdit.parent = $self;
+  partner                       : Composition of one PartnerDetails on partner.parent = $self;
+}
+
+entity EssenceDetails : managed {
+  key ID : String(8);
+  parent : Association to MasteringHubMain;
+
+  ImageEssenceId                  : String(8);
+  Resolution                      : String(2);
+  AspectRatio                     : String(12);
+  ContainerHeight                 : Integer;
+  ContainerWidth                  : Integer;
+  ActivePictureHeight             : Integer;
+  ActivePictureWidth              : Integer;
+  ImageDimension                  : String(2);
+  ImageStandard                   : String(20);
+  LightLevel                      : String(20);
+  FrameRate                       : Decimal;
+  TargetMaxBitRate                : Decimal;
+  TextedTextless                  : String(20);
+  ImageLanguages                  : String(100);
+  ImageIngestRequired             : Boolean;
+
+  AudioEssenceId                  : String(8);
+  AudioChannelConfiguration       : String(20);
+  AudioChannelCount               : Integer;
+  AudioLanguage                   : String(200);
+  HI                              : Boolean;
+  VI                              : Boolean;
+  AdditionalAudioTracks           : String(100);
+  AudioIngestRequired             : Boolean;
+  AudioDeliveryDate               : DateTime;
+  HIDeliveryDate                  : DateTime;
+  VIDeliveryDate                  : DateTime;
+
+  AUXEssenceId                    : String(8);
+  AUXType                         : String(12);
+  AUXLanguages                    : String(20);
+  AUXBackup                       : Boolean;
+  AUXIngestRequired               : Boolean;
+  LocalisedGFXDeliveryDate        : DateTime;
+
+  SubtitleEssenceId               : String(8);
+  Subtitles                       : String(12);
+  SubtitleLanguage                : String(20);
+  SubtitleDimension               : String(2);
+  SubtitleFormat                  : String(10);
+  SubtitleExcludedReels          : Integer;
+  ForcedNarrative                 : Boolean;
+  ForcedNarrativeDetails         : String(1000);
+  SubtitleDeliveryDate            : DateTime;
+  ForcedNarrativeSubtitleDeliveryDate : DateTime;
+  SubtitleIngestRequired          : Boolean;
+  SLDeliveryDate                  : DateTime;
+  HLTDeliveryDate                 : DateTime;
+
+  OpenCaptionsEssenceId           : String(8);
+  OpenCaptions                    : String(12);
+  OCAPLanguage                    : String(20);
+  OCAPDimensions                  : String(2);
+  OCAPFormat                      : String(10);
+  OCAPExcludedReels               : Integer;
+  OCAPDeliveryDate                : DateTime;
+  OCAPIngestRequired              : Boolean;
+
+  ClosedCaptionsEssenceId         : String(8);
+  ClosedCaptions                  : String(4);
+  CCAPLanguage                    : String(20);
+  CCAPFormat                      : String(10);
+  CCAPExcludedReels               : Integer;
+  CCAPDeliveryDate                : DateTime;
+  CCAPIngestRequired              : Boolean;
+}
+
+entity InsertEditDetails : managed {
+  key parent : Association to MasteringHubMain;
+
+  EditEssenceID         : String(8);
+  Edits                 : Boolean;
+  EstimatedEditCount    : Integer;
+  InsertEssenceID       : String(8);
+  Inserts               : Boolean;
+  EstimatedInsertCount  : Integer;
+  GeneralOrderNotes     : String(2000);
+  LocalApprovalStatus   : String(12);
+  Translator            : String(20);
+}
+
+entity PartnerDetails : managed {
+  key parent : Association to MasteringHubMain;
+
+  DKDMDeliveryPartnerInfo : String(40);
+  DCPDeliveryPartnerInfo  : String(40);
+}
+
