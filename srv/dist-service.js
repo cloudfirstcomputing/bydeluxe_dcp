@@ -63,6 +63,16 @@ module.exports = class DistributionService extends cds.ApplicationService {
             return { processedField, lreq }
 
         }
+        const uniqueCPL = arr => {
+            for (let index = 0; index < arr.length; index++) {
+                const element = arr[index];
+                if (!element.to_CPLDetail) continue
+                let unq = [...new Set(element.to_CPLDetail.map(item => item.CPLUUID))]
+                if (unq.length !== element.to_CPLDetail.length) {
+                    return `${element.PackageName}`
+                }
+            }
+        }
         const uniquePackageName = arr => {
             let unq = [...new Set(arr.map(item => item.PackageName))]
             if (unq.length !== arr.length) {
@@ -418,6 +428,11 @@ module.exports = class DistributionService extends cds.ApplicationService {
             ret = uniquePriority(req.data.to_KeyPackage)
             if (ret) {
                 req.error(400, `Priority should be unique in Key Package: ${ret}`)
+            }
+
+            ret = uniqueCPL(req.data.to_KeyPackage)
+            if (ret) {
+                req.error(400, `CPL should be unique in Key Package: ${ret}`)
             }
 
             var aPackage = req.data.to_Package
