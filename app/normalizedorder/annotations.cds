@@ -200,7 +200,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : Remediation,
             Label : '{i18n>Remediation}',
-            ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
@@ -294,6 +293,7 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : PlayStartDate,
             Label : '{i18n>Playstartdate}',
+            ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
@@ -304,6 +304,7 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : PlayEndDate,
             Label : '{i18n>Playenddate}',
+            ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
