@@ -1603,7 +1603,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         }
                                     }
                                     else {
-                                        sErrorMessage = `DCP Material Mapping not maintained for: ${oVarMapping?.mode} - ${sShippingType_Content} - ${CompanyCode}, hence generic item not created for key`;
+                                        sErrorMessage = `DCP Material Mapping not maintained for: ${oVarMapping?.mode} - ${sShippingType_Key} - ${CompanyCode}, hence generic item not created for key`;
                                         oResponseStatus.error.push({
                                             "BookingID":oFeedData?.BookingID,
                                             "message": `| ${sErrorMessage} |`,
