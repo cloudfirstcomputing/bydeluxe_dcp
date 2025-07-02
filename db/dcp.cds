@@ -369,41 +369,41 @@ entity KalmusTheaterStudio: managed{
 }
 // Maccs_Dchub
 entity Maccs_Dchub : managed {
-    key requestId                     : String(18) @mandatory;
+    key requestId                     : String(50) @mandatory;
         product                       : String(16);
-        titleId                       : Integer    @mandatory;
-        titleExternalRef              : Integer    @mandatory;
-        titleDescription              : String(40);
-    key cinemaId                      : String(10) @mandatory;
-        screenId                      : String(40);
+        titleId                       : String(50)    @mandatory;
+        titleExternalRef              : String(50)    @mandatory;
+        titleDescription              : String(256);
+    key cinemaId                      : String(50) @mandatory;
+        screenId                      : String(50);
         screenNumber                  : Integer    @mandatory;
-        cinemaDescription             : String(40);
+        cinemaDescription             : String(1000);
         cinemaTerritory               : String(2)  @mandatory;
-        recipientExternalRef          : String(10);
-        versionId                     : Integer;
-        versionDescription            : String(20);
-        versionExternalRefVendor      : String(20);
-        versionExternalRefDistributor : String(10);
-        versionAdditionalInfo         : String(20);
-        startDate                     : Date       @mandatory;
-        endDate                       : Date       @mandatory;
-        deliveryDate                  : Date       @mandatory;
-    key customerRef                   : String(20) @mandatory;
+        recipientExternalRef          : String(256);
+        versionId                     : String(256);
+        versionDescription            : String(256);
+        versionExternalRefVendor      : String(256);
+        versionExternalRefDistributor : String(256);
+        versionAdditionalInfo         : String(256);
+        startDate                     : DateTime       @mandatory;
+        endDate                       : DateTime       @mandatory;
+        deliveryDate                  : DateTime       @mandatory;
+    key customerRef                   : String(50) @mandatory;
         distributorId                 : Integer;
-        distributorDescription        : String(15);
-        distributorKDMArchive         : String(20);
-        hasDcp                        : String;
-        doNotShip                     : String;
-        circuitingFrom                : String(10);
+        distributorDescription        : String(256);
+        distributorKDMArchive         : String(256);
+        hasDcp                        : Boolean;
+        doNotShip                     : Boolean;
+        circuitingFrom                : String(50);
         screeningTime                 : Time;
-        showcode                      : String(10);
-        techCheckKey                  : String;
-    key quantity                      : Integer    @mandatory;
-        requestType                   : String(10);
-        requestStatusCode             : Integer;
-        requestStatusDescription      : String(20);
-        remark                        : String(40);
-        bookerName                    : String(20) @mandatory;
+        showcode                      : String(50);
+        techCheckKey                  : Boolean;
+        quantity                      : Integer    @mandatory;
+        requestType                   : String(11);
+        requestStatusCode             : String(40);
+        requestStatusDescription      : String(256);
+        remark                        : String(500);
+        bookerName                    : String(50) @mandatory;
 }
 
 
@@ -411,7 +411,7 @@ entity Maccs_Dchub : managed {
 
 entity TheatreOrderRequest : managed {
     key StudioID             : String(50);
-    key GenerateDate         : Date;
+    key GenerateDate         : DateTime;
     key Version              : String(50);
         ServerName           : String(50);
         DataBaseName         : String(50);
@@ -429,53 +429,53 @@ entity TheatreOrderRequest : managed {
 
 entity Theatre : managed {
     key ID          : String(50);
-        Name        : String(200);
-        City        : String(200);
+        Name        : String(1000);
+        City        : String(1000);
         State       : String(100);
-        PostalCode  : String(50);
-        CountryCode : String(50);
-        Address     : String(500);
+        PostalCode  : String(30);
+        CountryCode : String(100);
+        Address     : String(1000);
         Request     : Association to TheatreOrderRequest;
 
 }
 
 entity MediaOrder : managed {
-        mediaType         : String;
+        mediaType         : String(256);
     key mediaOrderId      : Integer;
         TheatreID         : String(50);
         contentId         : Integer;
-        cancelFlag        : String;
-        operation         : String;
+        cancelFlag        : Boolean;
+        operation         : String(50);
         playdateBegin     : Date;
         playdateEnd       : Date;
-        holdKeyFlag       : String;
-        tmcMediaOrderId   : String;
-        tmcTheaterId      : String;
-        note              : String;
-        screeningScreenNo : String;
-        screeningTime     : String;
-        doNotShip         : String;
-        shipHoldType      : String;
-        deliveryMethod    : String;
-        returnMethod      : String;
-        isNoKey           : String;
-        bookerName        : String;
-        bookerPhone       : String;
-        bookerEmail       : String;
+        holdKeyFlag       : Boolean;
+        tmcMediaOrderId   : String(256);
+        tmcTheaterId      : String(256);
+        note              : String(256);
+        screeningScreenNo : String(3);
+        screeningTime     : DateTime;
+        doNotShip         : Boolean;
+        shipHoldType      : String(256);
+        deliveryMethod    : String(256);
+        returnMethod      : String(256);
+        isNoKey           : Boolean;
+        bookerName        : String(256);
+        bookerPhone       : String(256);
+        bookerEmail       : String(256);
         Request           : Association to TheatreOrderRequest;
 }
 
 entity DigitalComposition : managed {
     key ID       : String(50);
         Title    : String(500);
-        CPL_UUID : String(100);
-        FilmID   : String(100);
+        CPL_UUID : String(256);
+        FilmID   : String(256);
         Request  : Association to TheatreOrderRequest;
 }
 
 entity DigitalKeyOrder : managed {
     key DigitalKeyOrderID : String(50);
-        ContentID         : String(50);
+        ContentID         : String(256);
         Screens           : String(200);
         CancelFlag        : Boolean;
         LicenseBeginDate  : DateTime;
@@ -506,23 +506,23 @@ entity OrderRequest : managed {
 
 entity AddressType {
     key SiteID       : String(50);
-        SiteName     : String(200);
+        SiteName     : String(1000);
         CircuitName  : String(200);
         ShortName    : String(50);
         Address1     : String(200);
         Address2     : String(200);
-        City         : String(100);
-        State        : String(50);
+        City         : String(1000);
+        State        : String(100);
         Territory    : String(100);
         ISO          : String(10);
-        PostalCode   : String(20);
-        Region       : String(50);
+        PostalCode   : String(30);
+        Region       : String(100);
  key   OrderRequest : Association to OrderRequest;
 }
 
 entity PackageType {
     key ID           : Integer;
-        Description  : String(200);
+        Description  : String(256);
         TitleName    : String(500);
     key OrderRequest : Association to OrderRequest;
         Compositions : Composition of one CompositionType
@@ -531,8 +531,8 @@ entity PackageType {
 
 entity CompositionType {
     key ID                : String;
-    key UUID              : String(500);
-        ContentUniqueID   : String(100);
+    key UUID              : String(45);
+        ContentUniqueID   : String(36);
         Description       : String(500);
         TrackLanguage     : String(100);
         Sub1              : String(100);
@@ -565,14 +565,14 @@ entity OFEOrders : managed {
 
 entity KeyOrders {
     key id                 : Integer;
-        showtimeType       : String;
-        contentDescription : String;
-        cpl                : String;
+        showtimeType       : String(50);
+        contentDescription : String(256);
+        cpl                : String(45);
         licenseBeginDate   : DateTime;
         licenseEndDate     : DateTime;
         isSpecialDelivery  : Boolean;
-        cancelOrder        : String;
-        screenId           : String;
+        cancelOrder        : Boolean;
+        screenId           : String(3);
         contacts           : Composition of many Contacts
                                  on contacts.KeyOrderRequest = $self;
         site               : Composition of one Site
@@ -582,14 +582,14 @@ entity KeyOrders {
 
 entity Site {
     key siteID          : String;
-        siteName        : String;
-        physicalAddress : String;
-        deliveryAddress : String;
+        siteName        : String(1000);
+        physicalAddress : String(1000);
+        deliveryAddress : String(1000);
         KeyOrderRequest : Association to KeyOrders;
 }
 
 entity Contacts {
-    key email           : String;
+    key email           : String(256);
     key KeyOrderRequest : Association to KeyOrders;
 }
 

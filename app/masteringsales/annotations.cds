@@ -66,6 +66,41 @@ annotate service.MasteringHubMain with @(
             Label : 'CreationDate',
             Value : CreationDate,
         },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.AdditionalAudioTracks,
+            Label : 'AdditionalAudioTracks',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.AudioChannelConfiguration,
+            Label : 'AudioChannelConfiguration',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.AudioChannelCount,
+            Label : 'AudioChannelCount',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.AudioDeliveryDate,
+            Label : 'AudioDeliveryDate',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.AudioIngestRequired,
+            Label : 'AudioIngestRequired',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.AudioLanguage,
+            Label : 'AudioLanguage',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : insertEdit.AudioEssence.ID,
+            Label : 'ID',
+        },
     ],
 );
 
@@ -74,8 +109,8 @@ annotate service.InsertEditDetails with @(
         {
             $Type : 'UI.ReferenceFacet',
             Target : 'parent/@UI.LineItem',
-            Label : 'Items',
             ID : 'items',
+            Label : '{i18n>AudioEssence}',
         },
     ],
     UI.LineItem #Items : [
