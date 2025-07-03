@@ -781,86 +781,108 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         const createStudioFeeds = async (req, aData, bReconcile) => {
             var recordsToBeInserted = [], recordsToBeUpdated = [], successEntries = [], updateSuccessEntries = [], hanatable = StudioFeed;
             var data = aData;
+            let oStudioFeedElements = hanatable?.elements;
             sErrorMessage = ""; //Resetting error message
             oResponseStatus = { "error": [], "success": [], "warning": [], "nonpersistenterror":[] }; //Setting fresh response for the incoming request
             for (var i = 0; i < data.length; i++) {
-                data[i].Status_ID = "A";
-                data[i].IsActive = "Y";
-                data[i].Version = 1;
-                if(data[i]?.BookingType_ID !== "C" &&  data[i]?.BookingType_ID !== "U"){
-                    data[i].BookingType_ID = "NO";
+                let oFeedIncomingData = data[i];
+                oFeedIncomingData.Status_ID = "A";
+                oFeedIncomingData.IsActive = "Y";
+                oFeedIncomingData.Version = 1;
+                if(oFeedIncomingData?.BookingType_ID !== "C" &&  oFeedIncomingData?.BookingType_ID !== "U"){
+                    oFeedIncomingData.BookingType_ID = "NO";
                 }
-                let sEntityID = data[i].EntityID, sBupa = data[i].Studio_BusinessPartner;
+                let sEntityID = oFeedIncomingData.EntityID, sBupa = oFeedIncomingData.Studio_BusinessPartner;
                 oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
                 sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
                     DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
 
                 if (!oSalesParameterConfig) {
-                    data[i].ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
-                    data[i].Status_ID = "D";
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
+                    oFeedIncomingData.Status_ID = "D";
                     oResponseStatus.error.push({
-                        "message": `| ${data[i].ErrorMessage} |`,
-                        "errorMessage": data[i].ErrorMessage
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
                     });
                 }
                 else if (!sSoldToCustomer) {
-                    data[i].ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
-                    data[i].Status_ID = "D";
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
+                    oFeedIncomingData.Status_ID = "D";
 
                     oResponseStatus.error.push({
-                        "message": `| ${data[i].ErrorMessage} |`,
-                        "errorMessage": data[i].ErrorMessage
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
                     });
                 }
                 else if (!SalesOrganization) {
-                    data[i].ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
-                    data[i].Status_ID = "D";
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
+                    oFeedIncomingData.Status_ID = "D";
 
                     oResponseStatus.error.push({
-                        "message": `| ${data[i].ErrorMessage} |`,
-                        "errorMessage": data[i].ErrorMessage
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
                     });
                 }
                 else if (!DistributionChannel) {
-                    data[i].ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
-                    data[i].Status_ID = "D";
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
+                    oFeedIncomingData.Status_ID = "D";
 
                     oResponseStatus.error.push({
-                        "message": `| ${data[i].ErrorMessage} |`,
-                        "errorMessage": data[i].ErrorMessage
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
                     });
                 }
                 else if (!Division) {
-                    data[i].ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
-                    data[i].Status_ID = "D";
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
+                    oFeedIncomingData.Status_ID = "D";
 
                     oResponseStatus.error.push({
-                        "message": `| ${data[i].ErrorMessage} |`,
-                        "errorMessage": data[i].ErrorMessage
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
                     });
                 }
                 else {
                     var oLocalResponse, oExistingData;
                     if(bReconcile){
-                        oExistingData = await SELECT.one.from(hanatable).where({ ID: data[i].ID });
-                        // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                        oExistingData = await SELECT.one.from(hanatable).where({ ID: oFeedIncomingData.ID });
+                        // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, oFeedIncomingData);
                         // recordsToBeUpdated.push(entry_Active); 
                     }
-                    if (data[i].BookingType_ID === "U" || data[i].BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
-                        // var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({createdAt:'desc'});
+                    if (oFeedIncomingData.BookingType_ID === "U" || oFeedIncomingData.BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
+                        // var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({createdAt:'desc'});
                         if (oExistingData && oExistingData?.SalesOrder) {
-                            data[i].Version = oExistingData.Version ? oExistingData.Version + 1 : 1;
-                            // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i]);
+                            // Object.assign(oFeedIncomingData, oExistingData); //Copying Existing entry to incoming feed
+                            let aStudioFeedProps = Object.keys(oStudioFeedElements);
+                            for(let m in aStudioFeedProps){ //Copy only relevant data from existing record
+                                let sProp = aStudioFeedProps[m];
+                                if(sProp === "ID" || sProp === "createdAt" || sProp === "createdBy" || sProp === "modifiedAt" || 
+                                    sProp === "modifiedBy" ||  sProp === "HasActiveEntity" || sProp === "HasDraftEntity" || 
+                                    sProp === "DraftAdministrativeData_DraftUUID" || sProp === "DraftAdministrativeData" || 
+                                    sProp === "SiblingEntity" || sProp === "IsActiveEntity" ||  sProp === "Booking_ID" || 
+                                    sProp === "Origin_OriginID" || sProp === "HFR" ||  sProp === "RequestedDelivDate" || 
+                                    sProp === "BookingType_ID"  || sProp === "ErrorMessage"   || sProp === "Status_ID"){ //Skip copying of these fields
+                                    // sProp === "CustomerReference" || sProp === "PlayStartDate" || sProp === "PlayStartTime" || 
+                                    // sProp === "PlayEndDate" || sProp === "PlayEndTime" || sProp === "PlayStartDate" || 
+                                    // sProp === "BookerName" || sProp === "BookingID" || sProp === "EntityID" || sProp === "TheaterID" || 
+                                    // sProp === "OrderID" || sProp === "ApprovedScreens"){ //Skip copying of these fields
+                                        continue;
+                                }
+                                else{
+                                    oFeedIncomingData[sProp] = oExistingData[sProp];
+                                }
+                            }
+                            oFeedIncomingData.Version = oExistingData.Version ? oExistingData.Version + 1 : 1;
+                            // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, oFeedIncomingData);
                                 // recordsToBeUpdated.push(oExistingData); //This record will be set as Inactive
-                                let sSalesOrder = oExistingData.SalesOrder, oFeedData = data[i];
-                                let sHFR_Incoming = oFeedData?.HFR;
+                                let sSalesOrder = oExistingData.SalesOrder;
+                                let sHFR_Incoming = oFeedIncomingData?.HFR;
                                 let dReqDelDate = oExistingData?.RequestedDelivDate;
                                 oExistingData.IsActive="N";
                                 recordsToBeUpdated.push(oExistingData); 
 
-                                oFeedData.SalesOrder = oExistingData.SalesOrder;
-                                oFeedData.IsActive = "Y";
+                                // oFeedIncomingData.SalesOrder = oExistingData.SalesOrder;
+                                oFeedIncomingData.IsActive = "Y";
 
                                 let oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
                                 if(oSalesOrder?.OverallDeliveryStatus === "A"){ //GO for update/Cancel only if DelStatus is not completed
@@ -870,10 +892,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         let oSalesOrderItem = aSalesOrderItems[p];
                                         let sShippingType = oSalesOrderItem?.ShippingType; 
                                         let oDataForUpdate = {};
-                                        if(oFeedData.BookingType_ID === 'U'){ //Update
+                                        if(oFeedIncomingData.BookingType_ID === 'U'){ //Update
                                             if(sShippingType === '07'){ //For Key Orders
                                                 let sDelBlockReason;
-                                                if(oFeedData.HFR === "Y"){
+                                                if(oFeedIncomingData.HFR === "Y"){
                                                         sDelBlockReason = "50";
                                                 }
                                                 else{
@@ -884,9 +906,9 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             }
                                             else{ //For Content Orders
                                                 let RequestedDeliveryDate, ConfirmedDeliveryDate;
-                                                if (oFeedData.RequestedDelivDate && dReqDelDate && oFeedData.RequestedDelivDate !== dReqDelDate) {
-                                                    RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
-                                                    ConfirmedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`;
+                                                if (oFeedIncomingData.RequestedDelivDate && dReqDelDate && oFeedIncomingData.RequestedDelivDate !== dReqDelDate) {
+                                                    RequestedDeliveryDate = `/Date(${new Date(oFeedIncomingData.RequestedDelivDate).getTime()})/`;
+                                                    ConfirmedDeliveryDate = `/Date(${new Date(oFeedIncomingData.RequestedDelivDate).getTime()})/`;
                                                     
                                                     oDataForUpdate["RequestedDeliveryDate"] = RequestedDeliveryDate;
                                                     oDataForUpdate["ConfirmedDeliveryDate"] = ConfirmedDeliveryDate;
@@ -900,26 +922,26 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     data: oDataForUpdate
                                                 }).catch((err) => {
                                                     oResponseStatus.error.push({
-                                                        "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
+                                                        "message": `| For Booking ID: ${oFeedIncomingData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
                                                         "errorMessage": err.message
                                                     });
                                                 }).then((result, param2) => {
                                                     oResponseStatus.success.push({
-                                                        "BookingID": oFeedData?.BookingID,
-                                                        "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line is created |`
+                                                        "BookingID": oFeedIncomingData?.BookingID,
+                                                        "message": `| For Booking ID: ${oFeedIncomingData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line is created |`
                                                     });
-                                                    oFeedData.Status_ID = "C";
+                                                    oFeedIncomingData.Status_ID = "C";
                                                 }); 
                                             } 
                                             else if(sShippingType !== '07'){     
-                                                data[i].ErrorMessage = `| No Change in Delivery Date for update |`;
+                                                oFeedIncomingData.ErrorMessage = `| No Change in Delivery Date for update |`;
                                                 oResponseStatus.error.push({
-                                                    "message": data[i].ErrorMessage,
-                                                    "errorMessage": data[i].ErrorMessage
+                                                    "message": oFeedIncomingData.ErrorMessage,
+                                                    "errorMessage": oFeedIncomingData.ErrorMessage
                                                 });
                                             }
                                         }//End Of Update Block
-                                        else if(oFeedData.BookingType_ID === 'C'){ //Cancel  
+                                        else if(oFeedIncomingData.BookingType_ID === 'C'){ //Cancel  
                                             bItemForCancelPresent = true;  
                                             await s4h_sohv2_Txn.send({
                                                 method: 'PATCH',
@@ -929,98 +951,98 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                 }
                                             }).catch((err) => {
                                                 oResponseStatus.error.push({
-                                                    "message": `| For Booking ID: ${oFeedData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `,
+                                                    "message": `| For Booking ID: ${oFeedIncomingData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `,
                                                     "errorMessage": err.message
                                                 });
                                             }).then((result, param2) => {
                                                 oResponseStatus.success.push({
-                                                    "BookingID": oFeedData?.BookingID,
-                                                    "message": `| For Booking ID: ${oFeedData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem} has been cancelled |`
+                                                    "BookingID": oFeedIncomingData?.BookingID,
+                                                    "message": `| For Booking ID: ${oFeedIncomingData?.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem} has been cancelled |`
                                                 });
-                                                oFeedData.Status_ID = "C";
+                                                oFeedIncomingData.Status_ID = "C";
                                             });
                                         }//End of Cancel block                                     
                                     }//End of Sales Order Item Iteration
-                                    if(!bItemForUpdatePresent  &&  !bItemForCancelPresent && !data[i].ErrorMessage){
-                                        data[i].ErrorMessage = `There is no Sales Order Present for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
-                                        data[i].Status_ID = 'D';
+                                    if(!bItemForUpdatePresent  &&  !bItemForCancelPresent && !oFeedIncomingData.ErrorMessage){
+                                        oFeedIncomingData.ErrorMessage = `There is no relevant data present for ${oFeedIncomingData.BookingType_ID === "U"?"update":"cancellation"}`;
+                                        oFeedIncomingData.Status_ID = 'D';
             
                                         oResponseStatus.error.push({
-                                            "message": `| ${data[i].ErrorMessage} |`,
-                                            "errorMessage": data[i].ErrorMessage
+                                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                                            "errorMessage": oFeedIncomingData.ErrorMessage
                                         }); 
                                     }  
                                 } 
                                 else{ //Delivery already completed, so cannot be updated/cancelled                              
-                                    data[i].ErrorMessage = `Delivery already created for this order ${data[i].SalesOrder} (Status: ${oSalesOrder?.OverallDeliveryStatus}), hence can not change the order`;
-                                    data[i].Status_ID = 'D';
+                                    oFeedIncomingData.ErrorMessage = `Delivery already created for this order (Status: ${oSalesOrder?.OverallDeliveryStatus}), hence can not change the order`;
+                                    oFeedIncomingData.Status_ID = 'D';
         
                                     oResponseStatus.error.push({
-                                        "message": `| ${data[i].ErrorMessage} |`,
-                                        "errorMessage": data[i].ErrorMessage,
-                                        "BookingID":data[i].BookingID
+                                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                                        "errorMessage": oFeedIncomingData.ErrorMessage,
+                                        "BookingID":oFeedIncomingData.BookingID
                                     });
 
                                 }     
                         }
                         else{ //Entry for Update or Cancel not present
-                            data[i].ErrorMessage = `There is no record exist with incoming Booking ID${data[i].BookingID} where Sales Order ${oExistingData?.SalesOrder} is linked for ${data[i].BookingType_ID === "U"?"update":"cancellation"}`;
-                            data[i].Status_ID = 'D';
+                            oFeedIncomingData.ErrorMessage = `There is no record exist with incoming Booking ID${oFeedIncomingData.BookingID} where Sales Order ${oExistingData?.SalesOrder} is linked for ${oFeedIncomingData.BookingType_ID === "U"?"update":"cancellation"}`;
+                            oFeedIncomingData.Status_ID = 'D';
                             oResponseStatus.error.push({
-                                "message": `| ${data[i].ErrorMessage} |`,
-                                "errorMessage": data[i].ErrorMessage
+                                "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                                "errorMessage": oFeedIncomingData.ErrorMessage
                             });
                         }
                         oLocalResponse = oResponseStatus;
                     }//End of HFR = U or C
                     else { //New Order
                         if(bReconcile){ //For Reconcile, data already picked from table
-                            oExistingData = data[i];
+                            oExistingData = oFeedIncomingData;
                         }
                         else{
-                            oExistingData = await SELECT.one.from(hanatable).where({ BookingID: data[i].BookingID });
+                            oExistingData = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID });
                         }                        
                         if (oExistingData && !bReconcile) {
                             oResponseStatus.nonpersistenterror.push({
-                                "BookingID": data[i].BookingID,
-                                "message": `| Booking ID ${data[i].BookingID} already exists|`,
-                                "errorMessage": `Booking ID ${data[i].BookingID} already exists`
+                                "BookingID": oFeedIncomingData.BookingID,
+                                "message": `| Booking ID ${oFeedIncomingData.BookingID} already exists|`,
+                                "errorMessage": `Booking ID ${oFeedIncomingData.BookingID} already exists`
                             });
                             // oLocalResponse= oResponseStatus;
                             continue;
                         }
                         else{                            
-                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, data[i], bReconcile);
+                            oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, oFeedIncomingData, bReconcile);
                         }
                     }
-                    let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === data[i].BookingID});
-                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID === "NO")) {
-                        data[i] = await updateBTPSOItemsAndS4Texts(req, data[i], oLocalResponse);
+                    let oErrorEntry = oLocalResponse?.error?.find((item)=>{return item.BookingID === oFeedIncomingData.BookingID});
+                    if (oLocalResponse?.success?.length && !oErrorEntry && (oFeedIncomingData.BookingType_ID === "NO")) {
+                        oFeedIncomingData = await updateBTPSOItemsAndS4Texts(req, oFeedIncomingData, oLocalResponse);
                     }
-                    if (oLocalResponse?.success?.length && !oErrorEntry && (data[i].BookingType_ID === "NO")) {
+                    if (oLocalResponse?.success?.length && !oErrorEntry && (oFeedIncomingData.BookingType_ID === "NO")) {
                         // oResponseStatus?.success?.push(...oLocalResponse?.success);
-                        data[i].SalesOrder = oLocalResponse?.SalesOrder;
-                        data[i].DeliveryMethod = oLocalResponse?.DeliveryMethod;
-                        data[i].RemediationCounter = 1;
-                        data[i].Status_ID = "C";
+                        oFeedIncomingData.SalesOrder = oLocalResponse?.SalesOrder;
+                        oFeedIncomingData.DeliveryMethod = oLocalResponse?.DeliveryMethod;
+                        oFeedIncomingData.RemediationCounter = 1;
+                        oFeedIncomingData.Status_ID = "C";
                     }
                     if (oLocalResponse?.Status === 'R') { //Status is in Review
-                        data[i].Status_ID = oLocalResponse.Status;
-                        data[i].ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
+                        oFeedIncomingData.Status_ID = oLocalResponse.Status;
+                        oFeedIncomingData.ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
                     }
                     if (oErrorEntry) {
                         // oResponseStatus?.error?.push(...oLocalResponse?.error);
-                        data[i].ErrorMessage = oErrorEntry?.errorMessage;
-                        data[i].Status_ID = data[i].Status_ID? data[i].Status_ID: "D"; //Either Soft Reconcile status or Error
+                        oFeedIncomingData.ErrorMessage = oErrorEntry?.errorMessage;
+                        oFeedIncomingData.Status_ID = oFeedIncomingData.Status_ID? oFeedIncomingData.Status_ID: "D"; //Either Soft Reconcile status or Error
                     }
                     oLocalResponse = {};
                 }
                 if (bReconcile) {
-                    var sID = data[i].ID;
+                    var sID = oFeedIncomingData.ID;
                     let aBTPItemFields = Object.keys(BookingSalesorderItem?.elements);
                     aBTPItemFields = aBTPItemFields.filter((item)=> item !=='createdBy' && item !== 'createdAt' &&
                         item !== 'modifiedBy' && item !== 'modifiedAt');
-                    let aSOItems = data[i].to_Item; //Items which got created in S4
+                    let aSOItems = oFeedIncomingData.to_Item; //Items which got created in S4
                     let btpItems = [];    
                     for(let i in aSOItems){//Iterating S4 Items
                         let oItems = aSOItems[i],  entry = {};
@@ -1036,7 +1058,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     let aBTPPartnerFields = Object.keys(BookingSalesorderPartner?.elements);
                     aBTPPartnerFields = aBTPPartnerFields.filter((item)=> item !=='createdBy' && item !== 'createdAt' &&
                         item !== 'modifiedBy' && item !== 'modifiedAt');
-                    let aS4Partners = data[i].to_Partner; //Items which got created in S4
+                    let aS4Partners = oFeedIncomingData.to_Partner; //Items which got created in S4
                     let btpPartners = [];    
                     for(let i in aS4Partners){//Iterating S4 Items
                         let oItems = aS4Partners[i],  entry = {};
@@ -1050,14 +1072,14 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         btpPartners.push({...entry});
                     }
                     
-                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: data[i].SalesOrder, Status_ID: data[i].Status_ID, 
-                        DeliveryMethod: data[i].DeliveryMethod, RemediationCounter: data[i].RemediationCounter,
+                    await UPDATE(hanatable).set({ ErrorMessage: sErrorMessage, SalesOrder: oFeedIncomingData.SalesOrder, Status_ID: oFeedIncomingData.Status_ID, 
+                        DeliveryMethod: oFeedIncomingData.DeliveryMethod, RemediationCounter: oFeedIncomingData.RemediationCounter,
                         to_Item: btpItems, to_Partner: btpPartners }).where({
                         ID: sID
                     });
                 }
                 else {
-                    recordsToBeInserted.push(data[i]); 
+                    recordsToBeInserted.push(oFeedIncomingData); 
                 }
                 sErrorMessage = '';//Resetting Error message
             }//End of for loop
