@@ -18,3 +18,5 @@ using from './normalizedorder/annotations';
 using from './proformareportweb/annotations';
 
 using from './masteringsales/annotations';
+
+using from './kalmusweb/annotations';

@@ -125,6 +125,10 @@ modules:
       - deluxemasteringsales.zip
       name: deluxemasteringsales
       target-path: resources/
+    - artifacts:
+      - kalmusweb.zip
+      name: kalmusweb
+      target-path: resources/
 - name: comdlxdistribution
   type: html5
   path: app/distribution
@@ -228,6 +232,16 @@ modules:
 - name: deluxemasteringsales
   type: html5
   path: app/masteringsales
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: kalmusweb
+  type: html5
+  path: app/kalmusweb
   build-parameters:
     build-result: dist
     builder: custom

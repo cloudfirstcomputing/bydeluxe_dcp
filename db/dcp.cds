@@ -354,13 +354,13 @@ entity ShippingTypeMaster {
         ShippingTypeDescription : String;
 }
 
-entity KalmusTheaterStudio: managed{
-    key PartnerfunctionSP: String;
-    key Studio: String;
+entity KalmusTheaterStudio: cuid, managed{
+    PartnerfunctionSP: String @mandatory;
+    Studio: String @mandatory;
     StudioName: String;
 
-    key PartnerfunctionSH: String;
-    key Theater:String;
+    PartnerfunctionSH: String @mandatory;
+    Theater:String @mandatory;
     TheaterName: String;
 
     StudioShorts: String;
