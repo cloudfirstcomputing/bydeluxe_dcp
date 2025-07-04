@@ -802,6 +802,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                         "errorMessage": oFeedIncomingData.ErrorMessage
                     });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
                 }
                 else if (!sSoldToCustomer) {
                     oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
@@ -811,6 +812,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                         "errorMessage": oFeedIncomingData.ErrorMessage
                     });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
                 }
                 else if (!SalesOrganization) {
                     oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
@@ -820,6 +822,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                         "errorMessage": oFeedIncomingData.ErrorMessage
                     });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
                 }
                 else if (!DistributionChannel) {
                     oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
@@ -829,6 +832,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                         "errorMessage": oFeedIncomingData.ErrorMessage
                     });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
                 }
                 else if (!Division) {
                     oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
@@ -838,6 +842,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                         "errorMessage": oFeedIncomingData.ErrorMessage
                     });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
                 }
                 else {
                     var oLocalResponse, oExistingData;
@@ -912,10 +917,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     path: `/A_SalesOrderScheduleLine(SalesOrder='${oSalesOrderItem.SalesOrder}',SalesOrderItem='${oSalesOrderItem.SalesOrderItem}',ScheduleLine='1')`,
                                                     data: oDataForUpdate
                                                 }).catch((err) => {
+                                                    oFeedIncomingData.ErrorMessage = `| For Booking ID: ${oFeedIncomingData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `;
                                                     oResponseStatus.error.push({
-                                                        "message": `| For Booking ID: ${oFeedIncomingData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Schedule line not created: ${err.message} `,
+                                                        "message": oFeedIncomingData.ErrorMessage,
                                                         "errorMessage": err.message
                                                     });
+                                                    sErrorMessage = oFeedIncomingData.ErrorMessage;
                                                 }).then((result, param2) => {
                                                     oResponseStatus.success.push({
                                                         "BookingID": oFeedIncomingData?.BookingID,
@@ -930,6 +937,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     "message": oFeedIncomingData.ErrorMessage,
                                                     "errorMessage": oFeedIncomingData.ErrorMessage
                                                 });
+                                                sErrorMessage = oFeedIncomingData.ErrorMessage;
                                             }
                                         }//End Of Update Block
                                         else if(oFeedIncomingData.BookingType_ID === 'C'){ //Cancel  
@@ -941,10 +949,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     "SalesDocumentRjcnReason":"70"                
                                                 }
                                             }).catch((err) => {
+                                                oFeedIncomingData.ErrorMessage = `| For Booking ID: ${oFeedIncomingData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `;
                                                 oResponseStatus.error.push({
-                                                    "message": `| For Booking ID: ${oFeedIncomingData.BookingID}-Sales Order: ${oSalesOrderItem?.SalesOrder}-${oSalesOrderItem?.SalesOrderItem}, Cancellation failed: ${err.message} `,
+                                                    "message": oFeedIncomingData.ErrorMessage,
                                                     "errorMessage": err.message
                                                 });
+                                                sErrorMessage = oFeedIncomingData.ErrorMessage;
                                             }).then((result, param2) => {
                                                 oResponseStatus.success.push({
                                                     "BookingID": oFeedIncomingData?.BookingID,
@@ -962,10 +972,11 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                                             "errorMessage": oFeedIncomingData.ErrorMessage
                                         }); 
+                                        sErrorMessage = oFeedIncomingData.ErrorMessage;
                                     } 
                                     else{
                                         await UPDATE(hanatable).set({ Booking_ID: oFeedIncomingData.BookingID, Origin_OriginID: oFeedIncomingData.Origin_OriginID, RequestedDelivDate: oFeedIncomingData.RequestedDelivDate,  
-                                            BookingType_ID: oFeedIncomingData.BookingType_ID, ErrorMessage: oFeedIncomingData.ErrorMessage, Status_ID: oFeedIncomingData.Status_ID
+                                            BookingType_ID: oFeedIncomingData.BookingType_ID, ErrorMessage: sErrorMessage, Status_ID: oFeedIncomingData.Status_ID
                                         }).where({
                                             ID: sID
                                         });
@@ -980,7 +991,12 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "errorMessage": oFeedIncomingData.ErrorMessage,
                                         "BookingID":oFeedIncomingData.BookingID
                                     });
-
+                                    sErrorMessage = oFeedIncomingData.ErrorMessage;
+                                    await UPDATE(hanatable).set({ Booking_ID: oFeedIncomingData.BookingID, Origin_OriginID: oFeedIncomingData.Origin_OriginID, RequestedDelivDate: oFeedIncomingData.RequestedDelivDate,  
+                                        BookingType_ID: oFeedIncomingData.BookingType_ID, ErrorMessage: sErrorMessage, Status_ID: oFeedIncomingData.Status_ID
+                                    }).where({
+                                        ID: sID
+                                    });
                             }     
                         }
                         else{ //Entry for Update or Cancel not present
@@ -990,6 +1006,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                                 "errorMessage": oFeedIncomingData.ErrorMessage
                             });
+                            sErrorMessage = oFeedIncomingData.ErrorMessage;
                         }
                         oLocalResponse = oResponseStatus;
                     }//End of HFR = U or C
