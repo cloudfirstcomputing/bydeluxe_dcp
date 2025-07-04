@@ -67,7 +67,19 @@
                 "type":"VIEW", 
                 "privileges":[ "SELECT" ], 
                 "privileges_with_grant_option":[] 
-            }                          
+            }   ,
+            { 
+                "name":"DELUXE_DISTRIBUTION_KEYRULES", 
+                "type":"TABLE", 
+                "privileges":["SELECT","INSERT","UPDATE","DELETE"], 
+                "privileges_with_grant_option":[]
+            },
+            { 
+                "name":"DELUXE_DISTRIBUTION_CONTENTRULES", 
+                "type":"TABLE", 
+                "privileges":["SELECT","INSERT","UPDATE","DELETE"], 
+                "privileges_with_grant_option":[]
+            }                           
         ]
     }
 }

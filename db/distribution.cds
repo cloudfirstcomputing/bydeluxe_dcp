@@ -93,14 +93,14 @@ entity KeyPackage {
 
 entity Package {
     key PackageUUID        : UUID;
-        PackageName        : String(40) @mandatory;
-        Priority           : Integer    @assert.range: [
+        PackageName        : String(40)                            @mandatory;
+        Priority           : Integer                               @assert.range: [
             0,
             99
         ]  @mandatory;
-        OrderType          : orderType  @mandatory;
-        ValidFrom          : Date       @mandatory;
-        ValidTo            : Date       @mandatory;
+        OrderType          : orderType                             @mandatory;
+        ValidFrom          : Date                                  @mandatory;
+        ValidTo            : Date                                  @mandatory;
         GofilexTitleID     : String;
         KrakenID           : String;
         DeliveryMethod1    : Association to api.ShippingConditions @mandatory;
@@ -229,3 +229,28 @@ entity OrderType : CodeList {
 entity TrailMix : CodeList {
     key code : String(4);
 };
+
+entity KeyRules : cuid, managed {
+    Rule                      : Integer;
+    Country                   : Country;
+    Studio                    : String(10);
+    DeluxeBookClassType       : String(40);
+    ClientBookClassType       : String(40);
+    InitialKeyStartCalcOrigin : String(200);
+    InitialKeyStartOffset     : String(40);
+    InitialKeyEndCalcOrigin   : String(200);
+    InitialKeyEndOffset       : String(40);
+    NextKeyStartCalcOrigin    : String(100);
+    NextKeyEndCalcOrigin      : String(100);
+    NextKeyEndOffset          : String(100);
+}
+
+entity ContentRules : cuid, managed {
+    Rule                : Integer;
+    DeliveryMethod      : String(2);
+    Country             : Country;
+    DeluxeBookClassType : String(40);
+    ClientBookClassType : String(40);
+    CutoffCalcOrigin    : String(100);
+    OffsetStartOffset   : String(100);
+}
