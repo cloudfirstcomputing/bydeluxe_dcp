@@ -852,7 +852,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (oFeedIncomingData.BookingType_ID === "U" || oFeedIncomingData.BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                         // var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({ ref: ['createdAt'], sort: 'desc' });
                         oExistingData = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID});
-                        let sID = oExistingData.ID;
+                        let sID = oExistingData?.ID;
                         if (oExistingData && oExistingData?.SalesOrder) {
                             // Object.assign(oFeedIncomingData, oExistingData); //Copying Existing entry to incoming feed
                             let aStudioFeedProps = Object.keys(oStudioFeedElements);
@@ -1000,7 +1000,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                             }     
                         }
                         else{ //Entry for Update or Cancel not present
-                            oFeedIncomingData.ErrorMessage = `There is no record exist with incoming Booking ID ${oFeedIncomingData.BookingID} where Sales Order ${oExistingData?.SalesOrder} is linked for ${oFeedIncomingData.BookingType_ID === "U"?"update":"cancellation"}`;
+                            oFeedIncomingData.ErrorMessage = `There is no record exist with incoming Booking ID ${oFeedIncomingData.BookingID} where Sales Order is linked for ${oFeedIncomingData.BookingType_ID === "U"?"update":"cancellation"}`;
                             oFeedIncomingData.Status_ID = 'D';
                             oResponseStatus.error.push({
                                 "message": `| ${oFeedIncomingData.ErrorMessage} |`,
