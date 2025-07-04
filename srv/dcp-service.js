@@ -779,7 +779,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             });
         });
         const createStudioFeeds = async (req, aData, bReconcile) => {
-            var recordsToBeInserted = [], recordsToBeUpdated = [], successEntries = [], updateSuccessEntries = [], hanatable = StudioFeed;
+            var recordsToBeInserted = [], successEntries = [],  hanatable = StudioFeed;
             var data = aData;
             let oStudioFeedElements = hanatable?.elements;
             sErrorMessage = ""; //Resetting error message
@@ -787,8 +787,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             for (var i = 0; i < data.length; i++) {
                 let oFeedIncomingData = data[i];
                 oFeedIncomingData.Status_ID = "A";
-                oFeedIncomingData.IsActive = "Y";
-                oFeedIncomingData.Version = 1;
                 if(oFeedIncomingData?.BookingType_ID !== "C" &&  oFeedIncomingData?.BookingType_ID !== "U"){
                     oFeedIncomingData.BookingType_ID = "NO";
                 }
@@ -845,21 +843,21 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     var oLocalResponse, oExistingData;
                     if(bReconcile){
                         oExistingData = await SELECT.one.from(hanatable).where({ ID: oFeedIncomingData.ID });
-                        // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, oFeedIncomingData);
-                        // recordsToBeUpdated.push(entry_Active); 
                     }
                     if (oFeedIncomingData.BookingType_ID === "U" || oFeedIncomingData.BookingType_ID === "C") { //VERSION is updated only when BookingType is U or C
                         // var entry_Active = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID, SalesOrder: {'!=': null, '!=': ''} }).orderBy({createdAt:'desc'});
+                        oExistingData = await SELECT.one.from(hanatable).where({ BookingID: oFeedIncomingData.BookingID});
+                        let sID = oExistingData.ID;
                         if (oExistingData && oExistingData?.SalesOrder) {
                             // Object.assign(oFeedIncomingData, oExistingData); //Copying Existing entry to incoming feed
                             let aStudioFeedProps = Object.keys(oStudioFeedElements);
                             for(let m in aStudioFeedProps){ //Copy only relevant data from existing record
                                 let sProp = aStudioFeedProps[m];
+                                //These properties to be explcitly updated to HANA DB in Update query later for U/C scenarios
                                 if(sProp === "ID" || sProp === "createdAt" || sProp === "createdBy" || sProp === "modifiedAt" || 
                                     sProp === "modifiedBy" ||  sProp === "HasActiveEntity" || sProp === "HasDraftEntity" || 
                                     sProp === "DraftAdministrativeData_DraftUUID" || sProp === "DraftAdministrativeData" || 
-                                    sProp === "SiblingEntity" || sProp === "IsActiveEntity" ||  sProp === "Booking_ID" || 
+                                    sProp === "SiblingEntity" || sProp === "IsActiveEntity" ||  sProp === "BookingID" || 
                                     sProp === "Origin_OriginID" || sProp === "HFR" ||  sProp === "RequestedDelivDate" || 
                                     sProp === "BookingType_ID"  || sProp === "ErrorMessage"   || sProp === "Status_ID"){ //Skip copying of these fields
                                     // sProp === "CustomerReference" || sProp === "PlayStartDate" || sProp === "PlayStartTime" || 
@@ -872,20 +870,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                     oFeedIncomingData[sProp] = oExistingData[sProp];
                                 }
                             }
-                            oFeedIncomingData.Version = oExistingData.Version ? oExistingData.Version + 1 : 1;
                             // oLocalResponse = await create_S4SalesOrder_WithItems_UsingNormalizedRules(req, oFeedIncomingData);
-                                // recordsToBeUpdated.push(oExistingData); //This record will be set as Inactive
-                                let sSalesOrder = oExistingData.SalesOrder;
-                                let sHFR_Incoming = oFeedIncomingData?.HFR;
-                                let dReqDelDate = oExistingData?.RequestedDelivDate;
-                                oExistingData.IsActive="N";
-                                recordsToBeUpdated.push(oExistingData); 
+                            let sSalesOrder = oExistingData.SalesOrder;
+                            let sHFR_Incoming = oFeedIncomingData?.HFR;
+                            let dReqDelDate = oExistingData?.RequestedDelivDate;
 
-                                // oFeedIncomingData.SalesOrder = oExistingData.SalesOrder;
-                                oFeedIncomingData.IsActive = "Y";
-
-                                let oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
-                                if(oSalesOrder?.OverallDeliveryStatus === "A"){ //GO for update/Cancel only if DelStatus is not completed
+                            let oSalesOrder = await s4h_sohv2_Txn.run(SELECT.one.from(S4H_SOHeader_V2).columns(['*', { "ref": ["to_Item"], "expand": ["*"] }]).where({ SalesOrder: sSalesOrder }));
+                            if(oSalesOrder?.OverallDeliveryStatus === "A"){ //GO for update/Cancel only if DelStatus is not completed
                                     var aSalesOrderItems = oSalesOrder.to_Item;
                                     let bItemForUpdatePresent = false, bItemForCancelPresent = false;  
                                     for (var p in aSalesOrderItems) {
@@ -971,9 +962,16 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                             "message": `| ${oFeedIncomingData.ErrorMessage} |`,
                                             "errorMessage": oFeedIncomingData.ErrorMessage
                                         }); 
-                                    }  
-                                } 
-                                else{ //Delivery already completed, so cannot be updated/cancelled                              
+                                    } 
+                                    else{
+                                        await UPDATE(hanatable).set({ Booking_ID: oFeedIncomingData.BookingID, Origin_OriginID: oFeedIncomingData.Origin_OriginID, RequestedDelivDate: oFeedIncomingData.RequestedDelivDate,  
+                                            BookingType_ID: oFeedIncomingData.BookingType_ID, ErrorMessage: oFeedIncomingData.ErrorMessage, Status_ID: oFeedIncomingData.Status_ID
+                                        }).where({
+                                            ID: sID
+                                        });
+                                    } 
+                            } 
+                            else{ //Delivery already completed, so cannot be updated/cancelled                              
                                     oFeedIncomingData.ErrorMessage = `Delivery already created for this order (Status: ${oSalesOrder?.OverallDeliveryStatus}), hence can not change the order`;
                                     oFeedIncomingData.Status_ID = 'D';
         
@@ -983,10 +981,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                         "BookingID":oFeedIncomingData.BookingID
                                     });
 
-                                }     
+                            }     
                         }
                         else{ //Entry for Update or Cancel not present
-                            oFeedIncomingData.ErrorMessage = `There is no record exist with incoming Booking ID${oFeedIncomingData.BookingID} where Sales Order ${oExistingData?.SalesOrder} is linked for ${oFeedIncomingData.BookingType_ID === "U"?"update":"cancellation"}`;
+                            oFeedIncomingData.ErrorMessage = `There is no record exist with incoming Booking ID ${oFeedIncomingData.BookingID} where Sales Order ${oExistingData?.SalesOrder} is linked for ${oFeedIncomingData.BookingType_ID === "U"?"update":"cancellation"}`;
                             oFeedIncomingData.Status_ID = 'D';
                             oResponseStatus.error.push({
                                 "message": `| ${oFeedIncomingData.ErrorMessage} |`,
@@ -1038,7 +1036,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oLocalResponse = {};
                 }
                 if (bReconcile) {
-                    var sID = oFeedIncomingData.ID;
+                    let sID = oFeedIncomingData.ID;
                     let aBTPItemFields = Object.keys(BookingSalesorderItem?.elements);
                     aBTPItemFields = aBTPItemFields.filter((item)=> item !=='createdBy' && item !== 'createdAt' &&
                         item !== 'modifiedBy' && item !== 'modifiedAt');
@@ -1078,7 +1076,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         ID: sID
                     });
                 }
-                else {
+                else if(oFeedIncomingData.BookingType_ID === "NO"){
                     recordsToBeInserted.push(oFeedIncomingData); 
                 }
                 sErrorMessage = '';//Resetting Error message
@@ -1088,16 +1086,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     let insertResult = await INSERT.into(hanatable).entries(recordsToBeInserted);
                     successEntries.push(recordsToBeInserted);
                     successEntries.push(insertResult);
-                }
-                for (var i in recordsToBeUpdated) {
-                    let updateResult = await UPDATE(hanatable).set({ IsActive: "N" }).where({
-                        BookingID: recordsToBeUpdated[i].BookingID,
-                        createdAt: recordsToBeUpdated[i].createdAt
-                    });
-                    if (updateResult) {
-                        updateSuccessEntries.push(recordsToBeUpdated[i]);
-                        updateSuccessEntries.push(updateResult);
-                    }
                 }
             }
             return oResponseStatus;

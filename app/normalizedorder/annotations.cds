@@ -214,12 +214,6 @@ annotate BookingOrderService.StudioFeed with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : Version,
-            Label : '{i18n>Version}',
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : Status_ID,
             Label : '{i18n>Statusid}',
             ![@UI.Importance] : #High,
@@ -248,11 +242,6 @@ annotate BookingOrderService.StudioFeed with @(
             $Type : 'UI.DataField',
             Value : DepotID,
             Label : '{i18n>Depotid}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : IsActive,
-            Label : '{i18n>Isactive}',
         },
         {
             $Type : 'UI.DataField',
@@ -481,11 +470,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : IsActive,
-                Label : '{i18n>Isactive}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : KeyDeliveryOnDate,
                 Label : '{i18n>Keydeliveryondate}',
             },
@@ -564,11 +548,6 @@ annotate BookingOrderService.StudioFeed with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Version,
-                Label : '{i18n>Version}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : Warnings,
                 Label : '{i18n>Warnings}',
             },
@@ -586,28 +565,12 @@ annotate BookingOrderService.StudioFeed with @(
                     $Type : 'Common.SortOrderType',
                     Property : createdAt,
                     Descending : true,
-                },
-                {
-                    $Type : 'Common.SortOrderType',
-                    Property : Version,
-                    Descending : true,
-                },
+                }
             ],
         },
         SelectionVariant : {
             $Type : 'UI.SelectionVariantType',
             SelectOptions : [
-                {
-                    $Type : 'UI.SelectOptionType',
-                    PropertyName : IsActive,
-                    Ranges : [
-                        {
-                            Sign : #I,
-                            Option : #EQ,
-                            Low : 'Y',
-                        },
-                    ],
-                },
             ],
         },
     },
