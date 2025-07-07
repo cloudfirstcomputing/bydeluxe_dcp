@@ -232,7 +232,7 @@ entity TrailMix : CodeList {
 
 entity KeyRules : cuid, managed {
     Rule                      : Integer;
-    Country                   : Country;
+    Country                   : String(3);
     Studio                    : String(10);
     DeluxeBookClassType       : String(40);
     ClientBookClassType       : String(40);
@@ -248,7 +248,7 @@ entity KeyRules : cuid, managed {
 entity ContentRules : cuid, managed {
     Rule                : Integer;
     DeliveryMethod      : String(2);
-    Country             : Country;
+    Country             : String(3);
     DeluxeBookClassType : String(40);
     ClientBookClassType : String(40);
     CutoffCalcOrigin    : String(100);
