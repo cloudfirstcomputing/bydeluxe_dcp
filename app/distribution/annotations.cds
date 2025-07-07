@@ -28,7 +28,7 @@ annotate service.DistroSpec with {
         Text           : Title.ProductName,
         TextArrangement: #TextOnly,
     };
-    Status @Common: {Label: '{i18n>Active}', };
+    Status             @Common: {Label: '{i18n>Active}', };
     DeliverySequence1  @Common: {
         Label          : '{i18n>DeliverySequence1}',
         Text           : DeliverySequence1.ShippingConditionName,
@@ -109,6 +109,33 @@ annotate service.StudioKey with {
 
 annotate service.CustomerRef with {
     CustomerReference @Common: {Label: '{i18n>CustomerReference}', };
+};
+
+annotate service.StdKey2KeyR with {
+    Rule @Common: {
+        Label                   : 'Rule',
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'KeyRules',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Rule,
+                    ValueListProperty: 'Rule',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Country',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Studio',
+                },
+            ],
+        },
+        ValueListWithFixedValues: true
+    };
 };
 
 
@@ -632,6 +659,12 @@ annotate service.StudioKey with @(
             Label : '{i18n>CustomerReference}',
             Target: 'to_CustomerRef/@UI.LineItem',
         },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'KeyRule',
+            Label : '{i18n>KeyRule}',
+            Target: 'to_KeyRule/@UI.LineItem',
+        },
     ],
 );
 
@@ -659,6 +692,79 @@ annotate service.CustomerRef with @(
         $Type : 'UI.ReferenceFacet',
         ID    : 'CustRef1',
         Target: '@UI.FieldGroup#CustomerReference',
+    }, ]
+);
+
+annotate service.StdKey2KeyR with @(
+    UI.LineItem           : [{
+        $Type: 'UI.DataField',
+        Value: Rule,
+    }, ],
+    UI.FieldGroup #KeyRule: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type: 'UI.DataField',
+                Value: Rule,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Country,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Studio,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: DeluxeBookClassType,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: ClientBookClassType,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: InitialKeyStartCalcOrigin,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: InitialKeyStartOffset,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: InitialKeyEndCalcOrigin,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: InitialKeyEndOffset,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: NextKeyStartCalcOrigin,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: NextKeyEndCalcOrigin,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: NextKeyEndOffset,
+            },
+        ]
+    },
+    UI.HeaderInfo         : {
+        Title         : {
+            $Type: 'UI.DataField',
+            Value: Rule,
+        },
+        TypeName      : '{i18n>KeyRule}',
+        TypeNamePlural: '{i18n>KeyRules}',
+    },
+    UI.Facets             : [{
+        $Type : 'UI.ReferenceFacet',
+        ID    : 'KeyRule1',
+        Target: '@UI.FieldGroup#KeyRule',
     }, ]
 );
 

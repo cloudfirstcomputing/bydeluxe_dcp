@@ -77,7 +77,7 @@ service DistributionService {
     entity GeoRegions           as projection on db.GeoRegions;
 
     @readonly
-    entity GeoCountries           as projection on db.GeoCountries;
+    entity GeoCountries         as projection on db.GeoCountries;
 
     @readonly
     @cds.redirection.target
@@ -100,6 +100,9 @@ service DistributionService {
 
     @readonly
     entity DeliveryPriority     as projection on api.DeliveryPriority;
+
+    @readonly
+    entity KeyRules             as projection on db.KeyRules;
 
     entity CPLDetail            as projection on db.CPLDetail
         actions {

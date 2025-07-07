@@ -145,6 +145,11 @@
           "name": "DistroSpec_to_Package_to_DCPMaterialObjectPage",
           "pattern": "DistroSpec({key})/to_Package({key2})/to_DCPMaterial({to_DCPMaterialKey}):?query:",
           "target": "DistroSpec_to_Package_to_DCPMaterialObjectPage"
+        },
+        {
+          "name": "DistroSpec_to_StudioKey_to_KeyRuleObjectPage",
+          "pattern": "DistroSpec({key})/to_StudioKey({to_StudioKeyKey})/to_KeyRule({to_KeyRuleKey}):?query:",
+          "target": "DistroSpec_to_StudioKey_to_KeyRuleObjectPage"
         }
       ],
       "targets": {
@@ -248,6 +253,11 @@
                   "detail": {
                     "route": "DistroSpec_to_StudioKey_to_CustomerRefObjectPage"
                   }
+                },
+                "to_KeyRule": {
+                  "detail": {
+                    "route": "DistroSpec_to_StudioKey_to_KeyRuleObjectPage"
+                  }
                 }
               },
               "contextPath": "/DistroSpec/to_StudioKey"
@@ -318,6 +328,17 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/DistroSpec/to_Package/to_DCPMaterial"
+            }
+          }
+        },
+        "DistroSpec_to_StudioKey_to_KeyRuleObjectPage": {
+          "type": "Component",
+          "id": "DistroSpec_to_StudioKey_to_KeyRuleObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/DistroSpec/to_StudioKey/to_KeyRule"
             }
           }
         }

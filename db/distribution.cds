@@ -63,6 +63,8 @@ entity StudioKey {
         // StudioHoldOverRule   : String(10);
         // SalesTerritory       : Association to one api.SalesDistricts;
         to_DistroSpec      : Association to DistroSpec;
+        to_KeyRule         : Composition of many StdKey2KeyR
+                                 on to_KeyRule.to_StudioKey = $self;
         to_CustomerRef     : Composition of many CustomerRef
                                  on to_CustomerRef.to_StudioKey = $self;
 };
@@ -76,14 +78,14 @@ entity CustomerRef {
 
 entity KeyPackage {
     key PackageUUID        : UUID;
-        PackageName        : String(40) @mandatory;
-        Priority           : Integer    @assert.range: [
-            0,
+        PackageName        : String(256) @mandatory;
+        Priority           : Integer     @assert.range: [
+            1,
             99
         ]  @mandatory;
-        ValidFrom          : Date       @mandatory;
-        ValidTo            : Date       @mandatory;
-        OrderType          : orderType  @mandatory;
+        ValidFrom          : Date        @mandatory;
+        ValidTo            : Date        @mandatory;
+        OrderType          : orderType   @mandatory;
         to_CPLDetail       : Composition of many CPLDetail
                                  on to_CPLDetail.to_KeyPackage = $self;
         to_DistRestriction : Composition of many KeyDistRestrictions
@@ -93,9 +95,9 @@ entity KeyPackage {
 
 entity Package {
     key PackageUUID        : UUID;
-        PackageName        : String(40)                            @mandatory;
+        PackageName        : String(256)                           @mandatory;
         Priority           : Integer                               @assert.range: [
-            0,
+            1,
             99
         ]  @mandatory;
         OrderType          : orderType                             @mandatory;
@@ -118,7 +120,7 @@ entity Package {
         to_DistRestriction : Composition of many DistRestrictions
                                  on to_DistRestriction.to_Package = $self;
         to_DistroSpec      : Association to DistroSpec;
-}
+};
 
 entity DistRestrictions : cuid {
     Theater                    : Association to one TheaterVH;
@@ -172,7 +174,7 @@ entity CPLDetail : cuid {
     virtual Email         : Boolean;
     virtual Download      : Boolean;
             to_KeyPackage : Association to KeyPackage;
-}
+};
 
 entity DCPMaterials {
     key     DCPMaterialUUID          : UUID;
@@ -193,7 +195,7 @@ entity DCPMaterials {
             SatelliteFlightEndTime   : Time;
             to_Package               : Association to Package;
             to_DistroSpec            : Association to DistroSpec;
-}
+};
 
 entity DCPMaterialMapping : cuid, managed {
     ShippingType  : String(2);
@@ -203,7 +205,7 @@ entity DCPMaterialMapping : cuid, managed {
     Plant         : String(4);
     CompanyCode   : String(4);
     ProfitCenter  : String(10);
-}
+};
 
 entity GeoRegions {
     key ID          : String(4);
@@ -217,7 +219,7 @@ entity GeoCountries {
         Country    : String(3);
         SAPCountry : String(3);
         _Region    : Association to one GeoRegions;
-}
+};
 
 type orderType : Association to OrderType;
 type trailMix  : Association to TrailMix;
@@ -243,7 +245,7 @@ entity KeyRules : cuid, managed {
     NextKeyStartCalcOrigin    : String(100);
     NextKeyEndCalcOrigin      : String(100);
     NextKeyEndOffset          : String(100);
-}
+};
 
 entity ContentRules : cuid, managed {
     Rule                : Integer;
@@ -253,4 +255,22 @@ entity ContentRules : cuid, managed {
     ClientBookClassType : String(40);
     CutoffCalcOrigin    : String(100);
     OffsetStartOffset   : String(100);
-}
+};
+
+entity StdKey2KeyR {
+    key     ID                        : UUID;
+            Rule                      : Integer;
+            to_StudioKey              : Association to StudioKey;
+            Country                   : String(3);
+    virtual Studio                    : String(10);
+    virtual DeluxeBookClassType       : String(40);
+    virtual ClientBookClassType       : String(40);
+    virtual InitialKeyStartCalcOrigin : String(200);
+    virtual InitialKeyStartOffset     : String(40);
+    virtual InitialKeyEndCalcOrigin   : String(200);
+    virtual InitialKeyEndOffset       : String(40);
+    virtual NextKeyStartCalcOrigin    : String(100);
+    virtual NextKeyEndCalcOrigin      : String(100);
+    virtual NextKeyEndOffset          : String(100);
+
+};

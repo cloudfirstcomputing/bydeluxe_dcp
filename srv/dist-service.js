@@ -382,6 +382,23 @@ module.exports = class DistributionService extends cds.ApplicationService {
             }
         })
 
+        this.after('each', `StdKey2KeyR`, async (req) => {
+            if (req.Rule) {
+                const keyrule = await SELECT.one.from`KeyRules`.where({ Rule: req.Rule })
+                req.Country = keyrule.Country
+                req.Studio = keyrule.Studio
+                req.DeluxeBookClassType = keyrule.DeluxeBookClassType
+                req.ClientBookClassType = keyrule.ClientBookClassType
+                req.InitialKeyStartCalcOrigin = keyrule.InitialKeyStartCalcOrigin
+                req.InitialKeyStartOffset = keyrule.InitialKeyStartOffset
+                req.InitialKeyEndCalcOrigin = keyrule.InitialKeyEndCalcOrigin
+                req.InitialKeyEndOffset = keyrule.InitialKeyEndOffset
+                req.NextKeyStartCalcOrigin = keyrule.NextKeyStartCalcOrigin
+                req.NextKeyEndCalcOrigin = keyrule.NextKeyEndCalcOrigin
+                req.NextKeyEndOffset = keyrule.NextKeyEndOffset
+            }
+        })
+
         // this.on('setDownloadEmail', async req => {
         //     const { DCP, LinkedCPLUUID } = req.params[3]
         //     const assetvault = await SELECT.one.from(DistributionDcp)
