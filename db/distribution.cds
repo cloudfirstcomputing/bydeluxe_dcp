@@ -261,7 +261,7 @@ entity StdKey2KeyR {
     key     ID                        : UUID;
             Rule                      : Integer;
             to_StudioKey              : Association to StudioKey;
-            Country                   : String(3);
+    virtual Country                   : String(3);
     virtual Studio                    : String(10);
     virtual DeluxeBookClassType       : String(40);
     virtual ClientBookClassType       : String(40);

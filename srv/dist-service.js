@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = class DistributionService extends cds.ApplicationService {
     async init() {
-        const { DistroSpec, ShippingType, Regions, GeoRegions, Plants, Characteristic, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
+        const { DistroSpec, ShippingType, Regions, KeyRules, Plants, Characteristic, CustomerGroup, Country, ShippingConditions, Products, SalesDistricts, DCPMapProducts,
             StorageLocations, ProductGroup, TitleV, ProductGroup1, CplList, CPLDetail, Parameters, SalesOrganizations, DistributionChannels, DCPProducts, Titles, Studios, Theaters, DeliveryPriority } = this.entities
         const { today } = cds.builtin.types.Date
         const _asArray = x => Array.isArray(x) ? x : [x]
@@ -384,7 +384,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.after('each', `StdKey2KeyR`, async (req) => {
             if (req.Rule) {
-                const keyrule = await SELECT.one.from`KeyRules`.where({ Rule: req.Rule })
+                const keyrule = await SELECT.one.from(KeyRules).where({ Rule: req.Rule })
                 req.Country = keyrule.Country
                 req.Studio = keyrule.Studio
                 req.DeluxeBookClassType = keyrule.DeluxeBookClassType

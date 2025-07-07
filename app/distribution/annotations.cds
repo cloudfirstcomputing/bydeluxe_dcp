@@ -112,7 +112,7 @@ annotate service.CustomerRef with {
 };
 
 annotate service.StdKey2KeyR with {
-    Rule @Common: {
+    Rule                      @Common: {
         Label                   : 'Rule',
         ValueList               : {
             $Type          : 'Common.ValueListType',
@@ -136,6 +136,18 @@ annotate service.StdKey2KeyR with {
         },
         ValueListWithFixedValues: true
     };
+
+    Country                   @Common: {Label: 'Country'};
+    Studio                    @Common: {Label: 'Studio'};
+    DeluxeBookClassType       @Common: {Label: 'DeluxeBookClassType'};
+    ClientBookClassType       @Common: {Label: 'ClientBookClassType'};
+    InitialKeyStartCalcOrigin @Common: {Label: 'InitialKeyStartCalcOrigin'};
+    InitialKeyStartOffset     @Common: {Label: 'InitialKeyStartOffset'};
+    InitialKeyEndCalcOrigin   @Common: {Label: 'InitialKeyEndCalcOrigin'};
+    InitialKeyEndOffset       @Common: {Label: 'InitialKeyEndOffset'};
+    NextKeyStartCalcOrigin    @Common: {Label: 'InitialKeyEndOffset'};
+    NextKeyEndCalcOrigin      @Common: {Label: 'NextKeyEndCalcOrigin'};
+    NextKeyEndOffset          @Common: {Label: 'NextKeyEndOffset'};
 };
 
 
@@ -578,10 +590,10 @@ annotate service.DistroSpec with @(
 
 annotate service.StudioKey with @(
     UI.HeaderInfo           : {
-        Title         : {
-            $Type: 'UI.DataField',
-            Value: Studio_BusinessPartner,
-        },
+        // Title         : {
+        //     $Type: 'UI.DataField',
+        //     Value: Studio_BusinessPartner,
+        // },
         TypeName      : '{i18n>Studio}',
         TypeNamePlural: '{i18n>Studio}',
     },
@@ -696,10 +708,56 @@ annotate service.CustomerRef with @(
 );
 
 annotate service.StdKey2KeyR with @(
-    UI.LineItem           : [{
-        $Type: 'UI.DataField',
-        Value: Rule,
-    }, ],
+    UI.LineItem           : [
+        {
+            $Type: 'UI.DataField',
+            Value: Rule,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Country,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: Studio,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: DeluxeBookClassType,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: ClientBookClassType,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: InitialKeyStartCalcOrigin,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: InitialKeyStartOffset,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: InitialKeyEndCalcOrigin,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: InitialKeyEndOffset,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: NextKeyStartCalcOrigin,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: NextKeyEndCalcOrigin,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: NextKeyEndOffset,
+        },
+    ],
     UI.FieldGroup #KeyRule: {
         $Type: 'UI.FieldGroupType',
         Data : [

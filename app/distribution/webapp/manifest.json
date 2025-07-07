@@ -337,6 +337,7 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
+              "editableHeaderContent": false,
               "navigation": {},
               "contextPath": "/DistroSpec/to_StudioKey/to_KeyRule"
             }
