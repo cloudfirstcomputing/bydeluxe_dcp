@@ -14,7 +14,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             TheatreOrderRequest, S4_ShippingType_VH, S4_ShippingPoint_VH, OrderRequest, OFEOrders, Products, ProductDescription, ProductBasicText, MaterialDocumentHeader, MaterialDocumentItem, MaterialDocumentItem_Print, MaterialDocumentHeader_Prnt, ProductionOrder,
             StudioFeed, S4_SalesParameter, BookingSalesorderItem, S4H_BusinessPartnerapi, S4_ProductGroupText, BillingDocument, BillingDocumentItem, BillingDocumentItemPrcgElmnt, BillingDocumentPartner, S4H_Country,
             CountryText, TitleV, BillingDocumentItemText, Batch, Company, AddressPostal, HouseBank, Bank, BankAddress, AddressPhoneNumber, AddressEmailAddress, AddlCompanyCodeInformation, CoCodeCountryVATReg, BookingSalesorderPartner,
-            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner, S4H_BPCustomer } = this.entities;
+            PaymentTermsText, JournalEntryItem, PricingConditionTypeText, SalesOrderHeaderPartner, SalesOrderItemPartners, CustSalesPartnerFunc, S4H_SalesOrderItemText, StudioVH, SalesDocumentHeaderPartner, S4H_BPCustomer, TheaterVH, KalmusTheaterStudio } = this.entities;
         var s4h_so_Txn = await cds.connect.to("API_SALES_ORDER_SRV");
         var s4h_bp_Txn = await cds.connect.to("API_BUSINESS_PARTNER");
         var s4h_planttx = await cds.connect.to("API_PLANT_SRV");
@@ -2205,7 +2205,15 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         });
         this.on('READ', StudioVH , async(req)=>{
             return await bpapi.run(req.query);
-        });        
+        }); 
+        this.on('READ', TheaterVH , async(req)=>{
+            return await bpapi.run(req.query);
+        });    
+        this.on("NEW", KalmusTheaterStudio.drafts, async(req, next)=>{
+            var oFeed = req.data;
+            oFeed.Active = true;
+            await next();
+        })   
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
             let aWhere = req.query.SELECT.where, aWhere_V2 = [];
             if(aWhere?.find((cond)=>  cond.xpr)){
