@@ -112,6 +112,7 @@ annotate service.KalmusTheaterStudio with{
             Common.ValueList: {
                 $Type: 'Common.ValueListType',
                 CollectionPath: 'StudioVH',
+                SearchSupported: false,
                 Parameters: [
                     {
                         $Type: 'Common.ValueListParameterInOut',
@@ -138,6 +139,7 @@ annotate service.KalmusTheaterStudio with{
             Common.ValueList: {
                 $Type: 'Common.ValueListType',
                 CollectionPath: 'TheaterVH',
+                SearchSupported: false,
                 Parameters: [
                     {
                         $Type: 'Common.ValueListParameterInOut',
@@ -164,4 +166,13 @@ annotate service.KalmusTheaterStudio with{
     Freeze @Common:{Label : 'Freeze',};
             
 }
-
+annotate service.StudioVH with {
+    BusinessPartner         @Common: {Label: '{i18n>Studio}', };
+    BusinessPartnerFullName @Common: {Label: '{i18n>StudioName}', };
+    BusinessPartnerType     @UI.HiddenFilter;
+};
+annotate service.TheaterVH with {
+    BusinessPartner         @Common: {Label: '{i18n>Theater}', };
+    BusinessPartnerFullName @Common: {Label: '{i18n>TheaterName}', };
+    BusinessPartnerType     @UI.HiddenFilter;
+};

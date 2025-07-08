@@ -790,61 +790,85 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 if(oFeedIncomingData?.BookingType_ID !== "C" &&  oFeedIncomingData?.BookingType_ID !== "U"){
                     oFeedIncomingData.BookingType_ID = "NO";
                 }
-                let sEntityID = oFeedIncomingData.EntityID, sBupa = oFeedIncomingData.Studio_BusinessPartner;
-                oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
-                sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
+                let sEntityID = oFeedIncomingData.EntityID, sBupa = oFeedIncomingData.Studio_BusinessPartner,
+                sTheaterID = oFeedData?.TheaterID;
+                if(!sTheaterID){
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, TheaterID is not present in the incoming feed`;
+                    oFeedIncomingData.Status_ID = "D";
+                    oResponseStatus.error.push({
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
+                    });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
+                }
+                else if(!sEntityID){
+                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Entity ID is not present in the incoming feed`;
+                    oFeedIncomingData.Status_ID = "D";
+                    oResponseStatus.error.push({
+                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                        "errorMessage": oFeedIncomingData.ErrorMessage
+                    });
+                    sErrorMessage = oFeedIncomingData.ErrorMessage;
+                }
+                else{
+                    var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sTheaterID }); //GETTING ADDRESS DATA FROM S4
+
+                    oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
+                    sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
                     DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
-
-                if (!oSalesParameterConfig) {
-                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
-                    oFeedIncomingData.Status_ID = "D";
-                    oResponseStatus.error.push({
-                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                        "errorMessage": oFeedIncomingData.ErrorMessage
-                    });
-                    sErrorMessage = oFeedIncomingData.ErrorMessage;
+                
+                    if (!oSalesParameterConfig) {
+                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
+                        oFeedIncomingData.Status_ID = "D";
+                        oResponseStatus.error.push({
+                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                            "errorMessage": oFeedIncomingData.ErrorMessage
+                        });
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
+                    }
+                    else if (!sSoldToCustomer) {
+                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
+                        oFeedIncomingData.Status_ID = "D";
+    
+                        oResponseStatus.error.push({
+                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                            "errorMessage": oFeedIncomingData.ErrorMessage
+                        });
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
+                    }
+                    else if (!SalesOrganization) {
+                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
+                        oFeedIncomingData.Status_ID = "D";
+    
+                        oResponseStatus.error.push({
+                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                            "errorMessage": oFeedIncomingData.ErrorMessage
+                        });
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
+                    }
+                    else if (!DistributionChannel) {
+                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
+                        oFeedIncomingData.Status_ID = "D";
+    
+                        oResponseStatus.error.push({
+                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                            "errorMessage": oFeedIncomingData.ErrorMessage
+                        });
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
+                    }
+                    else if (!Division) {
+                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
+                        oFeedIncomingData.Status_ID = "D";
+    
+                        oResponseStatus.error.push({
+                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                            "errorMessage": oFeedIncomingData.ErrorMessage
+                        });
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
+                    }
                 }
-                else if (!sSoldToCustomer) {
-                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
-                    oFeedIncomingData.Status_ID = "D";
-
-                    oResponseStatus.error.push({
-                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                        "errorMessage": oFeedIncomingData.ErrorMessage
-                    });
-                    sErrorMessage = oFeedIncomingData.ErrorMessage;
-                }
-                else if (!SalesOrganization) {
-                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
-                    oFeedIncomingData.Status_ID = "D";
-
-                    oResponseStatus.error.push({
-                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                        "errorMessage": oFeedIncomingData.ErrorMessage
-                    });
-                    sErrorMessage = oFeedIncomingData.ErrorMessage;
-                }
-                else if (!DistributionChannel) {
-                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
-                    oFeedIncomingData.Status_ID = "D";
-
-                    oResponseStatus.error.push({
-                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                        "errorMessage": oFeedIncomingData.ErrorMessage
-                    });
-                    sErrorMessage = oFeedIncomingData.ErrorMessage;
-                }
-                else if (!Division) {
-                    oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
-                    oFeedIncomingData.Status_ID = "D";
-
-                    oResponseStatus.error.push({
-                        "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                        "errorMessage": oFeedIncomingData.ErrorMessage
-                    });
-                    sErrorMessage = oFeedIncomingData.ErrorMessage;
-                }
-                else {
+                
+                if(!sErrorMessage) {
                     var oLocalResponse, oExistingData;
                     if(bReconcile){
                         oExistingData = await SELECT.one.from(hanatable).where({ ID: oFeedIncomingData.ID });
@@ -2213,7 +2237,27 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             var oFeed = req.data;
             oFeed.Active = true;
             await next();
-        })   
+        });
+            
+        // this.on("SAVE", KalmusTheaterStudio.drafts, async(req, next)=>{
+        //     var oFeed = req.data;
+        //     await partnerExistenceCheck(req, oFeed);
+        //     await next();
+        // });
+        this.on("CREATE", KalmusTheaterStudio, async(req, next)=>{
+            var oFeed = req.data;
+            await partnerExistenceCheck(req, oFeed);
+            await next();
+        });
+        async function partnerExistenceCheck(req, oFeed){
+            let sStudio = oFeed.Studio, sTheater = oFeed.Theater;
+            if(sStudio && sTheater){
+                let aExistingRecord = await SELECT.from(KalmusTheaterStudio).where({Studio: sStudio, Theater: sTheater});
+                if(aExistingRecord?.length){
+                    req.reject(400, `Record with Studio ${sStudio} and Theater ${sTheater} already exists`);
+                }
+            }
+        }
         this.on(['READ'], S4H_ProformaReport, async (req)=>{
             let aWhere = req.query.SELECT.where, aWhere_V2 = [];
             if(aWhere?.find((cond)=>  cond.xpr)){
