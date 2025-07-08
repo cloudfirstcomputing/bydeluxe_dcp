@@ -2270,17 +2270,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         //     await partnerExistenceCheck(req, oFeed);
         //     await next();
         // });
-        this.on("CREATE", KalmusTheaterStudio, async(req, next)=>{
+        this.on(["CREATE", "UPDATE"], KalmusTheaterStudio, async(req, next)=>{
             var oFeed = req.data;
             await partnerExistenceCheck(req, oFeed);
             await next();
         });
         async function partnerExistenceCheck(req, oFeed){
-            let sStudio = oFeed.Studio, sTheater = oFeed.Theater;
+            let sStudio = oFeed.Studio, sTheater = oFeed.Theater, sStudioShorts = oFeed.StudioShorts?oFeed.StudioShorts:null;
             if(sStudio && sTheater){
-                let aExistingRecord = await SELECT.from(KalmusTheaterStudio).where({Studio: sStudio, Theater: sTheater});
+                let aExistingRecord = await SELECT.from(KalmusTheaterStudio).where({Studio: sStudio, Theater: sTheater, StudioShorts: sStudioShorts});
                 if(aExistingRecord?.length){
-                    req.reject(400, `Record with Studio ${sStudio} and Theater ${sTheater} already exists`);
+                    req.reject(400, `Record with Studio ${sStudio}, Theater ${sTheater} and StudioShorts ${sStudioShorts} already exists`);
                 }
             }
         }
