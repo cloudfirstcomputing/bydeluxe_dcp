@@ -30,11 +30,26 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
             const aProductionProcess = []
             let prdProcess = {}
             const param = await paramtx.run(SELECT.from(Parameters)
-                .where({ VariableName: ['BillOfOperationsGroup1', 'BillOfOperationsGroup2', 'ProductionLine1', 'ProductionLine2'] }))
+                .where({
+                    VariableName: ['BillOfOperationsGroup1', 'BillOfOperationsGroup2', 'ProductionLine1', 'ProductionLine2',
+                        'CRU-SATA-1', 'CRU-SATA-1.5', 'CRU-SATA-2', 'CRU-SATA-3', 'CRU-SATA-4', 'CRU-SATA-0250', 'CRU-SATA-0320', 'CRU-SATA-0400',
+                        'CRU-SATA-0500', 'CRU-SATA-0640', 'CRU-SATA-0750']
+                }))
             const bgv1 = param.find(item => item.VariableName === 'BillOfOperationsGroup1')
             const bgv2 = param.find(item => item.VariableName === 'BillOfOperationsGroup2')
             const plv1 = param.find(item => item.VariableName === 'ProductionLine1')
             const plv2 = param.find(item => item.VariableName === 'ProductionLine2')
+            const cru1 = param.find(item => item.VariableName === 'CRU-SATA-1')
+            const cru15 = param.find(item => item.VariableName === 'CRU-SATA-1.5')
+            const cru2 = param.find(item => item.VariableName === 'CRU-SATA-2')
+            const cru3 = param.find(item => item.VariableName === 'CRU-SATA-3')
+            const cru4 = param.find(item => item.VariableName === 'CRU-SATA-4')
+            const cru250 = param.find(item => item.VariableName === 'CRU-SATA-0250')
+            const cru320 = param.find(item => item.VariableName === 'CRU-SATA-0320')
+            const cru400 = param.find(item => item.VariableName === 'CRU-SATA-0400')
+            const cru500 = param.find(item => item.VariableName === 'CRU-SATA-0500')
+            const cru640 = param.find(item => item.VariableName === 'CRU-SATA-0640')
+            const cru750 = param.find(item => item.VariableName === 'CRU-SATA-0750')
             for (let index = 0; index < x.length; index++) {
                 const element = x[index];
                 prdProcess = {
@@ -54,114 +69,114 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                             "BOMHeaderQuantityInBaseUnit": "1",
                             "to_BillOfMaterialItem": [
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-1-TB",
+                                    "BillOfMaterialComponent": cru1?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-1.5-TB",
+                                    "BillOfMaterialComponent": cru15?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-2-TB",
+                                    "BillOfMaterialComponent": cru2?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-3-TB",
+                                    "BillOfMaterialComponent": cru3?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-4-TB",
+                                    "BillOfMaterialComponent": cru4?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-0250-GB",
+                                    "BillOfMaterialComponent": cru250?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-0320-GB",
+                                    "BillOfMaterialComponent": cru320?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-0400-GB",
+                                    "BillOfMaterialComponent": cru400?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-0500-GB",
+                                    "BillOfMaterialComponent": cru500?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-0640-GB",
+                                    "BillOfMaterialComponent": cru640?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 },
                                 {
-                                    "BillOfMaterialComponent": "CRU-SATA-0750-GB",
+                                    "BillOfMaterialComponent": cru750?.VariableValue,
                                     "BillOfMaterialItemCategory": "L",
                                     "BillOfMaterialItemUnit": "EA",
                                     "BillOfMaterialItemQuantity": "1",
-                                    "AlternativeItemGroup": "1",
-                                    "AlternativeItemPriority": "2",
-                                    "AlternativeItemStrategy": "2",
-                                    "UsageProbabilityPercent": "100"
+                                    "AlternativeItemGroup": "",
+                                    "AlternativeItemPriority": "",
+                                    "AlternativeItemStrategy": "",
+                                    "UsageProbabilityPercent": ""
                                 }
                             ]
                         }))
