@@ -108,7 +108,6 @@ service BookingOrderService {
     entity S4H_BPCustomer               as projection on S4_BuisnessPartner.A_Customer;
     entity GeoRegions                   as projection on dist.GeoRegions;
     entity GeoCountries                 as projection on dist.GeoCountries;
-
     @readonly
     entity CplList                      as
         select from av.DistributionDcp._Items as a

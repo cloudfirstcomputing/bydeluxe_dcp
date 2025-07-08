@@ -13,19 +13,11 @@ annotate service.KalmusTheaterStudio with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : PartnerfunctionSP,
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : Theater,
             },
             {
                 $Type : 'UI.DataField',
                 Value : TheaterName,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : PartnerfunctionSH,
             },
             {
                 $Type : 'UI.DataField',
@@ -62,22 +54,12 @@ annotate service.KalmusTheaterStudio with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : PartnerfunctionSP,
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : Theater,
             ![@UI.Importance] : #High,
         },
         {
             $Type : 'UI.DataField',
             Value : TheaterName,
-            ![@UI.Importance] : #High,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : PartnerfunctionSH,
             ![@UI.Importance] : #High,
         },
         {

@@ -355,13 +355,11 @@ entity ShippingTypeMaster {
 }
 
 entity KalmusTheaterStudio: cuid, managed{
-    PartnerfunctionSP: String @mandatory;
     Studio: String @mandatory;
-    StudioName: String;
-
-    PartnerfunctionSH: String @mandatory;
+    StudioName: String @mandatory;
+    
     Theater:String @mandatory;
-    TheaterName: String;
+    TheaterName: String @mandatory;
 
     StudioShorts: String;
     Active: Boolean;

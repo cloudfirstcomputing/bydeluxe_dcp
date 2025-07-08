@@ -791,7 +791,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oFeedIncomingData.BookingType_ID = "NO";
                 }
                 let sEntityID = oFeedIncomingData.EntityID, sBupa = oFeedIncomingData.Studio_BusinessPartner,
-                sTheaterID = oFeedData?.TheaterID;
+                sTheaterID = oFeedIncomingData?.TheaterID;
                 if(!sTheaterID){
                     oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, TheaterID is not present in the incoming feed`;
                     oFeedIncomingData.Status_ID = "D";
@@ -811,13 +811,37 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     sErrorMessage = oFeedIncomingData.ErrorMessage;
                 }
                 else{
-                    var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sTheaterID }); //GETTING ADDRESS DATA FROM S4
-
-                    oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
-                    sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
-                    DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
-                
-                    if (!oSalesParameterConfig) {
+                    var oBusinessPartnerAddrfromS4 = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sTheaterID })); //GETTING ADDRESS DATA FROM S4
+                    let sCountry = oBusinessPartnerAddrfromS4?.Country;
+                    if(sCountry){
+                        let oVar = await s4h_param_Txn.run(SELECT.one.from(S4_Parameters).where({VariableName: sCountry}));
+                        CompanyCode = oVar?.VariableValue;
+                        if(!CompanyCode){
+                            oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Company Code not maintained for Country: ${sCountry} in YY1_PARAMETER`;
+                            oFeedIncomingData.Status_ID = "D";
+                            oResponseStatus.error.push({
+                                "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                                "errorMessage": oFeedIncomingData.ErrorMessage
+                            });
+                            sErrorMessage = oFeedIncomingData.ErrorMessage;
+                        }
+                    }
+                    else{
+                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Country not mantained for Theater: ${sTheaterID}`;
+                        oFeedIncomingData.Status_ID = "D";
+                        oResponseStatus.error.push({
+                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
+                            "errorMessage": oFeedIncomingData.ErrorMessage
+                        });
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
+                    }  
+                    if(!sErrorMessage){
+                        oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
+                        sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
+                        DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
+                    }              
+                    if(sErrorMessage){}
+                    else if (!oSalesParameterConfig) {
                         oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
                         oFeedIncomingData.Status_ID = "D";
                         oResponseStatus.error.push({
@@ -1068,11 +1092,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (oLocalResponse?.Status === 'R') { //Status is in Review
                         oFeedIncomingData.Status_ID = oLocalResponse.Status;
                         oFeedIncomingData.ErrorMessage = oLocalResponse?.error?.[0].errorMessage;
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
                     }
                     if (oErrorEntry) {
                         // oResponseStatus?.error?.push(...oLocalResponse?.error);
                         oFeedIncomingData.ErrorMessage = oErrorEntry?.errorMessage;
                         oFeedIncomingData.Status_ID = oFeedIncomingData.Status_ID? oFeedIncomingData.Status_ID: "D"; //Either Soft Reconcile status or Error
+                        sErrorMessage = oFeedIncomingData.ErrorMessage;
                     }
                     oLocalResponse = {};
                 }
