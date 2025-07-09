@@ -136,16 +136,58 @@ annotate BookingOrderService.StudioFeed with{
     };
     OrderID @Common.FieldControl: #ReadOnly;
     BookingID @Common.FieldControl : #Mandatory;
-    
+    TheaterID @Common : { 
+        Label          : '{i18n>Title}',
+        FieldControl : #Mandatory,
+        Text: {
+	            $value                : TheaterID,
+	          ![@UI.TextArrangement]: #TextOnly,
+        },        
+        ValueList               : {
+            $Type          : 'Common.ValueListType',
+            CollectionPath : 'KalmusTheaterStudio',
+            SearchSupported: false,
+            Parameters     : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: TheaterID,
+                    ValueListProperty: 'Theater',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'TheaterName',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Studio',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'StudioName',
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'StudioShorts',
+                }
+            ]
+        }
+     };
     EntityID @Common.FieldControl : #Mandatory;
     CustomerReference @Common.FieldControl : #Mandatory;
     RequestedDelivDate @Common.FieldControl : #Mandatory;
-    TheaterID @Common.FieldControl : #Mandatory;
+    // TheaterID @Common.FieldControl : #Mandatory;
     PlayStartDate @Common.FieldControl : #Mandatory;
     PlayEndDate @Common.FieldControl : #Mandatory;
     
     
 }
+annotate BookingOrderService.KalmusTheaterStudio with {
+    // BusinessPartner         @Common: {Label: '{i18n>Studio}', };
+    // BusinessPartnerFullName @Common: {Label: '{i18n>StudioName}', };
+    Freeze     @UI.HiddenFilter;
+    Active     @UI.HiddenFilter;
+    ID     @UI.HiddenFilter;
+};
 annotate BookingOrderService.StudioFeed with @(
     UI.LineItem : [
         {

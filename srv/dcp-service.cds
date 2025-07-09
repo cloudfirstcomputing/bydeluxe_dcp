@@ -240,6 +240,7 @@ service BookingOrderService {
 
     entity KalmusTheaterStudio as projection on db.KalmusTheaterStudio;
     annotate KalmusTheaterStudio with @odata.draft.enabled;
+    entity KalmusTheaterVH as projection on db.KalmusTheaterStudio; 
     entity TheaterVH as projection on api.ZI_Theater;
     
     entity Maccs_Dchub                  as projection on db.Maccs_Dchub;

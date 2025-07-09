@@ -1262,31 +1262,36 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
                             }
                             else{
-                                if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
-                                    var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
-                                    if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
-                                        sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
-                                        if (sBPCustomerNumber) {
-                                            sShipTo = sBPCustomerNumber;
-                                            oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
-                                        }
-                                    }
-                                    else {
-                                        sErrorMessage = "Partner function details not found for SH: CustomerPartnerDescription: " + sTheaterID;
-                                    }
-                                }
-                                else {
-                                    sErrorMessage = "Partner function not available";
-                                }
+                                let oShipTo = await SELECT.one.from(KalmusTheaterStudio).where({StudioShorts: sTheaterID, Active: true});
+                                sShipTo = oShipTo?.Theater;
+                                // if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
+                                //     var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
+                                //     if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
+                                //         sBPCustomerNumber = oPartnerFunction.BPCustomerNumber;
+                                //         if (sBPCustomerNumber) {
+                                //             sShipTo = sBPCustomerNumber;
+                                //             oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sBPCustomerNumber }); //This is the Ship To in S4
+                                //         }
+                                //     }
+                                //     else {
+                                //         sErrorMessage = "Partner function details not found for SH: CustomerPartnerDescription: " + sTheaterID;
+                                //     }
+                                // }
+                                // else {
+                                //     sErrorMessage = "Partner function not available";
+                                // }
     
                             }
-                            if (sShipTo) {
-                                var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                                sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;
+                            if(!sShipTo){
+                                sErrorMessage = `Ship-To not found. Please check active entries for Studio Shorts ${sTheaterID}`;
                             }
-                            else {
-                                sErrorMessage = "Ship-To not found";
-                            }
+                            // if (sShipTo) {
+                            //     var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                            //     sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;
+                            // }
+                            // else {
+                            //     sErrorMessage = "Ship-To not found";
+                            // }
                         }
                     }
                     else {
@@ -2258,7 +2263,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         }); 
         this.on('READ', TheaterVH , async(req)=>{
             return await bpapi.run(req.query);
-        });    
+        }); 
+        // this.on('READ', KalmusTheaterVH , async(req)=>{
+        //     return await bpapi.run(req.query);
+        // });    
         this.on("NEW", KalmusTheaterStudio.drafts, async(req, next)=>{
             var oFeed = req.data;
             oFeed.Active = true;
