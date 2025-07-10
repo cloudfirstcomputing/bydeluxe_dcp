@@ -76,7 +76,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru15?.VariableValue,
@@ -86,7 +86,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru2?.VariableValue,
@@ -96,7 +96,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru3?.VariableValue,
@@ -106,7 +106,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru4?.VariableValue,
@@ -116,7 +116,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru250?.VariableValue,
@@ -126,7 +126,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru320?.VariableValue,
@@ -136,7 +136,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru400?.VariableValue,
@@ -146,7 +146,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru500?.VariableValue,
@@ -156,7 +156,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru640?.VariableValue,
@@ -166,7 +166,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 },
                                 {
                                     "BillOfMaterialComponent": cru750?.VariableValue,
@@ -176,7 +176,7 @@ module.exports = class AssetVaultService extends cds.ApplicationService {
                                     "AlternativeItemGroup": "",
                                     "AlternativeItemPriority": "",
                                     "AlternativeItemStrategy": "",
-                                    "UsageProbabilityPercent": ""
+                                    // "UsageProbabilityPercent": ""
                                 }
                             ]
                         }))
