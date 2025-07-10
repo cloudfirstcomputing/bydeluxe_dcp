@@ -809,88 +809,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         "errorMessage": oFeedIncomingData.ErrorMessage
                     });
                     sErrorMessage = oFeedIncomingData.ErrorMessage;
-                }
-                else{
-                    var oBusinessPartnerAddrfromS4 = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sTheaterID })); //GETTING ADDRESS DATA FROM S4
-                    let sCountry = oBusinessPartnerAddrfromS4?.Country;
-                    if(sCountry){
-                        let oVar = await s4h_param_Txn.run(SELECT.one.from(S4_Parameters).where({VariableName: sCountry}));
-                        CompanyCode = oVar?.VariableValue;
-                        if(!CompanyCode){
-                            oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Company Code not maintained for Country: ${sCountry} in YY1_PARAMETER`;
-                            oFeedIncomingData.Status_ID = "D";
-                            oResponseStatus.error.push({
-                                "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                                "errorMessage": oFeedIncomingData.ErrorMessage
-                            });
-                            sErrorMessage = oFeedIncomingData.ErrorMessage;
-                        }
-                    }
-                    else{
-                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Country not mantained for Theater: ${sTheaterID}`;
-                        oFeedIncomingData.Status_ID = "D";
-                        oResponseStatus.error.push({
-                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                            "errorMessage": oFeedIncomingData.ErrorMessage
-                        });
-                        sErrorMessage = oFeedIncomingData.ErrorMessage;
-                    }  
-                    if(!sErrorMessage){
-                        oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
-                        sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
-                        DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
-                    }              
-                    if(sErrorMessage){}
-                    else if (!oSalesParameterConfig) {
-                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
-                        oFeedIncomingData.Status_ID = "D";
-                        oResponseStatus.error.push({
-                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                            "errorMessage": oFeedIncomingData.ErrorMessage
-                        });
-                        sErrorMessage = oFeedIncomingData.ErrorMessage;
-                    }
-                    else if (!sSoldToCustomer) {
-                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
-                        oFeedIncomingData.Status_ID = "D";
-    
-                        oResponseStatus.error.push({
-                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                            "errorMessage": oFeedIncomingData.ErrorMessage
-                        });
-                        sErrorMessage = oFeedIncomingData.ErrorMessage;
-                    }
-                    else if (!SalesOrganization) {
-                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
-                        oFeedIncomingData.Status_ID = "D";
-    
-                        oResponseStatus.error.push({
-                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                            "errorMessage": oFeedIncomingData.ErrorMessage
-                        });
-                        sErrorMessage = oFeedIncomingData.ErrorMessage;
-                    }
-                    else if (!DistributionChannel) {
-                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
-                        oFeedIncomingData.Status_ID = "D";
-    
-                        oResponseStatus.error.push({
-                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                            "errorMessage": oFeedIncomingData.ErrorMessage
-                        });
-                        sErrorMessage = oFeedIncomingData.ErrorMessage;
-                    }
-                    else if (!Division) {
-                        oFeedIncomingData.ErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
-                        oFeedIncomingData.Status_ID = "D";
-    
-                        oResponseStatus.error.push({
-                            "message": `| ${oFeedIncomingData.ErrorMessage} |`,
-                            "errorMessage": oFeedIncomingData.ErrorMessage
-                        });
-                        sErrorMessage = oFeedIncomingData.ErrorMessage;
-                    }
-                }
+                }                
                 
                 if(!sErrorMessage) {
                     var oLocalResponse, oExistingData;
@@ -1165,6 +1084,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             // oResponseStatus = { "error": [], "success": [], "warning": [] };//Resetting oResponseStatus
             oResponseStatus.distroSpecData = distroSpecData;
             oResponseStatus.SalesOrder = '';//Resetting Sales order for next entry
+            oSalesParameterConfig = {};//Resetting
             let iDistroSpecID = distroSpecData?.DistroSpecID,
             sOrderType = oFeedData?.OrderType_code,
             sBookingType = oFeedData?.BookingType_ID,
@@ -1176,7 +1096,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 let oMat = await prdtx.run(SELECT.one.from(TitleCustVH).where({Product: sTitle}));
                 oFeedData.TitleText = oMat?.ProductName;
             }
-            let sBupa = oFeedData?.Studio_BusinessPartner;
+            let sBupa = oFeedData?.Studio_BusinessPartner, sEntityID = oFeedData?.EntityID;
             if(sBupa){
                 let oBP = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerapi).where({ BusinessPartner: sBupa }));
                 oFeedData.StudioText = oBP?.BusinessPartnerFullName;
@@ -1185,44 +1105,77 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
             oPayLoad.SalesOrderType = "TA";
             oFeedData.PlayStartTime = oFeedData?.PlayStartTime?oFeedData.PlayStartTime:'00:00:01';
             oFeedData.PlayEndTime = oFeedData?.PlayEndTime?oFeedData.PlayEndTime:'23:59:59';
-            if(iDistroSpecID && sOrderType && (sBookingType && (sBookingType !== 'U' || sBookingType !== 'C')) && sTheaterID && sBupa && oFeedData.Status_ID !== 'S'){ //Check not applicable during Reconciliation of repetitie entries
-                let aExistingEntry = await SELECT.from(hanaDBTable).where({CustomerReference: `${iDistroSpecID}`, OrderType_code: sOrderType, BookingType_ID: sBookingType, TheaterID: sTheaterID, Studio_BusinessPartner: sBupa }).orderBy({ ref: ['createdAt'], sort: 'desc' });
-                for(let i in aExistingEntry){
-                    let oExistingEntry = aExistingEntry[i];
-                    let sCreatedAt = oExistingEntry?.createdAt;
-    
-                    var sStartDate = oFeedData?.PlayStartDate;
-                    var sStartTime = oFeedData?.PlayStartTime;
-                    var sEndDate = oFeedData?.PlayEndDate;
-                    var sEndTime = oFeedData?.PlayEndTime;
-                    var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(`${sStartDate}T00:00:00`);
-                    var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(`${sEndDate}T00:00:00`);
-                    var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
 
-                    if(dStartDate && dEndDate && sCreatedAt){
-                        let dCreatedAt = new Date(sCreatedAt);
-                        // let dToday = new Date();
-                        let sSalesOrder = oExistingEntry?.SalesOrder;
-                        // let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
-                        // if(iDiffInDays < 7 && sSalesOrder){
-                        //     sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
-                        //     oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
-                        //     break;
-                        // }
-                        // if(dStartDate.getTime() <= dCreatedAt.getTime() && dEndDate.getTime() >= dCreatedAt.getTime() && sSalesOrder){
-                        //     let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
-                        // } 
+            oSalesParameterConfig = await s4h_salesparam_Txn.run(SELECT.one.from(S4_SalesParameter).where({ EntityID: sEntityID, StudioBP: sBupa }));
+            sSoldToCustomer = oSalesParameterConfig?.SoldTo, SalesOrganization = oSalesParameterConfig?.SalesOrganization,
+            DistributionChannel = oSalesParameterConfig?.DistributionChannel, Division = oSalesParameterConfig?.Division, BillTo = oSalesParameterConfig?.BillTo;
 
-                        let iDiffStartInDays = (dStartDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
-                        let iDiffEndInDays = (dEndDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
-                        if(!bReconcile && sSalesOrder && ((!(iDiffStartInDays < 0) && iDiffStartInDays <7) || (!(iDiffEndInDays <0 ) && iDiffEndInDays <7))){
-                            sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
-                            oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
-                            break;
-                        }
-                    }                    
-                }
+            if (!oSalesParameterConfig) {
+                sErrorMessage = `For the record ${(i + 1)}, Sales Parameter configuration not mantained for EntityID:${sEntityID} Studio: ${sBupa}`;
             }
+            else if (!sSoldToCustomer) {
+                sErrorMessage = `For the record ${(i + 1)}, SoldToCustomer not maintained`;
+            }
+            else if (!SalesOrganization) {
+                sErrorMessage = `For the record ${(i + 1)}, SalesOrganization not maintained`;
+            }
+            else if (!DistributionChannel) {
+                sErrorMessage = `For the record ${(i + 1)}, DistributionChannel not maintained`;
+            }
+            else if (!Division) {
+                sErrorMessage = `For the record ${(i + 1)}, Division not maintained`;
+            }
+            else{
+                let oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                if (!oSoldToSalesData) {
+                    sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
+                }
+                if (oSoldToSalesData?.CustomerPaymentTerms === '0001' && !bReconcile) { // Error overridden during reconciliation
+                    sErrorMessage = `Check Payment Terms`;
+                    oFeedData.Status_ID = 'R';
+                    oResponseStatus.Status = 'R';//For Review
+                }
+            } 
+            if(!sErrorMessage){            
+                if(iDistroSpecID && sOrderType && (sBookingType && (sBookingType !== 'U' || sBookingType !== 'C')) && sTheaterID && sBupa && oFeedData.Status_ID !== 'S'){ //Check not applicable during Reconciliation of repetitie entries
+                    let aExistingEntry = await SELECT.from(hanaDBTable).where({CustomerReference: `${iDistroSpecID}`, OrderType_code: sOrderType, BookingType_ID: sBookingType, TheaterID: sTheaterID, Studio_BusinessPartner: sBupa }).orderBy({ ref: ['createdAt'], sort: 'desc' });
+                    for(let i in aExistingEntry){
+                        let oExistingEntry = aExistingEntry[i];
+                        let sCreatedAt = oExistingEntry?.createdAt;
+        
+                        var sStartDate = oFeedData?.PlayStartDate;
+                        var sStartTime = oFeedData?.PlayStartTime;
+                        var sEndDate = oFeedData?.PlayEndDate;
+                        var sEndTime = oFeedData?.PlayEndTime;
+                        var dStartDate = sStartTime ? new Date(`${sStartDate}T${sStartTime}`) : new Date(`${sStartDate}T00:00:00`);
+                        var dEndDate = sEndTime ? new Date(`${sEndDate}T${sEndTime}`) : new Date(`${sEndDate}T00:00:00`);
+                        var iDifferenceInHours = (dEndDate - dStartDate) / (60 * 60 * 1000);
+    
+                        if(dStartDate && dEndDate && sCreatedAt){
+                            let dCreatedAt = new Date(sCreatedAt);
+                            // let dToday = new Date();
+                            let sSalesOrder = oExistingEntry?.SalesOrder;
+                            // let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                            // if(iDiffInDays < 7 && sSalesOrder){
+                            //     sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
+                            //     oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
+                            //     break;
+                            // }
+                            // if(dStartDate.getTime() <= dCreatedAt.getTime() && dEndDate.getTime() >= dCreatedAt.getTime() && sSalesOrder){
+                            //     let iDiffInDays = (dToday.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                            // } 
+    
+                            let iDiffStartInDays = (dStartDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                            let iDiffEndInDays = (dEndDate.getTime()-dCreatedAt.getTime())/(1000 * 3600 * 24);
+                            if(!bReconcile && sSalesOrder && ((!(iDiffStartInDays < 0) && iDiffStartInDays <7) || (!(iDiffEndInDays <0 ) && iDiffEndInDays <7))){
+                                sErrorMessage = `This is a repetition of the SalesOrder ${sSalesOrder} with Booking ID ${oExistingEntry?.BookingID}, posted on ${sCreatedAt.split("T")[0]}`;
+                                oFeedData.Status_ID = 'S';//Marked for Soft Reconcile
+                                break;
+                            }
+                        }                    
+                    }
+                }
+            } 
             if (!sErrorMessage ){
                 if (oFeedData.RequestedDelivDate) {
                     oPayLoad.RequestedDeliveryDate = `/Date(${new Date(oFeedData.RequestedDelivDate).getTime()})/`
@@ -1244,26 +1197,17 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     oPayLoad.IncotermsLocation1 = "Destination";
                     oPayLoad.CustomerPurchaseOrderType = oFeedData?.Origin_OriginID; //RULE 10.1
                     var aContentPackages = distroSpecData?.to_Package, aKeyPackages = distroSpecData?.to_KeyPackage;
-                    var sShipTo = "";
-                    var sBPCustomerNumber = "", sPYCustomer = "", sCustomerGroupFromS4 = "", oSoldToSalesData;
+                    let sShipTo = "", sCustomerGroupFromS4 = "", oShipToSalesData, oShipToAddressfromS4;
                     oPayLoad.to_Partner = [];
-                    if (sTheaterID) { //FIDNING SHIP-TO
-                        oSoldToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sSoldToCustomer, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                        if (!oSoldToSalesData) {
-                            sErrorMessage = `Sales Data not maintained for Sold To Customer ${sSoldToCustomer}-${SalesOrganization}/${DistributionChannel}/${Division}`;
+                    
+                    if (sTheaterID) { //FIDNING SHIP-TO                        
+                        if(sOrigin === 'S' || sOrigin === 'M'){ //Applicable only for Manual and Spreadsheet
+                            sShipTo = sTheaterID;
+                            oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
                         }
-                        if (oSoldToSalesData?.CustomerPaymentTerms === '0001' && !bReconcile) { // Error overridden during reconciliation
-                            sErrorMessage = `Check Payment Terms`;
-                            oResponseStatus.Status = 'R';//For Review
-                        }
-                        if (!sErrorMessage) {
-                            if(sTheaterID && (sOrigin === 'S' || sOrigin === 'M')){ //Applicable only for Manual and Spreadsheet
-                                sShipTo = sTheaterID;
-                                oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
-                            }
-                            else{
-                                let oShipTo = await SELECT.one.from(KalmusTheaterStudio).where({StudioShorts: sTheaterID, Active: true});
-                                sShipTo = oShipTo?.Theater;
+                        else{
+                            let oShipTo = await SELECT.one.from(KalmusTheaterStudio).where({StudioShorts: sTheaterID, Active: true});
+                            sShipTo = oShipTo?.Theater;
                                 // if (oSoldToSalesData?.to_PartnerFunction?.length > 0) {
                                 //     var oPartnerFunction = oSoldToSalesData?.to_PartnerFunction.find((pf) => { return pf.PartnerFunction === "SH" && pf.CustomerPartnerDescription === sTheaterID });
                                 //     if (oPartnerFunction && Object.keys(oPartnerFunction).length) {
@@ -1281,22 +1225,33 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                 //     sErrorMessage = "Partner function not available";
                                 // }
     
-                            }
-                            if(!sShipTo){
-                                sErrorMessage = `Ship-To not found. Please check active entries for Studio Shorts ${sTheaterID}`;
-                            }
-                            // if (sShipTo) {
-                            //     var oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
-                            //     sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;
-                            // }
-                            // else {
-                            //     sErrorMessage = "Ship-To not found";
-                            // }
                         }
+                        if(!sShipTo){
+                            sErrorMessage = `Ship-To not found. Please check active entries for Studio Shorts: ${sTheaterID}`;
+                        }
+                        else{
+                            oShipToAddressfromS4 = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sShipTo })); //GETTING ADDRESS DATA FROM S4
+                            let sCountry = oShipToAddressfromS4?.Country;
+                            if(sCountry){
+                                let oVar = await s4h_param_Txn.run(SELECT.one.from(S4_Parameters).where({VariableName: sCountry}));
+                                CompanyCode = oVar?.VariableValue;
+                                if(!CompanyCode){
+                                    sErrorMessage = `For the record ${(i + 1)}, Company Code not maintained for Country: ${sCountry} in YY1_PARAMETER`;
+                                }
+                            }
+                            else{
+                                sErrorMessage = `For the record ${(i + 1)}, Country not mantained for Theater: ${sTheaterID}`;
+                            }  
+                            if(!sErrorMessage){
+                                oShipToSalesData = await s4h_bp_Txn.run(SELECT.one.from(S4H_CustomerSalesArea, (salesArea) => { salesArea.to_PartnerFunction((partFunc) => { }) }).where({ Customer: sShipTo, SalesOrganization: SalesOrganization, DistributionChannel: DistributionChannel, Division: Division }));
+                                sCustomerGroupFromS4 = oShipToSalesData?.CustomerGroup;                                                           
+                            }                                   
+                        }                        
                     }
                     else {
                         sErrorMessage = `Theater ID is not supplied in the payload`;
                     }
+                    
                     if (!sErrorMessage) {
                         var oPackages = await performPrioritySort_OrderType_ValidityCheck(oFeedData, distroSpecData); //Contains list of valid content pakcages
                         aContentPackages = oPackages?.ContentPackage;
@@ -1525,20 +1480,20 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                                                     return rest.Circuit_CustomerGroup?.toUpperCase() === sAttr06?.toUpperCase();
                                                 }));
                                             }
-                                        // var oBusinessPartnerAddrfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
+                                        // var oShipToAddressfromS4 = await SELECT.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sBuPa }); //GETTING ADDRESS DATA FROM S4
                                         // var oDistRestriction = aContOrKeyPckg.find((dist) => {
                                         //     return (dist.Theater_BusinessPartner === sShipTo && dist.Circuit_CustomerGroup === sCustomerGroupFromS4 &&
-                                        //         ((oBusinessPartnerAddrfromS4?.Language && dist.DistributionFilterLanguage_code) ? oBusinessPartnerAddrfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
-                                        //         ((oBusinessPartnerAddrfromS4?.Country && dist.DistributionFilterCountry_code) ? oBusinessPartnerAddrfromS4.Country === dist.DistributionFilterCountry_code : true) &&
-                                        //         ((oBusinessPartnerAddrfromS4?.Region && dist.DistributionFilterRegion_Country) ? oBusinessPartnerAddrfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
-                                        //         ((oBusinessPartnerAddrfromS4?.CityCode && dist.DistributionFilterCity) ? oBusinessPartnerAddrfromS4.CityCode === dist.DistributionFilterCity : true) &&
-                                        //         ((oBusinessPartnerAddrfromS4?.PostalCode && dist.DistributionFilterPostal) ? oBusinessPartnerAddrfromS4.PostalCode === dist.DistributionFilterPostal : true)
+                                        //         ((oShipToAddressfromS4?.Language && dist.DistributionFilterLanguage_code) ? oShipToAddressfromS4.Language === dist.DistributionFilterLanguage_code : true) &&
+                                        //         ((oShipToAddressfromS4?.Country && dist.DistributionFilterCountry_code) ? oShipToAddressfromS4.Country === dist.DistributionFilterCountry_code : true) &&
+                                        //         ((oShipToAddressfromS4?.Region && dist.DistributionFilterRegion_Country) ? oShipToAddressfromS4.Region === dist.DistributionFilterRegion_Country : true) &&
+                                        //         ((oShipToAddressfromS4?.CityCode && dist.DistributionFilterCity) ? oShipToAddressfromS4.CityCode === dist.DistributionFilterCity : true) &&
+                                        //         ((oShipToAddressfromS4?.PostalCode && dist.DistributionFilterPostal) ? oShipToAddressfromS4.PostalCode === dist.DistributionFilterPostal : true)
                                         //     );
                                         // });
                                         // if (!oDistRestriction) {
                                         //     sErrorMessage = `No relevant Package IDs identified for restrictions.
                                         //     CustomerGroupFromS4:${sCustomerGroupFromS4}|
-                                        //     PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oBusinessPartnerAddrfromS4.Language}/${oBusinessPartnerAddrfromS4.Country}/${oBusinessPartnerAddrfromS4.Region}/${oBusinessPartnerAddrfromS4.CityCode}/${oBusinessPartnerAddrfromS4.PostalCode})`;
+                                        //     PartnerAddress(Lang/Country/Region/CityCode/PostalCode from S4: ${oShipToAddressfromS4.Language}/${oShipToAddressfromS4.Country}/${oShipToAddressfromS4.Region}/${oShipToAddressfromS4.CityCode}/${oShipToAddressfromS4.PostalCode})`;
                                         // }
                                     }
                                     if(!sErrorMessage && aDistroRegions?.length){ 
