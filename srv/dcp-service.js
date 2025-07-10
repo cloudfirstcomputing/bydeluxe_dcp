@@ -310,7 +310,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
         this.on("CREATE", StudioFeed, async (req, next) => {
             var oFeed = req.data;
             var oResponse = await createStudioFeeds(req, [oFeed]);
-            if(oResponse.nonpersistenterror){
+            if(oResponse.nonpersistenterror?.length){
                 req.error({
                     code: 400,
                     message: JSON.stringify(oResponse.nonpersistenterror)
