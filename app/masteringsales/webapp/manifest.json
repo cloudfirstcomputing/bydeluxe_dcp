@@ -140,14 +140,46 @@
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
-                      "text": "Create"
+                      "text": "Create",
+                      "position": {
+                        "anchor": "Edit",
+                        "placement": "Before"
+                      }
                     },
                     "MassUpload": {
                       "press": "deluxe.masteringsales.ext.controller.MassUpload.MassUpload",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
-                      "text": "MassUpload"
+                      "text": "MassUpload",
+                      "position": {
+                        "placement": "After"
+                      }
+                    },
+                    "Edit": {
+                      "press": "deluxe.masteringsales.ext.controller.Edit.Edit",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "Edit",
+                      "position": {
+                        "anchor": "MassUpload",
+                        "placement": "Before"
+                      }
+                    },
+                    "Cancel": {
+                      "press": "deluxe.masteringsales.ext.controller.Cancel.Cancel",
+                      "visible": true,
+                      "enabled": false,
+                      "requiresSelection": false,
+                      "text": "Cancel"
+                    },
+                    "Display": {
+                      "press": "deluxe.masteringsales.ext.controller.Display.Display",
+                      "visible": true,
+                      "enabled": false,
+                      "requiresSelection": false,
+                      "text": "Display"
                     }
                   }
                 }
