@@ -76,6 +76,150 @@ annotate service.MasteringHubMain with @(
             Value : InternalCancellationDate,
             Label : 'InternalCancellationDate',
         },
+        {
+            $Type : 'UI.DataField',
+            Value : TitleID,
+            Label : 'TitleID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Title,
+            Label : 'Title',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : StudioID,
+            Label : 'StudioID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : StudioName,
+            Label : 'StudioName',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : MasteringFacility,
+            Label : 'MasteringFacility',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RequestedMasteringFacility,
+            Label : 'RequestedMasteringFacility',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PackagingStandard,
+            Label : 'PackagingStandard',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ContentKind,
+            Label : 'ContentKind',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : VersionNumber,
+            Label : 'VersionNumber',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : VersionDescription,
+            Label : 'VersionDescription',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : BaseCompositionReelCount,
+            Label : 'BaseCompositionReelCount',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : Branched,
+            Label : 'Branched',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : IntendedPackaging,
+            Label : 'IntendedPackaging',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : StudioRequestedCTT,
+            Label : 'StudioRequestedCTT',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : CTTRecommendedToProduction,
+            Label : 'CTTRecommendedToProduction',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : StudioContentID,
+            Label : 'StudioContentID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : StudioContentDescription,
+            Label : 'StudioContentDescription',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : HeadTailReels,
+            Label : 'HeadTailReels',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : PrecedingSODID,
+            Label : 'PrecedingSODID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : BaseCPLs,
+            Label : 'BaseCPLs',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : NotBeforeApproved,
+            Label : 'NotBeforeApproved',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : NotBeforeCompleted,
+            Label : 'NotBeforeCompleted',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : OVSourceAssetDeliveryDeadline,
+            Label : 'OVSourceAssetDeliveryDeadline',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : LVSourceAssetDeliveryDeadline,
+            Label : 'LVSourceAssetDeliveryDeadline',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RequestedMasteringStartDate,
+            Label : 'RequestedMasteringStartDate',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RequestedMasteringEndDate,
+            Label : 'RequestedMasteringEndDate',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : RequestedMasteringDeadline,
+            Label : 'RequestedMasteringDeadline',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : ReleaseDate,
+            Label : 'ReleaseDate',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : createdBy,
+        },
     ],
 );
 
