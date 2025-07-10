@@ -1203,7 +1203,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                     if (sTheaterID) { //FIDNING SHIP-TO                        
                         if(sOrigin === 'S' || sOrigin === 'M'){ //Applicable only for Manual and Spreadsheet
                             sShipTo = sTheaterID;
-                            oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
                         }
                         else{
                             let oShipTo = await SELECT.one.from(KalmusTheaterStudio).where({StudioShorts: sTheaterID, Active: true});
@@ -1229,7 +1228,8 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                         if(!sShipTo){
                             sErrorMessage = `Ship-To not found. Please check active entries for Studio Shorts: ${sTheaterID}`;
                         }
-                        else{
+                        else{                            
+                            oPayLoad.to_Partner.push({ "PartnerFunction": 'WE', "Customer": sShipTo });
                             oShipToAddressfromS4 = await s4h_bp_vh.run(SELECT.one.from(S4H_BusinessPartnerAddress).where({ BusinessPartner: sShipTo })); //GETTING ADDRESS DATA FROM S4
                             let sCountry = oShipToAddressfromS4?.Country;
                             if(sCountry){
