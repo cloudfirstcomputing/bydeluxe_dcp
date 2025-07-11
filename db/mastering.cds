@@ -457,6 +457,7 @@ entity MasteringHubMain : cuid, managed {
 entity InsertEditDetails : managed {
       parent                : Association to MasteringHubMain;
   key EditEssenceID         : String(8);
+  key FrameRate             : Decimal;
       Edits                 : Boolean;
       EstimatedEditCount    : Integer;
       InsertEssenceID       : String(8);
@@ -465,17 +466,17 @@ entity InsertEditDetails : managed {
       GeneralOrderNotes     : String(2000);
       LocalApprovalStatus   : String(12);
       Translator            : String(20);
-      ImageEssence          : Composition of many ImageEssenceDetails
+      ImageEssence          : Composition of ImageEssenceDetails
                                 on ImageEssence.parent = $self;
-      AudioEssence          : Composition of many AudioEssenceDetails
+      AudioEssence          : Composition of AudioEssenceDetails
                                 on AudioEssence.parent = $self;
-      AUXEssence            : Composition of many AUXEssenceDetails
+      AUXEssence            : Composition of AUXEssenceDetails
                                 on AUXEssence.parent = $self;
-      SubtitleEssence       : Composition of many SubtitleEssenceDetails
+      SubtitleEssence       : Composition of SubtitleEssenceDetails
                                 on SubtitleEssence.parent = $self;
-      OpenCaptionsEssence   : Composition of many OpenCaptionsEssenceDetails
+      OpenCaptionsEssence   : Composition of OpenCaptionsEssenceDetails
                                 on OpenCaptionsEssence.parent = $self;
-      ClosedCaptionsEssence : Composition of many ClosedCaptionsEssenceDetails
+      ClosedCaptionsEssence : Composition of ClosedCaptionsEssenceDetails
                                 on ClosedCaptionsEssence.parent = $self;
 }
 
@@ -491,7 +492,6 @@ entity ImageEssenceDetails : managed {
       ImageDimension      : String(2);
       ImageStandard       : String(20);
       LightLevel          : String(20);
-      FrameRate           : Decimal;
       TargetMaxBitRate    : Decimal;
       TextedTextless      : String(20);
       ImageLanguages      : String(100);

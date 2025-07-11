@@ -63,7 +63,8 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.fe.templates": {}
+        "sap.fe.templates": {},
+        "sap.f": {}
       }
     },
     "contentDensities": {
@@ -95,22 +96,37 @@
       "css": []
     },
     "routing": {
-      "config": {},
+      "config": {
+        "flexibleColumnLayout": {
+          "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+          "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
+        },
+        "routerClass": "sap.f.routing.Router"
+      },
       "routes": [
         {
           "pattern": ":?query:",
           "name": "MasteringHubMainList",
-          "target": "MasteringHubMainList"
+          "target": [
+            "MasteringHubMainList"
+          ]
         },
         {
           "pattern": "MasteringHubMain({key}):?query:",
           "name": "MasteringHubMainObjectPage",
-          "target": "MasteringHubMainObjectPage"
+          "target": [
+            "MasteringHubMainList",
+            "MasteringHubMainObjectPage"
+          ]
         },
         {
           "name": "MasteringHubMain_insertEditObjectPage",
           "pattern": "MasteringHubMain({key})/insertEdit({insertEditKey}):?query:",
-          "target": "MasteringHubMain_insertEditObjectPage"
+          "target": [
+            "MasteringHubMainList",
+            "MasteringHubMainObjectPage",
+            "MasteringHubMain_insertEditObjectPage"
+          ]
         }
       ],
       "targets": {
@@ -185,7 +201,9 @@
                 }
               }
             }
-          }
+          },
+          "controlAggregation": "beginColumnPages",
+          "contextPattern": ""
         },
         "MasteringHubMainObjectPage": {
           "type": "Component",
@@ -203,7 +221,9 @@
                 }
               }
             }
-          }
+          },
+          "controlAggregation": "midColumnPages",
+          "contextPattern": "/MasteringHubMain({key})"
         },
         "MasteringHubMain_insertEditObjectPage": {
           "type": "Component",
@@ -214,9 +234,17 @@
               "navigation": {},
               "contextPath": "/MasteringHubMain/insertEdit"
             }
-          }
+          },
+          "controlAggregation": "endColumnPages",
+          "contextPattern": "/MasteringHubMain({key})/insertEdit({insertEditKey})"
         }
       }
+    },
+    "rootView": {
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+      "type": "XML",
+      "async": true,
+      "id": "appRootView"
     }
   },
   "sap.fiori": {
