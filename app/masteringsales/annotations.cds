@@ -240,12 +240,12 @@ annotate service.MasteringHubMain with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : partner.DKDMDeliveryPartnerInfo,
+                Value : DKDMDeliveryPartnerInfo,
                 Label : '{i18n>DkdmDeliveryPartnerInformation}',
             },
             {
                 $Type : 'UI.DataField',
-                Value : partner.DCPDeliveryPartnerInfo,
+                Value : DCPDeliveryPartnerInfo,
                 Label : '{i18n>DcpDeliveryPartnerInformation}',
             },
             {
@@ -824,21 +824,8 @@ annotate service.PartnerDetails with @(
     UI.LineItem #Partner : [
         {
             $Type : 'UI.DataField',
-            Value : DCPDeliveryPartnerInfo,
-            Label : 'DCPDeliveryPartnerInfo',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : DKDMDeliveryPartnerInfo,
-            Label : 'DKDMDeliveryPartnerInfo',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : modifiedAt,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : modifiedBy,
+            Value : StudioID,
+            Label : '{i18n>StudioId}',
         },
     ]
 );

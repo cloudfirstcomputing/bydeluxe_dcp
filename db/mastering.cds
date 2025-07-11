@@ -378,6 +378,8 @@ entity MasteringHubMain : cuid, managed {
       QTOutputs                     : Integer;
       DFX                           : String(8);
       ProductionOrderNumber         : Integer;
+      DKDMDeliveryPartnerInfo       : String(40);
+      DCPDeliveryPartnerInfo        : String(40);
       insertEdit                    : Composition of many InsertEditDetails
                                         on insertEdit.parent = $self;
       partner                       : Composition of many PartnerDetails
@@ -575,7 +577,6 @@ entity HTREssenceDetails : managed {
 }
 
 entity PartnerDetails : managed {
-  key parent                  : Association to MasteringHubMain;
-      DKDMDeliveryPartnerInfo : String(40);
-      DCPDeliveryPartnerInfo  : String(40);
+  key parent   : Association to MasteringHubMain;
+      StudioID : Integer
 }
