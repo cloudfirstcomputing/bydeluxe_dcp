@@ -478,24 +478,27 @@ entity InsertEditDetails : managed {
                                 on OpenCaptionsEssence.parent = $self;
       ClosedCaptionsEssence : Composition of ClosedCaptionsEssenceDetails
                                 on ClosedCaptionsEssence.parent = $self;
+      HTREssence            : Composition of HTREssenceDetails
+                                on HTREssence.parent = $self;
 }
 
 entity ImageEssenceDetails : managed {
-  key ID                  : String(8);
-      parent              : Association to InsertEditDetails;
-      Resolution          : String(2);
-      AspectRatio         : String(12);
-      ContainerHeight     : Integer;
-      ContainerWidth      : Integer;
-      ActivePictureHeight : Integer;
-      ActivePictureWidth  : Integer;
-      ImageDimension      : String(2);
-      ImageStandard       : String(20);
-      LightLevel          : String(20);
-      TargetMaxBitRate    : Decimal;
-      TextedTextless      : String(20);
-      ImageLanguages      : String(100);
-      ImageIngestRequired : Boolean;
+  key ID                       : String(8);
+      parent                   : Association to InsertEditDetails;
+      Resolution               : String(2);
+      AspectRatio              : String(12);
+      ContainerHeight          : Integer;
+      ContainerWidth           : Integer;
+      ActivePictureHeight      : Integer;
+      ActivePictureWidth       : Integer;
+      ImageDimension           : String(2);
+      ImageStandard            : String(20);
+      LightLevel               : String(20);
+      TargetMaxBitRate         : Decimal;
+      TextedTextless           : String(20);
+      ImageLanguages           : String(100);
+      LocalisedGFXDeliveryDate : DateTime;
+      ImageIngestRequired      : Boolean;
 }
 
 entity AudioEssenceDetails : managed {
@@ -511,6 +514,7 @@ entity AudioEssenceDetails : managed {
       AudioDeliveryDate         : DateTime;
       HIDeliveryDate            : DateTime;
       VIDeliveryDate            : DateTime;
+      SLDeliveryDate            : DateTime;
 }
 
 entity AUXEssenceDetails : managed {
@@ -561,6 +565,13 @@ entity ClosedCaptionsEssenceDetails : managed {
       CCAPExcludedReels  : Integer;
       CCAPDeliveryDate   : DateTime;
       CCAPIngestRequired : Boolean;
+}
+
+entity HTREssenceDetails : managed {
+  key ID              : String(8);
+      parent          : Association to InsertEditDetails;
+      HeadTailReels   : String;
+      HLTDeliveryDate : DateTime;
 }
 
 entity PartnerDetails : managed {
