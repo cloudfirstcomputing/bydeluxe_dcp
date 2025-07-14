@@ -233,28 +233,42 @@ entity TrailMix : CodeList {
 };
 
 entity KeyRules : cuid, managed {
-    Rule                      : Integer;
-    Country                   : String(3);
-    Studio                    : String(10);
-    DeluxeBookClassType       : String(40);
-    ClientBookClassType       : String(40);
-    InitialKeyStartCalcOrigin : String(200);
-    InitialKeyStartOffset     : String(40);
-    InitialKeyEndCalcOrigin   : String(200);
-    InitialKeyEndOffset       : String(40);
-    NextKeyStartCalcOrigin    : String(100);
-    NextKeyEndCalcOrigin      : String(100);
-    NextKeyEndOffset          : String(100);
+    Rule                            : Integer;
+    isDefault                       : Boolean;
+    Country                         : String(3);
+    Studio                          : String(10);
+    DeluxeBookClassType             : String(40);
+    ClientBookClassType             : String(40);
+    InitialKeyStartCalcOrigin       : String(100);
+    InitialKeyStartOffset           : String(40);
+    InitialKeyEndCalcOrigin         : String(100);
+    InitialKeyEndOffset             : String(40);
+    NextKeyStartCalcOrigin          : String(100);
+    NextKeyEndCalcOrigin            : String(100);
+    NextKeyEndOffset                : String(100);
+    InitialDeliveryCalcOrigin       : String(100);
+    InitialDeliveryOffset           : String(100);
+    NextDeliveryCalcOrigin          : String(100);
+    NextDeliveryOffset              : String(100);
+    BookingOrigin                   : String(1);
+    RequireScreenSpecification      : Boolean;
+    NumberOfPermittedSitesInCountry : Integer;
+    NumberOfTimesCplMayBeKeyed      : Integer;
+};
+
+entity CalcOrigin {
+    key code : String(100);
 };
 
 entity ContentRules : cuid, managed {
-    Rule                : Integer;
-    DeliveryMethod      : String(2);
-    Country             : String(3);
-    DeluxeBookClassType : String(40);
-    ClientBookClassType : String(40);
-    CutoffCalcOrigin    : String(100);
-    OffsetStartOffset   : String(100);
+    Rule              : Integer;
+    DeliveryMethod    : String(2);
+    Theater           : String(10);
+    Country           : String(3);
+    // DeluxeBookClassType : String(40);
+    // ClientBookClassType : String(40);
+    CutoffCalcOrigin  : String(100);
+    OffsetStartOffset : String(100);
 };
 
 entity StdKey2KeyR {
@@ -265,9 +279,9 @@ entity StdKey2KeyR {
     virtual Studio                    : String(10);
     virtual DeluxeBookClassType       : String(40);
     virtual ClientBookClassType       : String(40);
-    virtual InitialKeyStartCalcOrigin : String(200);
+    virtual InitialKeyStartCalcOrigin : String(100);
     virtual InitialKeyStartOffset     : String(40);
-    virtual InitialKeyEndCalcOrigin   : String(200);
+    virtual InitialKeyEndCalcOrigin   : String(100);
     virtual InitialKeyEndOffset       : String(40);
     virtual NextKeyStartCalcOrigin    : String(100);
     virtual NextKeyEndCalcOrigin      : String(100);

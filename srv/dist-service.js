@@ -115,7 +115,7 @@ module.exports = class DistributionService extends cds.ApplicationService {
             let { maxID } = await SELECT.one(`max(DistroSpecID) as maxID`).from(DistroSpec)
             req.data.DistroSpecID = ++maxID
             req.data.FieldControl = 1
-            req.data.Status = true
+            // req.data.Status = true
             const titlev = await SELECT.one.from(TitleV).where({ MaterialMasterTitleID: req.data.Title_Product })
             req.data.ReleaseDate = titlev?.ReleaseDate
             req.data.RepertoryDate = titlev?.RepertoryDate
@@ -565,6 +565,10 @@ module.exports = class DistributionService extends cds.ApplicationService {
 
         this.before('NEW', `Package.drafts`, req => {
             req.data.ValidFrom = today()
+        })
+
+        this.before('NEW', DistroSpec.drafts, req => {
+            req.data.Status = true
         })
 
         this.before('NEW', `KeyPackage.drafts`, req => {

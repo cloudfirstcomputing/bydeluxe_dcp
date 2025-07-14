@@ -69,6 +69,18 @@
                 "privileges_with_grant_option":[] 
             }   ,
             { 
+                "name":"DCP_DB_ORIGINS", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            }   ,
+            { 
+                "name":"DELUXE_DISTRIBUTION_CALCORIGIN", 
+                "type":"TABLE", 
+                "privileges":[ "SELECT" ], 
+                "privileges_with_grant_option":[] 
+            }   ,
+            { 
                 "name":"DELUXE_DISTRIBUTION_KEYRULES", 
                 "type":"TABLE", 
                 "privileges":["SELECT","INSERT","UPDATE","DELETE"], 
