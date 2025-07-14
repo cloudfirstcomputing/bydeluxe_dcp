@@ -567,10 +567,6 @@ module.exports = class DistributionService extends cds.ApplicationService {
             req.data.ValidFrom = today()
         })
 
-        this.before('NEW', DistroSpec.drafts, req => {
-            req.data.Status = true
-        })
-
         this.before('NEW', `KeyPackage.drafts`, req => {
             req.data.ValidFrom = today()
         })

@@ -59,6 +59,7 @@ entity DistributionDcp {
                                                  DKDMS3location        : String;
                                                  CPLS3location         : String;
                                                  AtmosFlag             : Integer;
+                                                 Dbox                  : Integer;
                                                  ClosedCaptionsFlag    : Integer;
                                                  SignLanguageVideoFlag : Integer;
                                                  DcpFormatType         : String(40);

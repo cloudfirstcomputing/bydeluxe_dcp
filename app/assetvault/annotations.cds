@@ -62,6 +62,7 @@ annotate service.DistributionDcp._Items with {
     ContentKind           @Common: {Label: '{i18n>ContentKind}', };
     DistributionSize      @Common: {Label: '{i18n>DistributionSize}', };
     AtmosFlag             @Common: {Label: '{i18n>AtmosFlag}', };
+    Dbox                  @Common: {Label: '{i18n>Dbox}', };
     ClosedCaptionsFlag    @Common: {Label: '{i18n>ClosedCaptionsFlag}', };
     SignLanguageVideoFlag @Common: {Label: '{i18n>SignLanguageVideoFlag}', };
     DcpFormatType         @Common: {Label: '{i18n>DcpFormatType}', };
@@ -396,6 +397,10 @@ annotate service.DistributionDcp._Items with @(
             {
                 $Type: 'UI.DataField',
                 Value: AtmosFlag,
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: Dbox,
             },
             {
                 $Type: 'UI.DataField',

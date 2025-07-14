@@ -28,7 +28,7 @@ annotate service.DistroSpec with {
         Text           : Title.ProductName,
         TextArrangement: #TextOnly,
     };
-    Status             @Common: {Label: '{i18n>Active}', };
+    Status             @Common: {Label: '{i18n>Inactive}', };
     DeliverySequence1  @Common: {
         Label          : '{i18n>DeliverySequence1}',
         Text           : DeliverySequence1.ShippingConditionName,
