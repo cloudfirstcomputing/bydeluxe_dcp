@@ -1709,7 +1709,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 sMode = "Trailer";
             }
             else{
-                if (ReleaseDate) {
+                if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
+                    sMode = 'Repertory';
+                }
+                else if (ReleaseDate) {
                     dAddSevenDays = await addDays(ReleaseDate, 7);
                 }
                 if (ReleaseDate && dStartDate < ReleaseDate) {
@@ -1720,9 +1723,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 }
                 else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
                     sMode = 'Release';
-                }
-                else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
-                    sMode = 'Repertory';
                 }
 
             }
