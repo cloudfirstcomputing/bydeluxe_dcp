@@ -35,3 +35,6 @@ Makefile*
 
 # @cap-js/cds-typer
 @cds-models
+
+# auto generated wildcard
+.env

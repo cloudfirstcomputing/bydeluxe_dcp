@@ -1712,10 +1712,7 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 if (ReleaseDate) {
                     dAddSevenDays = await addDays(ReleaseDate, 7);
                 }
-                if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
-                    sMode = 'Repertory';
-                }
-                else if (ReleaseDate && dStartDate < ReleaseDate) {
+                if (ReleaseDate && dStartDate < ReleaseDate) {
                     sMode = 'PreRelease';
                 }
                 else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime()) {
@@ -1724,6 +1721,10 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
                     sMode = 'Release';
                 }
+                else if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
+                    sMode = 'Repertory';
+                }
+
             }
             if (sMode) {
                 if(sCompanyCode){
@@ -3641,8 +3642,10 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                 const oAddrCompanyCode = await invformAPI.run(SELECT.one.from(AddressPostal).where({ AddressID: aCompanyCode.AddressID }));
                 const oAddrPhone = await invformAPI.run(SELECT.one.from(AddressPhoneNumber).where({ AddressID: aCompanyCode.AddressID }));
                 const oAddrEmail = await invformAPI.run(SELECT.one.from(AddressEmailAddress).where({ AddressID: aCompanyCode.AddressID }));
-                const oAddrCompanyCodendfo = await invformAPI.run(SELECT.one.from(AddlCompanyCodeInformation).where({ CompanyCode: aCompanyCode.AddressID, CompanyCodeParameterType: 'SAPTIN' }));
-                const oAddrCoCodeCountryVATReg = await invformAPI.run(SELECT.one.from(CoCodeCountryVATReg).where({ CompanyCode: aCompanyCode.AddressID, VATRegistrationCountry: aCompanyCode.Country }));
+                // const oAddrCompanyCodendfo = await invformAPI.run(SELECT.one.from(AddlCompanyCodeInformation).where({ CompanyCode: aCompanyCode.AddressID, CompanyCodeParameterType: 'SAPTIN' }));
+                const oAddrCompanyCodendfo = await invformAPI.run(SELECT.one.from(AddlCompanyCodeInformation).where({ CompanyCode: aCompanyCode.CompanyCode, CompanyCodeParameterType: 'SAPTIN' }));
+                // const oAddrCoCodeCountryVATReg = await invformAPI.run(SELECT.one.from(CoCodeCountryVATReg).where({ CompanyCode: aCompanyCode.AddressID, VATRegistrationCountry: aCompanyCode.Country }));
+                const oAddrCoCodeCountryVATReg = await invformAPI.run(SELECT.one.from(CoCodeCountryVATReg).where({ CompanyCode: aCompanyCode.CompanyCode, VATRegistrationCountry: aCompanyCode.Country }));
                 const oJournalEntryItem = await invformAPI.run(SELECT.one.from(JournalEntryItem).where({ ReferenceDocument: oBillingDocument.BillingDocument, FiscalYear: billingDocument[0].FiscalYear, CompanyCode: billingDocument[0].CompanyCode }));
                 const oPaymentTermsText = await invformAPI.run(SELECT.one.from(PaymentTermsText).where({ PaymentTerms: billingDocument[0].CustomerPaymentTerms, Language: 'EN' }));
                 const aTaxamount = await srv_BillingDocument.run(SELECT.from(BillingDocumentItemPrcgElmnt).where({ BillingDocument: oBillingDocument.BillingDocument, BillingDocumentItem: { in: sMapBillingDocumentItem }, ConditionClass: 'D', ConditionIsForStatistics: false }));
@@ -3889,7 +3892,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                     oTaxObjectforForm.TaxTable.TaxTableRow[0].Cell2 = 'USD '+iNetAmount.toFixed(2)
                     oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-3].Cell2 ='USD '+ ( isNaN(iDiscountItem)? 0 : parseInt(iDiscountItem).toFixed(2) )
                     oTaxObjectforForm.TaxTable.TaxTableRow[iTypeLength-1].Cell2 ='USD '+ ( isNaN(iGrandTotal)? 0 : parseInt(iGrandTotal).toFixed(2) )
-
+                
+                const formattedBillingDate = new Date(billingHeader.BillingDocumentDate).toLocaleDateString('en-US', { day: '2-digit', month: "short", year: 'numeric' });
+                    
                 const billingDataNode = {
                     "TaxInvoice": {
                         "Header": {
@@ -3903,7 +3908,9 @@ Duration:${element.RunTime ? element.RunTime : '-'} Start Of Credits:${element.S
                             "InvoiceNo": billingHeader.to_Item[0].BillingDocument,
                             "InvoiceDate": billingHeader.BillingDocumentDate,
                             "Terms": oPaymentTermsText.PaymentTermsName,
-                            "PaymentDueDate": oJournalEntryItem?.NetDueDate
+                            // "PaymentDueDate": oJournalEntryItem?.NetDueDate
+                           //  "PaymentDueDate": billingHeader.BillingDocumentType=='F8'? formattedBillingDate: oJournalEntryItem?.NetDueDate 
+                           "PaymentDueDate": billingHeader.BillingDocumentType=='F8'? formattedBillingDate + ' '  + oPaymentTermsText.PaymentTermsName : oJournalEntryItem?.NetDueDate
                         },
                         "BillTo": {
                             "BillToAddress": oBusinessPartnerAddrfromS4?.FullName + "," + oBusinessPartnerAddrfromS4?.HouseNumber + "," + oBusinessPartnerAddrfromS4?.StreetName + "," + oBusinessPartnerAddrfromS4?.CityName + "," + oBusinessPartnerAddrfromS4?.PostalCode + "," + oBusinessPartnerAddrfromS4?.Region + "," + oBusinessPartnerAddrfromS4?.Country,
