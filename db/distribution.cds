@@ -22,7 +22,7 @@ entity DistroSpec : managed {
         Title              : Association to one TitleVH @mandatory;
         ReleaseDate        : Date;
         RepertoryDate      : Date;
-        Status             : Boolean;
+        Status             : Boolean default false;
         DeliverySequence1  : Association to api.ShippingConditions;
         DeliverySequence2  : Association to api.ShippingConditions;
         DeliverySequence3  : Association to api.ShippingConditions;
