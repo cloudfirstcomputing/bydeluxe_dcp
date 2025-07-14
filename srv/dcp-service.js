@@ -1709,13 +1709,13 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 sMode = "Trailer";
             }
             else{
+                if (ReleaseDate) {
+                    dAddSevenDays = await addDays(ReleaseDate, 7);
+                }
                 if (RepertoryDate && dStartDate.getTime() >= RepertoryDate.getTime()) {
                     sMode = 'Repertory';
                 }
-                else if (ReleaseDate) {
-                    dAddSevenDays = await addDays(ReleaseDate, 7);
-                }
-                if (ReleaseDate && dStartDate < ReleaseDate) {
+                else if (ReleaseDate && dStartDate < ReleaseDate) {
                     sMode = 'PreRelease';
                 }
                 else if (ReleaseDate && dStartDate?.getTime() > dAddSevenDays.getTime()) {
@@ -1724,7 +1724,6 @@ module.exports = class BookingOrderService extends cds.ApplicationService {
                 else if (ReleaseDate && (dStartDate?.getTime() === ReleaseDate.getTime() || dStartDate?.getTime() <= dAddSevenDays.getTime())) {
                     sMode = 'Release';
                 }
-
             }
             if (sMode) {
                 if(sCompanyCode){
