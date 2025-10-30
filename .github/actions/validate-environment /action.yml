@@ -1,0 +1,76 @@
+name: 🔍 Validate Environment
+description: Generic validator - checks if provided variables and secrets are empty
+
+inputs:
+  check_vars:
+    description: 'Variables to check (format: VAR_NAME=value, one per line)'
+    required: false
+    default: ''
+
+  check_secrets:
+    description: 'Secrets to check (format: SECRET_NAME=value, one per line)'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Validate Environment
+      shell: bash
+      run: |
+        MISSING_VARS=()
+        MISSING_SECRETS=()
+
+        # Check variables
+        if [ -n "$CHECK_VARS" ]; then
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              var_name="${line%%=*}"
+              var_value="${line#*=}"
+              if [ -z "$var_value" ]; then
+                MISSING_VARS+=("$var_name")
+              fi
+            fi
+          done <<< "$CHECK_VARS"
+        fi
+
+        # Check secrets
+        if [ -n "$CHECK_SECRETS" ]; then
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              secret_name="${line%%=*}"
+              secret_value="${line#*=}"
+              if [ -z "$secret_value" ]; then
+                MISSING_SECRETS+=("$secret_name")
+              fi
+            fi
+          done <<< "$CHECK_SECRETS"
+        fi
+
+        # Report results
+        if [ ${#MISSING_VARS[@]} -gt 0 ] || [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
+          # Build concise error message
+          ERROR_MSG="❌ Missing"
+
+          if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+            VAR_LIST=$(IFS=', '; echo "${MISSING_VARS[*]}")
+            ERROR_MSG+=" Variables: $VAR_LIST"
+          fi
+
+          if [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
+            SECRET_LIST=$(IFS=', '; echo "${MISSING_SECRETS[*]}")
+            if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+              ERROR_MSG+=" |"
+            fi
+            ERROR_MSG+=" Secrets: $SECRET_LIST"
+          fi
+
+          # Output as annotation with details
+          echo "::error::$ERROR_MSG"
+          exit 1
+        else
+          echo "::notice::✅ Environment configuration validated successfully"
+        fi
+      env:
+        CHECK_VARS: ${{ inputs.check_vars }}
+        CHECK_SECRETS: ${{ inputs.check_secrets }}
