@@ -34,3 +34,22 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+  validate-config:
+    name: 🔍 Validate Environment
+    runs-on: ubuntu-latest
+    environment: qual
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Validate Environment
+        uses: ./.github/actions/validate-environment
+        with:
+          check_vars: |
+            SONAR_PROJECT_NAME=${{ vars.SONAR_PROJECT_NAME }}
+          check_secrets: |
+            SONARQUBE_SCAN_TOKEN=${{ secrets.SONARQUBE_SCAN_TOKEN }}
+          
+
+            
